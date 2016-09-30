@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<element>
+	<nameSpace>
+		<list>/web/home</list>
+		<list>/web/open</list>
+		<list>/web/demo</list>
+		<list>/web/goods</list>
+		<list>/api</list>
+		<list>/test</list>
+		<list>/web/manage/user</list>
+	</nameSpace>
+	<methodName>
+		<list>login</list>
+		<list>logout</list>
+		<list>getKdStatic</list>
+		<list>getAppSet</list>
+	</methodName>
+</element>
+

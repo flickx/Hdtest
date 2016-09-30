@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<ehcache>  
+  <!--如果缓存中的对象存储超过指定的缓存数量的对象存储的磁盘地址-->  
+  <diskStore path="D:/ehcache"/>   
+  <!-- 默认cache：如果没有对应的特定区域的缓存，就使用默认缓存 maxElementsInMemory为缓存对象的最大数目, eternal设置是否永远不过期  
+        timeToIdleSeconds对象处于空闲状态的最多秒数， timeToLiveSeconds对象处于缓存状态的最多秒数  
+    -->  
+  <defaultCache maxElementsInMemory="10000"  
+                eternal="false"  
+                timeToIdleSeconds="60"   
+                timeToLiveSeconds="60"  
+                overflowToDisk="false"
+                diskPersistent="false"/>  
+</ehcache>  
