@@ -182,6 +182,7 @@ public class OrdersServImpl implements OrdersServ {
 		}else{
 			hql = " from Orders where orderStatic!='0' order by orderTime desc";
 		}
+		
 		//判断表格每列，并按列进行排序
 //		if(param.getSidx().equals("orderTime")){
 //			hql+=" order by orderTime "+param.getSord();
