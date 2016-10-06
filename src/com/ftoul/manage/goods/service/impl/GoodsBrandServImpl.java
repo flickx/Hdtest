@@ -42,6 +42,7 @@ public class GoodsBrandServImpl implements GoodsBrandServ {
 	 */
 	@Override
 	public Result saveGoodsBrand(Parameter param) throws Exception {
+		System.out.println("ceshi111111");
 		GoodsBrand goodsBrand = (GoodsBrand) JSONObject.toBean((JSONObject) param.getObj(),GoodsBrand.class);
 		Object res;
 		if(Common.isNull(goodsBrand.getId())){
