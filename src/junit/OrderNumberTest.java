@@ -8,7 +8,11 @@ import java.util.Date;
 import org.junit.Test;
 
 import com.ftoul.common.DateUtil;
-
+/**
+ * 
+ * @author hud
+ *
+ */
 public class OrderNumberTest implements Runnable{
 
 	@Test
