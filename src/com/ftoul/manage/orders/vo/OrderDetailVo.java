@@ -28,6 +28,7 @@ public class OrderDetailVo {
 	private String payType;
 	private String serilNumber;
 	private String card;
+	
 	private List<GoodsVo> goodsVoList;
 	
 	public String getId() {
