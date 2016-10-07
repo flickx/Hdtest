@@ -1,4 +1,4 @@
-﻿package com.ftoul.api.sms.util;
+package com.ftoul.api.sms.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
