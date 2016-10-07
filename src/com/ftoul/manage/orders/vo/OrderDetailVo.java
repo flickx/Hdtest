@@ -27,6 +27,8 @@ public class OrderDetailVo {
 	private String clearCustomState;
 	private String payType;
 	private String serilNumber;
+	private String card;
+	
 	private List<GoodsVo> goodsVoList;
 	
 	public String getId() {
@@ -172,6 +174,12 @@ public class OrderDetailVo {
 	}
 	public void setCoinPrice(String coinPrice) {
 		this.coinPrice = coinPrice;
+	}
+	public String getCard() {
+		return card;
+	}
+	public void setCard(String card) {
+		this.card = card;
 	}
 
 }

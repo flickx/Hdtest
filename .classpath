@@ -12,14 +12,14 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/chinapayfilesecure.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/chinapaysecure.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/UTILS-0.1.2-SNAPSHOT.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/chinapayfilesecure.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/chinapaysecure.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/UTILS-0.1.2-SNAPSHOT.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
