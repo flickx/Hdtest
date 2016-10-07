@@ -45,4 +45,8 @@ public class MessageUtil {
 		i += 1;
 		System.out.println(i + "、关闭程序");
 	}
+	
+	public static void main(String[] args) {
+		System.out.println(123);
+	}
 }
