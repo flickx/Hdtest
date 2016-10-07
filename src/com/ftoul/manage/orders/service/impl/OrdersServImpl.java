@@ -178,41 +178,42 @@ public class OrdersServImpl implements OrdersServ {
 		String queryStr = param.getWhereStr();
 		String hql;
 		if(queryStr!=null){
-			hql = " from Orders where orderStatic!='0' "+queryStr+" ";
+			hql = " from Orders where orderStatic!='0' "+queryStr+" order by orderTime desc";
 		}else{
-			hql = " from Orders where orderStatic!='0' ";
+			hql = " from Orders where orderStatic!='0' order by orderTime desc";
 		}
+		
 		//判断表格每列，并按列进行排序
-		if(param.getSidx().equals("orderTime")){
-			hql+=" order by orderTime "+param.getSord();
-		}
-		if(param.getSidx().equals("orderNumber")){
-			hql+=" order by orderNumber "+param.getSord();
-		}
-		if(param.getSidx().equals("payable")){
-			hql+=" order by payable "+param.getSord();
-		}
-		if(param.getSidx().equals("goodsTotal")){
-			hql+=" order by goodsTotal "+param.getSord();
-		}
-		if(param.getSidx().equals("userName")){
-			hql+=" order by user "+param.getSord();
-		}
-		if(param.getSidx().equals("conginee")){
-			hql+=" order by logisticsCompany "+param.getSord();
-		}
-		if(param.getSidx().equals("tel")){
-			hql+=" order by userAddress "+param.getSord();
-		}
-		if(param.getSidx().equals("orderTime")){
-			hql+=" order by orderTime "+param.getSord();
-		}
-		if(param.getSidx().equals("orderStatic")){
-			hql+=" order by orderStatic "+param.getSord();
-		}
-		if(param.getSidx().equals("orderPrice")){
-			hql+=" order by orderPrice "+param.getSord();
-		}
+//		if(param.getSidx().equals("orderTime")){
+//			hql+=" order by orderTime "+param.getSord();
+//		}
+//		if(param.getSidx().equals("orderNumber")){
+//			hql+=" order by orderNumber "+param.getSord();
+//		}
+//		if(param.getSidx().equals("payable")){
+//			hql+=" order by payable "+param.getSord();
+//		}
+//		if(param.getSidx().equals("goodsTotal")){
+//			hql+=" order by goodsTotal "+param.getSord();
+//		}
+//		if(param.getSidx().equals("userName")){
+//			hql+=" order by user "+param.getSord();
+//		}
+//		if(param.getSidx().equals("conginee")){
+//			hql+=" order by logisticsCompany "+param.getSord();
+//		}
+//		if(param.getSidx().equals("tel")){
+//			hql+=" order by userAddress "+param.getSord();
+//		}
+//		if(param.getSidx().equals("orderTime")){
+//			hql+=" order by orderTime "+param.getSord();
+//		}
+//		if(param.getSidx().equals("orderStatic")){
+//			hql+=" order by orderStatic "+param.getSord();
+//		}
+//		if(param.getSidx().equals("orderPrice")){
+//			hql+=" order by orderPrice "+param.getSord();
+//		}
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		List<Object> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
@@ -345,6 +346,11 @@ public class OrdersServImpl implements OrdersServ {
 			orderDetailVo.setAddress("无");
 			orderDetailVo.setTel("无");
 			orderDetailVo.setConsignee("无");
+		}
+		if(orders.getUser().getCardId()!=null){
+			orderDetailVo.setCard(orders.getUser().getCardId());
+		}else{
+			orderDetailVo.setCard("无");
 		}
 		orderDetailVo.setMobil(orders.getUser().getMobil());
 		if(orders.getOdd()!=null){

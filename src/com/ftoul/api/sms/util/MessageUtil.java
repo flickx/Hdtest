@@ -1,4 +1,4 @@
-﻿package com.ftoul.api.sms.util;
+package com.ftoul.api.sms.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -29,77 +29,6 @@ public class MessageUtil {
 		return ret;
 	}
 	
-	
-//	public static void main(String[] args) {
-//		try {
-//			StartMenu();
-//			while (true) {
-//				System.out.println("请输入序号进行操作");
-//				byte[] command = new byte[4];
-//				System.in.read(command);
-//				int operate = 0;
-//				try {
-//					String commandString = new String(command);
-//					commandString = commandString.replaceAll("\r\n", "").trim();
-//					operate = Integer.parseInt(commandString);
-//				} catch (Exception e) {
-//					System.out.println("命令输入错误！！！");
-//				}
-//				String param = "";
-//				switch (operate) {
-//				case 1:
-//					String url = baseUrl + "regist.action";
-//					param = "cdkey=" + sn + "&password=" + password;
-//					String ret = SDKHttpClient.registAndLogout(url, param);
-//					System.out.println("注册结果:" + ret);
-//					break;
-//				case 2:
-//					param = "cdkey=" + sn + "&password=" + key;
-//					url = baseUrl + "querybalance.action";
-//					String balance = SDKHttpClient.getBalance(url, param);
-//					System.out.println("当前余额:" + balance);
-//					break;
-//				case 3:
-//					String mdn = "13397051594";
-//					String message = "send->" + System.currentTimeMillis();
-//					message = URLEncoder.encode(message, "UTF-8");
-//					String code = "888";
-//					long seqId = System.currentTimeMillis();
-//					param = "cdkey=" + sn + "&password=" + key + "&phone=" + mdn + "&message=" + message + "&addserial=" + code + "&seqid=" + seqId;
-//					url = baseUrl + "sendsms.action";
-//					ret = SDKHttpClient.sendSMS(url, param);
-//					System.out.println("发送结果:" + ret);
-//					break;
-//				case 4:
-//					param = "cdkey=" + sn + "&password=" + key;
-//					url = baseUrl + "getmo.action";
-//					List<Mo> mos = SDKHttpClient.getMos(url, sn, key);
-//					System.out.println("获取上行数量：" + mos.size());
-//					break;
-//				case 5:
-//					param = "cdkey=" + sn + "&password=" + key;
-//					url = baseUrl + "getreport.action";
-//					List<StatusReport> srs = SDKHttpClient.getReports(url, sn, key);
-//					System.out.println("获取报告数量：" + srs.size());
-//					break;
-//				case 6:
-//					url = baseUrl + "logout.action";
-//					param = "cdkey=" + sn + "&password=" + password;
-//					ret = SDKHttpClient.registAndLogout(url, param);
-//					System.out.println("注销结果:" + ret);
-//					break;
-//				case 7:
-//					System.exit(0);
-//				default:
-//					System.out.println("没有该命令 " + operate);
-//					break;
-//				}
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-
 	public static void StartMenu() {
 		int i = 1;
 		System.out.println(i + "、激活序列号,初次使用、已注销后再次使用时调用该方法.");
@@ -115,5 +44,9 @@ public class MessageUtil {
 		System.out.println(i + "、注销序列号");
 		i += 1;
 		System.out.println(i + "、关闭程序");
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(123);
 	}
 }
