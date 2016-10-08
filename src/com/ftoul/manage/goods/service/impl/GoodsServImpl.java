@@ -234,7 +234,7 @@ public class GoodsServImpl implements GoodsServ {
 		//设置商品主图	
 		List<UploadPicVo> uploadPicMainList = goodsVo.getUploadPicMainList();
 		if(uploadPicMainList.get(0).getHasUpload()){
-			goods.setPicSrc(uploadPicMainList.get(0).getThumbnailSrc());
+			goods.setPicSrc(uploadPicMainList.get(0).getPicAddress());
 			GoodsUploadpic goodsUploadpic = new GoodsUploadpic();
 			goodsUploadpic.setGoods(goods);
 			goodsUploadpic.setPicSrc(uploadPicMainList.get(0).getPicAddress());
