@@ -147,7 +147,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 * @return返回结果（前台用Result对象）
 	 */
 	public Result getAllGoods(Parameter param) throws Exception{
-		String hql = "from Goods where state = '1' and grounding = '1' order by createTime desc";
+		String hql = "from Goods where state = '1' and grounding = '1' ";
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
