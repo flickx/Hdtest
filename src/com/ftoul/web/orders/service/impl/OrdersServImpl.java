@@ -1,6 +1,7 @@
 package com.ftoul.web.orders.service.impl;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,6 +39,7 @@ import com.ftoul.po.GoodsParam;
 import com.ftoul.po.Orders;
 import com.ftoul.po.OrdersDetail;
 import com.ftoul.po.OrdersPay;
+import com.ftoul.po.OrdersSet;
 import com.ftoul.po.SystemSet;
 import com.ftoul.po.User;
 import com.ftoul.po.UserAddress;
@@ -907,16 +909,22 @@ public class OrdersServImpl implements OrdersServ {
 		List<Object> list = hibernateUtil.hql("from Orders where state='1' and orderStatic ='1'");
 		for (int i = 0; i < list.size(); i++) {
 			Orders order = (Orders) list.get(i);
-			long day = new DateStr().compare(now,order.getOrderTime());
-			if(day!=0){
-				order.setOrderStatic("8");
-				order.setModifyTime(now);
-				hibernateUtil.update(order);
-				updateGoodsParam(order.getId(),"cancel");
-				if(order.getBeeCoins()!=null){
-					updateCoinInfo(order.getUser().getUsername(),Integer.parseInt(order.getBeeCoins()));
+			long min = new DateStr().compare(now,order.getOrderTime());
+			List<Object> setList = hibernateUtil.hql("from OrdersSet where state='1'");
+			if(setList!=null&&setList.size()>0){
+				OrdersSet set = (OrdersSet) setList.get(0);
+				String time = set.getAutoCancleTime();
+				if(min>=(Long.parseLong(time)*60)){
+					order.setOrderStatic("8");
+					order.setModifyTime(now);
+					hibernateUtil.update(order);
+					updateGoodsParam(order.getId(),"cancel");
+					if(order.getBeeCoins()!=null){
+						updateCoinInfo(order.getUser().getUsername(),-Integer.parseInt(order.getBeeCoins()));
+					}
 				}
 			}
+			
 		}
 		return ObjectToResult.getResult(new Object());
 	}
