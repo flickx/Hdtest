@@ -919,7 +919,7 @@ public class OrdersServImpl implements OrdersServ {
 			if(setList!=null&&setList.size()>0){
 				OrdersSet set = (OrdersSet) setList.get(0);
 				String time = set.getAutoCancleTime();
-				if(min>=(Long.parseLong(time)*60)){
+				if(min>=(Double.parseDouble(time)*60)){
 					order.setOrderStatic("8");
 					order.setModifyTime(now);
 					hibernateUtil.update(order);
