@@ -18,9 +18,9 @@ import com.ftoul.po.User;
 import com.ftoul.po.UserBrowse;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.token.TokenUtil;
+import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.vo.UsersVO;
 import com.ftoul.web.webservice.UserService;
-import com.ftoul.web.webservice.UserServiceService;
 
 @Service("UserServImpl")
 public class UserServImpl implements UserServ {
@@ -181,8 +181,7 @@ public class UserServImpl implements UserServ {
 
 	@Override
 	public Result doResetPassword(Parameter param) throws Exception {
-		UserServiceService server = new UserServiceService();
-		UserService  userService = server.getUserServicePort();
+		UserService userService = WebserviceUtil.getService();
 		Object res=null;
 		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),UsersVO.class);
 		String hql = "from User where state = 1 and id = '" + param.getId()+"'";	
