@@ -68,6 +68,9 @@ public class DateStr {
 		Date date=df.parse(arg2);
 		long l=now.getTime()-date.getTime();
 		long day=l/(24*60*60*1000);
-		return day;
+		long hour=(l/(60*60*1000)-day*24);
+		long min=((l/(60*1000))-day*24*60-hour*60);
+		long total = hour*60+min;
+		return total;
 	}
 }

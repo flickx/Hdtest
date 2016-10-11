@@ -21,7 +21,8 @@ public class ChinaPayUtil {
 
 	//商户号
 //	private final static String MerId = "531111608150007";
-	private final static String MerId = "531111608190001";
+//	private final static String MerId = "531111608190001";
+	private final static String MerId = PayPropUtil.getValue("MerId");
 	/**
 	 * 根据订单进行支付操作 
 	 * @param orders
