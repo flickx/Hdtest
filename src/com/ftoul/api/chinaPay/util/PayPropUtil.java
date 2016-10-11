@@ -27,4 +27,8 @@ public class PayPropUtil {
 	public static String getValue(String key) {
 		return properties.getProperty(key);
 	}
+	
+	public static void main(String[] args) {
+		System.out.println(PayPropUtil.getValue("MerId"));
+	}
 }
