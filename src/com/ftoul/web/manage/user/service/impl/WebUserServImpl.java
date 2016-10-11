@@ -26,7 +26,6 @@ import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.manage.user.service.WebUserServ;
 import com.ftoul.web.vo.UsersVO;
 import com.ftoul.web.webservice.UserService;
-import com.ftoul.web.webservice.UserServiceService;
 
 /**
  * @author 李丁
