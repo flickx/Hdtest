@@ -9,11 +9,6 @@ import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
 import javax.xml.ws.WebServiceClient;
 
-import org.apache.cxf.endpoint.Client;
-import org.apache.cxf.frontend.ClientProxy;
-import org.apache.cxf.transport.http.HTTPConduit;
-import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
-
 import com.ftoul.util.webservice.WebserviceUtil;
 
 /**
@@ -31,23 +26,26 @@ import com.ftoul.util.webservice.WebserviceUtil;
  * </p>
  * 
  */
-@WebServiceClient(name = "UserServiceService", targetNamespace = "http://webservice.service.biz.member.mall.jq.com/", wsdlLocation = "http://mall.ftoul.com/webservice/userService?wsdl")
 public class UserServiceService extends Service {
 
 	private final static URL USERSERVICESERVICE_WSDL_LOCATION;
 	private final static Logger logger = Logger
 			.getLogger(com.ftoul.web.webservice.UserServiceService.class
 					.getName());
+	private static String wsdlLocation = WebserviceUtil.getWsdlLocation();
+	private static String targetNamespace = WebserviceUtil.getTargetNamespace();
+	private static String name = WebserviceUtil.getName();
+	
 	static {
-		URL url = null;
+		 URL url = null;
+		 System.out.println(wsdlLocation+","+targetNamespace+","+name);
 		try {
 			URL baseUrl;
 			baseUrl = com.ftoul.web.webservice.UserServiceService.class
 					.getResource(".");
-			url = new URL(baseUrl,
-					"http://mall.ftoul.com/webservice/userService?wsdl");
+			url = new URL(baseUrl,wsdlLocation);
 		} catch (MalformedURLException e) {
-			logger.warning("Failed to create URL for the wsdl Location: 'http://mall.ftoul.com/webservice/userService?wsdl', retrying as a local file");
+			logger.warning("Failed to create URL for the wsdl Location: "+wsdlLocation+", retrying as a local file");
 			logger.warning(e.getMessage());
 		}
 		USERSERVICESERVICE_WSDL_LOCATION = url;
@@ -58,9 +56,7 @@ public class UserServiceService extends Service {
 	}
 
 	public UserServiceService() {
-		super(USERSERVICESERVICE_WSDL_LOCATION, new QName(
-				"http://webservice.service.biz.member.mall.jq.com/",
-				"UserServiceService"));
+		super(USERSERVICESERVICE_WSDL_LOCATION, new QName(targetNamespace,name));
 	}
 
 	/**
@@ -69,9 +65,7 @@ public class UserServiceService extends Service {
 	 */
 	@WebEndpoint(name = "UserServicePort")
 	public UserService getUserServicePort() {
-		return super.getPort(new QName(
-				"http://webservice.service.biz.member.mall.jq.com/",
-				"UserServicePort"), UserService.class);
+		return super.getPort(new QName(targetNamespace,name), UserService.class);
 	}
 
 }
