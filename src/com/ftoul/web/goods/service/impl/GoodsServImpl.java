@@ -116,7 +116,7 @@ public class GoodsServImpl implements GoodsServ {
 			if(userList != null && userList.size() > 0)
 				userBrowse.setUser(user);
 		}
-		userBrowse.setIpAddress(req.getRemoteAddr());
+		userBrowse.setIpAddress(getRemoteHost());
 		userBrowse.setBrowseTime(new DateStr().toString());
 		userBrowse.setGoods(goods);
 		userBrowse.setState("1");
@@ -314,5 +314,22 @@ public class GoodsServImpl implements GoodsServ {
 		Page page =this.hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
-	
+
+	private String getRemoteHost(){
+	    String ip = req.getHeader("x-forwarded-for");
+	    System.out.println("x-forwarded-for:"+ip);
+	    if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+	        ip = req.getHeader("Proxy-Client-IP");
+	        System.out.println("Proxy-Client-IP:"+ip);
+	    }
+	    if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+	        ip = req.getHeader("WL-Proxy-Client-IP");
+	        System.out.println("WL-Proxy-Client-IP:"+ip);
+	    }
+	    if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+	        ip = req.getRemoteAddr();
+	        System.out.println("req.getRemoteAddr():"+ip);
+	    }
+	    return ip.equals("0:0:0:0:0:0:0:1")?"127.0.0.1":ip;
+	}
 }
