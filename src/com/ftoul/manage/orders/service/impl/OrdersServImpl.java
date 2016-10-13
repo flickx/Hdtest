@@ -618,7 +618,7 @@ public class OrdersServImpl implements OrdersServ {
 		OrdersPay pay = null;
 		for (int i = 0; i <list.size(); i++) {
 			OrdersDetail od = (OrdersDetail) list.get(i);
-			vo = new Object[25];
+			vo = new Object[26];
 			vo[0] = od.getOrders().getOrderNumber();
 			vo[1] = od.getOrders().getOrderTime();
 			vo[3] = od.getOrders().getUser().getUsername();
@@ -648,27 +648,28 @@ public class OrdersServImpl implements OrdersServ {
 			vo[16] = od.getOrders().getOrderPrice();
 			vo[17] = od.getOrders().getBenefitPrice();
 			vo[18] = od.getOrders().getBeeCoins();
+			vo[19] = od.getOrders().getCoinPrice();
 			hql = "from OrdersPay where orders.id='"+od.getOrders().getId()+"'";
 			pay = (OrdersPay) hibernateUtil.hqlFirst(hql);
 			if(pay!=null){
-				vo[19] = pay.getSerialNumber();
+				vo[20] = pay.getSerialNumber();
 			}
 			if(od.getGoodsParam().getCostprice()!=null&&!"".equals(od.getGoodsParam().getCostprice())){
 				double totalCostPrice = Double.parseDouble(od.getGoodsParam().getCostprice())*Integer.parseInt(od.getNumber());
-				vo[20] = String.valueOf(totalCostPrice);
-			}else{
-				vo[20] = "";
-			}
-			
-			if(od.getGoodsParam().getGoods().getGoodsCanal()!=null){
-				vo[21] = od.getGoodsParam().getGoods().getGoodsCanal().getName();
+				vo[21] = String.valueOf(totalCostPrice);
 			}else{
 				vo[21] = "";
 			}
 			
-			vo[22] = "";
-			vo[23] = od.getGoodsParam().getGoods().getDeductionrate();
-			vo[24] = od.getOrders().getFeedback();
+			if(od.getGoodsParam().getGoods().getGoodsCanal()!=null){
+				vo[22] = od.getGoodsParam().getGoods().getGoodsCanal().getName();
+			}else{
+				vo[22] = "";
+			}
+			
+			vo[23] = "";
+			vo[24] = od.getGoodsParam().getGoods().getDeductionrate();
+			vo[25] = od.getOrders().getFeedback();
 			if("0".equals(od.getOrders().getOrderStatic())){
 				vo[2] = "待提单";
 			}else if("1".equals(od.getOrders().getOrderStatic())){

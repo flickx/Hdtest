@@ -251,7 +251,7 @@ public class OrdersAction {
 				"attachment;filename=" + file.getName());// excel文件名
 
 		try {
-			String[] title = new String[25];
+			String[] title = new String[26];
 			title[0] = "订单编号";
 			title[1] = "订单时间";
 			title[2] = "订单状态";
@@ -270,13 +270,14 @@ public class OrdersAction {
 			title[15] = "应支付金额";
 			title[16] = "实际支付金额";
 			title[17] = "优惠金额";
-			title[18] = "蜂币抵扣金额";
-			title[19] = "支付单单号";
-			title[20] = "进货总价";
-			title[21] = "进货渠道";
-			title[22] = "结算方式";
-			title[23] = "扣点率";
-			title[24] = "下单备注";
+			title[18] = "使用蜂币数量";
+			title[19] = "蜂币抵扣金额";
+			title[20] = "支付单单号";
+			title[21] = "进货总价";
+			title[22] = "进货渠道";
+			title[23] = "结算方式";
+			title[24] = "扣点率";
+			title[25] = "下单备注";
 			
 			InputStream is = ExcelTools.getDownloadInputStream("订单信息", title,
 					itemList);
