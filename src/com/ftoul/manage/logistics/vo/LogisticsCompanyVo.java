@@ -6,6 +6,7 @@ public class LogisticsCompanyVo {
 	private String logisticsCompanyID;
 	private String cumstomsClearanceStatic;
 	private String odd;
+	private String logInfo;
 	
 	public String getId() {
 		return id;
@@ -30,6 +31,12 @@ public class LogisticsCompanyVo {
 	}
 	public void setOdd(String odd) {
 		this.odd = odd;
+	}
+	public String getLogInfo() {
+		return logInfo;
+	}
+	public void setLogInfo(String logInfo) {
+		this.logInfo = logInfo;
 	}
 	
 

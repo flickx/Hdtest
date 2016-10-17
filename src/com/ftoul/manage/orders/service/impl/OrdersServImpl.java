@@ -419,7 +419,7 @@ public class OrdersServImpl implements OrdersServ {
 			throws Exception {
 		Object obj = parameter.getObj();
 		LogisticsCompanyVo logisticsCompanyVo = (LogisticsCompanyVo) Common.jsonToBean(obj.toString(), LogisticsCompanyVo.class);
-		String hql = "update Orders set logisticsCompany.id = '"+logisticsCompanyVo.getLogisticsCompanyID()+"', odd = '"+logisticsCompanyVo.getOdd()+"', deliverStatic = '1', orderStatic = '4' where id = '"+logisticsCompanyVo.getId()+"'";
+		String hql = "update Orders set logisticsCompany.id = '"+logisticsCompanyVo.getLogisticsCompanyID()+"', odd = '"+logisticsCompanyVo.getOdd()+"', logInfo = '"+logisticsCompanyVo.getLogInfo()+"', deliverStatic = '1', orderStatic = '4' where id = '"+logisticsCompanyVo.getId()+"'";
 		int result = hibernateUtil.execHql(hql);
 		UserOpLog log = new UserOpLog();
 		log.setCreateTime(new DateStr().toString());
