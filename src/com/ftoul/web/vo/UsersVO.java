@@ -23,7 +23,20 @@ public class UsersVO {
 	private String createPerson;
 	private String state;
 	private String oldPassword;
+	private String source;
 	
+	/**
+	 * @return the source
+	 */
+	public String getSource() {
+		return source;
+	}
+	/**
+	 * @param source the source to set
+	 */
+	public void setSource(String source) {
+		this.source = source;
+	}
 	/**
 	 * @return the oldPassword
 	 */

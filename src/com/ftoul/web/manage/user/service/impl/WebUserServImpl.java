@@ -78,7 +78,7 @@ public class WebUserServImpl implements WebUserServ{
 			u.setUsername(user.getUsername());
 			u.setCreateTime(new DateStr().toString());
 			u.setMobil(user.getUsername());
-			u.setSource("shop");
+			u.setSource(user.getSource());
 			u.setIp(IP);
 			u.setStatic_("1");
 			u.setState("1");
