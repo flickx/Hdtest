@@ -68,11 +68,8 @@ public class WebUserServImpl implements WebUserServ{
 			throw new Exception("验证码错误");
 		}
 		else{
-			InetAddress a = InetAddress.getLocalHost(); 
-			String ip=a.getHostAddress();
-			
 			//新增用户到p2p，带回新增的用户id
-			p2pId=userService.saveUser(ip,user.getUsername(), user.getPassword());
+			p2pId=userService.saveUser(IP,user.getUsername(),user.getPassword());
 			u.setPasswordVersion("1");
 			u.setP2pId(p2pId);
 			u.setUsername(user.getUsername());
@@ -125,6 +122,11 @@ public class WebUserServImpl implements WebUserServ{
 		String queryStr = " and username =" + user.getUsername()+" and mobil =" + user.getUsername();
 		String hql = "from User where state = 1 " + queryStr;			
 		List<Object> list =hibernateUtil.hql(hql);
+		boolean isExists=userService.checkUserExists(user.getUsername());
+		if(!isExists){
+			res="手机号未注册";
+			throw new Exception("手机号未注册");
+		}
 		//通过Webservice验证用户
 		String p2pID=userService.checkUser(user.getUsername(),user.getPassword());
 		User u =  new User();
