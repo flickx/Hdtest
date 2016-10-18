@@ -59,7 +59,7 @@ public class SmsCodeUtil {
 			sort =maxSmsSort+1;
 		}
 		messageVerification.setSort(sort);
-		String content="";
+		String content=""; 
 		if (messageType.equals("1")) {
 			content = "【他她乐】亲爱的会员：您的手机注册验证码为"+code+"，如非本人操作，请致电客服0731-82208568";
 		}if (messageType.equals("2")) {
