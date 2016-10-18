@@ -419,7 +419,7 @@ public class OrdersServImpl implements OrdersServ {
 			throws Exception {
 		Object obj = parameter.getObj();
 		LogisticsCompanyVo logisticsCompanyVo = (LogisticsCompanyVo) Common.jsonToBean(obj.toString(), LogisticsCompanyVo.class);
-		String hql = "update Orders set logisticsCompany.id = '"+logisticsCompanyVo.getLogisticsCompanyID()+"', odd = '"+logisticsCompanyVo.getOdd()+"', deliverStatic = '1', orderStatic = '4' where id = '"+logisticsCompanyVo.getId()+"'";
+		String hql = "update Orders set logisticsCompany.id = '"+logisticsCompanyVo.getLogisticsCompanyID()+"', odd = '"+logisticsCompanyVo.getOdd()+"', logInfo = '"+logisticsCompanyVo.getLogInfo()+"', deliverStatic = '1', orderStatic = '4' where id = '"+logisticsCompanyVo.getId()+"'";
 		int result = hibernateUtil.execHql(hql);
 		UserOpLog log = new UserOpLog();
 		log.setCreateTime(new DateStr().toString());
@@ -618,7 +618,7 @@ public class OrdersServImpl implements OrdersServ {
 		OrdersPay pay = null;
 		for (int i = 0; i <list.size(); i++) {
 			OrdersDetail od = (OrdersDetail) list.get(i);
-			vo = new Object[25];
+			vo = new Object[26];
 			vo[0] = od.getOrders().getOrderNumber();
 			vo[1] = od.getOrders().getOrderTime();
 			vo[3] = od.getOrders().getUser().getUsername();
@@ -648,27 +648,28 @@ public class OrdersServImpl implements OrdersServ {
 			vo[16] = od.getOrders().getOrderPrice();
 			vo[17] = od.getOrders().getBenefitPrice();
 			vo[18] = od.getOrders().getBeeCoins();
+			vo[19] = od.getOrders().getCoinPrice();
 			hql = "from OrdersPay where orders.id='"+od.getOrders().getId()+"'";
 			pay = (OrdersPay) hibernateUtil.hqlFirst(hql);
 			if(pay!=null){
-				vo[19] = pay.getSerialNumber();
+				vo[20] = pay.getSerialNumber();
 			}
 			if(od.getGoodsParam().getCostprice()!=null&&!"".equals(od.getGoodsParam().getCostprice())){
 				double totalCostPrice = Double.parseDouble(od.getGoodsParam().getCostprice())*Integer.parseInt(od.getNumber());
-				vo[20] = String.valueOf(totalCostPrice);
-			}else{
-				vo[20] = "";
-			}
-			
-			if(od.getGoodsParam().getGoods().getGoodsCanal()!=null){
-				vo[21] = od.getGoodsParam().getGoods().getGoodsCanal().getName();
+				vo[21] = String.valueOf(totalCostPrice);
 			}else{
 				vo[21] = "";
 			}
 			
-			vo[22] = "";
-			vo[23] = od.getGoodsParam().getGoods().getDeductionrate();
-			vo[24] = od.getOrders().getFeedback();
+			if(od.getGoodsParam().getGoods().getGoodsCanal()!=null){
+				vo[22] = od.getGoodsParam().getGoods().getGoodsCanal().getName();
+			}else{
+				vo[22] = "";
+			}
+			
+			vo[23] = "";
+			vo[24] = od.getGoodsParam().getGoods().getDeductionrate();
+			vo[25] = od.getOrders().getFeedback();
 			if("0".equals(od.getOrders().getOrderStatic())){
 				vo[2] = "待提单";
 			}else if("1".equals(od.getOrders().getOrderStatic())){
@@ -731,6 +732,65 @@ public class OrdersServImpl implements OrdersServ {
 		page.setObjList(voList);
 		
 		return ObjectToResult.getResult(page);
+	}
+	
+	/**
+	 * 获取订单支付导出列表
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getOrdersPayExportList(Parameter param) throws Exception {
+		String whereStr = param.getWhereStr();
+		String hql;
+		if(whereStr!=null){
+			hql = "from OrdersPay where state = '1' "+whereStr+" order by createTime desc";
+		}else{
+			hql = "from OrdersPay where state = '1' order by createTime desc";
+		}
+		List<Object> list = hibernateUtil.hql(hql);
+		List<Object> ordersPayList = new ArrayList<Object>();
+		for (int i = 0; i < list.size(); i++) {
+			OrdersPay pay = (OrdersPay) list.get(i);
+			OrdersPayVo vo = new OrdersPayVo();
+			vo.setOrderNumber(pay.getOrders().getOrderNumber());
+			vo.setPayPrice(pay.getPayPrice());
+			if("1".equals(pay.getPayStatic())){
+				vo.setPayStatic("支付成功");
+			}else{
+				vo.setPayStatic("支付失败");
+			}
+			vo.setPayTime(pay.getOrders().getPayTime());
+			if(OrdersConstant.CHINAPAY.equals(pay.getPayType())){
+				vo.setPayType("银联支付");
+			}else if(OrdersConstant.ALIPAY.equals(pay.getPayType())){
+				vo.setPayType("支付宝支付");
+			}else if(OrdersConstant.WXPAY.equals(pay.getPayType())){
+				vo.setPayType("微信支付");
+			}else if(OrdersConstant.ALIQBPAY.equals(pay.getPayType())){
+				vo.setPayType("支付宝钱包支付");
+			}
+			vo.setCoinNumber(pay.getOrders().getBeeCoins());
+			vo.setCoinPrice(pay.getOrders().getCoinPrice());
+			vo.setSerialNumber(pay.getSerialNumber());
+			ordersPayList.add(vo);
+		}
+		List<Object> reportDataList = new ArrayList<Object>();
+		Object[] vo = null;
+		for (int j = 0; j < ordersPayList.size(); j++) {
+			OrdersPayVo payVo = (OrdersPayVo) ordersPayList.get(j);
+			vo = new Object[8];
+			vo[0] = payVo.getSerialNumber();
+			vo[1] = payVo.getPayTime();
+			vo[2] = payVo.getPayType();
+			vo[3] = payVo.getPayPrice();
+			vo[4] = payVo.getCoinNumber();
+			vo[5] = payVo.getCoinPrice();
+			vo[6] = payVo.getPayStatic();
+			vo[7] = payVo.getOrderNumber();
+			reportDataList.add(vo);
+		}
+		return ObjectToResult.getResult(reportDataList);
 	}
 	
 }

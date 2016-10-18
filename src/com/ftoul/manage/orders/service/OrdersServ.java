@@ -47,4 +47,6 @@ public interface OrdersServ {
 
 	Result modifyClearCustom(Parameter parameter) throws Exception;
 	
+	Result getOrdersPayExportList(Parameter param) throws Exception;
+	
 }

@@ -251,7 +251,7 @@ public class OrdersAction {
 				"attachment;filename=" + file.getName());// excel文件名
 
 		try {
-			String[] title = new String[25];
+			String[] title = new String[26];
 			title[0] = "订单编号";
 			title[1] = "订单时间";
 			title[2] = "订单状态";
@@ -270,13 +270,14 @@ public class OrdersAction {
 			title[15] = "应支付金额";
 			title[16] = "实际支付金额";
 			title[17] = "优惠金额";
-			title[18] = "蜂币抵扣金额";
-			title[19] = "支付单单号";
-			title[20] = "进货总价";
-			title[21] = "进货渠道";
-			title[22] = "结算方式";
-			title[23] = "扣点率";
-			title[24] = "下单备注";
+			title[18] = "使用蜂币数量";
+			title[19] = "蜂币抵扣金额";
+			title[20] = "支付单单号";
+			title[21] = "进货总价";
+			title[22] = "进货渠道";
+			title[23] = "结算方式";
+			title[24] = "扣点率";
+			title[25] = "下单备注";
 			
 			InputStream is = ExcelTools.getDownloadInputStream("订单信息", title,
 					itemList);
@@ -288,13 +289,63 @@ public class OrdersAction {
 
 		return null;
 	}
-	 
-	 /**
-		 * 获取订单列表（带分页）
-		 * @param param 页面传递参数对象
-		 * @return AJAX调用Result的JSON对象
-		 * @throws Exception 
-		 */
+
+	/**
+	 * 导出收款单信息
+	 * 
+	 * @param param
+	 * @param response
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "exportRecepitExcel", method = RequestMethod.GET)
+	public ModelAndView exportRecepitExcel(String param,
+			HttpServletResponse response) throws Exception {
+		System.out.println(param);
+		Parameter parameter = Common.jsonToParam(param);
+		Result result = ordersServ.getOrdersPayExportList(parameter);
+		List itemList = (List) result.getObj();
+		SimpleDateFormat sd = new SimpleDateFormat("yyyyMMddHHmmss");
+		String fileName = sd.format(new Date()) + ".xls";
+		File file = new File(fileName);
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		response.setContentType("application/x-excel");
+		response.setCharacterEncoding("UTF-8");
+		response.addHeader("Content-Disposition",
+				"attachment;filename=" + file.getName());// excel文件名
+
+		try {
+			String[] title = new String[8];
+			title[0] = "收款单号";
+			title[1] = "支付完成时间";
+			title[2] = "支付方式";
+			title[3] = "支付金额";
+			title[4] = "使用蜂币数量";
+			title[5] = "兑换蜂币金额";
+			title[6] = "支付状态";
+			title[7] = "订单号";
+
+			System.out.println("付款单信息："+itemList.size());
+			InputStream is = ExcelTools.getDownloadInputStream("收款单信息", title,
+					itemList);
+			FileCopyUtils.copy(is, response.getOutputStream());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * 获取订单列表（带分页）
+	 * 
+	 * @param param
+	 *            页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "getSendGoodsListPage")  
 	public @ResponseBody Result getSendGoodsListPage(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);

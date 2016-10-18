@@ -26,7 +26,6 @@ import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.manage.user.service.WebUserServ;
 import com.ftoul.web.vo.UsersVO;
 import com.ftoul.web.webservice.UserService;
-import com.ftoul.web.webservice.UserServiceService;
 
 /**
  * @author 李丁
@@ -79,7 +78,7 @@ public class WebUserServImpl implements WebUserServ{
 			u.setUsername(user.getUsername());
 			u.setCreateTime(new DateStr().toString());
 			u.setMobil(user.getUsername());
-			u.setSource("shop");
+			u.setSource(user.getSource());
 			u.setIp(IP);
 			u.setStatic_("1");
 			u.setState("1");

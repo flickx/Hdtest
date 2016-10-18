@@ -8,6 +8,9 @@ public class OrdersPayVo {
 	private String payPrice;
 	private String payStatic;
 	private String orderNumber;
+	private String coinNumber;
+	private String coinPrice;
+	
 	public String getSerialNumber() {
 		return serialNumber;
 	}
@@ -43,6 +46,18 @@ public class OrdersPayVo {
 	}
 	public void setOrderNumber(String orderNumber) {
 		this.orderNumber = orderNumber;
+	}
+	public String getCoinNumber() {
+		return coinNumber;
+	}
+	public void setCoinNumber(String coinNumber) {
+		this.coinNumber = coinNumber;
+	}
+	public String getCoinPrice() {
+		return coinPrice;
+	}
+	public void setCoinPrice(String coinPrice) {
+		this.coinPrice = coinPrice;
 	}
 	
 }

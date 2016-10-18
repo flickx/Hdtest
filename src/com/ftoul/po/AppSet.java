@@ -19,6 +19,11 @@ public class AppSet implements java.io.Serializable {
 	private String id;
 	private String version;
 	private String url;
+	private String content;
+	private String type;
+	private String appUrl;
+	private String iosUrl;
+	
 
 	// Constructors
 
@@ -61,6 +66,42 @@ public class AppSet implements java.io.Serializable {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	@Column(name = "content", length = 500)
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	@Column(name = "type", length = 1)
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	@Column(name = "app_url", length = 500)
+	public String getAppUrl() {
+		return appUrl;
+	}
+
+	public void setAppUrl(String appUrl) {
+		this.appUrl = appUrl;
+	}
+
+	@Column(name = "ios_url", length = 500)
+	public String getIosUrl() {
+		return iosUrl;
+	}
+
+	public void setIosUrl(String iosUrl) {
+		this.iosUrl = iosUrl;
 	}
 
 }

@@ -40,6 +40,7 @@ public class Orders  implements java.io.Serializable {
      private String payStatic;
      private String confirmStatic;
      private String odd;
+     private String logInfo;
      private LogisticsCompany logisticsCompany;
      private String orderTime;
      private String payTime;
@@ -229,6 +230,16 @@ public class Orders  implements java.io.Serializable {
     
     public void setOdd(String odd) {
         this.odd = odd;
+    }
+    
+    @Column(name="log_info", length=1000)
+
+    public String getLogInfo() {
+        return this.logInfo;
+    }
+    
+    public void setLogInfo(String logInfo) {
+        this.logInfo = logInfo;
     }
     
     @Column(name="order_time", length=32)
