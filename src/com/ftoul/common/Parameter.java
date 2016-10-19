@@ -45,7 +45,7 @@ public class Parameter {
 	private List<UploadPicVo> uploadPicMainVoList;
 	private List<UploadPicVo> uploadPicVoList;
 	private List<UploadPicVo> uploadPicInfoVoList;
-	
+	private List<Object> objList;
 	/**
 	 * @return the uploadPicMainVoList
 	 */
@@ -212,4 +212,11 @@ public class Parameter {
 	public void setUploadPicVo(UploadPicVo uploadPicVo) {
 		this.uploadPicVo = uploadPicVo;
 	}
+	public List<Object> getObjList() {
+		return objList;
+	}
+	public void setObjList(List<Object> objList) {
+		this.objList = objList;
+	}
+	
 }

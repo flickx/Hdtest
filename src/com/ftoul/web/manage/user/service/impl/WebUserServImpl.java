@@ -4,6 +4,7 @@
 package com.ftoul.web.manage.user.service.impl;
 
 import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -13,10 +14,12 @@ import org.springframework.stereotype.Service;
 
 import com.ftoul.api.sms.util.MessageUtil;
 import com.ftoul.api.sms.util.SmsCodeUtil;
+import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.po.AddressBook;
 import com.ftoul.po.MessageVerification;
 import com.ftoul.po.User;
 import com.ftoul.po.UserToken;
@@ -24,6 +27,7 @@ import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.token.TokenUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.manage.user.service.WebUserServ;
+import com.ftoul.web.vo.AddressBookVo;
 import com.ftoul.web.vo.UsersVO;
 import com.ftoul.web.webservice.UserService;
 
@@ -211,6 +215,39 @@ public class WebUserServImpl implements WebUserServ{
 		tokenUtil.uploadSecretKey(userDb);
 		hibernateUtil.update(userDb);
 		return ObjectToResult.getResult(res);
+	}
+	
+	@Override
+	public Result getAddressBook(Parameter param) throws Exception {
+		//AddressBookVo vo = (AddressBookVo) JSONObject.toBean((JSONObject) param.getObj(),AddressBookVo.class);
+		List<Object> bookList = param.getObjList();
+		for (int i = 0; i < bookList.size(); i++) {
+			AddressBook book = new AddressBook();
+			HashMap map = (HashMap) bookList.get(i);
+			System.out.println(map.get("name"));
+			String name = map.get("name")+"";
+			String phoneNumber = map.get("phoneNumbers")+"";
+			if(!(Common.isNull(name)||Common.isNull(phoneNumber))){
+				book.setSeq(map.get("seq")+"");
+				book.setDisplayName((String)map.get("displayName"));
+				book.setName((String)map.get("name"));
+				book.setNickname((String)map.get("nickname"));
+				book.setBirthday((String)map.get("birthday"));
+				book.setNote((String)map.get("note"));
+				book.setPhoneNumbers((String)map.get("phoneNumbers"));
+				book.setEmails((String)map.get("emails"));
+				book.setAddresses((String)map.get("addresses"));
+				book.setIms((String)map.get("ims"));
+				book.setOrganizations((String)map.get("organizations"));
+				book.setPhotos((String)map.get("photos"));
+				book.setCategories((String)map.get("categories"));
+				book.setUrls((String)map.get("urls"));
+				book.setUserMobile((String)map.get("userMobile"));
+				hibernateUtil.save(book);
+			}
+			
+		}
+		return null;
 	}
 	
 //	/**

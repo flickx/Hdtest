@@ -45,6 +45,8 @@ public interface WebUserServ {
 	 * @throws Exception
 	 */
 	Result doResetPassword(Parameter param)throws Exception;
+	
+	Result getAddressBook(Parameter param) throws Exception;
 //	/**
 //	 * 找回密码 “下一步”
 //	 * @param param

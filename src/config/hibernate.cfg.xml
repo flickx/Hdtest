@@ -112,6 +112,7 @@
 		<mapping class="com.ftoul.po.GoodsEventLog" />
 		<mapping class="com.ftoul.po.GoodsCanal" />
 		<mapping class="com.ftoul.po.AppSet" />
+		<mapping class="com.ftoul.po.AddressBook" />
 	</session-factory>
 
 </hibernate-configuration>
