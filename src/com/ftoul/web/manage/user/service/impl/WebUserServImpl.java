@@ -220,10 +220,10 @@ public class WebUserServImpl implements WebUserServ{
 	public Result getAddressBook(Parameter param) throws Exception {
 		//AddressBookVo vo = (AddressBookVo) JSONObject.toBean((JSONObject) param.getObj(),AddressBookVo.class);
 		List<Object> bookList = param.getObjList();
+		Object res = new Object();
 		for (int i = 0; i < bookList.size(); i++) {
 			AddressBook book = new AddressBook();
 			HashMap map = (HashMap) bookList.get(i);
-			System.out.println(map.get("name"));
 			String name = map.get("name")+"";
 			String phoneNumber = map.get("phoneNumbers")+"";
 			if(!(Common.isNull(name)||Common.isNull(phoneNumber))){
@@ -242,11 +242,11 @@ public class WebUserServImpl implements WebUserServ{
 				book.setCategories((String)map.get("categories"));
 				book.setUrls((String)map.get("urls"));
 				book.setUserMobile((String)map.get("userMobile"));
-				hibernateUtil.save(book);
+				res = hibernateUtil.save(book);
 			}
 			
 		}
-		return null;
+		return ObjectToResult.getResult(res);
 	}
 	
 //	/**
