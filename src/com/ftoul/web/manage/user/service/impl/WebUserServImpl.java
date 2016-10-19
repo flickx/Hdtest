@@ -27,7 +27,6 @@ import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.token.TokenUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.manage.user.service.WebUserServ;
-import com.ftoul.web.vo.AddressBookVo;
 import com.ftoul.web.vo.UsersVO;
 import com.ftoul.web.webservice.UserService;
 
