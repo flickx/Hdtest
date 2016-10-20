@@ -221,6 +221,7 @@ public class WebUserServImpl implements WebUserServ{
 		List<Object> bookList = param.getObjList();
 		Object res = new Object();
 		int version = 1;
+		System.out.println(param.getKey()+"此用户的通讯录size为："+bookList.size());
 		if(bookList!=null&&bookList.size()>0){
 			String userMobile = param.getKey();
 			if(!Common.isNull(userMobile)){
@@ -257,6 +258,7 @@ public class WebUserServImpl implements WebUserServ{
 						book.setVersion(String.valueOf(version));
 						book.setCreateTime(new DateStr().toString());
 						res = hibernateUtil.save(book);
+						System.out.println(param.getKey()+"此用户的通讯录的seq为："+map.get("seq")+"");
 					}
 				}
 			}	
