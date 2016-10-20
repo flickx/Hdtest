@@ -23,6 +23,8 @@ public class AppSet implements java.io.Serializable {
 	private String type;
 	private String appUrl;
 	private String iosUrl;
+	private String appUpload;
+	private String iosUpload;
 	
 
 	// Constructors
@@ -102,6 +104,24 @@ public class AppSet implements java.io.Serializable {
 
 	public void setIosUrl(String iosUrl) {
 		this.iosUrl = iosUrl;
+	}
+	
+	@Column(name = "app_upload", length = 10)
+	public String getAppUpload() {
+		return appUpload;
+	}
+
+	public void setAppUpload(String appUpload) {
+		this.appUpload = appUpload;
+	}
+	
+	@Column(name = "ios_upload", length = 10)
+	public String getIosUpload() {
+		return iosUpload;
+	}
+
+	public void setIosUpload(String iosUpload) {
+		this.iosUpload = iosUpload;
 	}
 
 }
