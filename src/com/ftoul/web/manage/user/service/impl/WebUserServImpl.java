@@ -221,7 +221,7 @@ public class WebUserServImpl implements WebUserServ{
 		List<Object> bookList = param.getObjList();
 		Object res = new Object();
 		int version = 1;
-		if(bookList!=null){
+		if(bookList!=null&&bookList.size()>0){
 			String userMobile = param.getKey();
 			if(!Common.isNull(userMobile)){
 				
@@ -229,7 +229,7 @@ public class WebUserServImpl implements WebUserServ{
 				List<Object[]> list = hibernateUtil.sql(sql);
 				if(list!=null&&list.size()>0){
 					String o = String.valueOf(list.get(0));
-					if(Common.notNull(o)){
+					if(o!="null"){
 						version = Integer.parseInt(o+"")+1;
 					}
 				}
@@ -260,6 +260,8 @@ public class WebUserServImpl implements WebUserServ{
 					}
 				}
 			}	
+		}else{
+			res = "通讯录为空";
 		}
 		
 		return ObjectToResult.getResult(res);
