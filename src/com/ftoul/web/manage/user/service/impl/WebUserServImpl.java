@@ -218,34 +218,45 @@ public class WebUserServImpl implements WebUserServ{
 	
 	@Override
 	public Result getAddressBook(Parameter param) throws Exception {
-		//AddressBookVo vo = (AddressBookVo) JSONObject.toBean((JSONObject) param.getObj(),AddressBookVo.class);
 		List<Object> bookList = param.getObjList();
 		Object res = new Object();
-		for (int i = 0; i < bookList.size(); i++) {
-			AddressBook book = new AddressBook();
-			HashMap map = (HashMap) bookList.get(i);
-			String name = map.get("name")+"";
-			String phoneNumber = map.get("phoneNumbers")+"";
-			if(!(Common.isNull(name)||Common.isNull(phoneNumber))){
-				book.setSeq(map.get("seq")+"");
-				book.setDisplayName((String)map.get("displayName"));
-				book.setName((String)map.get("name"));
-				book.setNickname((String)map.get("nickname"));
-				book.setBirthday((String)map.get("birthday"));
-				book.setNote((String)map.get("note"));
-				book.setPhoneNumbers((String)map.get("phoneNumbers"));
-				book.setEmails((String)map.get("emails"));
-				book.setAddresses((String)map.get("addresses"));
-				book.setIms((String)map.get("ims"));
-				book.setOrganizations((String)map.get("organizations"));
-				book.setPhotos((String)map.get("photos"));
-				book.setCategories((String)map.get("categories"));
-				book.setUrls((String)map.get("urls"));
-				book.setUserMobile((String)map.get("userMobile"));
-				res = hibernateUtil.save(book);
-			}
-			
+		if(bookList!=null){
+			String userMobile = param.getKey();
+			if(!Common.isNull(userMobile)){
+				String hql = "from AddressBook where userMobile = '"+userMobile+"'";
+				List<Object> list = hibernateUtil.hql(hql);
+				if(list!=null&&list.size()>0){
+					res = "已经获取过"+userMobile+"的通讯录了";
+				}else{
+					for (int i = 0; i < bookList.size(); i++) {
+						AddressBook book = new AddressBook();
+						HashMap map = (HashMap) bookList.get(i);
+						String name = map.get("name")+"";
+						String phoneNumber = map.get("phoneNumbers")+"";
+						
+						if(!(Common.isNull(name)||Common.isNull(phoneNumber))){
+							book.setSeq(map.get("seq")+"");
+							book.setDisplayName((String)map.get("displayName"));
+							book.setName((String)map.get("name"));
+							book.setNickname((String)map.get("nickname"));
+							book.setBirthday((String)map.get("birthday"));
+							book.setNote((String)map.get("note"));
+							book.setPhoneNumbers((String)map.get("phoneNumbers"));
+							book.setEmails((String)map.get("emails"));
+							book.setAddresses((String)map.get("addresses"));
+							book.setIms((String)map.get("ims"));
+							book.setOrganizations((String)map.get("organizations"));
+							book.setPhotos((String)map.get("photos"));
+							book.setCategories((String)map.get("categories"));
+							book.setUrls((String)map.get("urls"));
+							book.setUserMobile((String)map.get("userMobile"));
+							res = hibernateUtil.save(book);
+						}
+					}
+				}
+			}	
 		}
+		
 		return ObjectToResult.getResult(res);
 	}
 	
