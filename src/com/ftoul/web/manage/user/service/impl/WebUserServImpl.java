@@ -220,38 +220,43 @@ public class WebUserServImpl implements WebUserServ{
 	public Result getAddressBook(Parameter param) throws Exception {
 		List<Object> bookList = param.getObjList();
 		Object res = new Object();
+		int version = 1;
 		if(bookList!=null){
 			String userMobile = param.getKey();
 			if(!Common.isNull(userMobile)){
-				String hql = "from AddressBook where userMobile = '"+userMobile+"'";
-				List<Object> list = hibernateUtil.hql(hql);
+				
+				String sql = "select max(version) from address_book where user_mobile = '"+userMobile+"'";
+				List<Object[]> list = hibernateUtil.sql(sql);
 				if(list!=null&&list.size()>0){
-					res = "已经获取过"+userMobile+"的通讯录了";
-				}else{
-					for (int i = 0; i < bookList.size(); i++) {
-						AddressBook book = new AddressBook();
-						HashMap map = (HashMap) bookList.get(i);
-						String name = map.get("name")+"";
-						String phoneNumber = map.get("phoneNumbers")+"";
-						
-						if(!(Common.isNull(name)||Common.isNull(phoneNumber))){
-							book.setSeq(map.get("seq")+"");
-							book.setDisplayName((String)map.get("displayName"));
-							book.setName((String)map.get("name"));
-							book.setNickname((String)map.get("nickname"));
-							book.setBirthday((String)map.get("birthday"));
-							book.setNote((String)map.get("note"));
-							book.setPhoneNumbers((String)map.get("phoneNumbers"));
-							book.setEmails((String)map.get("emails"));
-							book.setAddresses((String)map.get("addresses"));
-							book.setIms((String)map.get("ims"));
-							book.setOrganizations((String)map.get("organizations"));
-							book.setPhotos((String)map.get("photos"));
-							book.setCategories((String)map.get("categories"));
-							book.setUrls((String)map.get("urls"));
-							book.setUserMobile((String)map.get("userMobile"));
-							res = hibernateUtil.save(book);
-						}
+					String o = String.valueOf(list.get(0));
+					if(Common.notNull(o)){
+						version = Integer.parseInt(o+"")+1;
+					}
+				}
+				for (int i = 0; i < bookList.size(); i++) {
+					AddressBook book = new AddressBook();
+					HashMap map = (HashMap) bookList.get(i);
+					String name = map.get("name")+"";
+					String phoneNumber = map.get("phoneNumbers")+"";
+					if(!(Common.isNull(name)||Common.isNull(phoneNumber))){
+						book.setSeq(map.get("seq")+"");
+						book.setDisplayName((String)map.get("displayName"));
+						book.setName((String)map.get("name"));
+						book.setNickname((String)map.get("nickname"));
+						book.setBirthday((String)map.get("birthday"));
+						book.setNote((String)map.get("note"));
+						book.setPhoneNumbers((String)map.get("phoneNumbers"));
+						book.setEmails((String)map.get("emails"));
+						book.setAddresses((String)map.get("addresses"));
+						book.setIms((String)map.get("ims"));
+						book.setOrganizations((String)map.get("organizations"));
+						book.setPhotos((String)map.get("photos"));
+						book.setCategories((String)map.get("categories"));
+						book.setUrls((String)map.get("urls"));
+						book.setUserMobile((String)map.get("userMobile"));
+						book.setVersion(String.valueOf(version));
+						book.setCreateTime(new DateStr().toString());
+						res = hibernateUtil.save(book);
 					}
 				}
 			}	

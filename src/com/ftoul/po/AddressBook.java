@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -32,6 +33,8 @@ public class AddressBook implements java.io.Serializable {
 	private String categories;
 	private String urls;
 	private String userMobile;
+	private String version;
+	private String createTime;
 
 	// Constructors
 
@@ -207,6 +210,24 @@ public class AddressBook implements java.io.Serializable {
 
 	public void setUserMobile(String userMobile) {
 		this.userMobile = userMobile;
+	}
+	
+	@Column(name = "version", length = 1000)
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+	
+	@Column(name = "create_time", length = 100)
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
 	}
 
 }
