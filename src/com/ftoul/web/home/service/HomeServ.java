@@ -3,6 +3,8 @@
  */
 package com.ftoul.web.home.service;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 
@@ -20,4 +22,11 @@ public interface HomeServ {
 	 * @throws Exception
 	 */
 	Result getIndexCarouselList(Parameter param) throws Exception;
+	/**
+	 * 插入用户短信记录
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public Result insertSmsInfo(Parameter param) throws Exception;
 }

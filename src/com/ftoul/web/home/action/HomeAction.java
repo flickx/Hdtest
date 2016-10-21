@@ -48,4 +48,15 @@ public class HomeAction {
 		Result result = ObjectToResult.getResult(resTime);
 		return result;
 	}
+	/**
+	 * 插入用户短信记录
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "insertSmsInfo") 
+	public @ResponseBody Result insertSmsInfo(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return homeServ.insertSmsInfo(parameter);
+	}
 }

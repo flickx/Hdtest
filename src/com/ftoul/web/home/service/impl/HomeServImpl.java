@@ -3,6 +3,10 @@
  */
 package com.ftoul.web.home.service.impl;
 
+import java.util.List;
+
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +14,7 @@ import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.po.SmsInfo;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.home.service.HomeServ;
 
@@ -34,5 +39,20 @@ public class HomeServImpl implements HomeServ {
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
-
+	/**
+	 * 插入用户短信记录
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public Result insertSmsInfo(Parameter param) throws Exception{
+		Object res = null;
+		if(param.getObj() == null){
+			List<SmsInfo> smsInfoList = (List<SmsInfo>) JSONObject.toBean((JSONObject) param.getObj(),SmsInfo.class);
+			for (SmsInfo smsInfo : smsInfoList) {
+				res = hibernateUtil.save(smsInfo);
+			}
+		}
+		return ObjectToResult.getResult(res);
+	}
 }
