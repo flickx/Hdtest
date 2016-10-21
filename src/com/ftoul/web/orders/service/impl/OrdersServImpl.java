@@ -379,6 +379,7 @@ public class OrdersServImpl implements OrdersServ {
 		vo.setLogisticeInfo(res);
 		vo.setOdd(orders.getOdd());
 		vo.setOrderTime(orders.getOrderTime());
+		vo.setLogInfo(orders.getLogInfo());
 		if("1".equals(orders.getCustomsClearanceStatic())){
 			vo.setCustomsClearanceStatic("清关中");
 		}else if("2".equals(orders.getCustomsClearanceStatic())){

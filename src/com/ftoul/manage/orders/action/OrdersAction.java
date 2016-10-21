@@ -289,13 +289,63 @@ public class OrdersAction {
 
 		return null;
 	}
-	 
-	 /**
-		 * 获取订单列表（带分页）
-		 * @param param 页面传递参数对象
-		 * @return AJAX调用Result的JSON对象
-		 * @throws Exception 
-		 */
+
+	/**
+	 * 导出收款单信息
+	 * 
+	 * @param param
+	 * @param response
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "exportRecepitExcel", method = RequestMethod.GET)
+	public ModelAndView exportRecepitExcel(String param,
+			HttpServletResponse response) throws Exception {
+		System.out.println(param);
+		Parameter parameter = Common.jsonToParam(param);
+		Result result = ordersServ.getOrdersPayExportList(parameter);
+		List itemList = (List) result.getObj();
+		SimpleDateFormat sd = new SimpleDateFormat("yyyyMMddHHmmss");
+		String fileName = sd.format(new Date()) + ".xls";
+		File file = new File(fileName);
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		response.setContentType("application/x-excel");
+		response.setCharacterEncoding("UTF-8");
+		response.addHeader("Content-Disposition",
+				"attachment;filename=" + file.getName());// excel文件名
+
+		try {
+			String[] title = new String[8];
+			title[0] = "收款单号";
+			title[1] = "支付完成时间";
+			title[2] = "支付方式";
+			title[3] = "支付金额";
+			title[4] = "使用蜂币数量";
+			title[5] = "兑换蜂币金额";
+			title[6] = "支付状态";
+			title[7] = "订单号";
+
+			System.out.println("付款单信息："+itemList.size());
+			InputStream is = ExcelTools.getDownloadInputStream("收款单信息", title,
+					itemList);
+			FileCopyUtils.copy(is, response.getOutputStream());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * 获取订单列表（带分页）
+	 * 
+	 * @param param
+	 *            页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "getSendGoodsListPage")  
 	public @ResponseBody Result getSendGoodsListPage(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);

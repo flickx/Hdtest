@@ -3,6 +3,12 @@
  */
 package com.ftoul.web.manage.user.action;
 
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,6 +83,18 @@ public class WebUserAction {
 	public @ResponseBody Result doResetPassword(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return webUserServ.doResetPassword(parameter);
+	}
+	
+	/**
+	 * 获取该用户通讯录信息
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getAddressBook") 
+	public @ResponseBody Result getAddressBook(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return webUserServ.getAddressBook(parameter);
 	}
 //	/**
 //	 * 找回密码:下一步，进入重置密码页面

@@ -419,7 +419,7 @@ public class OrdersServImpl implements OrdersServ {
 			throws Exception {
 		Object obj = parameter.getObj();
 		LogisticsCompanyVo logisticsCompanyVo = (LogisticsCompanyVo) Common.jsonToBean(obj.toString(), LogisticsCompanyVo.class);
-		String hql = "update Orders set logisticsCompany.id = '"+logisticsCompanyVo.getLogisticsCompanyID()+"', odd = '"+logisticsCompanyVo.getOdd()+"', deliverStatic = '1', orderStatic = '4' where id = '"+logisticsCompanyVo.getId()+"'";
+		String hql = "update Orders set logisticsCompany.id = '"+logisticsCompanyVo.getLogisticsCompanyID()+"', odd = '"+logisticsCompanyVo.getOdd()+"', logInfo = '"+logisticsCompanyVo.getLogInfo()+"', deliverStatic = '1', orderStatic = '4' where id = '"+logisticsCompanyVo.getId()+"'";
 		int result = hibernateUtil.execHql(hql);
 		UserOpLog log = new UserOpLog();
 		log.setCreateTime(new DateStr().toString());
@@ -732,6 +732,65 @@ public class OrdersServImpl implements OrdersServ {
 		page.setObjList(voList);
 		
 		return ObjectToResult.getResult(page);
+	}
+	
+	/**
+	 * 获取订单支付导出列表
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getOrdersPayExportList(Parameter param) throws Exception {
+		String whereStr = param.getWhereStr();
+		String hql;
+		if(whereStr!=null){
+			hql = "from OrdersPay where state = '1' "+whereStr+" order by createTime desc";
+		}else{
+			hql = "from OrdersPay where state = '1' order by createTime desc";
+		}
+		List<Object> list = hibernateUtil.hql(hql);
+		List<Object> ordersPayList = new ArrayList<Object>();
+		for (int i = 0; i < list.size(); i++) {
+			OrdersPay pay = (OrdersPay) list.get(i);
+			OrdersPayVo vo = new OrdersPayVo();
+			vo.setOrderNumber(pay.getOrders().getOrderNumber());
+			vo.setPayPrice(pay.getPayPrice());
+			if("1".equals(pay.getPayStatic())){
+				vo.setPayStatic("支付成功");
+			}else{
+				vo.setPayStatic("支付失败");
+			}
+			vo.setPayTime(pay.getOrders().getPayTime());
+			if(OrdersConstant.CHINAPAY.equals(pay.getPayType())){
+				vo.setPayType("银联支付");
+			}else if(OrdersConstant.ALIPAY.equals(pay.getPayType())){
+				vo.setPayType("支付宝支付");
+			}else if(OrdersConstant.WXPAY.equals(pay.getPayType())){
+				vo.setPayType("微信支付");
+			}else if(OrdersConstant.ALIQBPAY.equals(pay.getPayType())){
+				vo.setPayType("支付宝钱包支付");
+			}
+			vo.setCoinNumber(pay.getOrders().getBeeCoins());
+			vo.setCoinPrice(pay.getOrders().getCoinPrice());
+			vo.setSerialNumber(pay.getSerialNumber());
+			ordersPayList.add(vo);
+		}
+		List<Object> reportDataList = new ArrayList<Object>();
+		Object[] vo = null;
+		for (int j = 0; j < ordersPayList.size(); j++) {
+			OrdersPayVo payVo = (OrdersPayVo) ordersPayList.get(j);
+			vo = new Object[8];
+			vo[0] = payVo.getSerialNumber();
+			vo[1] = payVo.getPayTime();
+			vo[2] = payVo.getPayType();
+			vo[3] = payVo.getPayPrice();
+			vo[4] = payVo.getCoinNumber();
+			vo[5] = payVo.getCoinPrice();
+			vo[6] = payVo.getPayStatic();
+			vo[7] = payVo.getOrderNumber();
+			reportDataList.add(vo);
+		}
+		return ObjectToResult.getResult(reportDataList);
 	}
 	
 }

@@ -4,6 +4,7 @@
 package com.ftoul.web.manage.user.service.impl;
 
 import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -13,10 +14,12 @@ import org.springframework.stereotype.Service;
 
 import com.ftoul.api.sms.util.MessageUtil;
 import com.ftoul.api.sms.util.SmsCodeUtil;
+import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.po.AddressBook;
 import com.ftoul.po.MessageVerification;
 import com.ftoul.po.User;
 import com.ftoul.po.UserToken;
@@ -212,6 +215,59 @@ public class WebUserServImpl implements WebUserServ{
 		userService.modifyPwd(user.getUsername(),user.getPassword());
 		tokenUtil.uploadSecretKey(userDb);
 		hibernateUtil.update(userDb);
+		return ObjectToResult.getResult(res);
+	}
+	
+	@Override
+	public Result getAddressBook(Parameter param) throws Exception {
+		List<Object> bookList = param.getObjList();
+		Object res = new Object();
+		int version = 1;
+		System.out.println(param.getKey()+"此用户的通讯录size为："+bookList.size());
+		if(bookList!=null&&bookList.size()>0){
+			String userMobile = param.getKey();
+			if(!Common.isNull(userMobile)){
+				
+				String sql = "select max(version) from address_book where user_mobile = '"+userMobile+"'";
+				List<Object[]> list = hibernateUtil.sql(sql);
+				if(list!=null&&list.size()>0){
+					String o = String.valueOf(list.get(0));
+					if(o!="null"){
+						version = Integer.parseInt(o+"")+1;
+					}
+				}
+				for (int i = 0; i < bookList.size(); i++) {
+					AddressBook book = new AddressBook();
+					HashMap map = (HashMap) bookList.get(i);
+					String name = map.get("name")+"";
+					String phoneNumber = map.get("phoneNumbers")+"";
+					if(!(Common.isNull(name)||Common.isNull(phoneNumber))){
+						book.setSeq(map.get("seq")+"");
+						book.setDisplayName((String)map.get("displayName"));
+						book.setName((String)map.get("name"));
+						book.setNickname((String)map.get("nickname"));
+						book.setBirthday((String)map.get("birthday"));
+						book.setNote((String)map.get("note"));
+						book.setPhoneNumbers((String)map.get("phoneNumbers"));
+						book.setEmails((String)map.get("emails"));
+						book.setAddresses((String)map.get("addresses"));
+						book.setIms((String)map.get("ims"));
+						book.setOrganizations((String)map.get("organizations"));
+						book.setPhotos((String)map.get("photos"));
+						book.setCategories((String)map.get("categories"));
+						book.setUrls((String)map.get("urls"));
+						book.setUserMobile((String)map.get("userMobile"));
+						book.setVersion(String.valueOf(version));
+						book.setCreateTime(new DateStr().toString());
+						res = hibernateUtil.save(book);
+						System.out.println(param.getKey()+"此用户的通讯录的seq为："+map.get("seq")+"");
+					}
+				}
+			}	
+		}else{
+			res = "通讯录为空";
+		}
+		
 		return ObjectToResult.getResult(res);
 	}
 	

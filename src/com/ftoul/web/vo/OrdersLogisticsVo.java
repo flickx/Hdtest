@@ -8,6 +8,7 @@ public class OrdersLogisticsVo {
 	private String logisticeCompanyName;
 	private String logisticeInfo;
 	private String customsClearanceStatic;
+	private String logInfo;
 	
 	public String getOrderNumber() {
 		return orderNumber;
@@ -44,6 +45,12 @@ public class OrdersLogisticsVo {
 	}
 	public void setCustomsClearanceStatic(String customsClearanceStatic) {
 		this.customsClearanceStatic = customsClearanceStatic;
+	}
+	public String getLogInfo() {
+		return logInfo;
+	}
+	public void setLogInfo(String logInfo) {
+		this.logInfo = logInfo;
 	}
 	
 	
