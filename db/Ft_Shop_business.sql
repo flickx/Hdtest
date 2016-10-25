@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2016/10/25 15:16:05                          */
+/* Created on:     2016/10/25 15:23:11                          */
 /*==============================================================*/
 
 
@@ -27,7 +27,7 @@ drop table if exists business_store_rank;
 /*==============================================================*/
 create table business
 (
-   id                   int(50) not null comment '商家Id',
+   id                   varchar(100) not null comment '商家Id',
    base_id              varchar(100) binary comment '商家基本信息ID',
    manage_id            varchar(100) comment '商家经营ID',
    bank_id              varchar(100) comment '商家银行ID',
