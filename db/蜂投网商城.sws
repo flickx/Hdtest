@@ -5,9 +5,10 @@
 <Workspace>
 	<Local Expanded="Yes">
 		<Model Expanded="Yes" ID="{BF6A61AC-EF4A-4331-A953-98519AB20C00}" Loaded="No" Name="蜂投网商城附加表" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="蜂投网商城附加表.pdm"/>
-		<Model Expanded="Yes" ID="{6780DDB5-142C-440C-9939-FA402D2042CF}" Loaded="No" Name="蜂投网商城" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="蜂投网商城.pdm"/>
+		<Model Expanded="Yes" ID="{6780DDB5-142C-440C-9939-FA402D2042CF}" Name="蜂投网商城" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="蜂投网商城.pdm"/>
 		<Model Expanded="Yes" ID="{BF6A61AC-EF4A-4331-A953-98519AB20C00}" Loaded="No" Name="蜂投网商城附加表" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="蜂投网商城附加表.pdm"/>
-		<Model Expanded="Yes" ID="{BE0EBFC5-7EC4-4021-BDD4-A9F348A607FD}" Name="他她乐商城商家" Selected="Yes" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="/Users/ashu/Desktop/商家入驻数据库设计/他她乐商城商家.pdm"/>
+		<Model Expanded="Yes" ID="{BE0EBFC5-7EC4-4021-BDD4-A9F348A607FD}" Loaded="No" Name="他她乐商城商家" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="/Users/ashu/Desktop/商家入驻数据库设计/他她乐商城商家.pdm"/>
+		<Model Expanded="Yes" ID="{BE0EBFC5-7EC4-4021-BDD4-A9F348A607FD}" Name="他她乐商城商家" Type="{CDE44E21-9669-11D1-9914-006097355D9B}" URL="/Users/ashu/Desktop/商家入驻数据库设计/他她乐商城商家.pdm"/>
 	</Local>
 	<BrowserModule Name="Repository"/>
 </Workspace>

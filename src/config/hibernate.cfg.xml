@@ -17,28 +17,34 @@
 		<property name="hibernate.c3p0.acquire_increment">2</property>
 		<!-- <property name="hibernate.c3p0.automaticTestTable">
 			true
-		</property> -->
+			</property> -->
 		<property name="hibernate.c3p0.idleConnectionTestPeriod">
 			20
 		</property>
 		<!-- 
-		<property name="hibernate.c3p0.testConnectionOnCheckin">
+			<property name="hibernate.c3p0.testConnectionOnCheckin">
+			true
+			</property>
+			<property name="hibernate.c3p0.testConnectionOnCheckout">
+			true
+			</property>
+		-->
+
+		<!-- 配置二级缓存 -->
+		<property name="hibernate.cache.use_second_level_cache">
 			true
 		</property>
-		<property name="hibernate.c3p0.testConnectionOnCheckout">
-			true
+		<property name="hibernate.cache.region.factory_class">
+			org.hibernate.cache.ehcache.EhCacheRegionFactory
 		</property>
-		 -->
-		 
-     	<!-- 配置二级缓存 -->  
-        <property name="hibernate.cache.use_second_level_cache">true</property>  
-        <property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property>  
-        <property name="hibernate.cache.use_query_cache">true</property>  
-      	
+		<property name="hibernate.cache.use_query_cache">true</property>
+
 		<property name="dialect">
 			org.hibernate.dialect.PointbaseDialect
 		</property>
-		<property name="connection.url">jdbc:mysql://192.168.100.237:3306/ftoul_shop?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false</property>
+		<property name="connection.url">
+			jdbc:mysql://192.168.100.237:3306/ftoul_shop?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false
+		</property>
 		<property name="connection.username">root</property>
 		<property name="connection.password">dzwang**</property>
 		<property name="connection.driver_class">
@@ -113,6 +119,15 @@
 		<mapping class="com.ftoul.po.GoodsCanal" />
 		<mapping class="com.ftoul.po.AppSet" />
 		<mapping class="com.ftoul.po.AddressBook" />
+		<mapping class="com.ftoul.po.Business" />
+		<mapping class="com.ftoul.po.BusinessStoreRank" />
+		<mapping class="com.ftoul.po.BusinessStoreClassify" />
+		<mapping class="com.ftoul.po.BusinessBase" />
+		<mapping class="com.ftoul.po.BusinessStoreManageCategory" />
+		<mapping class="com.ftoul.po.BusinessBank" />
+		<mapping class="com.ftoul.po.BusinessStoreLogin" />
+		<mapping class="com.ftoul.po.BusinessManage" />
+		<mapping class="com.ftoul.po.BusinessStore" />
 	</session-factory>
 
 </hibernate-configuration>
