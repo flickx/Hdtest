@@ -1,237 +1,237 @@
 /*==============================================================*/
-/* DBMS name:      MySQL 5.0     22                               */
-/* Created on:     2016/10/25 14:58:55                          */
+/* DBMS name:      MySQL 5.0                                    */
+/* Created on:     2016/10/25 15:16:05                          */
 /*==============================================================*/
 
 
-drop table if exists business#ï¿½Ì¼Ò±ï¿½;
+drop table if exists business;
 
-drop table if exists business_bank#ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½;
+drop table if exists business_bank;
 
-drop table if exists business_base#ï¿½Ì¼Ò»ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½;
+drop table if exists business_base;
 
-drop table if exists business_manage#ï¿½Ì¼Ò¾ï¿½Óªï¿½ï¿½Ï¢ï¿½ï¿½;
+drop table if exists business_manage;
 
-drop table if exists business_store#ï¿½Ì¼Òµï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½;
+drop table if exists business_store;
 
-drop table if exists business_store_classify#ï¿½Ì¼Òµï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½;
+drop table if exists business_store_classify;
 
-drop table if exists business_store_login#ï¿½Ì¼Òµï¿½ï¿½Ìµï¿½Â¼ï¿½ï¿½Ï¢ï¿½ï¿½;
+drop table if exists business_store_login;
 
-drop table if exists business_store_manage_category#ï¿½Ì¼Òµï¿½ï¿½Ì¾ï¿½Óªï¿½ï¿½Ä¿ï¿½ï¿½Ï¢ï¿½ï¿½;
+drop table if exists business_store_manage_category;
 
-drop table if exists business_store_rank#ï¿½Ì¼Òµï¿½ï¿½ÌµÈ¼ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½;
+drop table if exists business_store_rank;
 
 /*==============================================================*/
-/* Table: business#ï¿½Ì¼Ò±ï¿½                                          */
+/* Table: business                                              */
 /*==============================================================*/
-create table business#ï¿½Ì¼Ò±ï¿½
+create table business
 (
-   id                   int(50) not null comment 'ï¿½Ì¼ï¿½Id',
-   base_id              varchar(100) binary comment 'ï¿½Ì¼Ò»ï¿½ï¿½ï¿½Ï¢ID',
-   manage_id            varchar(100) comment 'ï¿½Ì¼Ò¾ï¿½ÓªID',
-   bank_id              varchar(100) comment 'ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½ï¿½ID',
-   operate_id           varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID',
-   operate_time         varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   create_id            varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Id',
-   create_time          varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   state                int comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½',
+   id                   int(50) not null comment 'ÉÌ¼ÒId',
+   base_id              varchar(100) binary comment 'ÉÌ¼Ò»ù±¾ÐÅÏ¢ID',
+   manage_id            varchar(100) comment 'ÉÌ¼Ò¾­ÓªID',
+   bank_id              varchar(100) comment 'ÉÌ¼ÒÒøÐÐID',
+   operate_id           varchar(100) comment '²Ù×÷ÈËID',
+   operate_time         varchar(100) comment '²Ù×÷Ê±¼ä',
+   create_id            varchar(100) comment '´´½¨ÈËId',
+   create_time          varchar(50) comment '´´½¨Ê±¼ä',
+   state                int comment 'ÓÃÓÚÊý¾Ý±íµÄÂß¼­²Ù×÷',
    primary key (id)
 );
 
-alter table business#ï¿½Ì¼Ò±ï¿½ comment 'ï¿½Ì¼ï¿½ï¿½Ð¼ï¿½ï¿½';
+alter table business comment 'ÉÌ¼ÒÖÐ¼ä±í';
 
 /*==============================================================*/
-/* Table: business_bank#ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½                                 */
+/* Table: business_bank                                         */
 /*==============================================================*/
-create table business_bank#ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½
+create table business_bank
 (
-   id                   varchar(100) not null comment 'ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½ï¿½ID',
-   bank_account_name    varchar(100) not null comment 'ï¿½ï¿½ï¿½Ð¿ï¿½ï¿½ï¿½ï¿½ï¿½',
-   bank_account         varchar(50) not null comment 'ï¿½ï¿½ï¿½ï¿½ï¿½Ë»ï¿½',
-   bank_name            varchar(100) not null comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½',
-   bank_account_img     varchar(500) binary not null comment 'ï¿½ï¿½ï¿½Ð¿ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½É¨ï¿½ï¿½Í¼',
-   operate_id           varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½Ô±ID',
-   operate_time         varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   create_id            varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID',
-   create_time          varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   state                varchar(1) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½',
+   id                   varchar(100) not null comment 'ÉÌ¼ÒÒøÐÐID',
+   bank_account_name    varchar(100) not null comment 'ÒøÐÐ¿ª»§Ãû',
+   bank_account         varchar(50) not null comment 'ÒøÐÐÕË»§',
+   bank_name            varchar(100) not null comment '¿ª»§ÐÐÃû³Æ',
+   bank_account_img     varchar(500) binary not null comment 'ÒøÐÐ¿ª»§Ö¤Ã÷É¨ÃèÍ¼',
+   operate_id           varchar(100) comment '²Ù×÷ÈËID£¬¼ÇÂ¼¸ÃÊý¾ÝµÄÈËÔ±ID',
+   operate_time         varchar(50) comment '²Ù×÷Ê±¼ä',
+   create_id            varchar(100) comment '´´½¨ÈËID',
+   create_time          varchar(50) comment '´´½¨Ê±¼ä',
+   state                varchar(1) comment 'ÓÃÓÚÊý¾Ý±íµÄÂß¼­²Ù×÷',
    primary key (id)
 );
 
-alter table business_bank#ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ comment 'ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ý±ï¿½';
+alter table business_bank comment 'ÉÌ¼ÒÒøÐÐÐÅÏ¢Êý¾Ý±í';
 
 /*==============================================================*/
-/* Table: business_base#ï¿½Ì¼Ò»ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½                                 */
+/* Table: business_base                                         */
 /*==============================================================*/
-create table business_base#ï¿½Ì¼Ò»ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½
+create table business_base
 (
-   id                   varchar(100) not null comment 'ï¿½Ì¼Ò»ï¿½ï¿½ï¿½Ï¢ID',
-   company_address      varchar(500) binary not null comment 'ï¿½ï¿½Ë¾ï¿½ï¿½Ö·',
-   company_name         varchar(100) binary not null comment 'ï¿½ï¿½Ë¾ï¿½ï¿½ï¿½ï¿½',
-   registered_capital   varchar(50) comment '×¢ï¿½ï¿½ï¿½Ê±ï¿½',
-   linkman_name         varchar(50) not null comment 'ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½',
-   linkman_number       varchar(50) not null comment 'ï¿½ï¿½Ïµï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½',
-   email                varchar(50) not null comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½',
-   operate_id           varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½Â¼Â¼ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½Ô±ID',
-   operate_time         varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   create_id            varchar(100) comment 'create_id#ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Id',
-   create_time          varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   state                varchar(1) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½',
+   id                   varchar(100) not null comment 'ÉÌ¼Ò»ù±¾ÐÅÏ¢ID',
+   company_address      varchar(500) binary not null comment '¹«Ë¾µØÖ·',
+   company_name         varchar(100) binary not null comment '¹«Ë¾Ãû×Ö',
+   registered_capital   varchar(50) comment '×¢²á×Ê±¾',
+   linkman_name         varchar(50) not null comment 'ÁªÏµÈËÐÕÃû',
+   linkman_number       varchar(50) not null comment 'ÁªÏµÈËÊÖ»úºÅÂë',
+   email                varchar(50) not null comment 'µç×ÓÓÊÏä',
+   operate_id           varchar(100) comment '²Ù×÷ÈËID£¬¼ÇÂ¼Â¼ÈëÊý¾ÝµÄÈËÔ±ID',
+   operate_time         varchar(50) comment '²Ù×÷ÈËÊ±¼ä',
+   create_id            varchar(100) comment 'create_id#´´½¨ÈËId',
+   create_time          varchar(50) comment '´´½¨Ê±¼ä',
+   state                varchar(1) comment 'ÓÃÓÚÊý¾Ý±íµÄÂß¼­²Ù×÷',
    primary key (id)
 );
 
-alter table business_base#ï¿½Ì¼Ò»ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ comment 'ï¿½Ì¼Ò»ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ý±ï¿½';
+alter table business_base comment 'ÉÌ¼Ò»ù±¾ÐÅÏ¢Êý¾Ý±í';
 
 /*==============================================================*/
-/* Table: business_manage#ï¿½Ì¼Ò¾ï¿½Óªï¿½ï¿½Ï¢ï¿½ï¿½                               */
+/* Table: business_manage                                       */
 /*==============================================================*/
-create table business_manage#ï¿½Ì¼Ò¾ï¿½Óªï¿½ï¿½Ï¢ï¿½ï¿½
+create table business_manage
 (
-   id                   varchar(100) not null comment 'ï¿½Ì¼Ò¾ï¿½ÓªID',
-   legal_person         varchar(50) not null comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½',
-   id_card              varchar(50) not null comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤',
-   Id_card_face_img     varchar(500) binary not null comment 'ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½Í¼',
-   id_card_con_img      varchar(500) binary not null comment 'ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½Í¼',
-   business_licence_number varchar(100) not null comment 'ÓªÒµÖ´ï¿½Õºï¿½',
-   establish_time       varchar(50) not null comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½',
-   manage_scope         varchar(500) binary not null comment 'ï¿½ï¿½Óªï¿½ï¿½Î§',
-   business_licence_img varchar(500) binary not null comment 'ÓªÒµÖ´ï¿½ï¿½É¨ï¿½ï¿½Í¼',
-   busines_slicence_date varchar(100) not null comment 'ÓªÒµÖ´ï¿½ï¿½ï¿½ï¿½Ð§ï¿½Ú£ï¿½ï¿½æ´¢ï¿½ï¿½Ê½Îª1900-01-01 ï¿½ï¿½ï¿½ï¿½1999-01-01',
-   operate_id           varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½Ô±ID',
-   operate_time         varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   create_id            varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Id',
-   create_time          varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   state                varchar(1) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½',
+   id                   varchar(100) not null comment 'ÉÌ¼Ò¾­ÓªID',
+   legal_person         varchar(50) not null comment '·¨¶¨´ú±íÈË',
+   id_card              varchar(50) not null comment '·¨¶¨´ú±íÈËÉí·ÝÖ¤',
+   Id_card_face_img     varchar(500) binary not null comment 'Éí·ÝÖ¤ÕýÃæÍ¼',
+   id_card_con_img      varchar(500) binary not null comment 'Éí·ÝÖ¤·´ÃæÍ¼',
+   business_licence_number varchar(100) not null comment 'ÓªÒµÖ´ÕÕºÅ',
+   establish_time       varchar(50) not null comment '³ÉÁ¢ÈÕÆÚ',
+   manage_scope         varchar(500) binary not null comment '¾­Óª·¶Î§',
+   business_licence_img varchar(500) binary not null comment 'ÓªÒµÖ´ÕÕÉ¨ÃèÍ¼',
+   busines_slicence_date varchar(100) not null comment 'ÓªÒµÖ´ÕÕÓÐÐ§ÆÚ£¬´æ´¢·½Ê½Îª1900-01-01 ¡ª¡ª1999-01-01',
+   operate_id           varchar(100) comment '²Ù×÷ÈËID£¬¼ÇÂ¼¸ÃÏîÊý¾ÝµÄÈËÔ±ID',
+   operate_time         varchar(50) comment '²Ù×÷Ê±¼ä',
+   create_id            varchar(100) comment '´´½¨ÈËId',
+   create_time          varchar(50) comment '´´½¨Ê±¼ä',
+   state                varchar(1) comment 'ÓÃÓÚÊý¾Ý±íÂß¼­²Ù×÷',
    primary key (id)
 );
 
-alter table business_manage#ï¿½Ì¼Ò¾ï¿½Óªï¿½ï¿½Ï¢ï¿½ï¿½ comment 'ï¿½Ì¼Ò¾ï¿½Óªï¿½ï¿½Ï¢ï¿½ï¿½Ý±ï¿½';
+alter table business_manage comment 'ÉÌ¼Ò¾­ÓªÐÅÏ¢Êý¾Ý±í';
 
 /*==============================================================*/
-/* Table: business_store#ï¿½Ì¼Òµï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½                                */
+/* Table: business_store                                        */
 /*==============================================================*/
-create table business_store#ï¿½Ì¼Òµï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½
+create table business_store
 (
-   id                   varchar(100) not null comment 'ï¿½Ì¼Òµï¿½ï¿½ï¿½ID',
-   business_id          int(50) comment 'ï¿½Ì¼ï¿½ID',
-   pic                  varchar(500) binary not null comment 'ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½',
-   classify_id          varchar(100) comment 'ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½Id',
-   rank_id              varchar(100) comment 'ï¿½ï¿½ï¿½ÌµÈ¼ï¿½ID',
-   store_name           varchar(100) not null comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½',
-   store_duration       varchar(50) not null comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   operate_id           varchar(100) not null comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½Ô±ID(ï¿½ï¿½ï¿½)',
-   operate_time         varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   create_id            varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Id',
-   create_time          varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   verify_id            varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½Id',
-   verify_time          varchar(50) comment 'ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ê±ï¿½ï¿½',
-   state                varchar(1) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½',
+   id                   varchar(100) not null comment 'ÉÌ¼ÒµêÆÌID',
+   business_id          int(50) comment 'ÉÌ¼ÒID',
+   pic                  varchar(500) binary not null comment 'µêÆÌÍ·Ïñ',
+   classify_id          varchar(100) comment 'µêÆÌ·ÖÀàId',
+   rank_id              varchar(100) comment 'µêÆÌµÈ¼¶ID',
+   store_name           varchar(100) not null comment 'µêÆÌÃû³Æ',
+   store_duration       varchar(50) not null comment '¿ªµêÊ±³¤',
+   operate_id           varchar(100) not null comment '²Ù×÷ÈËID£¬¼ÇÂ¼¸ÃÊý¾ÝµÄÈËÔ±ID(Íâ¼ü)',
+   operate_time         varchar(50) comment '²Ù×÷Ê±¼ä',
+   create_id            varchar(100) comment '´´½¨ÈËId',
+   create_time          varchar(50) comment '´´½¨Ê±¼ä',
+   verify_id            varchar(100) comment 'ÉóºËÈËId',
+   verify_time          varchar(50) comment 'ÉóºËÍ¨¹ýÊ±¼ä',
+   state                varchar(1) comment 'ÓÃÓÚÊý¾Ý±íµÄÂß¼­²Ù×÷',
    primary key (id)
 );
 
-alter table business_store#ï¿½Ì¼Òµï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ comment 'ï¿½Ì¼Òµï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ý±ï¿½';
+alter table business_store comment 'ÉÌ¼ÒµêÆÌÐÅÏ¢Êý¾Ý±í';
 
 /*==============================================================*/
-/* Table: business_store_classify#ï¿½Ì¼Òµï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½                     */
+/* Table: business_store_classify                               */
 /*==============================================================*/
-create table business_store_classify#ï¿½Ì¼Òµï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½
+create table business_store_classify
 (
-   id                   varchar(100) not null comment 'ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½Id',
-   store_type           varchar(50) not null comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½',
-   store_classify       varchar(50) not null comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½',
-   classify_comment     varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½',
-   operate_id           varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID',
-   operate_time         varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   create_id            varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Id',
-   create_time          varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   state                varchar(1) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½',
+   id                   varchar(100) not null comment 'µêÆÌ·ÖÀàId',
+   store_type           varchar(50) not null comment 'µêÆÌÖÖÀà',
+   store_classify       varchar(50) not null comment 'µêÆÌÀàÐÍ',
+   classify_comment     varchar(100) comment 'ÀàÐÍËµÃ÷',
+   operate_id           varchar(100) comment '²Ù×÷ÈËID',
+   operate_time         varchar(50) comment '²Ù×÷Ê±¼ä',
+   create_id            varchar(100) comment '´´½¨ÈËId',
+   create_time          varchar(50) comment '´´½¨Ê±¼ä',
+   state                varchar(1) comment 'ÓÃÓÚÊý¾Ý±íµÄÂß¼­²Ù×÷',
    primary key (id)
 );
 
-alter table business_store_classify#ï¿½Ì¼Òµï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ comment 'ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ý±ï¿½';
+alter table business_store_classify comment 'µêÆÌ·ÖÀàÐÅÏ¢Êý¾Ý±í';
 
 /*==============================================================*/
-/* Table: business_store_login#ï¿½Ì¼Òµï¿½ï¿½Ìµï¿½Â¼ï¿½ï¿½Ï¢ï¿½ï¿½                        */
+/* Table: business_store_login                                  */
 /*==============================================================*/
-create table business_store_login#ï¿½Ì¼Òµï¿½ï¿½Ìµï¿½Â¼ï¿½ï¿½Ï¢ï¿½ï¿½
+create table business_store_login
 (
-   id                   varchar(100) not null comment 'ï¿½ï¿½ï¿½Ìµï¿½Â¼ID',
-   store_id             varchar(100) comment 'ï¿½Ì¼Òµï¿½ï¿½ï¿½ID',
-   store_account        varchar(100) not null comment 'ï¿½ï¿½ï¿½Ìµï¿½Â½ï¿½Ëºï¿½',
-   password             varchar(100) not null comment 'ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½',
-   login_tIme           varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Â¼Ê±ï¿½ï¿½',
-   login_ip             varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Â¼IP',
-   operate_id           varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID',
-   operate_time         varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
+   id                   varchar(100) not null comment 'µêÆÌµÇÂ¼ID',
+   store_id             varchar(100) comment 'ÉÌ¼ÒµêÆÌID',
+   store_account        varchar(100) not null comment 'µêÆÌµÇÂ½ÕËºÅ',
+   password             varchar(100) not null comment 'µÇÂ¼ÃÜÂë',
+   login_tIme           varchar(50) comment '×îºóµÇÂ¼Ê±¼ä',
+   login_ip             varchar(50) comment '×îºóµÇÂ¼IP',
+   operate_id           varchar(100) comment '²Ù×÷ÈËID',
+   operate_time         varchar(50) comment '²Ù×÷Ê±¼ä',
    create_id            varchar(100),
-   create_time          varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   state                varchar(1) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½',
+   create_time          varchar(50) comment '´´½¨Ê±¼ä',
+   state                varchar(1) comment 'ÓÃÓÚÊý¾Ý±íµÄÂß¼­²Ù×÷',
    primary key (id)
 );
 
-alter table business_store_login#ï¿½Ì¼Òµï¿½ï¿½Ìµï¿½Â¼ï¿½ï¿½Ï¢ï¿½ï¿½ comment 'ï¿½Ì¼Òµï¿½Â¼ï¿½Ëºï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ý±ï¿½';
+alter table business_store_login comment 'ÉÌ¼ÒµÇÂ¼ÕËºÅÐÅÏ¢Êý¾Ý±í';
 
 /*==============================================================*/
-/* Table: business_store_manage_category#ï¿½Ì¼Òµï¿½ï¿½Ì¾ï¿½Óªï¿½ï¿½Ä¿ï¿½ï¿½Ï¢ï¿½ï¿½            */
+/* Table: business_store_manage_category                        */
 /*==============================================================*/
-create table business_store_manage_category#ï¿½Ì¼Òµï¿½ï¿½Ì¾ï¿½Óªï¿½ï¿½Ä¿ï¿½ï¿½Ï¢ï¿½ï¿½
+create table business_store_manage_category
 (
-   id                   varchar(100) not null comment 'ï¿½ï¿½Óªï¿½ï¿½Ä¿ID',
-   store_id             varchar(100) comment 'ï¿½Ì¼Òµï¿½ï¿½ï¿½ID',
-   first_category       varchar(100) comment 'Ò»ï¿½ï¿½ï¿½ï¿½Ä¿',
-   two_category         varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿',
-   three_category       varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½Ä¿',
-   operate_id           varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID',
-   operate_time         varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   create_id            varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Id',
-   create_time          varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   state                varchar(0) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½',
+   id                   varchar(100) not null comment '¾­ÓªÀàÄ¿ID',
+   store_id             varchar(100) comment 'ÉÌ¼ÒµêÆÌID',
+   first_category       varchar(100) comment 'Ò»¼¶ÀàÄ¿',
+   two_category         varchar(100) comment '¶þ¼¶ÀàÄ¿',
+   three_category       varchar(100) comment 'Èý¼¶ÀàÄ¿',
+   operate_id           varchar(100) comment '²Ù×÷ÈËID',
+   operate_time         varchar(50) comment '²Ù×÷Ê±¼ä',
+   create_id            varchar(100) comment '´´½¨ÈËId',
+   create_time          varchar(50) comment '´´½¨Ê±¼ä',
+   state                varchar(0) comment 'ÓÃÓÚÊý¾Ý±íµÄÂß¼­²Ù×÷',
    primary key (id)
 );
 
-alter table business_store_manage_category#ï¿½Ì¼Òµï¿½ï¿½Ì¾ï¿½Óªï¿½ï¿½Ä¿ï¿½ï¿½Ï¢ï¿½ï¿½ comment 'ï¿½Ì¼Ò¾ï¿½Óªï¿½ï¿½Ä¿ï¿½ï¿½Ï¢ï¿½ï¿½Ý±ï¿½';
+alter table business_store_manage_category comment 'ÉÌ¼Ò¾­ÓªÀàÄ¿ÐÅÏ¢Êý¾Ý±í';
 
 /*==============================================================*/
-/* Table: business_store_rank#ï¿½Ì¼Òµï¿½ï¿½ÌµÈ¼ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½                         */
+/* Table: business_store_rank                                   */
 /*==============================================================*/
-create table business_store_rank#ï¿½Ì¼Òµï¿½ï¿½ÌµÈ¼ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½
+create table business_store_rank
 (
-   id                   varchar(100) not null comment 'ï¿½ï¿½ï¿½ÌµÈ¼ï¿½ID',
-   store_rank           varchar(50) not null comment 'ï¿½ï¿½ï¿½ÌµÈ¼ï¿½',
-   store_cost           varchar(50) not null comment 'ï¿½ï¿½ï¿½Ã±ï¿½×¼',
-   server_comment       varchar(500) binary comment 'ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½',
-   operate_id           varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID',
-   operate_time         varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   create_id            varchar(100) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Id',
-   create_time          varchar(50) comment 'ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½',
-   state                varchar(1) comment 'ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½',
+   id                   varchar(100) not null comment 'µêÆÌµÈ¼¶ID',
+   store_rank           varchar(50) not null comment 'µêÆÌµÈ¼¶',
+   store_cost           varchar(50) not null comment '·ÑÓÃ±ê×¼',
+   server_comment       varchar(500) binary comment '·þÎñËµÃ÷',
+   operate_id           varchar(100) comment '²Ù×÷ÈËID',
+   operate_time         varchar(50) comment '²Ù×÷Ê±¼ä',
+   create_id            varchar(100) comment '´´½¨ÈËId',
+   create_time          varchar(50) comment '´´½¨Ê±¼ä',
+   state                varchar(1) comment 'ÓÃÓÚÂß¼­²Ù×÷',
    primary key (id)
 );
 
-alter table business_store_rank#ï¿½Ì¼Òµï¿½ï¿½ÌµÈ¼ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ comment 'ï¿½ï¿½ï¿½ÌµÈ¼ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ý±ï¿½';
+alter table business_store_rank comment 'µêÆÌµÈ¼¶ÐÅÏ¢Êý¾Ý±í';
 
-alter table business#ï¿½Ì¼Ò±ï¿½ add constraint FK_Reference_1 foreign key (base_id)
-      references business_base#ï¿½Ì¼Ò»ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ (id) on delete restrict on update restrict;
+alter table business add constraint FK_Reference_1 foreign key (base_id)
+      references business_base (id) on delete restrict on update restrict;
 
-alter table business#ï¿½Ì¼Ò±ï¿½ add constraint FK_Reference_2 foreign key (manage_id)
-      references business_manage#ï¿½Ì¼Ò¾ï¿½Óªï¿½ï¿½Ï¢ï¿½ï¿½ (id) on delete restrict on update restrict;
+alter table business add constraint FK_Reference_2 foreign key (manage_id)
+      references business_manage (id) on delete restrict on update restrict;
 
-alter table business#ï¿½Ì¼Ò±ï¿½ add constraint FK_Reference_3 foreign key (bank_id)
-      references business_bank#ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ (id) on delete restrict on update restrict;
+alter table business add constraint FK_Reference_3 foreign key (bank_id)
+      references business_bank (id) on delete restrict on update restrict;
 
-alter table business_store#ï¿½Ì¼Òµï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ add constraint FK_Reference_4 foreign key (business_id)
-      references business#ï¿½Ì¼Ò±ï¿½ (id) on delete restrict on update restrict;
+alter table business_store add constraint FK_Reference_4 foreign key (business_id)
+      references business (id) on delete restrict on update restrict;
 
-alter table business_store#ï¿½Ì¼Òµï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ add constraint FK_Reference_6 foreign key (classify_id)
-      references business_store_classify#ï¿½Ì¼Òµï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ (id) on delete restrict on update restrict;
+alter table business_store add constraint FK_Reference_6 foreign key (classify_id)
+      references business_store_classify (id) on delete restrict on update restrict;
 
-alter table business_store#ï¿½Ì¼Òµï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ add constraint FK_Reference_7 foreign key (rank_id)
-      references business_store_rank#ï¿½Ì¼Òµï¿½ï¿½ÌµÈ¼ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ (id) on delete restrict on update restrict;
+alter table business_store add constraint FK_Reference_7 foreign key (rank_id)
+      references business_store_rank (id) on delete restrict on update restrict;
 
-alter table business_store_login#ï¿½Ì¼Òµï¿½ï¿½Ìµï¿½Â¼ï¿½ï¿½Ï¢ï¿½ï¿½ add constraint FK_Reference_8 foreign key (store_id)
-      references business_store#ï¿½Ì¼Òµï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ (id) on delete restrict on update restrict;
+alter table business_store_login add constraint FK_Reference_8 foreign key (store_id)
+      references business_store (id) on delete restrict on update restrict;
 
-alter table business_store_manage_category#ï¿½Ì¼Òµï¿½ï¿½Ì¾ï¿½Óªï¿½ï¿½Ä¿ï¿½ï¿½Ï¢ï¿½ï¿½ add constraint FK_Reference_5 foreign key (store_id)
-      references business_store#ï¿½Ì¼Òµï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ (id) on delete restrict on update restrict;
+alter table business_store_manage_category add constraint FK_Reference_5 foreign key (store_id)
+      references business_store (id) on delete restrict on update restrict;
 
