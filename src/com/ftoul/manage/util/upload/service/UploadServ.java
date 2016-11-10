@@ -22,4 +22,6 @@ public interface UploadServ {
 	Result pictureFileUpload(Parameter parameter, HttpServletRequest request) throws Exception;
 	Result goodsPicUpload(Parameter parameter, HttpServletRequest request) throws Exception;
 	Result advertPicUpload(Parameter parameter, HttpServletRequest request) throws Exception;
+	Result businessManagePicUpload(Parameter parameter, HttpServletRequest request) throws Exception;
+	Result businessBankPicUpload(Parameter parameter, HttpServletRequest request) throws Exception;
 }

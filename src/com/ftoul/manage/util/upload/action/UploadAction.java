@@ -73,4 +73,27 @@ public class UploadAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return uploadServ.advertPicUpload(parameter, request);
 	}
+	/**
+	 * 经营信息资料上传
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "businessManagePicUpload")
+	public @ResponseBody Result businessManagePicUpload(String param, HttpServletRequest request)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return uploadServ.businessManagePicUpload(parameter, request);
+	}
+	/**
+	 * 银行账户信息上传
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "businessBankPicUpload")
+	public @ResponseBody Result businessBankPicUpload(String param, HttpServletRequest request)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return uploadServ.businessBankPicUpload(parameter, request);
+	}
+	
 }

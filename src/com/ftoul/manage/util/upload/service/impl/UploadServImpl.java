@@ -198,4 +198,60 @@ public class UploadServImpl implements UploadServ {
 		}
 		return ObjectToResult.getResult(map);
 	}
+
+	@Override
+	public Result businessManagePicUpload(Parameter parameter,
+			HttpServletRequest request) throws Exception {
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request; 
+		List<MultipartFile> fileList = multipartRequest.getFiles("file_data");
+		//图片文件夹名称
+		String folderName = request.getParameter("folderName");
+		String path = request.getSession().getServletContext().getRealPath("upload/img/"+folderName+"/");
+		String picPath = "/upload/img/" + folderName + "/";
+		Map<String ,Object> map = new HashMap<String ,Object>();
+		if (fileList.size()>0) {
+			for (MultipartFile multipartFile : fileList) {
+				String picName = UUID.randomUUID()+"."+multipartFile.getOriginalFilename().split("\\.")[1];
+			    String picAddress = picPath+ picName;
+				File targetFile = new File(path, picName);  
+			        if(!targetFile.exists()){  
+			            targetFile.mkdirs();  
+			        } 
+			        multipartFile.transferTo(targetFile);
+					map.put("folderName", folderName);
+					map.put("picAddress", picAddress );
+					map.put("picName", picName );
+					map.put("hasUpload", true );
+			}
+		}
+		return ObjectToResult.getResult(map);
+	}
+
+	@Override
+	public Result businessBankPicUpload(Parameter parameter,
+			HttpServletRequest request) throws Exception {
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request; 
+		List<MultipartFile> fileList = multipartRequest.getFiles("file_data");
+		//图片文件夹名称
+		String folderName = request.getParameter("folderName");
+		String path = request.getSession().getServletContext().getRealPath("upload/img/"+folderName+"/");
+		String picPath = "/upload/img/" + folderName + "/";
+		Map<String ,Object> map = new HashMap<String ,Object>();
+		if (fileList.size()>0) {
+			for (MultipartFile multipartFile : fileList) {
+				String picName = UUID.randomUUID()+"."+multipartFile.getOriginalFilename().split("\\.")[1];
+			    String picAddress = picPath+ picName;
+				File targetFile = new File(path, picName);  
+			        if(!targetFile.exists()){  
+			            targetFile.mkdirs();  
+			        } 
+			        multipartFile.transferTo(targetFile);
+					map.put("folderName", folderName);
+					map.put("picAddress", picAddress );
+					map.put("picName", picName );
+					map.put("hasUpload", true );
+			}
+		}
+		return ObjectToResult.getResult(map);
+	}
 }

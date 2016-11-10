@@ -1,5 +1,6 @@
 package com.ftoul.manage.user.vo;
 
+import com.ftoul.po.BusinessStoreLogin;
 import com.ftoul.po.LoginUser;
 
 /**
@@ -10,6 +11,7 @@ import com.ftoul.po.LoginUser;
 public class ManageTokenVo {
 
 	private LoginUser loginUser;
+	private BusinessStoreLogin businessStoreLogin;
 	private String secretKey;
 	private String token;
 	private String uploadTime;
@@ -37,6 +39,12 @@ public class ManageTokenVo {
 	}
 	public void setUploadTime(String uploadTime) {
 		this.uploadTime = uploadTime;
+	}
+	public BusinessStoreLogin getBusinessStoreLogin() {
+		return businessStoreLogin;
+	}
+	public void setBusinessStoreLogin(BusinessStoreLogin businessStoreLogin) {
+		this.businessStoreLogin = businessStoreLogin;
 	}
 	
 }

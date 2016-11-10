@@ -7,11 +7,13 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import com.ftoul.common.DateStr;
 import com.ftoul.common.DateUtil;
 import com.ftoul.common.MD5;
 import com.ftoul.common.Result;
 import com.ftoul.manage.user.vo.ManageTokenVo;
+import com.ftoul.po.BusinessStoreLogin;
 import com.ftoul.po.LoginUser;
 import com.ftoul.po.User;
 import com.ftoul.po.UserToken;
@@ -206,6 +208,26 @@ public class TokenUtil {
 	}
 	
 	/**
+	 * 生成商家管理后台token
+	 * @param BusinessStoreLogin
+	 * @return
+	 */
+	public ManageTokenVo toManageToken(BusinessStoreLogin businessStoreLogin){
+		String userId = businessStoreLogin.getId();
+		String passwordVersion = businessStoreLogin.getPassword();
+		//根据用户ID，密码跟版本号生成密匙（不修改密码的前提下密匙不会改变）
+		String secretKey = generaSecretKey(userId, passwordVersion, manageKey);
+		//根据相关信息、时间轴及随机数生成动态的token
+		String token = generaToken(userId, secretKey, manageKey);
+		ManageTokenVo manageTokenVo = new ManageTokenVo();
+		manageTokenVo.setBusinessStoreLogin(businessStoreLogin);
+		manageTokenVo.setSecretKey(secretKey);
+		manageTokenVo.setToken(token);
+		manageTokenVo.setUploadTime(new DateStr().toString());
+		manageTokenMap.put(userId, manageTokenVo);
+		return manageTokenVo;
+	}
+	/**
 	 * 验证后台token(移动端AOP验证时调用)
 	 * @param manageTokenVo
 	 * @return
@@ -264,6 +286,23 @@ public class TokenUtil {
 		String newToken = generaToken(userId, user.getPassword(), manageKey);
 		String newDate = new DateStr().toString();
 		String newSecretKey = generaSecretKey(userId, user.getPassword(), manageKey);
+		if(manageTokenVoFMap != null){
+			manageTokenVoFMap.setSecretKey(newSecretKey);
+			manageTokenVoFMap.setUploadTime(newDate);
+			manageTokenVoFMap.setToken(newToken);
+			manageTokenMap.put(userId, manageTokenVoFMap);
+		}
+		return manageTokenVoFMap;
+	}
+	/**
+	 * 更新商家后台密匙（修改密码时调用）
+	 */
+	public ManageTokenVo uploadManageSecretKey(BusinessStoreLogin businessStoreLogin){
+		String userId = businessStoreLogin.getId();
+		ManageTokenVo manageTokenVoFMap = manageTokenMap.get(userId);
+		String newToken = generaToken(userId, businessStoreLogin.getPassword(), manageKey);
+		String newDate = new DateStr().toString();
+		String newSecretKey = generaSecretKey(userId, businessStoreLogin.getPassword(), manageKey);
 		if(manageTokenVoFMap != null){
 			manageTokenVoFMap.setSecretKey(newSecretKey);
 			manageTokenVoFMap.setUploadTime(newDate);
