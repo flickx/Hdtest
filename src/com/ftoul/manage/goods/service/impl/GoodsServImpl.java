@@ -26,6 +26,7 @@ import com.ftoul.manage.goods.service.GoodsTypeServ;
 import com.ftoul.manage.goods.vo.GoodsListVo;
 import com.ftoul.manage.goods.vo.GoodsTypeSetVo;
 import com.ftoul.manage.goods.vo.GoodsVo;
+import com.ftoul.po.BusinessStore;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsBrand;
 import com.ftoul.po.GoodsCanal;
@@ -216,9 +217,9 @@ public class GoodsServImpl implements GoodsServ {
 				goods.setGoodsCanal(goodsCanal);
 		}
 		//加入shop  先加入id为1的shop
-		  Shop shop=	(Shop) this.hibernateUtil.find(Shop.class, "1");
-		  if(shop!=null)
-			  goods.setShop(shop);
+		  BusinessStore businessStore=	(BusinessStore) this.hibernateUtil.find(Shop.class, "1");
+		  if(businessStore!=null)
+			  goods.setBusinessStore(businessStore);
 		//定时上架
 		  if(goodsVo.getGrounding().equals("2")){
 			  goods.setGroundingTime(goodsVo.getGroundingTime());

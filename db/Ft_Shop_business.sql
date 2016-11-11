@@ -260,3 +260,25 @@ alter table business_store_login_log comment '商家店铺登录日志表';
 
 alter table business_store_login_log add constraint FK_Reference_9 foreign key (login_id)
       references business_store_login (id) on delete restrict on update restrict;
+      drop table if exists business_store_summary;
+
+/*==============================================================*/
+/* Table: business_store_summary                                */
+/*==============================================================*/
+create table business_store_summary
+(
+   id                   varchar(100) not null comment '店铺简介信息表',
+   store_id             varchar(100) comment '店铺ID',
+   summary              varchar(1000) comment '简介',
+   operate_id           varchar(100) comment '操作人ID',
+   operate_time         varchar(20) comment '操作时间',
+   create_id            varchar(100) comment '创建人ID',
+   create_time          varchar(20) comment '创建时间',
+   state                varchar(1) comment '删除标记',
+   primary key (id)
+);
+
+alter table business_store_summary comment '商家简介信息表';
+
+alter table business_store_summary add constraint FK_Reference_10 foreign key (store_id)
+      references business_store (id) on delete restrict on update restrict;
