@@ -28,7 +28,6 @@ public class Goods implements java.io.Serializable {
 	private String id;
 	private ShopFreightTemplate shopFreightTemplate;
 	private User user;
-	private Shop shop;
 	private BusinessStore businessStore;
 	private GoodsCanal goodsCanal;
 	private GoodsType goodsType1;

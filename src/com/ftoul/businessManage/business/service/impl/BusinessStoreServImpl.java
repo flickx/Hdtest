@@ -26,10 +26,15 @@ public class BusinessStoreServImpl implements BusinessStoreServ {
 	 */
 	@Override
 	public Result getBusinessPage(Parameter param) throws Exception {
-		String sql= "select  from business_Store_login as bsl left join business_store as bs on bsl.store_id=bs.id left join business as b on bs.business_id=b.id "
-				+ " left join b.";
-		String hql="from BusinessStoreLogin where businessStore.business.state=1 and id="+param.getManageToken().getBusinessStoreLogin().getId();
-		List<Object> list = hibernateUtil.hql(hql);
+		String sql= "select bsl.*,bs.*,b.*,bb.*,bm.*,bk.*,bsmc.*,bss.*  from business_Store_login as bsl "
+				+ " left join business_store as bs on bsl.store_id=bs.id left join business as b on bs.business_id=b.id "
+				+ " left join business_base as bb on b.base_id=bb.id left join business_manage as bm on b.manage_id=bm.id "
+				+ " left join business_bank as bk on b.bank_id = bk.id left join business_store_manage_category as bsmc on bsmc.store_id = bs.id"
+				+ " left join business_store_summary as bss on bss.store_id=bs.id"
+				+ " where b.state=1 and bsl.id="+param.getManageToken().getBusinessStoreLogin().getId();
+		List<Object[]> list = hibernateUtil.sql(sql);
+//		String hql="from BusinessStoreLogin where businessStore.business.state=1 and id="+param.getManageToken().getBusinessStoreLogin().getId();
+//		List<Object> list = hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
 	}
 }
