@@ -16,13 +16,9 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.manage.business.service.BusinessServ;
-import com.ftoul.manage.orders.vo.OrdersPayVo;
-import com.ftoul.po.Business;
 import com.ftoul.po.BusinessStoreClassify;
 import com.ftoul.po.BusinessStoreLogin;
 import com.ftoul.po.BusinessStoreRank;
-import com.ftoul.po.Goods;
-import com.ftoul.po.LoginUser;
 import com.ftoul.util.hibernate.HibernateUtil;
 
 /**
@@ -91,7 +87,7 @@ public class BusinessServImpl implements BusinessServ {
 	}
 
 	/**
-	 * 获取商家登录信息对象
+	 * 获取商家信息对象
 	 * @param param Parameter对象
 	 * @return 返回结果（前台用Result对象）
 	 */
@@ -110,7 +106,7 @@ public class BusinessServImpl implements BusinessServ {
 	}
 	/**
 	 * 获取银行信息对象
-	 * @param param Parameter对象
+	 * @param param Parameter对象   
 	 * @return 返回结果（前台用Result对象）
 	 */
 	@Override
