@@ -1,7 +1,5 @@
 package com.ftoul.web.business.vo;
 
-import com.ftoul.po.BusinessStore;
-
 public class BusinessVo {
 		//Business
 		private String id;

@@ -362,13 +362,14 @@ public class MyInterceptor {
 						loginUserLog.setResStatic(res.getStatus()+"");
 //						ServletOutputStream servletOutputStream  = res.getOutputStream();
 						loginUserLog.setResText(((Result)object).getMessage());
-						
 					}else{
 						loginUserLog.setResStatic(res.getStatus()+"");
 						object = result;
 						loginUserLog.setResText(((Result)object).getMessage());
 					}
 					hibernateUtil.save(loginUserLog);
+				}else if(nameSpace.indexOf("/businessManage/") == 0){
+					object = invock(pjp,isAdmin,baseResourceList);
 				}else{
 					result.setResult(0);
 					result.setMessage("权限不足");
