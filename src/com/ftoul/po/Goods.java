@@ -28,7 +28,7 @@ public class Goods implements java.io.Serializable {
 	private String id;
 	private ShopFreightTemplate shopFreightTemplate;
 	private User user;
-	private BusinessStore businessStore;
+	private String shopId;
 	private GoodsCanal goodsCanal;
 	private GoodsType goodsType1;
 	private GoodsType goodsType2;
@@ -77,16 +77,16 @@ public class Goods implements java.io.Serializable {
 
 	/** full constructor */
 	public Goods(ShopFreightTemplate shopFreightTemplate, User user,
-			GoodsType goodsType1, GoodsPropType goodsPropType,BusinessStore businessStore,
+			GoodsType goodsType1, GoodsPropType goodsPropType,
 			GoodsBrand goodsBrand, String oneIndiana, String title,
 			Double price, String place, String giveScore, String giveLevel,
 			String maxScorePrice, String picSrc, String code, String pcInfo,
 			String mobilInfo, String invoice, String guarantee, String volume,
 			String weight, String lotteryNumber, String trem, String beginTime,
 			String recommend, String createTime, String createPerson,
-			String modifyTime, String modifyPerson, String state) {
+			String modifyTime, String modifyPerson, String state,String shopId) {
 		this.shopFreightTemplate = shopFreightTemplate;
-		this.businessStore = businessStore;
+		this.shopId=shopId;
 		this.user = user;
 		this.goodsType1 = goodsType1;
 		this.goodsPropType = goodsPropType;
@@ -498,15 +498,14 @@ public class Goods implements java.io.Serializable {
 	public void setGoodsType3(GoodsType goodsType3) {
 		this.goodsType3 = goodsType3;
 	}
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "shop_id")
-	public BusinessStore getBusinessStore() {
-		return businessStore;
+	public String getShopId() {
+		return shopId;
 	}
 
-	public void setBusinessStore(BusinessStore businessStore) {
-		this.businessStore = businessStore;
+	public void setShopId(String shopId) {
+		this.shopId = shopId;
 	}
-	
 	
 }
