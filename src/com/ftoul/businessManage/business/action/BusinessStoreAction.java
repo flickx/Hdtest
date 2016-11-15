@@ -17,7 +17,7 @@ import com.ftoul.common.Result;
  *
  */
 @Controller
-@RequestMapping(value="businessManage/businessStore")
+@RequestMapping(value="/businessManage/businessStore")
 public class BusinessStoreAction {
 	@Autowired BusinessStoreServ businessStoreServ;
 	/**

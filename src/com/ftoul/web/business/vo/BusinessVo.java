@@ -1,5 +1,7 @@
 package com.ftoul.web.business.vo;
 
+import com.ftoul.po.BusinessStore;
+
 public class BusinessVo {
 		//Business
 		private String id;
@@ -56,6 +58,13 @@ public class BusinessVo {
 		private String storeType;
 		private String storeClassify;
 		private String classifyComment;
+		//BusinessStoreSummary
+		private String businessStoreSummaryId;
+		private String summary;
+		
+		private Integer goodsNum;//店铺商铺数量
+		private Integer goodsMonthNum;//上新商品总计
+		private Integer goodsSaleNum;//店铺销售商品数量
 		public String getId() {
 			return id;
 		}
@@ -338,6 +347,36 @@ public class BusinessVo {
 		}
 		public void setClassifyComment(String classifyComment) {
 			this.classifyComment = classifyComment;
+		}
+		public String getBusinessStoreSummaryId() {
+			return businessStoreSummaryId;
+		}
+		public void setBusinessStoreSummaryId(String businessStoreSummaryId) {
+			this.businessStoreSummaryId = businessStoreSummaryId;
+		}
+		public String getSummary() {
+			return summary;
+		}
+		public void setSummary(String summary) {
+			this.summary = summary;
+		}
+		public Integer getGoodsNum() {
+			return goodsNum;
+		}
+		public void setGoodsNum(Integer goodsNum) {
+			this.goodsNum = goodsNum;
+		}
+		public Integer getGoodsMonthNum() {
+			return goodsMonthNum;
+		}
+		public void setGoodsMonthNum(Integer goodsMonthNum) {
+			this.goodsMonthNum = goodsMonthNum;
+		}
+		public Integer getGoodsSaleNum() {
+			return goodsSaleNum;
+		}
+		public void setGoodsSaleNum(Integer goodsSaleNum) {
+			this.goodsSaleNum = goodsSaleNum;
 		}
 		
 }
