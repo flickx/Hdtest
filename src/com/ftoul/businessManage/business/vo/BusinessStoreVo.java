@@ -56,6 +56,9 @@ public class BusinessStoreVo {
 			private String storeType;
 			private String storeClassify;
 			private String classifyComment;
+			//BusinessStoreSummary
+			private String businessStoreSummaryId;
+			private String summary;
 			public String getId() {
 				return id;
 			}
@@ -338,6 +341,18 @@ public class BusinessStoreVo {
 			}
 			public void setClassifyComment(String classifyComment) {
 				this.classifyComment = classifyComment;
+			}
+			public String getBusinessStoreSummaryId() {
+				return businessStoreSummaryId;
+			}
+			public void setBusinessStoreSummaryId(String businessStoreSummaryId) {
+				this.businessStoreSummaryId = businessStoreSummaryId;
+			}
+			public String getSummary() {
+				return summary;
+			}
+			public void setSummary(String summary) {
+				this.summary = summary;
 			}
 			
 }

@@ -129,6 +129,7 @@
 		<mapping class="com.ftoul.po.BusinessManage" />
 		<mapping class="com.ftoul.po.BusinessStore" />
 		<mapping class="com.ftoul.po.BusinessStoreLoginLog"/>
+		<mapping class="com.ftoul.po.BusinessStoreSummary"/>
 	</session-factory>
 
 </hibernate-configuration>
