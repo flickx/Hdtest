@@ -216,10 +216,10 @@ public class GoodsServImpl implements GoodsServ {
 			if(goodsCanal!=null)
 				goods.setGoodsCanal(goodsCanal);
 		}
-		//加入shop  先加入id为1的shop
-		  BusinessStore businessStore=	(BusinessStore) this.hibernateUtil.find(Shop.class, "1");
-		  if(businessStore!=null)
-			  goods.setBusinessStore(businessStore);
+//		//加入shop  先加入id为1的shop
+//		  BusinessStore businessStore=	(BusinessStore) this.hibernateUtil.find(Shop.class, "1");
+//		  if(businessStore!=null)
+			  goods.setShopId("1");
 		//定时上架
 		  if(goodsVo.getGrounding().equals("2")){
 			  goods.setGroundingTime(goodsVo.getGroundingTime());
