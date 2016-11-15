@@ -66,7 +66,7 @@ public class BusinessWebServImpl implements BusinessWebServ {
 		    //店铺商品销量总计
 		    String goodsSaleHql="select sum(saleNumber) from GoodsParam where BusinessStore.id = '"+param.getId()+"'";
 		    Integer saleNumber=hibernateUtil.execSql(goodsSaleHql);
-		    
+		    //装载前台视图对象
 		    BusinessVo businessVo=new BusinessVo();
 		    businessVo.setGoodsNum(ObjList.size());
 		    businessVo.setGoodsMonthNum(ObjMonthList.size());
