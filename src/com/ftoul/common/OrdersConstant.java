@@ -21,6 +21,8 @@ public class OrdersConstant {
 	public static final String COMPLETE = "6";
 	/**未评价 7*/
 	public static final String NOT_EVALUATE = "7";
+	/**售后 10*/
+	public static final String AFTER = "10";
 	
 	/**银联支付*/
 	public static final String CHINAPAYTEST = "0";

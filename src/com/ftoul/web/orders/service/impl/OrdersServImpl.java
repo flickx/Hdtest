@@ -94,6 +94,8 @@ public class OrdersServImpl implements OrdersServ {
 			page =  hibernateUtil.hqlPage("from Orders where orderStatic in('2', '3') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.NOT_TASK_DELIVER.equals(key)){
 			page =  hibernateUtil.hqlPage("from Orders where orderStatic in ('4','5') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+		}else if(OrdersConstant.AFTER.equals(key)){
+			page =  hibernateUtil.hqlPage("from Orders where orderStatic not in ('0','1','7','8') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else{
 			page =  hibernateUtil.hqlPage("from Orders where orderStatic!='0' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}
