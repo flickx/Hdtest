@@ -498,8 +498,7 @@ public class Goods implements java.io.Serializable {
 	public void setGoodsType3(GoodsType goodsType3) {
 		this.goodsType3 = goodsType3;
 	}
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "shop_id")
+	@Column(name = "shop_id", length = 32)
 	public String getShopId() {
 		return shopId;
 	}

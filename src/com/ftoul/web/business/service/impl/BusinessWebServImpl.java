@@ -12,6 +12,7 @@ import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.po.BusinessStore;
 import com.ftoul.po.BusinessStoreSummary;
 import com.ftoul.po.Goods;
 import com.ftoul.util.hibernate.HibernateUtil;
@@ -47,10 +48,13 @@ public class BusinessWebServImpl implements BusinessWebServ {
 	 */
 	@Override
 	public Result getBusinessStorePage(Parameter param) throws Exception {
-		    String hql = "from BusinessStoreSummary where state = '1' BusinessStore.id='"+param.getId()+"' ";
-		    BusinessStoreSummary businessStoreSummary = (BusinessStoreSummary) hibernateUtil.hql(hql);
+			//店铺详情
+		    String hql = "from BusinessStore where state = '1' and id='"+param.getId()+"' ";
+		    BusinessStore businessStore = (BusinessStore) hibernateUtil.hql(hql);
+		    String summaryHql = "from BusinessStoreSummary where state = '1' and businessStore。id='"+param.getId()+"' ";
+		    BusinessStoreSummary businessStoreSummary=(BusinessStoreSummary) hibernateUtil.hql(summaryHql);
 		    //店铺商品总计
-		    String goodsHql = "from Goods where BusinessStore.id ='"+param.getId()+"' ";
+		    String goodsHql = "from Goods where shopId ='"+param.getId()+"' ";
 		    List<Object> ObjList =(List<Object>) hibernateUtil.hql(goodsHql);
 		    //店铺最近一个月上新商品总计
 		    Date endDate = new Date();
@@ -61,21 +65,25 @@ public class BusinessWebServImpl implements BusinessWebServ {
 		    SimpleDateFormat dd = new SimpleDateFormat("yyyy-MM-dd");
 		    String start = dd.format(startDate);
 		    String end = dd.format(endDate);
-		    String goodsMonthHql = "from Goods where BusinessStore.id ='"+param.getId()+"' and createTime >= '"+start+"' and createTime <= '"+end+"'";
+		    String goodsMonthHql = "from Goods where shopId ='"+param.getId()+"' and createTime >= '"+start+"' and createTime <= '"+end+"'";
 		    List<Object> ObjMonthList =(List<Object>) hibernateUtil.hql(goodsMonthHql);
 		    //店铺商品销量总计
-		    String goodsSaleHql="select sum(saleNumber) from GoodsParam where BusinessStore.id = '"+param.getId()+"'";
+		    String goodsSaleHql="select sum(saleNumber) from GoodsParam where goods.shopId = '"+param.getId()+"'";
 		    Integer saleNumber=hibernateUtil.execSql(goodsSaleHql);
 		    //装载前台视图对象
 		    BusinessVo businessVo=new BusinessVo();
 		    businessVo.setGoodsNum(ObjList.size());
 		    businessVo.setGoodsMonthNum(ObjMonthList.size());
 		    businessVo.setGoodsSaleNum(saleNumber);
-			businessVo.setBusinessStoreId(businessStoreSummary.getBusinessStore().getId());
-			businessVo.setStoreName(businessStoreSummary.getBusinessStore().getStoreName());
-			businessVo.setPic(businessStoreSummary.getBusinessStore().getPic());
-			businessVo.setVerifyTime(businessStoreSummary.getBusinessStore().getVerifyTime());
-			businessVo.setSummary(businessStoreSummary.getSummary());
+		    if(businessStore!=null){
+		    	businessVo.setBusinessStoreId(businessStore.getId());
+				businessVo.setStoreName(businessStore.getStoreName());
+				businessVo.setPic(businessStore.getPic());
+				businessVo.setVerifyTime(businessStore.getVerifyTime());
+		    }
+			if(businessStoreSummary!=null){
+				businessVo.setSummary(businessStoreSummary.getSummary());
+			}
 			return ObjectToResult.getResult(businessVo);
 	}
 }
