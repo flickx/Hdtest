@@ -8,7 +8,7 @@
 		<list>/api</list>
 		<list>/test</list>
 		<list>/web/manage/user</list>
-		<list>/web/</list>
+		<list>/web/business</list>
 	</nameSpace>
 	<methodName>
 		<list>login</list>

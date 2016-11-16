@@ -238,7 +238,11 @@ public class TokenUtil {
 			result.setResult(-1);
 			result.setMessage("用户未登陆");
 		}else{
-			String userId = manageTokenVo.getLoginUser().getId();
+			String userId = null;
+			if(manageTokenVo.getLoginUser()!=null){
+				userId = manageTokenVo.getLoginUser().getId();
+			}else
+				userId = manageTokenVo.getBusinessStoreLogin().getId();
 			String token = manageTokenVo.getToken();
 			ManageTokenVo manageTokenVoFMap = manageTokenMap.get(userId);
 			if(manageTokenVoFMap != null){

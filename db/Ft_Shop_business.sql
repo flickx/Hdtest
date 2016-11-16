@@ -282,3 +282,7 @@ alter table business_store_summary comment '商家简介信息表';
 
 alter table business_store_summary add constraint FK_Reference_10 foreign key (store_id)
       references business_store (id) on delete restrict on update restrict;
+/*==============================================================*/
+/* Table: goods     去除与店铺的外键，改为字段shop_id  2016.11.16        */
+/*==============================================================*/
+
