@@ -49,10 +49,9 @@ public class BusinessWebServImpl implements BusinessWebServ {
 	@Override
 	public Result getBusinessStorePage(Parameter param) throws Exception {
 			//店铺详情
-		    String hql = "from BusinessStore where state = '1' and id='"+param.getId()+"' ";
-		    BusinessStore businessStore = (BusinessStore) hibernateUtil.hql(hql);
-		    String summaryHql = "from BusinessStoreSummary where state = '1' and businessStore。id='"+param.getId()+"' ";
-		    BusinessStoreSummary businessStoreSummary=(BusinessStoreSummary) hibernateUtil.hql(summaryHql);
+		    BusinessStore businessStore = (BusinessStore) hibernateUtil.find(BusinessStore.class, param.getId().toString());
+		    String summaryHql = "select bss.summary from business_store_summary as bss where bss.state = '1' and bss.store_id='"+param.getId()+"' ";
+		    List<Object[]> businessStoreSummaryList =hibernateUtil.sql(summaryHql);
 		    //店铺商品总计
 		    String goodsHql = "from Goods where shopId ='"+param.getId()+"' ";
 		    List<Object> ObjList =(List<Object>) hibernateUtil.hql(goodsHql);
@@ -68,21 +67,23 @@ public class BusinessWebServImpl implements BusinessWebServ {
 		    String goodsMonthHql = "from Goods where shopId ='"+param.getId()+"' and createTime >= '"+start+"' and createTime <= '"+end+"'";
 		    List<Object> ObjMonthList =(List<Object>) hibernateUtil.hql(goodsMonthHql);
 		    //店铺商品销量总计
-		    String goodsSaleHql="select sum(saleNumber) from GoodsParam where goods.shopId = '"+param.getId()+"'";
-		    Integer saleNumber=hibernateUtil.execSql(goodsSaleHql);
+		    String goodsSaleHql="select sum(gp.sale_number) as number from goods_param as gp left join goods as g on g.id=gp.goods_id where g.shop_id = '"+param.getId()+"'";
+		    List<Object[]> saleNumber=hibernateUtil.sql(goodsSaleHql);
 		    //装载前台视图对象
 		    BusinessVo businessVo=new BusinessVo();
 		    businessVo.setGoodsNum(ObjList.size());
 		    businessVo.setGoodsMonthNum(ObjMonthList.size());
-		    businessVo.setGoodsSaleNum(saleNumber);
+		    if(saleNumber!=null){
+		    	businessVo.setGoodsSaleNum(Integer.parseInt(saleNumber.get(0)+""));
+		    }
 		    if(businessStore!=null){
 		    	businessVo.setBusinessStoreId(businessStore.getId());
 				businessVo.setStoreName(businessStore.getStoreName());
 				businessVo.setPic(businessStore.getPic());
 				businessVo.setVerifyTime(businessStore.getVerifyTime());
 		    }
-			if(businessStoreSummary!=null){
-				businessVo.setSummary(businessStoreSummary.getSummary());
+			if(businessStoreSummaryList.size()!=0){
+				businessVo.setSummary(businessStoreSummaryList.get(0)+"");
 			}
 			return ObjectToResult.getResult(businessVo);
 	}
