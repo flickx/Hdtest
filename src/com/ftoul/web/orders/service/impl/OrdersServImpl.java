@@ -1,5 +1,6 @@
 package com.ftoul.web.orders.service.impl;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -968,6 +969,31 @@ public class OrdersServImpl implements OrdersServ {
 		page.getObjList().clear();
 		page.getObjList().addAll(voList);
 		return ObjectToResult.getResult(page);
+	}
+
+	/**
+	 * 根据主键获取订单详情
+	 */
+	@Override
+	public Result getOrdersDetailById(Parameter param) throws Exception {
+		OrdersDetail detail = (OrdersDetail) hibernateUtil.find(OrdersDetail.class, param.getId()+"");
+		return ObjectToResult.getResult(detail);
+	}
+
+	/**
+	 * 保存售后申请信息
+	 */
+	@Override
+	public Result saveAfter(Parameter param) throws Exception {
+		// TODO Auto-generated method stub
+		Serializable s = null; 
+		AfterSchedule schedule = (AfterSchedule) Common.jsonToBean(param.getObj().toString(), AfterSchedule.class);
+		if(Common.isNull(schedule.getId())){
+			s = hibernateUtil.save(schedule);
+		}else{
+			hibernateUtil.update(schedule);
+		}
+		return ObjectToResult.getResult(s);
 	}
 	
 }
