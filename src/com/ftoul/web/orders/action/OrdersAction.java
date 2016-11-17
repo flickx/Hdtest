@@ -201,4 +201,16 @@ public class OrdersAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return ordersServ.getOrdersByOrdersNumber(parameter);
 	}
+	
+	/**
+	 * 获取售后进度列表
+	 * @param param 用户ID
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getOrderAfterSchedule")  
+	public @ResponseBody Result getOrderAfterSchedule(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return ordersServ.getOrderAfterSchedule(parameter);
+	}
 }
