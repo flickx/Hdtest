@@ -20,7 +20,7 @@ public class BusinessStoreManageCategory implements java.io.Serializable {
 	// Fields
 
 	private String id;
-	private BusinessStore businessStore;
+	private String storeId;
 	private String firstCategory;
 	private String twoCategory;
 	private String threeCategory;
@@ -37,11 +37,11 @@ public class BusinessStoreManageCategory implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public BusinessStoreManageCategory(BusinessStore businessStore,
+	public BusinessStoreManageCategory(String storeId,
 			String firstCategory, String twoCategory, String threeCategory,
 			String operateId, String operateTime, String createId,
 			String createTime, String state) {
-		this.businessStore = businessStore;
+		this.storeId = storeId;
 		this.firstCategory = firstCategory;
 		this.twoCategory = twoCategory;
 		this.threeCategory = threeCategory;
@@ -65,14 +65,13 @@ public class BusinessStoreManageCategory implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "store_id")
-	public BusinessStore getBusinessStore() {
-		return this.businessStore;
+	@Column(name = "store_id",length=100)
+	public String getStoreId() {
+		return this.storeId;
 	}
 
-	public void setBusinessStore(BusinessStore businessStore) {
-		this.businessStore = businessStore;
+	public void setStoreId(String storeId) {
+		this.storeId = storeId;
 	}
 
 	@Column(name = "first_category", length = 100)

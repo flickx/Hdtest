@@ -23,4 +23,11 @@ public interface BusinessWebServ {
 	 * @return  返回结果（前台用Result对象）
 	 */ 
 	public Result getBusinessStorePage(Parameter param) throws Exception;
+	/**
+	 * 
+	 * 根据商品ID获取店铺详情以及商品统计
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	public Result getBusinessStorePageByGoodsId(Parameter param) throws Exception;
 }

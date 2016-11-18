@@ -1,8 +1,6 @@
 package com.ftoul.po;
 
-import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -27,6 +24,7 @@ public class BusinessStore implements java.io.Serializable {
 	private BusinessStoreRank businessStoreRank;
 	private Business business;
 	private BusinessStoreClassify businessStoreClassify;
+	private String storeId;
 	private String pic;
 	private String storeName;
 	private String storeDuration;
@@ -45,8 +43,9 @@ public class BusinessStore implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public BusinessStore(String pic, String storeName, String storeDuration,
+	public BusinessStore(String pic, String storeName, String storeId,String storeDuration,
 			String operateId) {
+		this.storeId=storeId;
 		this.pic = pic;
 		this.storeName = storeName;
 		this.storeDuration = storeDuration;
@@ -60,10 +59,11 @@ public class BusinessStore implements java.io.Serializable {
 			String operateId, String operateTime, String createId,
 			String createTime, String verifyId, String verifyTime,
 			String state, Set<BusinessStoreLogin> businessStoreLogins,
-			Set<BusinessStoreManageCategory> businessStoreManageCategories) {
+			Set<BusinessStoreManageCategory> businessStoreManageCategories,String storeId) {
 		this.businessStoreRank = businessStoreRank;
 		this.business = business;
 		this.businessStoreClassify = businessStoreClassify;
+		this.storeId=storeId;
 		this.pic = pic;
 		this.storeName = storeName;
 		this.storeDuration = storeDuration;
@@ -208,6 +208,13 @@ public class BusinessStore implements java.io.Serializable {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+	@Column(name = "store_id", length = 100)
+	public String getStoreId() {
+		return storeId;
+	}
+	public void setStoreId(String storeId) {
+		this.storeId = storeId;
 	}
 
 }

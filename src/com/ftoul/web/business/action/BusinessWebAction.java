@@ -42,4 +42,15 @@ public class BusinessWebAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return businessWebServ.getBusinessStorePage(parameter);
 	}
+	/**
+	 * 
+	 * 根据商品ID获取店铺详情以及商品统计
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */ 
+	@RequestMapping(value="getBusinessStorePageByGoodsId")
+	public @ResponseBody Result getBusinessStorePageByGoodsId(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return businessWebServ.getBusinessStorePageByGoodsId(parameter);
+	}
 }

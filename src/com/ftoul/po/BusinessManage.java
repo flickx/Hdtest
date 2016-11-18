@@ -27,6 +27,7 @@ public class BusinessManage implements java.io.Serializable {
 	private String idCardFaceImg;
 	private String idCardConImg;
 	private String businessLicenceNumber;
+	private String businessLicenceAddress;
 	private String establishTime;
 	private String manageScope;
 	private String businessLicenceImg;
@@ -48,7 +49,8 @@ public class BusinessManage implements java.io.Serializable {
 			String idCardFaceImg, String idCardConImg,
 			String businessLicenceNumber, String establishTime,
 			String manageScope, String businessLicenceImg,
-			String businesSlicenceDate) {
+			String businesSlicenceDate,String businessLicenceAddress) {
+		this.businessLicenceAddress=businessLicenceAddress;
 		this.legalPerson = legalPerson;
 		this.idCard = idCard;
 		this.idCardFaceImg = idCardFaceImg;
@@ -73,6 +75,7 @@ public class BusinessManage implements java.io.Serializable {
 		this.idCardFaceImg = idCardFaceImg;
 		this.idCardConImg = idCardConImg;
 		this.businessLicenceNumber = businessLicenceNumber;
+		this.businessLicenceAddress=businessLicenceAddress;
 		this.establishTime = establishTime;
 		this.manageScope = manageScope;
 		this.businessLicenceImg = businessLicenceImg;
@@ -221,6 +224,14 @@ public class BusinessManage implements java.io.Serializable {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+	@Column(name = "business_licence_address", length = 100)
+	public String getBusinessLicenceAddress() {
+		return businessLicenceAddress;
+	}
+
+	public void setBusinessLicenceAddress(String businessLicenceAddress) {
+		this.businessLicenceAddress = businessLicenceAddress;
 	}
 
 
