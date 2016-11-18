@@ -945,7 +945,7 @@ public class OrdersServImpl implements OrdersServ {
 	 */
 	@Override
 	public Result getOrderAfterSchedule(Parameter param) throws Exception {
-		Page page = hibernateUtil.hqlPage("from AfterSchedule where state='1' and user.id="+param.getUserId()+" order by createTime desc",param.getPageNum(),param.getPageSize());
+		Page page = hibernateUtil.hqlPage("from AfterSchedule where state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by createTime desc",param.getPageNum(),param.getPageSize());
 		List list = page.getObjList();
 		List<AfterScheduleVo> voList = new ArrayList<AfterScheduleVo>();
 		for (int i = 0; i < list.size(); i++) {
