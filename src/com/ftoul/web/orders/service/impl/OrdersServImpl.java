@@ -1,5 +1,6 @@
 package com.ftoul.web.orders.service.impl;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.manage.cart.service.CartServ;
 import com.ftoul.manage.coin.service.CoinSetServ;
+import com.ftoul.po.AfterSchedule;
 import com.ftoul.po.FullCutRule;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
@@ -47,6 +49,7 @@ import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.orders.OrdersUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.orders.service.OrdersServ;
+import com.ftoul.web.vo.AfterScheduleVo;
 import com.ftoul.web.vo.GoodsVo;
 import com.ftoul.web.vo.ManyVsOneVo;
 import com.ftoul.web.vo.MjGoodsEventVo;
@@ -935,6 +938,62 @@ public class OrdersServImpl implements OrdersServ {
 			
 		}
 		return ObjectToResult.getResult(new Object());
+	}
+	
+	/**
+	 * 获取售后进度列表
+	 */
+	@Override
+	public Result getOrderAfterSchedule(Parameter param) throws Exception {
+		Page page = hibernateUtil.hqlPage("from AfterSchedule where state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by createTime desc",param.getPageNum(),param.getPageSize());
+		List list = page.getObjList();
+		List<AfterScheduleVo> voList = new ArrayList<AfterScheduleVo>();
+		for (int i = 0; i < list.size(); i++) {
+			AfterScheduleVo vo = new AfterScheduleVo();
+			AfterSchedule schedule = (AfterSchedule) list.get(i);
+			vo.setId(schedule.getId());
+			vo.setGoodsName(schedule.getOrdersDetail().getGoodsParam().getGoods().getTitle());
+			vo.setLogCompany(schedule.getLogCompany());
+			vo.setLogOdd(schedule.getLogOdd());
+			vo.setOrderId(schedule.getOrdersDetail().getOrders().getId());
+			vo.setOrderStatic(schedule.getOrdersDetail().getOrders().getOrderStatic());
+			vo.setOrderTime(schedule.getOrdersDetail().getOrders().getOrderTime());
+			vo.setPic(schedule.getOrdersDetail().getGoodsParam().getGoods().getPicSrc());
+			vo.setPrice(schedule.getOrdersDetail().getPrice());
+			vo.setScheduleStatic(schedule.getScheduleStatic());
+			vo.setServiceCode(schedule.getServiceCode());
+			vo.setTel(schedule.getTel());
+			vo.setUserId(schedule.getUser().getId());
+			voList.add(vo);
+		}
+		page.getObjList().clear();
+		page.getObjList().addAll(voList);
+		return ObjectToResult.getResult(page);
+	}
+
+	/**
+	 * 根据主键获取订单详情
+	 */
+	@Override
+	public Result getOrdersDetailById(Parameter param) throws Exception {
+		OrdersDetail detail = (OrdersDetail) hibernateUtil.find(OrdersDetail.class, param.getId()+"");
+		return ObjectToResult.getResult(detail);
+	}
+
+	/**
+	 * 保存售后申请信息
+	 */
+	@Override
+	public Result saveAfter(Parameter param) throws Exception {
+		// TODO Auto-generated method stub
+		Serializable s = null; 
+		AfterSchedule schedule = (AfterSchedule) Common.jsonToBean(param.getObj().toString(), AfterSchedule.class);
+		if(Common.isNull(schedule.getId())){
+			s = hibernateUtil.save(schedule);
+		}else{
+			hibernateUtil.update(schedule);
+		}
+		return ObjectToResult.getResult(s);
 	}
 	
 }

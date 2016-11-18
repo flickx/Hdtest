@@ -42,7 +42,7 @@ public class OrdersDetail  implements java.io.Serializable {
      private String modifyTime;
      private String modifyPerson;
      private String state;
-
+     private String price;
 
     // Constructors
 
@@ -211,5 +211,16 @@ public class OrdersDetail  implements java.io.Serializable {
     public void setState(String state) {
         this.state = state;
     }
+
+    @Column(name="price", length=32)
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
+	}
+    
+    
 
 }
