@@ -16,10 +16,12 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.manage.business.service.BusinessServ;
+import com.ftoul.manage.business.vo.BusinessStoreManageCategoryVo;
 import com.ftoul.po.BusinessStoreClassify;
 import com.ftoul.po.BusinessStoreLogin;
 import com.ftoul.po.BusinessStoreManageCategory;
 import com.ftoul.po.BusinessStoreRank;
+import com.ftoul.po.GoodsType;
 import com.ftoul.util.hibernate.HibernateUtil;
 
 /**
@@ -304,6 +306,28 @@ public class BusinessServImpl implements BusinessServ {
 			throws Exception {
 		String hql= "from BusinessStoreManageCategory"+" where state =1 and storeId= '"+  parameter.getId() + "' order by createTime desc";
 		List<Object> list = hibernateUtil.hql(hql); 
-		return ObjectToResult.getResult(list);
+		List<BusinessStoreManageCategoryVo> businessStoreManageCategoryVoList = new ArrayList<BusinessStoreManageCategoryVo>();
+		if(list!=null){
+			BusinessStoreManageCategory businessStoreManageCategory=new BusinessStoreManageCategory();
+			GoodsType goodsType=new GoodsType();
+			for(int i=0;i<list.size();i++){
+				BusinessStoreManageCategoryVo businessStoreManageCategoryVo=new BusinessStoreManageCategoryVo();
+				businessStoreManageCategory=(BusinessStoreManageCategory) list.get(i);
+				businessStoreManageCategoryVo.setId(businessStoreManageCategory.getId());
+				businessStoreManageCategoryVo.setStoreId(businessStoreManageCategory.getStoreId());
+				businessStoreManageCategoryVo.setState(businessStoreManageCategory.getState());
+				goodsType=(GoodsType) hibernateUtil.find(GoodsType.class, businessStoreManageCategory.getFirstCategory());
+				businessStoreManageCategoryVo.setFirstCategory( businessStoreManageCategory.getFirstCategory());
+				businessStoreManageCategoryVo.setFirstCategoryName(goodsType.getName());
+				goodsType=(GoodsType) hibernateUtil.find(GoodsType.class, businessStoreManageCategory.getTwoCategory());
+				businessStoreManageCategoryVo.setTwoCategory( businessStoreManageCategory.getTwoCategory());
+				businessStoreManageCategoryVo.setTwoCategoryName(goodsType.getName());
+				goodsType=(GoodsType) hibernateUtil.find(GoodsType.class, businessStoreManageCategory.getThreeCategory());
+				businessStoreManageCategoryVo.setThreeCategory( businessStoreManageCategory.getThreeCategory());
+				businessStoreManageCategoryVo.setThreeCategoryName(goodsType.getName());
+				businessStoreManageCategoryVoList.add(businessStoreManageCategoryVo);
+			}
+		}
+		return ObjectToResult.getResult(businessStoreManageCategoryVoList);
 	}
 }
