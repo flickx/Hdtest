@@ -27,6 +27,10 @@ public class AfterSchedule implements java.io.Serializable {
 	private String logCompany;
 	private String logOdd;
 	private String tel;
+	private String type;
+	private String reason;
+	private String price;
+	private String num;
 	private String state;
 	private String createTime;
 	private String createPerson;
@@ -178,6 +182,42 @@ public class AfterSchedule implements java.io.Serializable {
 
 	public void setModifyPerson(String modifyPerson) {
 		this.modifyPerson = modifyPerson;
+	}
+	
+	@Column(name = "type", length = 32)
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	@Column(name = "reason", length = 32)
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	@Column(name = "price", length = 32)
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
+	}
+
+	@Column(name = "num", length = 32)
+	public String getNum() {
+		return num;
+	}
+
+	public void setNum(String num) {
+		this.num = num;
 	}
 
 }

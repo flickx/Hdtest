@@ -351,5 +351,29 @@ public class OrdersAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return ordersServ.getSendGoodsListPage(parameter);
 	}
+	
+	/**
+	 * 获取售后申请列表（带分页）
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getAfterListPage")  
+	public @ResponseBody Result getAfterListPage(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return ordersServ.getAfterListPage(parameter);
+	}
+	
+	/**
+	 * 获取售后申请列表（带分页）
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getAfterScheduleDetail")  
+	public @ResponseBody Result getAfterScheduleDetail(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return ordersServ.getAfterScheduleDetail(parameter);
+	}
 
 }
