@@ -18,6 +18,7 @@ import com.ftoul.common.StrUtil;
 import com.ftoul.manage.business.service.BusinessServ;
 import com.ftoul.po.BusinessStoreClassify;
 import com.ftoul.po.BusinessStoreLogin;
+import com.ftoul.po.BusinessStoreManageCategory;
 import com.ftoul.po.BusinessStoreRank;
 import com.ftoul.util.hibernate.HibernateUtil;
 
@@ -277,6 +278,24 @@ public class BusinessServImpl implements BusinessServ {
 		String hql="update BusinessStoreRank set state = '0' where id in ("+StrUtil.getIds(parameter.getId())+")";
 		Integer res;
 		res = hibernateUtil.execHql(hql);
+		return ObjectToResult.getResult(res);
+	}
+	/**
+	 * 保存店铺经营类目信息
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result saveBusinessStoreManageCategory(Parameter parameter)
+			throws Exception {
+		BusinessStoreManageCategory businessStoreManageCategory=(BusinessStoreManageCategory) JSONObject.toBean((JSONObject) parameter.getObj(),BusinessStoreManageCategory.class);
+		Object res;
+		businessStoreManageCategory.setCreateId(parameter.getManageToken().getLoginUser().getLoginName());
+		businessStoreManageCategory.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		businessStoreManageCategory.setOperateId(parameter.getManageToken().getLoginUser().getLoginName());
+		businessStoreManageCategory.setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		businessStoreManageCategory.setState("1");
+		res =hibernateUtil.save(businessStoreManageCategory);
 		return ObjectToResult.getResult(res);
 	}
 }

@@ -101,4 +101,12 @@ public interface BusinessServ {
 	 * @throws Exception
 	 */
 	Result delBusinessStoreRankbyId(Parameter parameter) throws Exception;
+	/**
+	 * 保存店铺经营类目信息
+	 * @param param
+	 * @return 返回结果(前台用Result对象)
+	 * @throws Exception
+	 */
+	Result saveBusinessStoreManageCategory(Parameter parameter) throws Exception;
 }
+

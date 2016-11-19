@@ -186,7 +186,7 @@ create table business_store_manage_category
    operate_time         varchar(50) comment '����ʱ��',
    create_id            varchar(100) comment '������Id',
    create_time          varchar(50) comment '����ʱ��',
-   state                varchar(0) comment '������ݱ���߼�����',
+   state                varchar(1) comment '������ݱ���߼�����',
    primary key (id)
 );
 
@@ -285,4 +285,8 @@ alter table business_store_summary add constraint FK_Reference_10 foreign key (s
 /*==============================================================*/
 /* Table: goods     去除与店铺的外键，改为字段shop_id  2016.11.16        */
 /*==============================================================*/
-
+/*==============================================================*/
+/* Table: business_store_manage   business_store  2016.11.17    */
+/*==============================================================*/
+alter table business_store_manage  add business_store_address varchar(100);
+alter table business_store add store_id varchar(100);
