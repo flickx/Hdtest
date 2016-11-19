@@ -298,4 +298,12 @@ public class BusinessServImpl implements BusinessServ {
 		res =hibernateUtil.save(businessStoreManageCategory);
 		return ObjectToResult.getResult(res);
 	}
+
+	@Override
+	public Result getBusinessStoreManageCategoryPage(Parameter parameter)
+			throws Exception {
+		String hql= "from BusinessStoreManageCategory"+" where state =1 and storeId= '"+  parameter.getId() + "' order by createTime desc";
+		List<Object> list = hibernateUtil.hql(hql); 
+		return ObjectToResult.getResult(list);
+	}
 }

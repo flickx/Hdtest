@@ -216,4 +216,14 @@ public class BusinessAction {
 			Parameter parameter = Common.jsonToParam(param);
 			return businessServ.saveBusinessStoreManageCategory(parameter);
 		}
+		/**
+		 * 获取店铺经营类目
+		 * @param param 参数
+		 * @throws Exception
+		 */
+		@RequestMapping(value="getBusinessStoreManageCategoryPage")
+		public @ResponseBody Result getBusinessStoreManageCategoryPage(String param)throws Exception{
+			Parameter parameter = Common.jsonToParam(param);
+			return businessServ.getBusinessStoreManageCategoryPage(parameter);
+		}
 }
