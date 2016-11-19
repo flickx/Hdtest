@@ -29,7 +29,7 @@ public class AfterSchedule implements java.io.Serializable {
 	private String tel;
 	private String type;
 	private String reason;
-	private String price;
+	private String backPrice;
 	private String num;
 	private String state;
 	private String createTime;
@@ -202,13 +202,13 @@ public class AfterSchedule implements java.io.Serializable {
 		this.reason = reason;
 	}
 
-	@Column(name = "price", length = 32)
-	public String getPrice() {
-		return price;
+	@Column(name = "back_price", length = 32)
+	public String getBackPrice() {
+		return backPrice;
 	}
 
-	public void setPrice(String price) {
-		this.price = price;
+	public void setBackPrice(String backPrice) {
+		this.backPrice = backPrice;
 	}
 
 	@Column(name = "num", length = 32)

@@ -10,7 +10,7 @@ public class AfterScheduleVo {
 	private String tel;
 	private String type;
 	private String reason;
-	private String price;
+	private String backPrice;
 	private String num;
 	private String orderNumber;
 	private String orderStatic;
@@ -82,11 +82,11 @@ public class AfterScheduleVo {
 	public void setReason(String reason) {
 		this.reason = reason;
 	}
-	public String getPrice() {
-		return price;
+	public String getBackPrice() {
+		return backPrice;
 	}
-	public void setPrice(String price) {
-		this.price = price;
+	public void setBackPrice(String backPrice) {
+		this.backPrice = backPrice;
 	}
 	public String getNum() {
 		return num;

@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.OrderUtils;
 import org.springframework.stereotype.Service;
 
 import com.ftoul.api.KdniaoTrackQueryAPI;
@@ -944,7 +945,7 @@ public class OrdersServImpl implements OrdersServ {
 	 * 获取售后进度列表
 	 */
 	@Override
-	public Result getOrderAfterSchedule(Parameter param) throws Exception {
+	public Result getOrderAfterSchedulePage(Parameter param) throws Exception {
 		Page page = hibernateUtil.hqlPage("from AfterSchedule where state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by createTime desc",param.getPageNum(),param.getPageSize());
 		List list = page.getObjList();
 		List<AfterScheduleVo> voList = new ArrayList<AfterScheduleVo>();
@@ -959,7 +960,8 @@ public class OrdersServImpl implements OrdersServ {
 			vo.setOrderStatic(schedule.getOrdersDetail().getOrders().getOrderStatic());
 			vo.setOrderTime(schedule.getOrdersDetail().getOrders().getOrderTime());
 			vo.setPic(schedule.getOrdersDetail().getGoodsParam().getGoods().getPicSrc());
-			vo.setPrice(schedule.getOrdersDetail().getPrice());
+			vo.setBackPrice(schedule.getBackPrice());
+			vo.setNum(schedule.getNum());
 			vo.setScheduleStatic(schedule.getScheduleStatic());
 			vo.setServiceCode(schedule.getServiceCode());
 			vo.setTel(schedule.getTel());
@@ -985,15 +987,28 @@ public class OrdersServImpl implements OrdersServ {
 	 */
 	@Override
 	public Result saveAfter(Parameter param) throws Exception {
-		// TODO Auto-generated method stub
-		Serializable s = null; 
+		Serializable s = null;
 		AfterSchedule schedule = (AfterSchedule) Common.jsonToBean(param.getObj().toString(), AfterSchedule.class);
 		if(Common.isNull(schedule.getId())){
+			OrdersDetail od = (OrdersDetail) hibernateUtil.find(OrdersDetail.class, param.getId()+"");
+			schedule.setOrdersDetail(od);
+			schedule.setUser(param.getUserToken().getUser());
+			schedule.setServiceCode(ordersUtil.getAfterServiceCode());
+			schedule.setScheduleStatic("1");//用户申请售后
+			schedule.setState("1");
+			schedule.setCreatePerson(param.getUserId());
+			schedule.setCreateTime(new DateStr().toString());
 			s = hibernateUtil.save(schedule);
 		}else{
 			hibernateUtil.update(schedule);
 		}
 		return ObjectToResult.getResult(s);
+	}
+
+	@Override
+	public Result getAfterSchedule(Parameter param) throws Exception {
+		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
+		return ObjectToResult.getResult(after);
 	}
 	
 }

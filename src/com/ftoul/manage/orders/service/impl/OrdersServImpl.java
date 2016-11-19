@@ -833,7 +833,7 @@ public class OrdersServImpl implements OrdersServ {
 			}else if("8".equals(orders.getOrderStatic())){
 				afterVo.setOrderStatic("已取消");
 			}
-			afterVo.setPrice(after.getPrice());
+			afterVo.setBackPrice(after.getBackPrice());
 //			hql = " from OrdersDetail where orders.id='"+orders.getId()+"'";
 //			List<Object> ordersDetailList = hibernateUtil.hql(hql);
 //			List<String> ordersDetailVoList = new ArrayList<String>();
@@ -893,7 +893,7 @@ public class OrdersServImpl implements OrdersServ {
 		afterVo.setGoodsPicSrcs(od.getGoodsParam().getGoods().getPicSrc());
 		afterVo.setSku(od.getGoodsParam().getGoods().getSkuCode());
 		afterVo.setNum(schedule.getNum());
-		afterVo.setPrice(schedule.getPrice());
+		afterVo.setBackPrice(schedule.getBackPrice());
 		return ObjectToResult.getResult(afterVo);
 	}
 	
