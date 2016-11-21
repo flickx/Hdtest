@@ -43,6 +43,7 @@ public class User implements java.io.Serializable {
 	private String modifyTime;
 	private String modifyPerson;
 	private String state;
+	private String driveId;
 
 	// Constructors
 
@@ -280,4 +281,15 @@ public class User implements java.io.Serializable {
 		this.state = state;
 	}
 
+	@Column(name = "driveId", length = 32)
+	public String getDriveId() {
+		return driveId;
+	}
+
+	public void setDriveId(String driveId) {
+		this.driveId = driveId;
+	}
+
+
+	
 }

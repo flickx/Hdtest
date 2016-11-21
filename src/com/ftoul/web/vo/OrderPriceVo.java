@@ -11,6 +11,7 @@ public class OrderPriceVo {
 	private int coinNumber;
 	private int totalCoinNumber;
 	private double coinPrice;
+	private String flag;
 	
 	public String getBenPrice() {
 		return benPrice;
@@ -65,6 +66,12 @@ public class OrderPriceVo {
 	}
 	public void setTotalCoinNumber(int totalCoinNumber) {
 		this.totalCoinNumber = totalCoinNumber;
+	}
+	public String getFlag() {
+		return flag;
+	}
+	public void setFlag(String flag) {
+		this.flag = flag;
 	}
 	
 }

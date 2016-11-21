@@ -30,7 +30,7 @@ public class Orders  implements java.io.Serializable {
 	private static final long serialVersionUID = -4958906136735588973L;
 	private String id;
      private User user;
-     private UserAddress userAddress;
+//     private UserAddress userAddress;
      private String goodsTotal;
      private String orderNumber;
      private String payType;
@@ -64,7 +64,9 @@ public class Orders  implements java.io.Serializable {
      private String customsClearanceStatic;
      private String benefitPrice;
      private String benefitReason;
-
+     private String consignee;
+     private String consigneeTel;
+     private String address;
 
     // Constructors
 
@@ -74,9 +76,9 @@ public class Orders  implements java.io.Serializable {
 
     
     /** full constructor */
-    public Orders(User user, UserAddress userAddress, String orderNumber, String payType, String confirmTime, String orderStatic, String deliverStatic, String payStatic, String confirmStatic, String odd, String orderTime, String payTime, String deliverTime, String feedback, String payable, String orderPrice, String shopMessage, String outOfStock, String beeCoins, String invoiceType, String invoiceHead, String invoiceContent, String createTime, String createPerson, String modifyTime, String modifyPerson, String state, String oneIndiana,String coinPrice) {
+    public Orders(User user,  String orderNumber, String payType, String confirmTime, String orderStatic, String deliverStatic, String payStatic, String confirmStatic, String odd, String orderTime, String payTime, String deliverTime, String feedback, String payable, String orderPrice, String shopMessage, String outOfStock, String beeCoins, String invoiceType, String invoiceHead, String invoiceContent, String createTime, String createPerson, String modifyTime, String modifyPerson, String state, String oneIndiana,String coinPrice) {
         this.user = user;
-        this.userAddress = userAddress;
+//        this.userAddress = userAddress;
         this.orderNumber = orderNumber;
         this.payType = payType;
         this.confirmTime = confirmTime;
@@ -141,16 +143,16 @@ public class Orders  implements java.io.Serializable {
 	}
 
 
-	@ManyToOne(fetch=FetchType.EAGER)
-        @JoinColumn(name="user_address_id")
-
-    public UserAddress getUserAddress() {
-        return this.userAddress;
-    }
-    
-    public void setUserAddress(UserAddress userAddress) {
-        this.userAddress = userAddress;
-    }
+//	@ManyToOne(fetch=FetchType.EAGER)
+//        @JoinColumn(name="user_address_id")
+//
+//    public UserAddress getUserAddress() {
+//        return this.userAddress;
+//    }
+//    
+//    public void setUserAddress(UserAddress userAddress) {
+//        this.userAddress = userAddress;
+//    }
     
     @Column(name="order_number", length=32)
 
@@ -466,6 +468,34 @@ public class Orders  implements java.io.Serializable {
 
 	public void setCoinPrice(String coinPrice) {
 		this.coinPrice = coinPrice;
+	}
+
+
+	@Column(name="consignee", length=100)
+	public String getConsignee() {
+		return consignee;
+	}
+
+	public void setConsignee(String consignee) {
+		this.consignee = consignee;
+	}
+
+	@Column(name="consignee_tel", length=100)
+	public String getConsigneeTel() {
+		return consigneeTel;
+	}
+
+	public void setConsigneeTel(String consigneeTel) {
+		this.consigneeTel = consigneeTel;
+	}
+	
+	@Column(name="address", length=200)
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	
 

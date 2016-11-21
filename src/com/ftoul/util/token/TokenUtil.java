@@ -47,8 +47,13 @@ public class TokenUtil {
 		String passwordVersion = user.getPasswordVersion();
 		//根据用户ID，密码版本号生成密匙（不修改密码的前提下密匙不会改变）
 		String secretKey = generaSecretKey(userId, passwordVersion, mobilKey);
+		
+		String uuid = user.getDriveId();
+		if(uuid == null){
+			uuid = "";
+		}
 		//根据相关信息、时间轴及随机数生成动态的token
-		String token = generaToken(userId, secretKey, mobilKey);
+		String token = generaToken(userId, secretKey, mobilKey,uuid);
 		//更新到数据库
 		UserToken userTokenDb = new UserToken();
 		Object userTokenObj = hibernateUtil.hqlFirst(" from UserToken where user.state = 1 and user.id = '" + userId +"'");
@@ -86,13 +91,17 @@ public class TokenUtil {
 			String userId = userToken.getUser().getId();
 			String mobilToken = userToken.getMobilToken();
 			String secretKey = userToken.getSecretKey();
+			String uuid = userToken.getDriveId();
+			if(uuid == null){
+				uuid = "";
+			}
 			UserToken userTokenFMap = userTokenMap.get(userId);
-			String newToken = generaToken(userId, secretKey, mobilKey);
+			String newToken = generaToken(userId, secretKey, mobilKey,uuid);
 			if(userTokenFMap != null){
 				if(userTokenFMap.getSecretKey().equals(userToken.getSecretKey())){
 					String userMapTokenTime = userTokenFMap.getUploadTime();
 					Date userMapTokenTimeToDate = DateUtil.stringFormatToDate(userMapTokenTime, "yyyy-MM-dd HH:mm:ss");
-					if((float)(new Date().getTime()-userMapTokenTimeToDate.getTime())/(1000*60) <= tokenTime){
+//					if((float)(new Date().getTime()-userMapTokenTimeToDate.getTime())/(1000*60) <= tokenTime){
 						if(userTokenFMap.getMobilToken().equals(mobilToken)){
 							result.setResult(1);
 							result.setMessage("验证通过");
@@ -105,25 +114,25 @@ public class TokenUtil {
 							result.setResult(3);
 							result.setMessage("验证失败，请重新登录(103)");
 						}
-					}else{
-						if(userTokenFMap.getMobilToken().equals(mobilToken)){
-							result.setResult(2);
-							result.setMessage("token超时，更新token(102)");
-							UserToken userTokenDb = (UserToken) hibernateUtil.find(UserToken.class, tokenId);
-	//						String hql = "from UserToken where id = '"+tokenId+"'";
-	//						Object o = hibernateUtil.hqlFirst(hql);
-	//						UserToken userTokenDb = (UserToken) o;
-							userTokenDb.setMobilToken(newToken);
-							userTokenDb.setUploadTime(new DateStr().toString());
-							hibernateUtil.update(userTokenDb);
-							result.setObj(userTokenDb);
-							userTokenMap.put(userId, userTokenDb);
-							
-						}else{
-							result.setResult(3);
-							result.setMessage("验证失败，请重新登录(203)");
-						}
-					}
+//					}else{
+//						if(userTokenFMap.getMobilToken().equals(mobilToken)){
+//							result.setResult(2);
+//							result.setMessage("token超时，更新token(102)");
+//							UserToken userTokenDb = (UserToken) hibernateUtil.find(UserToken.class, tokenId);
+//	//						String hql = "from UserToken where id = '"+tokenId+"'";
+//	//						Object o = hibernateUtil.hqlFirst(hql);
+//	//						UserToken userTokenDb = (UserToken) o;
+//							userTokenDb.setMobilToken(newToken);
+//							userTokenDb.setUploadTime(new DateStr().toString());
+//							hibernateUtil.update(userTokenDb);
+//							result.setObj(userTokenDb);
+//							userTokenMap.put(userId, userTokenDb);
+//							
+//						}else{
+//							result.setResult(3);
+//							result.setMessage("验证失败，请重新登录(203)");
+//						}
+//					}
 				}else{
 					result.setResult(4);
 					result.setMessage("密码已修改，请重新登录(304)");
@@ -138,14 +147,14 @@ public class TokenUtil {
 						userTokenDb.setMobilToken(newToken);
 						userTokenDb.setUploadTime(new DateStr().toString());
 						hibernateUtil.update(userTokenDb);
-						result.setResult(2);
+						result.setResult(1);
 						result.setMessage("token超时,更新token(402)");
 					}else{
-						userTokenDb.setMobilToken(newToken);
-						userTokenDb.setUploadTime(new DateStr().toString());
-						hibernateUtil.update(userTokenDb);
-						result.setResult(2);
-						result.setMessage("token超时,更新token(403)");
+//						userTokenDb.setMobilToken(newToken);
+//						userTokenDb.setUploadTime(new DateStr().toString());
+//						hibernateUtil.update(userTokenDb);
+						result.setResult(3);
+						result.setMessage("token验证失败,请重新登陆(403)");
 					}
 				}else{
 					result.setResult(4);
@@ -165,16 +174,32 @@ public class TokenUtil {
 		UserToken userTokenFMap = userTokenMap.get(userId);
 		String newToken = generaSecretKey(userId, user.getPasswordVersion(), mobilKey);
 		String newDate = new DateStr().toString();
+		String uuid = user.getDriveId();
+		if(uuid == null){
+			uuid = "";
+		}
 		if(userTokenFMap != null){
 			userTokenFMap.setSecretKey(newToken);
 			userTokenFMap.setUploadTime(newDate);
 			userTokenMap.put(userId, userTokenFMap);
 		}
 		Object userTokenObj = hibernateUtil.hqlFirst(" from UserToken where user.state = 1 and user.id = '" + userId +"'");
-		UserToken userToken = (UserToken) userTokenObj;
-		userToken.setSecretKey(newToken);
-		userToken.setUploadTime(newDate);
-		hibernateUtil.update(userToken);
+		UserToken userToken = new UserToken();
+		
+		if(userTokenObj == null){
+			//根据相关信息、时间轴及随机数生成动态的token
+			String token = generaToken(userId, newToken, mobilKey, uuid);
+			userToken.setMobilToken(token);
+			userToken.setSecretKey(newToken);
+			userToken.setUploadTime(newDate);
+			userToken.setUser(user);
+			hibernateUtil.save(userToken);
+		}else{
+			userToken = (UserToken) userTokenObj;
+			userToken.setSecretKey(newToken);
+			userToken.setUploadTime(newDate);
+			hibernateUtil.update(userToken);
+		}
 		return userToken;
 	}
 	
@@ -197,7 +222,7 @@ public class TokenUtil {
 		//根据用户ID，密码跟版本号生成密匙（不修改密码的前提下密匙不会改变）
 		String secretKey = generaSecretKey(userId, passwordVersion, manageKey);
 		//根据相关信息、时间轴及随机数生成动态的token
-		String token = generaToken(userId, secretKey, manageKey);
+		String token = generaToken(userId, secretKey, manageKey,"pc");
 		ManageTokenVo manageTokenVo = new ManageTokenVo();
 		manageTokenVo.setLoginUser(loginUser);
 		manageTokenVo.setSecretKey(secretKey);
@@ -287,7 +312,7 @@ public class TokenUtil {
 	public ManageTokenVo uploadManageSecretKey(LoginUser user){
 		String userId = user.getId();
 		ManageTokenVo manageTokenVoFMap = manageTokenMap.get(userId);
-		String newToken = generaToken(userId, user.getPassword(), manageKey);
+		String newToken = generaToken(userId, user.getPassword(), manageKey,"pc");
 		String newDate = new DateStr().toString();
 		String newSecretKey = generaSecretKey(userId, user.getPassword(), manageKey);
 		if(manageTokenVoFMap != null){
@@ -327,10 +352,10 @@ public class TokenUtil {
 	 * 生成Token
 	 * @return
 	 */
-	public String generaToken(String userId, String secretKey,String key){
+	public String generaToken(String userId, String secretKey,String key,String uuid){
 		String timeStr =  new Date().getTime() + "";
 		String randomNum = new Random().nextInt(99999) + "";
-		return MD5.getMD5(userId + secretKey + timeStr + randomNum + key);
+		return MD5.getMD5(userId + secretKey + timeStr + randomNum + key + uuid);
 	}
 	
 	public static void main(String[] args) {

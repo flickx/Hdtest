@@ -41,7 +41,9 @@ public class GoodsEvent implements java.io.Serializable {
 	private String discount;
 	private String universal;
 	private BigDecimal eventPrice;
-	
+	private BigDecimal exchangeRate;
+	private String firstOrder;
+	private String homeChannel;
 	// Constructors
 
 	/** default constructor */
@@ -199,11 +201,35 @@ public class GoodsEvent implements java.io.Serializable {
 		return eventPrice;
 	}
 
-	/**
-	 * @param eventPrice the eventPrice to set
-	 */
 	public void setEventPrice(BigDecimal eventPrice) {
 		this.eventPrice = eventPrice;
+	}
+
+	@Column(name = "exchange_rate", length = 10)
+	public BigDecimal getExchangeRate() {
+		return exchangeRate;
+	}
+
+	public void setExchangeRate(BigDecimal exchangeRate) {
+		this.exchangeRate = exchangeRate;
+	}
+
+	@Column(name = "first_order", length = 1)
+	public String getFirstOrder() {
+		return firstOrder;
+	}
+	
+	public void setFirstOrder(String firstOrder) {
+		this.firstOrder = firstOrder;
+	}
+
+	@Column(name = "home_channel", length = 1)
+	public String getHomeChannel() {
+		return homeChannel;
+	}
+
+	public void setHomeChannel(String homeChannel) {
+		this.homeChannel = homeChannel;
 	}
 	
 }

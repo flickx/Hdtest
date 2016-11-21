@@ -37,7 +37,7 @@ public class GoodsVo {
 	private String saleSum;
 	private String goodsEventName;//促销名称
 	private String quantity;//活动数量
-	private Float eventPrice;//活动价格
+	private String eventPrice;//活动价格
 	private String discount;//活动折扣
 	private String createTime;
 //	private Goods goods;
@@ -48,6 +48,9 @@ public class GoodsVo {
 	private List<GoodsUploadpic> goodsPicInfoList;//前台商品详情图
 
 	private Integer stock;//库存
+	
+	private String typeName;//活动类型
+	private String homeChannel;
 	/**
 	 * @return the picSrc
 	 */
@@ -364,13 +367,11 @@ public class GoodsVo {
 	public void setGroundingTime(String groundingTime) {
 		this.groundingTime = groundingTime;
 	}
-
-
-	public Float getEventPrice() {
+	public String getEventPrice() {
 		return eventPrice;
 	}
 
-	public void setEventPrice(Float eventPrice) {
+	public void setEventPrice(String eventPrice) {
 		this.eventPrice = eventPrice;
 	}
 
@@ -389,4 +390,27 @@ public class GoodsVo {
 	public void setStock(Integer stock) {
 		this.stock = stock;
 	}
+
+	public String getTypeName() {
+		return typeName;
+	}
+
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
+
+	/**
+	 * @return the homeChannel
+	 */
+	public String getHomeChannel() {
+		return homeChannel;
+	}
+
+	/**
+	 * @param homeChannel the homeChannel to set
+	 */
+	public void setHomeChannel(String homeChannel) {
+		this.homeChannel = homeChannel;
+	}
+	
 }

@@ -88,3 +88,31 @@ public class OrdersUtil {
 		return max;
 	}
 }
+	/**
+	 * 获取订单状态
+	 * @param orderState
+	 * @return
+	 */
+	public String getState(String orderState){
+		//1：待付款，2：已付款 ，3：待发货，4：已发货，5：待收货，6：已完成 ，7：未评价，8：已取消
+		String state = null;
+		if("1".equals(orderState)){
+			state = "待付款";
+		}else if("2".equals(orderState)){
+			state = "已付款";
+		}else if("3".equals(orderState)){
+			state = "待发货";
+		}else if("4".equals(orderState)){
+			state = "已发货";
+		}else if("5".equals(orderState)){
+			state = "待收货";
+		}else if("6".equals(orderState)){
+			state = "已完成";
+		}else if("7".equals(orderState)){
+			state = "未评价";
+		}else if("8".equals(orderState)){
+			state = "已取消";
+		}
+		return state;
+	}
+}

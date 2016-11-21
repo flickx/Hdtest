@@ -43,6 +43,7 @@ public class OrdersDetail  implements java.io.Serializable {
      private String modifyPerson;
      private String state;
      private String price;
+     private String eventType;
 
     // Constructors
 
@@ -211,10 +212,17 @@ public class OrdersDetail  implements java.io.Serializable {
     public void setState(String state) {
         this.state = state;
     }
+    @Column(name="event_type", length=32)
+	public String getEventType() {
+		return eventType;
+	}
 
     @Column(name="price", length=32)
 	public String getPrice() {
 		return price;
+	public void setEventType(String eventType) {
+		this.eventType = eventType;
+	}
 	}
 
 	public void setPrice(String price) {

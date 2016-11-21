@@ -1,5 +1,6 @@
 package com.ftoul.web.goods.service.impl;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +19,7 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.goods.vo.GoodsVo;
 import com.ftoul.po.Goods;
+import com.ftoul.po.GoodsEvent;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.GoodsProp;
 import com.ftoul.po.GoodsType;
@@ -142,7 +144,7 @@ public class GoodsServImpl implements GoodsServ {
 			}
 		}
 		//获取商品价格 1.优先取商品活动价格2.取活动促销价格.3 折扣价
-		String hql2 = "select ge.eventName,gej.eventPrice,ge.eventPrice,ge.discount,gej.quantity,ge.eventBegen,ge.eventEnd,gs.picSrc,ge.state,gej.state from Goods gs,"
+		String hql2 = "select ge.eventName,gej.eventPrice,ge.eventPrice,ge.discount,gej.quantity,ge.eventBegen,ge.eventEnd,gs.picSrc,ge.state,gej.state,ge.typeName,ge.homeChannel from Goods gs,"
 				+ "GoodsEventJoin gej,GoodsEvent ge where gs.id = gej.goods.id and ge.id = gej.goodsEvent.id and gej.state = '1' and ge.state = '1' and gs.id ='"+param.getId()+"'";
 		List<Object> eventList = this.hibernateUtil.hql(hql2);
 		Date currentTime = DateUtil.stringFormatToDate(
@@ -150,29 +152,40 @@ public class GoodsServImpl implements GoodsServ {
 				"yyyy/MM/dd HH:mm:ss");
 		if(eventList.size()>0){
 			Object[] obj = (Object[])eventList.get(0);
-			Date begin = DateUtil.stringFormatToDate(obj[5].toString(),
+			Date begin = DateUtil.stringFormatToDate(obj[5]+"",
 					"yyyy/MM/dd HH:mm:ss");
-			Date end = DateUtil.stringFormatToDate(obj[6].toString(),
+			Date end = DateUtil.stringFormatToDate(obj[6]+"",
 					"yyyy/MM/dd HH:mm:ss");
 			if (currentTime.after(begin) && currentTime.before(end)){
-				goodsVo.setGoodsEventName(obj[0].toString());
+				goodsVo.setGoodsEventName(obj[0]+"");
+				goodsVo.setTypeName(obj[10]+"");
 				if(null!=obj[1]){
-					goodsVo.setEventPrice(Float.parseFloat(obj[1].toString()));
+					goodsVo.setEventPrice(obj[1]+"");
 				}else{
 					if(null!=obj[2]){
-						goodsVo.setEventPrice(Float.parseFloat(obj[2].toString()));
+						goodsVo.setEventPrice(obj[2]+"");
 					}else{
-						if(null!=obj[3]){
-							Float f = Float.parseFloat(String.valueOf(goods.getPrice()))*Float.parseFloat(obj[3].toString());
-							goodsVo.setEventPrice((float)Math.round(f*100)/100);
-						}else{
-							goodsVo.setEventPrice(Float.parseFloat(String.valueOf(goods.getPrice())));
+						if(null!=obj[3]&&!"".equals(obj[3]+"")){
+							if(!"1".equals(obj[3]+"")){
+								float f = Float.parseFloat(String.valueOf(goods.getPrice()))*Float.parseFloat(obj[3]+"");
+								goodsVo.setEventPrice(new DecimalFormat("0.00").format(f));	
+							}
 						}
 					}
 				}
 				if(null !=obj[4]){
-					goodsVo.setQuantity(obj[4].toString());
+					goodsVo.setQuantity(obj[4]+"");
 				}
+				goodsVo.setTypeName(obj[10]+"");
+			}
+			//判断倍蜂币活动是否已经开始
+			String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
+			GoodsEvent ge =(GoodsEvent) this.hibernateUtil.hqlFirst("from GoodsEvent where typeName='蜂币翻倍' and eventBegen<='"+current+"' and eventEnd>='"+current+"' and state='1'");
+//			base = base*(ge.getExchangeRate().doubleValue());
+			//原始倍率*活动翻倍率
+			if (ge!=null) { 
+				//倍蜂币开始页面判断标识
+				goodsVo.setHomeChannel("1");
 			}
 		}
 		goodsVo.setPicSrc(goods.getPicSrc());
@@ -274,27 +287,30 @@ public class GoodsServImpl implements GoodsServ {
 				"yyyy/MM/dd HH:mm:ss");
 		if (eventList.size() > 0) {
 			Object[] obj = (Object[]) eventList.get(0);
-			goodsVo.setPrice(obj[7].toString());
-			Date begin = DateUtil.stringFormatToDate(obj[5].toString(),
+			goodsVo.setPrice(obj[7]+"");
+			Date begin = DateUtil.stringFormatToDate(obj[5]+"",
 					"yyyy/MM/dd HH:mm:ss");
-			Date end = DateUtil.stringFormatToDate(obj[6].toString(),
+			Date end = DateUtil.stringFormatToDate(obj[6]+"",
 					"yyyy/MM/dd HH:mm:ss");
 			if (currentTime.after(begin) && currentTime.before(end)) {
-				goodsVo.setGoodsEventName(obj[0].toString());
+				goodsVo.setGoodsEventName(obj[0]+"");
 				if (null != obj[1]) {
-					goodsVo.setEventPrice(Float.parseFloat(obj[1].toString()));
+					goodsVo.setEventPrice(obj[1]+"");
 				} else {
 					if (null != obj[2]) {
-						goodsVo.setEventPrice(Float.parseFloat(obj[2]
-								.toString()));
+						goodsVo.setEventPrice(obj[2]+"");
 					} else {
-						Float f = Float.parseFloat(obj[7].toString())
-								* Float.parseFloat(obj[3].toString());
-						goodsVo.setEventPrice((float) Math.round(f * 100) / 100);
+						if(null!=obj[3]&&!"".equals(obj[3]+"")){
+							if(!"1".equals(obj[3]+"")){
+								Float f = Float.parseFloat(obj[7]+"")
+										* Float.parseFloat(obj[3]+"");
+								goodsVo.setEventPrice(new DecimalFormat("0.00").format(f));
+							}
+						}
 					}
 				}
 				if (obj[4] != null) {
-					goodsVo.setQuantity(obj[4].toString());
+					goodsVo.setQuantity(obj[4]+"");
 				}
 			}
 		}
