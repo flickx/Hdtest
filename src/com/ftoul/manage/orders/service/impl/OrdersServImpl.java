@@ -801,7 +801,12 @@ public class OrdersServImpl implements OrdersServ {
 	@Override
 	public Result getAfterListPage(Parameter param) throws Exception {
 		String queryStr = param.getWhereStr();
-		String hql = " from AfterSchedule where "+queryStr+" order by createTime desc";
+		String hql;
+		//if(queryStr!=null){
+			hql = " from AfterSchedule where state='1' "+queryStr+" order by createTime desc";
+		//}else{
+			//hql = " from AfterSchedule order by createTime desc";
+		//}
 		
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		List<Object> afterList = page.getObjList();
@@ -834,20 +839,8 @@ public class OrdersServImpl implements OrdersServ {
 				afterVo.setOrderStatic("已取消");
 			}
 			afterVo.setBackPrice(after.getBackPrice());
-//			hql = " from OrdersDetail where orders.id='"+orders.getId()+"'";
-//			List<Object> ordersDetailList = hibernateUtil.hql(hql);
-//			List<String> ordersDetailVoList = new ArrayList<String>();
-//			for (Object object2 : ordersDetailList) {
-//				OrdersDetail ordersDetail = (OrdersDetail) object2;
-//				String goodsPicSrc = ordersDetail.getGoodsParam().getGoods().getPicSrc();
-//				ordersDetailVoList.add(goodsPicSrc);
-//			}
-//			ordersVo.setGoodPicSrcs(ordersDetailVoList);
-//			if(orders.getUserAddress()!=null){
-//				ordersVo.setUserName(orders.getUserAddress().getUser().getUsername());
-//				ordersVo.setTel(orders.getUserAddress().getTel());
-//				ordersVo.setConginee(orders.getUserAddress().getConsignee());
-//			}
+			afterVo.setNum(after.getNum());
+			afterVo.setCreateTime(after.getCreateTime());
 			voList.add(afterVo);
 		}
 		page.getObjList().clear();

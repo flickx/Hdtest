@@ -15,6 +15,7 @@ public class AfterScheduleVo {
 	private String orderNumber;
 	private String orderStatic;
 	private String orderTime;
+	private String createTime;
 	
 	private String company;
 	private String odd;
@@ -208,8 +209,11 @@ public class AfterScheduleVo {
 	public void setSku(String sku) {
 		this.sku = sku;
 	}
+	public String getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
 	
-	
-	
-
 }
