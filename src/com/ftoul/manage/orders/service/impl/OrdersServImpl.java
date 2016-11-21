@@ -824,13 +824,7 @@ public class OrdersServImpl implements OrdersServ {
 	@Override
 	public Result getAfterListPage(Parameter param) throws Exception {
 		String queryStr = param.getWhereStr();
-		String hql;
-		//if(queryStr!=null){
-			hql = " from AfterSchedule where state='1' "+queryStr+" order by createTime desc";
-		//}else{
-			//hql = " from AfterSchedule order by createTime desc";
-		//}
-		
+		String hql = " from AfterSchedule where state='1' "+queryStr+" order by createTime desc";
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		List<Object> afterList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
@@ -904,6 +898,9 @@ public class OrdersServImpl implements OrdersServ {
 		
 		afterVo.setOdd(orders.getOdd());
 		afterVo.setCompany(orders.getLogisticsCompany().getName());
+		afterVo.setAddress(orders.getAddress());
+		afterVo.setConsignee(orders.getConsignee());
+		afterVo.setConsigneeTel(orders.getConsigneeTel());
 		
 		afterVo.setGoodsName(od.getGoodsParam().getGoods().getTitle());
 		afterVo.setGoodsPicSrcs(od.getGoodsParam().getGoods().getPicSrc());

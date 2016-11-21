@@ -212,23 +212,23 @@ public class OrdersDetail  implements java.io.Serializable {
     public void setState(String state) {
         this.state = state;
     }
+    
     @Column(name="event_type", length=32)
 	public String getEventType() {
 		return eventType;
 	}
 
+    public void setEventType(String eventType) {
+		this.eventType = eventType;
+	
+	}
+
     @Column(name="price", length=32)
 	public String getPrice() {
 		return price;
-	public void setEventType(String eventType) {
-		this.eventType = eventType;
-	}
-	}
-
+    }
+	
 	public void setPrice(String price) {
 		this.price = price;
 	}
-    
-    
-
 }
