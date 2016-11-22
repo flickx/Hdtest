@@ -330,4 +330,13 @@ public class BusinessServImpl implements BusinessServ {
 		}
 		return ObjectToResult.getResult(businessStoreManageCategoryVoList);
 	}
+
+	@Override
+	public Result delBusinessStoreManageCategoryPage(Parameter parameter)
+			throws Exception {
+		String hql="update BusinessStoreManageCategory set state = '0' where id in ("+StrUtil.getIds(parameter.getId())+")";
+		Integer res;
+		res = hibernateUtil.execHql(hql);
+		return ObjectToResult.getResult(res);
+	}
 }
