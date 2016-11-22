@@ -114,8 +114,17 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			afterVo.setOrderStatic("已取消");
 		}
 		
-		afterVo.setOdd(orders.getOdd());
-		afterVo.setCompany(orders.getLogisticsCompany().getName());
+		if(orders.getOdd()!=null){
+			afterVo.setOdd(orders.getOdd());
+		}else{
+			afterVo.setOdd("暂未发货");
+		}
+		
+		if(orders.getLogisticsCompany()!=null){
+			afterVo.setCompany(orders.getLogisticsCompany().getName());
+		}else{
+			afterVo.setCompany("暂未发货");
+		}
 		afterVo.setAddress(orders.getAddress());
 		afterVo.setConsignee(orders.getConsignee());
 		afterVo.setConsigneeTel(orders.getConsigneeTel());
@@ -161,7 +170,13 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			throws Exception {
 		String hql = "update AfterSchedule set customsClearanceStatic ='"+param.getKey()+"' where id = '"+param.getId().toString()+"'";
 		int result = hibernateUtil.execHql(hql);
-		saveAfterOpLog(param,"【商家】设置清关状态"+param.getKey());
+		String msg;
+		if("1".equals(param.getKey())){
+			msg = "清关中";
+		}else{
+			msg = "已清关";
+		}
+		saveAfterOpLog(param,"【商家】设置清关状态为 "+msg);
 		return ObjectToResult.getResult(result);
 	}
 
@@ -175,7 +190,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			throws Exception {
 		Object obj = param.getObj();
 		LogisticsCompanyVo logisticsCompanyVo = (LogisticsCompanyVo) Common.jsonToBean(obj.toString(), LogisticsCompanyVo.class);
-		String hql = "update AfterSchedule set logCompany.id = '"+logisticsCompanyVo.getLogisticsCompanyID()+"', odd = '"+logisticsCompanyVo.getOdd()+"', logInfo = '"+logisticsCompanyVo.getLogInfo()+"', scheduleStatic = '8' where id = '"+logisticsCompanyVo.getId()+"'";
+		String hql = "update AfterSchedule set logCompany.id = '"+logisticsCompanyVo.getLogisticsCompanyID()+"', logOdd = '"+logisticsCompanyVo.getOdd()+"', logInfo = '"+logisticsCompanyVo.getLogInfo()+"', scheduleStatic = '8' where id = '"+logisticsCompanyVo.getId()+"'";
 		int result = hibernateUtil.execHql(hql);
 		saveAfterOpLog(param,"【商家】已发货");
 		return ObjectToResult.getResult(result);
