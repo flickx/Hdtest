@@ -8,19 +8,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.web.logistics.service.LogisticsServ;
+import com.ftoul.util.logistics.LogisticsCompanyUtil;
 
 /**
  * 物流管理
  * @author HuDong
  *
  */
-@Controller
+@Controller("WebLogisticsAction")
 @RequestMapping(value = "/web/logistics")
 public class LogisticsAction {
 
 	@Autowired
-	private LogisticsServ logisticsServ; 
+	private LogisticsCompanyUtil logisticsCompanyUtil; 
 	
 	/**
 	 * 获取物流列表
@@ -31,29 +31,8 @@ public class LogisticsAction {
 	@RequestMapping(value = "getLogisticsCompany")  
 	public @ResponseBody Result getLogisticsCompany(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return logisticsServ.getLogisticsCompany(parameter);
+		return logisticsCompanyUtil.getLogisticsCompany(parameter);
 	}
 	
-	/**
-	 * 获取物流分页列表
-	 * @param param 用户ID
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping(value = "getLogisticsCompanyPage")  
-	public @ResponseBody Result getLogisticsCompanyPage(String param) throws Exception{
-		Parameter parameter = Common.jsonToParam(param);
-		return logisticsServ.getLogisticsCompanyPage(parameter);
-	}
-	/**
-	 * 保存物流信息
-	 * @author wenyujie
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value="saveLogisticsCompanyJoinList")
-	public @ResponseBody Result saveLogisticsCompanyJoinList(String param) throws Exception{
-		Parameter parameter = Common.jsonToParam(param);
-		return logisticsServ.saveLogisticsCompanyJoinList(parameter);
-	}
+	
 }
