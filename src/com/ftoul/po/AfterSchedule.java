@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -24,19 +25,21 @@ public class AfterSchedule implements java.io.Serializable {
 	private User user;
 	private String serviceCode;
 	private String scheduleStatic;
-	private String logCompany;
+	private String customsClearanceStatic;
+	private LogisticsCompany logCompany;
 	private String logOdd;
 	private String tel;
 	private String type;
 	private String reason;
 	private String backPrice;
 	private String num;
+	private String msg;
 	private String state;
 	private String createTime;
 	private String createPerson;
 	private String modifyTime;
 	private String modifyPerson;
-
+	
 	// Constructors
 
 	/** default constructor */
@@ -45,7 +48,7 @@ public class AfterSchedule implements java.io.Serializable {
 
 	/** full constructor */
 	public AfterSchedule(OrdersDetail ordersDetail, String serviceCode,
-			String scheduleStatic, String logCompany, String logOdd,
+			String scheduleStatic, LogisticsCompany logCompany, String logOdd,
 			String tel, String state, String createTime, String createPerson,
 			String modifyTime, String modifyPerson) {
 		this.ordersDetail = ordersDetail;
@@ -110,15 +113,6 @@ public class AfterSchedule implements java.io.Serializable {
 
 	public void setScheduleStatic(String scheduleStatic) {
 		this.scheduleStatic = scheduleStatic;
-	}
-
-	@Column(name = "log_company", length = 32)
-	public String getLogCompany() {
-		return this.logCompany;
-	}
-
-	public void setLogCompany(String logCompany) {
-		this.logCompany = logCompany;
 	}
 
 	@Column(name = "log_odd", length = 32)
@@ -219,5 +213,33 @@ public class AfterSchedule implements java.io.Serializable {
 	public void setNum(String num) {
 		this.num = num;
 	}
+	
+	@Column(name = "msg", length = 1000)
+	public String getMsg() {
+		return msg;
+	}
 
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+	
+	@Column(name="customs_clearance_static", length=32)
+	public String getCustomsClearanceStatic() {
+		return customsClearanceStatic;
+	}
+
+	public void setCustomsClearanceStatic(String customsClearanceStatic) {
+		this.customsClearanceStatic = customsClearanceStatic;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "log_company")
+	public LogisticsCompany getLogCompany() {
+		return logCompany;
+	}
+
+	public void setLogCompany(LogisticsCompany logCompany) {
+		this.logCompany = logCompany;
+	}
+	
 }

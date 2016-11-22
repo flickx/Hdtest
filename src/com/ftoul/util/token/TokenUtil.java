@@ -243,7 +243,7 @@ public class TokenUtil {
 		//根据用户ID，密码跟版本号生成密匙（不修改密码的前提下密匙不会改变）
 		String secretKey = generaSecretKey(userId, passwordVersion, manageKey);
 		//根据相关信息、时间轴及随机数生成动态的token
-		String token = generaToken(userId, secretKey, manageKey);
+		String token = generaToken(userId, secretKey, manageKey, "pc");
 		ManageTokenVo manageTokenVo = new ManageTokenVo();
 		manageTokenVo.setBusinessStoreLogin(businessStoreLogin);
 		manageTokenVo.setSecretKey(secretKey);
@@ -329,7 +329,7 @@ public class TokenUtil {
 	public ManageTokenVo uploadManageSecretKey(BusinessStoreLogin businessStoreLogin){
 		String userId = businessStoreLogin.getId();
 		ManageTokenVo manageTokenVoFMap = manageTokenMap.get(userId);
-		String newToken = generaToken(userId, businessStoreLogin.getPassword(), manageKey);
+		String newToken = generaToken(userId, businessStoreLogin.getPassword(), manageKey, "pc");
 		String newDate = new DateStr().toString();
 		String newSecretKey = generaSecretKey(userId, businessStoreLogin.getPassword(), manageKey);
 		if(manageTokenVoFMap != null){

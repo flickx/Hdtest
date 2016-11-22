@@ -1,5 +1,9 @@
 package com.ftoul.manage.orders.vo;
 
+import java.util.List;
+
+import com.ftoul.po.AfterOpLog;
+
 public class AfterScheduleVo {
 	
 	private String id;
@@ -30,10 +34,12 @@ public class AfterScheduleVo {
 	private String param;
 	private String number;
 	private String totalPrice;
-	private String marketPrice;
+	private String salePrice;
 	private String costPrice;//进货价
 	private String canal;//进货商
 	private String sku;
+	
+	private List<Object> logList;
 	
 	public String getId() {
 		return id;
@@ -185,12 +191,6 @@ public class AfterScheduleVo {
 	public void setTotalPrice(String totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-	public String getMarketPrice() {
-		return marketPrice;
-	}
-	public void setMarketPrice(String marketPrice) {
-		this.marketPrice = marketPrice;
-	}
 	public String getCostPrice() {
 		return costPrice;
 	}
@@ -214,6 +214,18 @@ public class AfterScheduleVo {
 	}
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
+	}
+	public String getSalePrice() {
+		return salePrice;
+	}
+	public void setSalePrice(String salePrice) {
+		this.salePrice = salePrice;
+	}
+	public List<Object> getLogList() {
+		return logList;
+	}
+	public void setLogList(List<Object> logList) {
+		this.logList = logList;
 	}
 	
 }

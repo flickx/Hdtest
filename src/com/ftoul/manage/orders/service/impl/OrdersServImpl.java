@@ -22,6 +22,7 @@ import com.ftoul.manage.orders.vo.GoodsVo;
 import com.ftoul.manage.orders.vo.OrderDetailVo;
 import com.ftoul.manage.orders.vo.OrdersPayVo;
 import com.ftoul.manage.orders.vo.OrdersVo;
+import com.ftoul.po.AfterOpLog;
 import com.ftoul.po.AfterSchedule;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsParam;
@@ -818,98 +819,4 @@ public class OrdersServImpl implements OrdersServ {
 		return ObjectToResult.getResult(reportDataList);
 	}
 
-	/**
-	 * 获取售后申请列表
-	 */
-	@Override
-	public Result getAfterListPage(Parameter param) throws Exception {
-		String queryStr = param.getWhereStr();
-		String hql = " from AfterSchedule where state='1' "+queryStr+" order by createTime desc";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
-		List<Object> afterList = page.getObjList();
-		List<Object> voList = new ArrayList<Object>();
-		for (Object object : afterList) {
-			AfterSchedule after = (AfterSchedule) object;
-			Orders orders = after.getOrdersDetail().getOrders();
-			AfterScheduleVo afterVo = new AfterScheduleVo();
-			afterVo.setId(after.getId());
-			afterVo.setServiceCode(after.getServiceCode());
-			afterVo.setOrderNumber(orders.getOrderNumber());
-			afterVo.setOrderTime(orders.getOrderTime());
-			if("0".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("待提单");
-			}else if("1".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("待付款");
-			}else if("2".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已付款");
-			}else if("3".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("待发货");
-			}else if("4".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已发货");
-			}else if("5".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已收货");
-			}else if("6".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已完成");
-			}else if("7".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已删除");
-			}else if("8".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已取消");
-			}
-			afterVo.setBackPrice(after.getBackPrice());
-			afterVo.setNum(after.getNum());
-			afterVo.setCreateTime(after.getCreateTime());
-			voList.add(afterVo);
-		}
-		page.getObjList().clear();
-		page.setObjList(voList);
-		
-		return ObjectToResult.getResult(page);
-	}
-
-	@Override
-	public Result getAfterScheduleDetail(Parameter param) throws Exception {
-		AfterSchedule schedule = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
-		Orders orders = schedule.getOrdersDetail().getOrders();
-		OrdersDetail od = schedule.getOrdersDetail();
-		AfterScheduleVo afterVo = new AfterScheduleVo();
-		afterVo.setId(schedule.getId());
-		afterVo.setServiceCode(schedule.getServiceCode());
-		afterVo.setOrderNumber(orders.getOrderNumber());
-		afterVo.setOrderTime(orders.getOrderTime());
-		if("0".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("待提单");
-		}else if("1".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("待付款");
-		}else if("2".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已付款");
-		}else if("3".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("待发货");
-		}else if("4".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已发货");
-		}else if("5".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已收货");
-		}else if("6".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已完成");
-		}else if("7".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已删除");
-		}else if("8".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已取消");
-		}
-		
-		afterVo.setOdd(orders.getOdd());
-		afterVo.setCompany(orders.getLogisticsCompany().getName());
-		afterVo.setAddress(orders.getAddress());
-		afterVo.setConsignee(orders.getConsignee());
-		afterVo.setConsigneeTel(orders.getConsigneeTel());
-		
-		afterVo.setGoodsName(od.getGoodsParam().getGoods().getTitle());
-		afterVo.setGoodsPicSrcs(od.getGoodsParam().getGoods().getPicSrc());
-		afterVo.setSku(od.getGoodsParam().getGoods().getSkuCode());
-		afterVo.setNum(schedule.getNum());
-		afterVo.setBackPrice(schedule.getBackPrice());
-		return ObjectToResult.getResult(afterVo);
-	}
-	
-	
-	
 }
