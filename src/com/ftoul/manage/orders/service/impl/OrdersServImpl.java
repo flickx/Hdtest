@@ -22,6 +22,7 @@ import com.ftoul.manage.orders.vo.GoodsVo;
 import com.ftoul.manage.orders.vo.OrderDetailVo;
 import com.ftoul.manage.orders.vo.OrdersPayVo;
 import com.ftoul.manage.orders.vo.OrdersVo;
+import com.ftoul.po.AfterOpLog;
 import com.ftoul.po.AfterSchedule;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsParam;
@@ -256,11 +257,15 @@ public class OrdersServImpl implements OrdersServ {
 				ordersDetailVoList.add(goodsPicSrc);
 			}
 			ordersVo.setGoodPicSrcs(ordersDetailVoList);
-			if(orders.getUserAddress()!=null){
-				ordersVo.setUserName(orders.getUserAddress().getUser().getUsername());
-				ordersVo.setTel(orders.getUserAddress().getTel());
-				ordersVo.setConginee(orders.getUserAddress().getConsignee());
-			}
+//			if(orders.getUserAddress()!=null){
+//				ordersVo.setUserName(orders.getUser().getUsername());
+//				ordersVo.setTel(orders.getUserAddress().getTel());
+//				ordersVo.setConginee(orders.getUserAddress().getConsignee());
+//			}
+			ordersVo.setUserName(orders.getUser().getUsername());
+			ordersVo.setTel(orders.getConsigneeTel());
+			ordersVo.setConginee(orders.getConsignee());
+			ordersVo.setAddress(orders.getAddress());
 			voList.add(ordersVo);
 		}
 		page.setObjList(voList);
@@ -340,15 +345,19 @@ public class OrdersServImpl implements OrdersServ {
 			orderDetailVo.setCompany("无");
 		}
 		
-		if(orders.getUserAddress()!=null){
-			orderDetailVo.setAddress(orders.getUserAddress().getName()+"  "+orders.getUserAddress().getAddress());
-			orderDetailVo.setTel(orders.getUserAddress().getTel());
-			orderDetailVo.setConsignee(orders.getUserAddress().getConsignee());
-		}else{
-			orderDetailVo.setAddress("无");
-			orderDetailVo.setTel("无");
-			orderDetailVo.setConsignee("无");
-		}
+//		if(orders.getUserAddress()!=null){
+//			orderDetailVo.setAddress(orders.getUserAddress().getName()+"  "+orders.getUserAddress().getAddress());
+//			orderDetailVo.setTel(orders.getUserAddress().getTel());
+//			orderDetailVo.setConsignee(orders.getUserAddress().getConsignee());
+//		}
+		orderDetailVo.setTel(orders.getConsigneeTel());
+		orderDetailVo.setConsignee(orders.getConsignee());
+		orderDetailVo.setAddress(orders.getAddress());
+//		else{
+//			orderDetailVo.setAddress("无");
+//			orderDetailVo.setTel("无");
+//			orderDetailVo.setConsignee("无");
+//		}
 		if(orders.getUser().getCardId()!=null){
 			orderDetailVo.setCard(orders.getUser().getCardId());
 		}else{
@@ -371,7 +380,12 @@ public class OrdersServImpl implements OrdersServ {
 			goodsVo.setPrice(ordersDetail.getGoodsParam().getPrice());
 			goodsVo.setTotalPrice(String.valueOf(Double.parseDouble(ordersDetail.getNumber())*Double.parseDouble(ordersDetail.getGoodsParam().getPrice())));//总价
 			goodsVo.setCostPrice(ordersDetail.getGoodsParam().getCostprice());
-			goodsVo.setCanal(ordersDetail.getGoodsParam().getGoods().getGoodsCanal().getName());
+			//判断是否有供货商
+			if(null!=ordersDetail.getGoodsParam().getGoods().getGoodsCanal()){
+				goodsVo.setCanal(ordersDetail.getGoodsParam().getGoods().getGoodsCanal().getName());
+			}else{
+				goodsVo.setCanal("无");
+			}
 			goodsVo.setGoodsId(ordersDetail.getGoodsParam().getGoods().getId());
 			goodsVo.setGoodsName(ordersDetail.getGoodsParam().getGoods().getTitle());
 			goodsVo.setGoodsPicSrcs(ordersDetail.getGoodsParam().getGoods().getPicSrc());
@@ -544,11 +558,15 @@ public class OrdersServImpl implements OrdersServ {
 				ordersDetailVoList.add(goodsPicSrc);
 			}
 			ordersVo.setGoodPicSrcs(ordersDetailVoList);
-			if(orders.getUserAddress()!=null){
-				ordersVo.setUserName(orders.getUserAddress().getUser().getUsername());
-				ordersVo.setTel(orders.getUserAddress().getTel());
-				ordersVo.setConginee(orders.getUserAddress().getConsignee());
-			}
+//			if(orders.getUserAddress()!=null){
+//				ordersVo.setUserName(orders.getUserAddress().getUser().getUsername());
+//				ordersVo.setTel(orders.getUserAddress().getTel());
+//				ordersVo.setConginee(orders.getUserAddress().getConsignee());
+//			}
+			ordersVo.setUserName(orders.getUser().getUsername());
+			ordersVo.setTel(orders.getConsigneeTel());
+			ordersVo.setConginee(orders.getConsignee());
+			ordersVo.setAddress(orders.getAddress());
 			voList.add(ordersVo);
 		}
 		page.setObjList(voList);
@@ -624,10 +642,13 @@ public class OrdersServImpl implements OrdersServ {
 			vo[0] = od.getOrders().getOrderNumber();
 			vo[1] = od.getOrders().getOrderTime();
 			vo[3] = od.getOrders().getUser().getUsername();
-			vo[4] = od.getOrders().getUserAddress().getConsignee();
-			vo[5] = od.getOrders().getUserAddress().getTel();
+//			vo[4] = od.getOrders().getUserAddress().getConsignee();
+			vo[4] = od.getOrders().getConsignee();
+//			vo[5] = od.getOrders().getUserAddress().getTel();
+			vo[5] = od.getOrders().getConsigneeTel();
 			
-			vo[6] = od.getOrders().getUserAddress().getName()+" "+od.getOrders().getUserAddress().getAddress();
+//			vo[6] = od.getOrders().getUserAddress().getName()+" "+od.getOrders().getUserAddress().getAddress();
+			vo[6] = od.getOrders().getAddress();
 			vo[7] = "";//运费
 			vo[8] = od.getGoodsParam().getGoods().getTitle();
 			vo[9] = od.getGoodsParam().getGoods().getSkuCode();
@@ -724,11 +745,14 @@ public class OrdersServImpl implements OrdersServ {
 				ordersDetailVoList.add(goodsPicSrc);
 			}
 			ordersVo.setGoodPicSrcs(ordersDetailVoList);
-			if(orders.getUserAddress()!=null){
-				ordersVo.setUserName(orders.getUserAddress().getUser().getUsername());
-				ordersVo.setTel(orders.getUserAddress().getTel());
-				ordersVo.setConginee(orders.getUserAddress().getConsignee());
-			}
+//			if(orders.getUserAddress()!=null){
+//				ordersVo.setUserName(orders.getUserAddress().getUser().getUsername());
+//				ordersVo.setTel(orders.getUserAddress().getTel());
+//				ordersVo.setConginee(orders.getUserAddress().getConsignee());
+//			}
+			ordersVo.setUserName(orders.getUser().getUsername());
+			ordersVo.setTel(orders.getConsigneeTel());
+			ordersVo.setConginee(orders.getConsignee());
 			voList.add(ordersVo);
 		}
 		page.setObjList(voList);
@@ -795,108 +819,4 @@ public class OrdersServImpl implements OrdersServ {
 		return ObjectToResult.getResult(reportDataList);
 	}
 
-	/**
-	 * 获取售后申请列表
-	 */
-	@Override
-	public Result getAfterListPage(Parameter param) throws Exception {
-		String queryStr = param.getWhereStr();
-		String hql = " from AfterSchedule where "+queryStr+" order by createTime desc";
-		
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
-		List<Object> afterList = page.getObjList();
-		List<Object> voList = new ArrayList<Object>();
-		for (Object object : afterList) {
-			AfterSchedule after = (AfterSchedule) object;
-			Orders orders = after.getOrdersDetail().getOrders();
-			AfterScheduleVo afterVo = new AfterScheduleVo();
-			afterVo.setId(after.getId());
-			afterVo.setServiceCode(after.getServiceCode());
-			afterVo.setOrderNumber(orders.getOrderNumber());
-			afterVo.setOrderTime(orders.getOrderTime());
-			if("0".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("待提单");
-			}else if("1".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("待付款");
-			}else if("2".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已付款");
-			}else if("3".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("待发货");
-			}else if("4".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已发货");
-			}else if("5".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已收货");
-			}else if("6".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已完成");
-			}else if("7".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已删除");
-			}else if("8".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已取消");
-			}
-			afterVo.setPrice(after.getPrice());
-//			hql = " from OrdersDetail where orders.id='"+orders.getId()+"'";
-//			List<Object> ordersDetailList = hibernateUtil.hql(hql);
-//			List<String> ordersDetailVoList = new ArrayList<String>();
-//			for (Object object2 : ordersDetailList) {
-//				OrdersDetail ordersDetail = (OrdersDetail) object2;
-//				String goodsPicSrc = ordersDetail.getGoodsParam().getGoods().getPicSrc();
-//				ordersDetailVoList.add(goodsPicSrc);
-//			}
-//			ordersVo.setGoodPicSrcs(ordersDetailVoList);
-//			if(orders.getUserAddress()!=null){
-//				ordersVo.setUserName(orders.getUserAddress().getUser().getUsername());
-//				ordersVo.setTel(orders.getUserAddress().getTel());
-//				ordersVo.setConginee(orders.getUserAddress().getConsignee());
-//			}
-			voList.add(afterVo);
-		}
-		page.getObjList().clear();
-		page.setObjList(voList);
-		
-		return ObjectToResult.getResult(page);
-	}
-
-	@Override
-	public Result getAfterScheduleDetail(Parameter param) throws Exception {
-		AfterSchedule schedule = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
-		Orders orders = schedule.getOrdersDetail().getOrders();
-		OrdersDetail od = schedule.getOrdersDetail();
-		AfterScheduleVo afterVo = new AfterScheduleVo();
-		afterVo.setId(schedule.getId());
-		afterVo.setServiceCode(schedule.getServiceCode());
-		afterVo.setOrderNumber(orders.getOrderNumber());
-		afterVo.setOrderTime(orders.getOrderTime());
-		if("0".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("待提单");
-		}else if("1".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("待付款");
-		}else if("2".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已付款");
-		}else if("3".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("待发货");
-		}else if("4".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已发货");
-		}else if("5".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已收货");
-		}else if("6".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已完成");
-		}else if("7".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已删除");
-		}else if("8".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已取消");
-		}
-		
-		afterVo.setOdd(orders.getOdd());
-		afterVo.setCompany(orders.getLogisticsCompany().getName());
-		
-		afterVo.setGoodsName(od.getGoodsParam().getGoods().getTitle());
-		afterVo.setGoodsPicSrcs(od.getGoodsParam().getGoods().getPicSrc());
-		afterVo.setSku(od.getGoodsParam().getGoods().getSkuCode());
-		afterVo.setNum(schedule.getNum());
-		afterVo.setPrice(schedule.getPrice());
-		return ObjectToResult.getResult(afterVo);
-	}
-	
-	
-	
 }

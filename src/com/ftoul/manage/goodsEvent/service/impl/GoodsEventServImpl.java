@@ -1,6 +1,7 @@
 package com.ftoul.manage.goodsEvent.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
+import com.ftoul.common.DateUtil;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
@@ -24,7 +26,9 @@ import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
 import com.ftoul.po.GoodsEventJoin;
 import com.ftoul.po.GoodsEventJoinVo;
+import com.ftoul.po.SystemSet;
 import com.ftoul.util.hibernate.HibernateUtil;
+import com.ftoul.web.vo.GoodsEventVO;
 
 @Service("GoodsEventServImpl")
 public class GoodsEventServImpl implements GoodsEventServ {
@@ -69,7 +73,12 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	@Override
 	public Result getGoodsEventById(Parameter param) throws Exception {
 		GoodsEvent goodsEvent = (GoodsEvent) hibernateUtil.find(GoodsEvent.class, param.getId()+"");
-		return ObjectToResult.getResult(goodsEvent);
+		String hql = "from SystemSet where state=1 and type='coin'";
+		SystemSet systemSet = (SystemSet)hibernateUtil.hqlFirst(hql);
+		GoodsEventVO vo = new GoodsEventVO();
+		vo.setGoodsEvent(goodsEvent);
+		vo.setSystemSet(systemSet);
+		return ObjectToResult.getResult(vo);
 	}
 	/**
 	 * 保存/更新活动对象
@@ -264,6 +273,19 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	public Result getGoodsEventByCode(Parameter param) throws Exception {
 		String hql="from GoodsEvent where state = '1' " + param.getWhereStr() + param.getOrderBy();
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		List<Object> objList = new ArrayList<Object>();
+		for (int i = 0; i < page.getObjList().size(); i++) {
+		GoodsEvent goodsEvent = (GoodsEvent)page.getObjList().get(i);
+		String begenTime = goodsEvent.getEventBegen();
+		long begin = DateUtil.stringFormatToDate(begenTime, "yyyy/MM/dd HH:mm:ss").getTime();
+		long now = new Date().getTime();
+		long distance = begin-now;
+		//48小时之内的秒杀，显示“距开始倒计时”
+			if (distance<=172800000) {
+				objList.add(goodsEvent);
+			}
+		}
+		page.setObjList(objList);
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -325,7 +347,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		String sql = "SELECT t1.id,t1.title,t1.price,t1.create_time from goods t1 "
 				+ "left join goods_event_join t2 on t1.state = '1' and t2.state = '1' and t2.goods_id = t1.id "
 				+ "left join goods_event t3 on t3.state = '1' and t2.state = '1' and t3.id = t2.event_id "
-				+ "where t1.state = '1' and t1.grounding = '1'  and (t3.type_name is null or t3.type_name = '满减')";
+				+ "where t1.state = '1' and t1.grounding = '1'  and (t3.type_name is null or t3.type_name = '满减' and t3.home_channel != '1')";
 		if(queryStr!=null){
 			sql = sql + queryStr + " order by t1.create_time desc";
 		}else{

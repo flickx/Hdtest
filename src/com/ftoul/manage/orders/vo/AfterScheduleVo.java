@@ -1,5 +1,9 @@
 package com.ftoul.manage.orders.vo;
 
+import java.util.List;
+
+import com.ftoul.po.AfterOpLog;
+
 public class AfterScheduleVo {
 	
 	private String id;
@@ -10,11 +14,12 @@ public class AfterScheduleVo {
 	private String tel;
 	private String type;
 	private String reason;
-	private String price;
+	private String backPrice;
 	private String num;
 	private String orderNumber;
 	private String orderStatic;
 	private String orderTime;
+	private String createTime;
 	
 	private String company;
 	private String odd;
@@ -29,10 +34,12 @@ public class AfterScheduleVo {
 	private String param;
 	private String number;
 	private String totalPrice;
-	private String marketPrice;
+	private String salePrice;
 	private String costPrice;//进货价
 	private String canal;//进货商
 	private String sku;
+	
+	private List<Object> logList;
 	
 	public String getId() {
 		return id;
@@ -82,11 +89,11 @@ public class AfterScheduleVo {
 	public void setReason(String reason) {
 		this.reason = reason;
 	}
-	public String getPrice() {
-		return price;
+	public String getBackPrice() {
+		return backPrice;
 	}
-	public void setPrice(String price) {
-		this.price = price;
+	public void setBackPrice(String backPrice) {
+		this.backPrice = backPrice;
 	}
 	public String getNum() {
 		return num;
@@ -184,12 +191,6 @@ public class AfterScheduleVo {
 	public void setTotalPrice(String totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-	public String getMarketPrice() {
-		return marketPrice;
-	}
-	public void setMarketPrice(String marketPrice) {
-		this.marketPrice = marketPrice;
-	}
 	public String getCostPrice() {
 		return costPrice;
 	}
@@ -208,8 +209,23 @@ public class AfterScheduleVo {
 	public void setSku(String sku) {
 		this.sku = sku;
 	}
+	public String getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+	public String getSalePrice() {
+		return salePrice;
+	}
+	public void setSalePrice(String salePrice) {
+		this.salePrice = salePrice;
+	}
+	public List<Object> getLogList() {
+		return logList;
+	}
+	public void setLogList(List<Object> logList) {
+		this.logList = logList;
+	}
 	
-	
-	
-
 }

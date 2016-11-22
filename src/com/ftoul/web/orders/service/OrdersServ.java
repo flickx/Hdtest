@@ -48,10 +48,12 @@ public interface OrdersServ {
 	
 	Result autoCancelOrders(Parameter param) throws Exception;
 
-	Result getOrderAfterSchedule(Parameter parameter) throws Exception;
+	Result getOrderAfterSchedulePage(Parameter parameter) throws Exception;
 
 	Result getOrdersDetailById(Parameter parameter) throws Exception;
 
 	Result saveAfter(Parameter parameter) throws Exception;
+
+	Result getAfterSchedule(Parameter parameter) throws Exception;
 	
 }

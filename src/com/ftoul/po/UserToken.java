@@ -25,6 +25,7 @@ public class UserToken implements java.io.Serializable {
 	private String mobilToken;
 	private String pcToken;
 	private String uploadTime;
+	private String driveId;
 
 	// Constructors
 
@@ -99,6 +100,15 @@ public class UserToken implements java.io.Serializable {
 
 	public void setUploadTime(String uploadTime) {
 		this.uploadTime = uploadTime;
+	}
+
+	@Column(name = "driveId", length = 32)
+	public String getDriveId() {
+		return driveId;
+	}
+
+	public void setDriveId(String driveId) {
+		this.driveId = driveId;
 	}
 
 }

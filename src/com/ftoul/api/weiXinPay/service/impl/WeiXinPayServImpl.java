@@ -42,7 +42,7 @@ public class WeiXinPayServImpl implements WeiXinPayServ{
 		orders.setOrderNumber("2016072900"+randomNum);
 		orders.setOrderPrice("1");
 //		orders.setOrderStatic("等待支付");
-		orders.setPayType("chinaPay");
+		orders.setPayType("wxPay");
 		orders.setOrderStatic("0");
 		orders.setCreateTime(new DateStr().toString());
 		hibernateUtil.save(orders);

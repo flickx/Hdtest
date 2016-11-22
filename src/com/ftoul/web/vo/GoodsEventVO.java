@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
+import com.ftoul.po.SystemSet;
 
 /**
  * @author 李丁
@@ -15,11 +16,22 @@ import com.ftoul.po.GoodsEvent;
  */
 
 public class GoodsEventVO {
-	private static final long serialVersionUID = -8405558780694945296L;
-	
 	private GoodsEvent goodsEvent;
 	private List<Goods> goodsList;//活动商品列表
+	private SystemSet systemSet;
 	
+	/**
+	 * @return the systemSet
+	 */
+	public SystemSet getSystemSet() {
+		return systemSet;
+	}
+	/**
+	 * @param systemSet the systemSet to set
+	 */
+	public void setSystemSet(SystemSet systemSet) {
+		this.systemSet = systemSet;
+	}
 	/**
 	 * @return the goodsEvent
 	 */

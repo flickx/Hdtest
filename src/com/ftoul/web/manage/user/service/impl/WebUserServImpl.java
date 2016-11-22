@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,8 @@ public class WebUserServImpl implements WebUserServ{
 	private SmsCodeUtil smsCodeUtil;
 	@Autowired
 	private TokenUtil tokenUtil;
+	@Autowired
+	private HttpServletRequest req;
 	@Override
 	/**
 	 * 注册 新增用户对象
@@ -56,8 +60,7 @@ public class WebUserServImpl implements WebUserServ{
 		Object res=null;
 		UserService userService = WebserviceUtil.getService();
 		boolean isExists=userService.checkUserExists(user.getUsername());
-		InetAddress address = InetAddress.getLocalHost(); 
-		String IP=address.getHostAddress();
+		String IP=getRemoteHost();
 		String p2pId="";
 		String smsCode=user.getSmsCode();
 		int maxSort=smsCodeUtil.getMaxSmsSort(user.getUsername(), user.getSmscodeType());
@@ -133,6 +136,7 @@ public class WebUserServImpl implements WebUserServ{
 		//通过Webservice验证用户
 		String p2pID=userService.checkUser(user.getUsername(),user.getPassword());
 		User u =  new User();
+		u.setDriveId(param.getKey());
 			//密码错误
 		if ("".equals(p2pID)) {
 			res="手机或密码错误";
@@ -150,18 +154,17 @@ public class WebUserServImpl implements WebUserServ{
 				u.setIp(IP);
 				u.setStatic_("1");
 				res=hibernateUtil.save(u);
+			}else if (list.size()>0) {
+				u = (User) list.get(0);
+				if ("0".equals(u.getStatic_())) {
+					res="用户已被禁用";
+					throw new Exception("用户已被禁用");
+				}
 			}
+			UserToken userToken = tokenUtil.toMobilToken(u);
+			return ObjectToResult.getResult(userToken);
+//			LoginUserUtil.getLoginUserPrePage();
 		}
-		if (list.size()>0) {
-			u = (User) list.get(0);
-			if ("0".equals(u.getStatic_())) {
-				res="用户已被禁用";
-				throw new Exception("用户已被禁用");
-			}
-		}
-		UserToken userToken = tokenUtil.toMobilToken(u);
-//		LoginUserUtil.getLoginUserPrePage();
-		return ObjectToResult.getResult(userToken);
 	}
 	/**
 	 * 发送短信验证码
@@ -284,4 +287,22 @@ public class WebUserServImpl implements WebUserServ{
 //		
 //		return ObjectToResult.getResult(res);
 //	}
+	
+	private String getRemoteHost(){
+	    String ip = req.getHeader("x-forwarded-for");
+	    System.out.println("x-forwarded-for:"+ip);
+	    if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+	        ip = req.getHeader("Proxy-Client-IP");
+	        System.out.println("Proxy-Client-IP:"+ip);
+	    }
+	    if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+	        ip = req.getHeader("WL-Proxy-Client-IP");
+	        System.out.println("WL-Proxy-Client-IP:"+ip);
+	    }
+	    if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+	        ip = req.getRemoteAddr();
+	        System.out.println("req.getRemoteAddr():"+ip);
+	    }
+	    return ip.equals("0:0:0:0:0:0:0:1")?"127.0.0.1":ip;
+	}
 }

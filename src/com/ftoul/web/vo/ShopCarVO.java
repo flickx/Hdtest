@@ -24,7 +24,7 @@ public class ShopCarVO {
 	private String discount;
 	private Float eventPrice;//活动价
 	private String stock;
-	
+	private String typeName;//活动类型
 	public String getId() {
 		return id;
 	}
@@ -127,6 +127,11 @@ public class ShopCarVO {
 	public void setStock(String stock) {
 		this.stock = stock;
 	}
-	
-	
+	public String getTypeName() {
+		return typeName;
+	}
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
+
 }

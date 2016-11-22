@@ -12,11 +12,24 @@ public class OrdersVo {
 	private String userName;
 	private String conginee;
 	private String tel;
+	private String address;
 	private String orderTime;
 	private String orderStatic;
 	private String orderPrice;//实付金额
 	private String shopName;
 	
+	/**
+	 * @return the address
+	 */
+	public String getAddress() {
+		return address;
+	}
+	/**
+	 * @param address the address to set
+	 */
+	public void setAddress(String address) {
+		this.address = address;
+	}
 	public String getId() {
 		return id;
 	}

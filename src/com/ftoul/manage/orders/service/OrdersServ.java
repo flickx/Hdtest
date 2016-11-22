@@ -49,8 +49,4 @@ public interface OrdersServ {
 	
 	Result getOrdersPayExportList(Parameter param) throws Exception;
 
-	Result getAfterListPage(Parameter parameter) throws Exception;
-
-	Result getAfterScheduleDetail(Parameter parameter) throws Exception;
-	
 }

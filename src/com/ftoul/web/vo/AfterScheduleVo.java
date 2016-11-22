@@ -1,5 +1,7 @@
 package com.ftoul.web.vo;
 
+import com.ftoul.po.LogisticsCompany;
+
 
 public class AfterScheduleVo {
 	
@@ -8,7 +10,8 @@ public class AfterScheduleVo {
 	private String orderId;
 	private String orderStatic;
 	private String goodsName;
-	private String price;
+	private String backPrice;
+	private String num;
 	private String pic;
 	private String orderTime;
 	private String serviceCode;
@@ -47,12 +50,6 @@ public class AfterScheduleVo {
 	public void setGoodsName(String goodsName) {
 		this.goodsName = goodsName;
 	}
-	public String getPrice() {
-		return price;
-	}
-	public void setPrice(String price) {
-		this.price = price;
-	}
 	public String getPic() {
 		return pic;
 	}
@@ -77,12 +74,6 @@ public class AfterScheduleVo {
 	public void setScheduleStatic(String scheduleStatic) {
 		this.scheduleStatic = scheduleStatic;
 	}
-	public String getLogCompany() {
-		return logCompany;
-	}
-	public void setLogCompany(String logCompany) {
-		this.logCompany = logCompany;
-	}
 	public String getLogOdd() {
 		return logOdd;
 	}
@@ -100,6 +91,24 @@ public class AfterScheduleVo {
 	}
 	public void setState(String state) {
 		this.state = state;
+	}
+	public String getBackPrice() {
+		return backPrice;
+	}
+	public void setBackPrice(String backPrice) {
+		this.backPrice = backPrice;
+	}
+	public String getNum() {
+		return num;
+	}
+	public void setNum(String num) {
+		this.num = num;
+	}
+	public String getLogCompany() {
+		return logCompany;
+	}
+	public void setLogCompany(String logCompany) {
+		this.logCompany = logCompany;
 	}
 
 }
