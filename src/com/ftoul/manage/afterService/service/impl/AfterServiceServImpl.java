@@ -214,6 +214,20 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		hibernateUtil.save(log);
 	}
 
+	/**
+	 * 修改申请售后状态
+	 */
+	@Override
+	public Result saveScheduleStatic(Parameter param) throws Exception {
+		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
+		after.setScheduleStatic(param.getKey());
+		after.setModifyPerson(param.getManageToken().getLoginUser().getLoginName());
+		after.setModifyTime(new DateStr().toString());
+		hibernateUtil.update(after);
+		saveAfterOpLog(param,"【商家】修改售后状态为"+ordersUtil.getAfterState(param.getKey()));
+		return ObjectToResult.getResult(after);
+	}
+
 	
 	
 	

@@ -75,6 +75,8 @@ public class OrdersUtil {
 			state = "拒绝退款/不退货";
 		}else if("8".equals(afterState)){
 			state = "商家已发货";
+		}else if("9".equals(afterState)){
+			state = "商家已退款";
 		}
 		return state;
 	}

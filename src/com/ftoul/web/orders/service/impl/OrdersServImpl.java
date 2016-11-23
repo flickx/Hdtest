@@ -1138,38 +1138,6 @@ public class OrdersServImpl implements OrdersServ {
 		return obj;
 		
 	}
-	
-	/**
-	 * 获取售后进度列表
-	 */
-	@Override
-	public Result getOrderAfterSchedulePage(Parameter param) throws Exception {
-		Page page = hibernateUtil.hqlPage("from AfterSchedule where state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by createTime desc",param.getPageNum(),param.getPageSize());
-		List list = page.getObjList();
-		List<AfterScheduleVo> voList = new ArrayList<AfterScheduleVo>();
-		for (int i = 0; i < list.size(); i++) {
-			AfterScheduleVo vo = new AfterScheduleVo();
-			AfterSchedule schedule = (AfterSchedule) list.get(i);
-			vo.setId(schedule.getId());
-			vo.setGoodsName(schedule.getOrdersDetail().getGoodsParam().getGoods().getTitle());
-			vo.setLogCompany(schedule.getLogCompany().getName());
-			vo.setLogOdd(schedule.getLogOdd());
-			vo.setOrderId(schedule.getOrdersDetail().getOrders().getId());
-			vo.setOrderStatic(schedule.getOrdersDetail().getOrders().getOrderStatic());
-			vo.setOrderTime(schedule.getOrdersDetail().getOrders().getOrderTime());
-			vo.setPic(schedule.getOrdersDetail().getGoodsParam().getGoods().getPicSrc());
-			vo.setBackPrice(schedule.getBackPrice());
-			vo.setNum(schedule.getNum());
-			vo.setScheduleStatic(schedule.getScheduleStatic());
-			vo.setServiceCode(schedule.getServiceCode());
-			vo.setTel(schedule.getTel());
-			vo.setUserId(schedule.getUser().getId());
-			voList.add(vo);
-		}
-		page.getObjList().clear();
-		page.getObjList().addAll(voList);
-		return ObjectToResult.getResult(page);
-	}
 
 	/**
 	 * 根据主键获取订单详情
@@ -1180,45 +1148,4 @@ public class OrdersServImpl implements OrdersServ {
 		return ObjectToResult.getResult(detail);
 	}
 
-	/**
-	 * 保存售后申请信息
-	 */
-	@Override
-	public Result saveAfter(Parameter param) throws Exception {
-		Serializable s = null;
-		AfterSchedule schedule = (AfterSchedule) Common.jsonToBean(param.getObj().toString(), AfterSchedule.class);
-		AfterOpLog log = new AfterOpLog();
-		if(Common.isNull(schedule.getId())){
-			OrdersDetail od = (OrdersDetail) hibernateUtil.find(OrdersDetail.class, param.getId()+"");
-			schedule.setOrdersDetail(od);
-			schedule.setUser(param.getUserToken().getUser());
-			schedule.setServiceCode(ordersUtil.getAfterServiceCode());
-			schedule.setScheduleStatic("1");//用户申请售后
-			schedule.setState("1");
-			schedule.setCreatePerson(param.getUserId());
-			schedule.setCreateTime(new DateStr().toString());
-			s = hibernateUtil.save(schedule);
-			log.setMsg("【用户】申请售后,售后类型为:"+ordersUtil.getAfterType(schedule.getType()));
-			log.setCreatePerson(param.getManageToken().getLoginUser().getLoginName());
-			log.setCreateTime(new DateStr().toString());
-			log.setState("1");
-		}else{
-			hibernateUtil.update(schedule);
-			log.setMsg("修改了申请售后内容");
-		}
-		log.setAfterSchedule(schedule);
-		log.setUserId(param.getUserToken().getUser().getName());
-		hibernateUtil.save(log);
-		return ObjectToResult.getResult(s);
-	}
-
-	/**
-	 * 根据主键获取售后申请
-	 */
-	@Override
-	public Result getAfterSchedule(Parameter param) throws Exception {
-		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
-		return ObjectToResult.getResult(after);
-	}
-	
 }
