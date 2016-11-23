@@ -27,9 +27,11 @@ public class ShopFreightTemplate  implements java.io.Serializable {
      /**
 	 * 
 	 */
-	private static final long serialVersionUID = -735994700427760647L;
-	private String id;
+	 private static final long serialVersionUID = -735994700427760647L;
+	 private String id;
      private Shop shop;
+     private String templateName;
+     private String templateType;
      private String shopAddress;
      private String shopTime;
      private String freeShop;
@@ -95,7 +97,24 @@ public class ShopFreightTemplate  implements java.io.Serializable {
         this.shop = shop;
     }
     
-    @Column(name="shop_address", length=32)
+    @Column(name="template_name", length=100)
+	public String getTemplateName() {
+		return templateName;
+	}
+
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
+	}
+	@Column(name="template_type", length=32)
+	public String getTemplateType() {
+		return templateType;
+	}
+
+	public void setTemplateType(String templateType) {
+		this.templateType = templateType;
+	}
+
+	@Column(name="shop_address", length=32)
 
     public String getShopAddress() {
         return this.shopAddress;
