@@ -36,7 +36,12 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	@Override
 	public Result getAfterListPage(Parameter param) throws Exception {
 		String queryStr = param.getWhereStr();
-		String hql = " from AfterSchedule where state='1' "+queryStr+" order by createTime desc";
+		String hql = "";
+		if(queryStr!=null){
+			hql = " from AfterSchedule where state='1' "+queryStr+" order by createTime desc";
+		}else{
+			hql = " from AfterSchedule where state='1' order by createTime desc";
+		}
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		List<Object> afterList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
@@ -91,6 +96,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		afterVo.setReason(schedule.getReason());
 		afterVo.setNum(schedule.getNum());
 		afterVo.setBackPrice(schedule.getBackPrice());
+		afterVo.setScheduleStatic(schedule.getScheduleStatic());
 		
 		afterVo.setOrderNumber(orders.getOrderNumber());
 		afterVo.setOrderTime(orders.getOrderTime());
