@@ -26,6 +26,7 @@ public class UserCollection implements java.io.Serializable {
 	private String id;
 	private User user;
 	private Shop shop;
+	private Goods goods;
 	private String createTime;
 	private String createPerson;
 	private String modifyTime;
@@ -82,6 +83,16 @@ public class UserCollection implements java.io.Serializable {
 
 	public void setShop(Shop shop) {
 		this.shop = shop;
+	}
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "goods_id")
+	public Goods getGoods() {
+		return this.goods;
+	}
+
+	public void setGoods(Goods goods) {
+		this.goods = goods;
 	}
 
 	@Column(name = "create_time", length = 32)
