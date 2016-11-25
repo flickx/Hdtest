@@ -9,8 +9,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -60,6 +63,7 @@ import com.ftoul.web.vo.OrderPriceVo;
 import com.ftoul.web.vo.OrderStaticCountVo;
 import com.ftoul.web.vo.OrderVo;
 import com.ftoul.web.vo.OrdersLogisticsVo;
+import com.ftoul.web.vo.ShopGoodsParamVo;
 import com.ftoul.web.webservice.UserService;
 
 @Service("OrdersWebServImpl")
@@ -420,13 +424,20 @@ public class OrdersServImpl implements OrdersServ {
 	 * @param param Parameter对象
 	 * @return 返回结果（前台用Result对象）
 	 */
-	@Override
-	public Result getOrdersPayable(Parameter param) throws Exception {
+	//@Override
+	public OrderPriceVo getOrdersPayable(Parameter param,List<ShopGoodsParamVo> list,Orders o) throws Exception {
 		//首次进来生成订单
-		OrderPriceVo vo = checkGoodsEvent(param);
-		if(vo.getMsg()==null){
+		//OrderPriceVo vo = checkGoodsEvent(param);
+		//if(vo.getMsg()==null){
+		OrderPriceVo vo = new OrderPriceVo();
+		Orders orders;
+		if("1".equals(o.getIsHasChild())){
 			Object obj = saveOrdersFirst(param);
-			Orders orders = (Orders) hibernateUtil.find(Orders.class, obj.toString());
+			orders = (Orders) hibernateUtil.find(Orders.class, obj.toString());
+		}else{
+			orders = o;
+		}
+			
 			double price = 0.00;
 			double totalPayable = 0.00;
 			double payable = 0.00;
@@ -436,19 +447,18 @@ public class OrdersServImpl implements OrdersServ {
 			double costPrice = 0.00;//折后单价
 			double costPayable = 0.00;//折后总价
 			String isCard = "no";
-			String id = param.getKey();
-			String[] goodsParams = id.split(":");
 			String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
 			List<MjGoodsEventVo> mjGoodsEventList =  new ArrayList<MjGoodsEventVo>();
-			for (int i = 0; i < goodsParams.length; i++) {
-				String goodsParam = goodsParams[i];
-				String[] goods = goodsParam.split(",");
-				GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, goods[0]+"");
+			for (int i = 0; i < list.size(); i++) {
+				ShopGoodsParamVo shopGoodsParamVo = list.get(i);
+				//String goodsParam = goodsParams[i];
+				//String[] goods = goodsParam.split(",");
+				GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, shopGoodsParamVo.getGoodsParamId()+"");
 				Goods good = goodsP.getGoods();
 				if("1".equals(good.getCrossborder())){//判断是否是跨境商品1是
 					isCard = "yes";
 				}
-				int num= Integer.parseInt(goods[1]);
+				int num= Integer.parseInt(shopGoodsParamVo.getNum());
 				System.out.println("活动原价："+goodsP.getGoods().getId()+goodsP.getGoods().getTitle()+",数量为"+num+"总价为"+payable);
 				
 				List<Object> goodsEventJoinList = hibernateUtil.hql("from GoodsEventJoin where goods.id='"+good.getId()+"' and state='1' and goodsEvent.eventBegen<='"+current+"' and goodsEvent.eventEnd>='"+current+"'");
@@ -457,7 +467,7 @@ public class OrdersServImpl implements OrdersServ {
 					int quantity = eventJoin.getQuantity();
 					if(quantity<num){
 						vo.setMsg("你挑选的活动商品["+good.getTitle()+"]库存不足，请重新挑选");
-						return ObjectToResult.getResult(vo);
+						return vo;
 					}
 				}
 				
@@ -505,7 +515,7 @@ public class OrdersServImpl implements OrdersServ {
 					}
 				}else{
 					price = Double.parseDouble(goodsP.getPrice());
-					num= Integer.parseInt(goods[1]);
+					num= Integer.parseInt(shopGoodsParamVo.getNum());
 					payable = price*num;
 					totalPayable += payable;
 					orderPrice += payable;
@@ -542,12 +552,16 @@ public class OrdersServImpl implements OrdersServ {
 				orderPrice = mjPrice.get(0);
 				totalBenPrice += mjPrice.get(1);
 			}
-			
+			orders.setOrderTime(new DateStr().toString());
 			orders.setOrderPrice(new DecimalFormat("0.00").format(orderPrice));
 			orders.setPayable(new DecimalFormat("0.00").format(totalPayable));
 			orders.setBenefitPrice(new DecimalFormat("0.00").format(totalBenPrice));
+			orders.setCreateTime(new DateStr().toString());
 			orders.setModifyPerson(param.getUserId());
 			orders.setModifyTime(new DateStr().toString());
+			if("1".equals(o.getIsHasChild())){
+				orders.setParentOrdersId(o.getId());
+			}
 			hibernateUtil.save(orders);
 			
 			vo.setPayable(new DecimalFormat("0.00").format(totalPayable));
@@ -558,8 +572,8 @@ public class OrdersServImpl implements OrdersServ {
 			getCoinInfo(param,vo);//获取蜂币
 			getDeductionCoinInfo(param,vo,orders);
 			getDoubleCoinData(param,vo);//参与蜂币翻倍活动
-		}
-		return ObjectToResult.getResult(vo);
+		//}
+		return vo;
 	}
 	
 	/**
@@ -696,74 +710,16 @@ public class OrdersServImpl implements OrdersServ {
 	}
 	
 	/**
-	 * 生成订单号
+	 * 生成订单号 年月日时分秒+6位随机数，总共18位
 	 * @return
 	 */
 	public String getOrderNumber(){
-		String current = new DateStr("yyyyMMdd").toString();
-		String currentTime = new DateStr("yyyy-MM-dd").toString();
-		Object obj = hibernateUtil.hqlFirst("select max(orderNumber) from Orders where orderTime>='"+currentTime+" 00:00:01' and orderTime<='"+currentTime+" 23:59:59'");
-		String max = "";
-		String seq = "";
-		
+		String current = new DateStr("yyMMddHHmmss").toString();
 		String code = "";
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             code = code + (int)(Math.random() * 9);
         }
-		if(obj!=null){
-			max = obj.toString();
-			String time = max.substring(0, 8);
-			seq = max.substring(12);
-			if(current.equals(time)){
-				seq = String.valueOf(Integer.parseInt(seq)+1);
-				int length = seq.length();
-				int l = 6-length;
-				if(l!=0){
-					for (int i = 0; i < l; i++) {
-						seq = "0"+seq;
-					}
-				}
-			}else{
-				seq ="000001";
-			}
-		}else{
-			seq ="000001";
-		}
-
-		/*String max = "";
-		String seq = "";
-		Object obj = hibernateUtil.hqlFirst("from OrderNumber where createTime>='"+currentTime+" 00:00:01' and createTime<='"+currentTime+" 23:59:59'");
-	
-		OrderNumber orderNumber = (OrderNumber)obj;
-		if(orderNumber!=null){
-			max = orderNumber.getOrderNumber();
-			String time = max.substring(0, 8);
-			seq = max.substring(8);
-			if(current.equals(time)){
-				seq = String.valueOf(Integer.parseInt(seq)+1);
-				int length = seq.length();
-				int l = 6-length;
-				if(l!=0){
-					for (int i = 0; i < l; i++) {
-						seq = "0"+seq;
-					}
-				}
-			}else{
-				seq ="000001";
-			}
-			orderNumber.setCreateTime(new DateStr("yyyy-MM-dd HH:mm:ss").toString());
-			orderNumber.setOrderNumber(current+seq);
-			orderNumber.setVersion(orderNumber.getVersion()+1 );
-			hibernateUtil.update(orderNumber);
-		}else{
-			seq ="000001";
-			OrderNumber orderNo = new OrderNumber();
-			orderNo.setCreateTime(new DateStr("yyyy-MM-dd HH:mm:ss").toString());
-			orderNo.setOrderNumber(current+seq);
-			hibernateUtil.save(orderNo);
-		}*/
-		max = current+code+seq;
-		return max;
+		return current+code;
 	}
 
 	/**
@@ -1026,16 +982,13 @@ public class OrdersServImpl implements OrdersServ {
 	 */
 	public Object saveOrdersFirst(Parameter param){
 		Orders orders = new Orders();
-		String orderNumber = getOrderNumber();
 		orders.setCreatePerson(param.getUserId());
-		orders.setCreateTime(new DateStr().toString());
-		orders.setOrderTime(new DateStr().toString());
 		orders.setOrderStatic("0");//订单状态
 		orders.setDeliverStatic("0");//发货状态
 		orders.setConfirmStatic("0");//确认收货状态
 		orders.setPayStatic("0");//支付状态
 		orders.setState("0");
-		orders.setOrderNumber(orderNumber);
+		orders.setOrderNumber(getOrderNumber());
 		orders.setUser(param.getUserToken().getUser());
 		Object res = hibernateUtil.save(orders);
 		return res;
@@ -1108,7 +1061,6 @@ public class OrdersServImpl implements OrdersServ {
 						return vo;
 					}else{
 						hql = "select od from OrdersDetail od, Orders o where od.orders.id = o.id and o.orderStatic not in('0','8') and od.goodsParam.goods.id = '"+good.getId()+"' and od.eventType='"+event.getTypeName()+"' and od.eventBegen='"+event.getEventBegen()+"' and od.eventEnd = '"+event.getEventEnd()+"' and o.user.username = '"+param.getUserToken().getUser().getUsername()+"'";
-//						hql = "select od from OrdersDetail od, Orders o where od.orders.id = o.id and o.orderStatic not in('0','8') and od.eventType='"+event.getTypeName()+"' and od.eventBegen='"+event.getEventBegen()+"' and od.eventEnd = '"+event.getEventEnd()+"' and o.user.username = '"+param.getUserToken().getUser().getUsername()+"'";
 						List<Object> ordersDetailList = hibernateUtil.hql(hql);
 						if(ordersDetailList.size()>0){
 							vo.setMsg("你已经购买过【"+good.getTitle()+"】了，此商品参加的【"+event.getEventName()+"】活动一人只能购买一件");
@@ -1137,6 +1089,56 @@ public class OrdersServImpl implements OrdersServ {
 	public Result getOrdersDetailById(Parameter param) throws Exception {
 		OrdersDetail detail = (OrdersDetail) hibernateUtil.find(OrdersDetail.class, param.getId()+"");
 		return ObjectToResult.getResult(detail);
+	}
+	
+	/**
+	 * 订单拆分
+	 */
+	@Override
+	public Result getOrdersPayable(Parameter param) throws Exception {
+		double payable = 0.00;
+		double orderPrice = 0.00;
+		double benPrice = 0.00;
+		String orderNumber;
+		String isCard;
+		String msg;
+		int coinNumber = 0;
+		int totalCoinNumber = 0;
+		double coinPrice = 0.00;
+		String flag;
+		OrderPriceVo vo = checkGoodsEvent(param);
+		List<OrderPriceVo> voList = new ArrayList<OrderPriceVo>();
+		if(vo.getMsg()==null){
+			Object obj = saveOrdersFirst(param);
+			Orders orders = (Orders) hibernateUtil.find(Orders.class, obj.toString());
+			Map<String, List<ShopGoodsParamVo>> map = ordersUtil.getShopAndGoodsParam(param.getKey());
+			Set<Entry<String, List<ShopGoodsParamVo>>> set = map.entrySet();
+			Iterator it = set.iterator();
+			if(map.size()>1){//存在多个店铺，需要拆分订单
+				orders.setIsHasChild("1");
+			}else{
+				orders.setIsHasChild("0");
+			}
+			while(it.hasNext()){
+				List<ShopGoodsParamVo> list = (List<ShopGoodsParamVo>) it.next();
+				vo = getOrdersPayable(param, list, orders);
+				voList.add(vo);
+			}
+			
+			for (OrderPriceVo orderPriceVo : voList) {
+				payable += Double.parseDouble(orderPriceVo.getPayable());
+				orderPrice += Double.parseDouble(orderPriceVo.getOrderPrice());
+				benPrice += Double.parseDouble(orderPriceVo.getBenPrice());
+			}
+			vo.setBenPrice(String.valueOf(benPrice));
+			vo.setCoinNumber(totalCoinNumber);
+			vo.setCoinPrice(coinPrice);
+			vo.setOrderNumber(orders.getOrderNumber());
+			vo.setOrderPrice(String.valueOf(orderPrice));
+			vo.setPayable(String.valueOf(payable));
+			vo.setTotalCoinNumber(totalCoinNumber);
+		}
+		return ObjectToResult.getResult(vo);
 	}
 
 }

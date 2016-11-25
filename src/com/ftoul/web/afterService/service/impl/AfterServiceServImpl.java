@@ -142,7 +142,13 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	@Override
 	public Result getAfterSchedule(Parameter param) throws Exception {
 		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
-		return ObjectToResult.getResult(after);
+		List<Object> list = hibernateUtil.hql("from AfterOpLog where state='1' and afterSchedule.id = '"+after.getId()+"' order by createTime desc");
+		AfterScheduleVo vo = new AfterScheduleVo();
+		vo.setList(list);
+		vo.setId(after.getId());
+		vo.setOrderTime(after.getOrdersDetail().getOrders().getOrderTime());
+		vo.setServiceCode(after.getServiceCode());
+		return ObjectToResult.getResult(vo);
 	}
 
 	@Override
