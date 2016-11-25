@@ -97,7 +97,16 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		afterVo.setNum(schedule.getNum());
 		afterVo.setBackPrice(schedule.getBackPrice());
 		afterVo.setScheduleStatic(schedule.getScheduleStatic());
-		
+		List<AfterSchedule> picSrcs = new ArrayList<AfterSchedule>();
+		if(schedule.getPicSrcs()!=null){
+			String[] picSrc = schedule.getPicSrcs().split(";");
+			for (String src : picSrc) {
+				AfterSchedule afterSchedule = new AfterSchedule();
+				afterSchedule.setPicSrcs(src);
+				picSrcs.add(afterSchedule);
+			}
+		}
+		afterVo.setList(picSrcs);
 		afterVo.setOrderNumber(orders.getOrderNumber());
 		afterVo.setOrderTime(orders.getOrderTime());
 		if("0".equals(orders.getOrderStatic())){

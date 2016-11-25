@@ -1,5 +1,7 @@
 package com.ftoul.web.afterService.action;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,18 @@ public class AfterServiceAction {
 
 	@Autowired
 	private AfterServiceServ afterServiceServ;
+	
+	/**
+	 * 获取售后列表
+	 * @param param 用户ID
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getAfterListByUserId")  
+	public @ResponseBody Result getAfterListByUserId(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return afterServiceServ.getAfterListByUserId(parameter);
+	}
 	
 	/**
 	 * 获取售后进度列表
@@ -59,4 +73,17 @@ public class AfterServiceAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return afterServiceServ.getAfterSchedule(parameter);
 	}
+	
+	/**
+	 * 申请售后凭证上传
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "afterServicePicUpload")
+	public @ResponseBody Result afterServicePicUpload(String param, HttpServletRequest request)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return afterServiceServ.afterServicePicUpload(parameter, request);
+	}
+	
 }

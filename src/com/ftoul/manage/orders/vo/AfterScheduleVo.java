@@ -3,6 +3,7 @@ package com.ftoul.manage.orders.vo;
 import java.util.List;
 
 import com.ftoul.po.AfterOpLog;
+import com.ftoul.po.AfterSchedule;
 
 public class AfterScheduleVo {
 	
@@ -20,6 +21,7 @@ public class AfterScheduleVo {
 	private String orderStatic;
 	private String orderTime;
 	private String createTime;
+	private List<AfterSchedule> list;
 	
 	private String company;
 	private String odd;
@@ -226,6 +228,12 @@ public class AfterScheduleVo {
 	}
 	public void setLogList(List<Object> logList) {
 		this.logList = logList;
+	}
+	public List<AfterSchedule> getList() {
+		return list;
+	}
+	public void setList(List<AfterSchedule> list) {
+		this.list = list;
 	}
 	
 }
