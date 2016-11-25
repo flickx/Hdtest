@@ -100,8 +100,6 @@ public class OrdersServImpl implements OrdersServ {
 			page =  hibernateUtil.hqlPage("from Orders where orderStatic in('2', '3') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.NOT_TASK_DELIVER.equals(key)){
 			page =  hibernateUtil.hqlPage("from Orders where orderStatic in ('4','5') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
-		}else if(OrdersConstant.AFTER.equals(key)){
-			page =  hibernateUtil.hqlPage("from Orders where orderStatic not in ('0','1','7','8') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else{
 			page =  hibernateUtil.hqlPage("from Orders where orderStatic!='0' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}
@@ -112,7 +110,7 @@ public class OrdersServImpl implements OrdersServ {
 		for (int i = 0; i < ordersList.size(); i++) {
 			Orders order = (Orders) ordersList.get(i);
 			ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
-			vo = transformObject(order,ordersDetailList);
+			vo = ordersUtil.transformObject(order,ordersDetailList);
 			list.add(vo);
 		}
 		page.setObjList(null);
@@ -209,7 +207,7 @@ public class OrdersServImpl implements OrdersServ {
 	public Result getOrdersByOrdersId(Parameter param) throws Exception {
 		Orders orders = (Orders) hibernateUtil.find(Orders.class, param.getId()+"");
 		List<Object> ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+orders.getId()+"'");
-		return ObjectToResult.getResult(transformObject(orders,ordersDetailList));
+		return ObjectToResult.getResult(ordersUtil.transformObject(orders,ordersDetailList));
 	}
 	
 	@Override
@@ -346,13 +344,6 @@ public class OrdersServImpl implements OrdersServ {
 		}
 	}
 	
-	public ManyVsOneVo transformObject(Orders order,List<Object> ordersDetailList){
-		ManyVsOneVo vo = new ManyVsOneVo();
-		vo.setObj(order);
-		vo.setList(ordersDetailList);
-		return vo;
-	}
-
 	/**
 	 * 获取订单支付详情
 	 * @param param Parameter对象

@@ -1,12 +1,16 @@
 package com.ftoul.util.orders;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ftoul.common.DateStr;
 import com.ftoul.common.Parameter;
+import com.ftoul.po.Orders;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.orders.service.OrdersServ;
+import com.ftoul.web.vo.ManyVsOneVo;
 
 @Component
 public class OrdersUtil {
@@ -160,6 +164,13 @@ public class OrdersUtil {
 		}
 		max = current+seq;
 		return max;
+	}
+	
+	public ManyVsOneVo transformObject(Orders order,List<Object> ordersDetailList){
+		ManyVsOneVo vo = new ManyVsOneVo();
+		vo.setObj(order);
+		vo.setList(ordersDetailList);
+		return vo;
 	}
 	
 }
