@@ -19,6 +19,7 @@ public class GoodsVo {
 	private String code;
 	private String grounding;
 	private String title;
+	private String subtitle;
 	private String price;
 	private String batchprice;
 	private String costprice;
@@ -413,4 +414,11 @@ public class GoodsVo {
 		this.homeChannel = homeChannel;
 	}
 	
+	public String getSubtitle() {
+		return subtitle;
+	}
+
+	public void setSubtitle(String subtitle) {
+		this.subtitle = subtitle;
+	}
 }

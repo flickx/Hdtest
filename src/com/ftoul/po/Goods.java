@@ -37,6 +37,7 @@ public class Goods implements java.io.Serializable {
 	private GoodsBrand goodsBrand;
 	private String oneIndiana;
 	private String title;
+	private String subtitle;
 	private Double price;
 	private String deductionrate;
 	private String skuCode;
@@ -505,6 +506,15 @@ public class Goods implements java.io.Serializable {
 
 	public void setShopId(String shopId) {
 		this.shopId = shopId;
+	}
+	
+	@Column(name = "subtitle", length = 100)
+	public String getSubtitle() {
+		return this.subtitle;
+	}
+
+	public void setSubtitle(String subtitle) {
+		this.subtitle = subtitle;
 	}
 	
 }
