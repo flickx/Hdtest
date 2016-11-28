@@ -288,5 +288,5 @@ alter table business_store_summary add constraint FK_business_store_10 foreign k
 /*==============================================================*/
 /* Table: business_store_manage   business_store  2016.11.17    */
 /*==============================================================*/
-alter table business_store_manage  add business_store_address varchar(100);
+alter table business_manage  add business_store_address varchar(100);
 alter table business_store add store_id varchar(100);
