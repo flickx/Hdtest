@@ -17,6 +17,7 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.manage.cart.service.CartServ;
+import com.ftoul.po.BusinessStore;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.ShopCar;
 import com.ftoul.po.User;
@@ -38,7 +39,7 @@ public class CartServImpl implements CartServ {
 		"					left join goods_event_join gej on gs.id = gej.goods_id and gej.state = 1  and sc.state = 1\n" +
 		"					left join goods_event ge  on ge.id=gej.event_id and ge.state = 1 and sc.state = 1 and ge.type_name !='满减'\n" +
 		"					where sc.user_id='" + param.getUserToken().getUser().getId() +"' and sc.state = '1' and gs.state = 1 order by sc.create_time desc";*/
-		String goodsSql = "select sc.id,sc.number,gs.pic_src,gs.title,gp.param_name,sc.goods_param_id,gs.id as goodsId,gp.stock,gp.price"
+		String goodsSql = "select sc.id,sc.number,gs.pic_src,gs.title,gp.param_name,sc.goods_param_id,gs.id as goodsId,gp.stock,gp.price,gs.shop_id"
 					+" from shop_car sc  join goods_param gp on sc.goods_param_id = gp.id and gp.state =1 and sc.state = 1 "
 					+" join goods gs on gp.goods_id=gs.id and gs.state = 1 and sc.state = 1"
 					+" where sc.user_id='" + param.getUserToken().getUser().getId() +"' and sc.state = 1 and gs.state = 1";
@@ -52,6 +53,7 @@ public class CartServImpl implements CartServ {
 							+" join goods_event ge on ge.id = gej.event_id and ge.state =1 and gej.state = 1"
 							+" and ge.type_name != '满减' and gp.id = '"+shopCarList.get(i)[5].toString()+"' and ge.event_begen <NOW() and ge.event_end>NOW()";
 			List<Object[]> eventList = hibernateUtil.sql(eventSql);
+			BusinessStore bs = (BusinessStore) hibernateUtil.find(BusinessStore.class,shopCarList.get(i)[9].toString());
 			ShopCarVO shopCarVO = new ShopCarVO();
 			shopCarVO.setId(shopCarList.get(i)[0].toString());
 			shopCarVO.setNumber(shopCarList.get(i)[1].toString());
@@ -63,6 +65,8 @@ public class CartServImpl implements CartServ {
 			shopCarVO.setGoodsParamId(shopCarList.get(i)[5].toString());
 			shopCarVO.setGoodsId(shopCarList.get(i)[6].toString());
 			shopCarVO.setPrice(shopCarList.get(i)[8].toString());
+			shopCarVO.setShopId(bs.getId());
+			shopCarVO.setShopName(bs.getStoreName());
 			if(eventList.size()>0){
 				if(null!=eventList.get(0)[0]){
 					shopCarVO.setEventPrice(Float.parseFloat(eventList.get(0)[0].toString()));
