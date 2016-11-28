@@ -322,4 +322,22 @@ public class GoodsAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return userCollectionServ.findUserCollection(parameter);
 	}
+	
+	@RequestMapping(value = "getUserCollectionList")  
+	public @ResponseBody Result getUserCollectionList(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return userCollectionServ.getUserCollectionList(parameter);
+	}
+	
+	/**
+	 * 删除收藏商品.
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "deleteUserCollection")  
+	public @ResponseBody Result deleteUserCollection(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return userCollectionServ.deleteUserCollection(parameter);
+	}
 }
