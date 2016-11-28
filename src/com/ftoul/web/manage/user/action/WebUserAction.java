@@ -74,7 +74,7 @@ public class WebUserAction {
 		return webUserServ.sendSmsCode(parameter);
 	}
 	/**
-	 * 重置密码
+	 * 找回密码
 	 * @param param
 	 * @return
 	 * @throws Exception
@@ -84,6 +84,19 @@ public class WebUserAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return webUserServ.doResetPassword(parameter);
 	}
+	
+	/**
+	 * 重置密码
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "resetPassword") 
+	public @ResponseBody Result resetPassword(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return webUserServ.resetPassword(parameter);
+	}
+	
 	
 	
 	/**
