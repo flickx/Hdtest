@@ -84,9 +84,15 @@ public class OrdersUtil {
 		}else if("7".equals(afterState)){
 			state = "拒绝退款/不退货";
 		}else if("8".equals(afterState)){
-			state = "商家已发货";
+			state = "买家已发货";
 		}else if("9".equals(afterState)){
-			state = "商家已退款";
+			state = "商家已收货";
+		}else if("10".equals(afterState)){
+			state = "商家已发货";
+		}else if("11".equals(afterState)){
+			state = "买家已收货";
+		}else if("12".equals(afterState)){
+			state = "商家已退款并完成售后服务";
 		}
 		return state;
 	}
@@ -195,7 +201,7 @@ public class OrdersUtil {
 			vo.setGoodsParamId(str[0]);
 			vo.setNum(str[1]);
 			vo.setPrice(str[2]);
-			vo.setShopId(str[3]);
+			vo.setShopId(str[4]);
 			voList.add(vo);
 		}
 		

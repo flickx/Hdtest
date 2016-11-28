@@ -86,4 +86,16 @@ public class AfterServiceAction {
 		return afterServiceServ.afterServicePicUpload(parameter, request);
 	}
 	
+	/**
+	 * 申请售后用户发货
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "saveSendGoods")
+	public @ResponseBody Result saveSendGoods(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return afterServiceServ.saveSendGoods(parameter);
+	}
+	
 }
