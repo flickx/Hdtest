@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
+import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.common.StrUtil;
 import com.ftoul.po.Goods;
 import com.ftoul.po.User;
 import com.ftoul.po.UserCollection;
@@ -59,6 +61,20 @@ public class UserCollectionServImpl implements UserCollectionServ {
 		}
 		
 		return result;
+	}
+
+	@Override
+	public Result getUserCollectionList(Parameter param) throws Exception {
+		String hql = " from UserCollection where user.id='"+param.getUserToken().getUser().getId()+"' and state = '1' ";
+		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(),
+				param.getPageSize());
+		return ObjectToResult.getResult(page);
+	}
+
+	@Override
+	public Result deleteUserCollection(Parameter param) throws Exception {
+		Integer num = hibernateUtil.execHql("update UserCollection set state = '0' where id in ("+StrUtil.getIds(param.getId())+")");
+		return ObjectToResult.getResult(num);
 	}
 	
 	

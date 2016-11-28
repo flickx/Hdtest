@@ -74,7 +74,7 @@ public class WebUserAction {
 		return webUserServ.sendSmsCode(parameter);
 	}
 	/**
-	 * 重置密码
+	 * 找回密码
 	 * @param param
 	 * @return
 	 * @throws Exception
@@ -83,6 +83,35 @@ public class WebUserAction {
 	public @ResponseBody Result doResetPassword(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return webUserServ.doResetPassword(parameter);
+	}
+	
+	/**
+	 * 重置密码
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "resetPassword") 
+	public @ResponseBody Result resetPassword(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return webUserServ.resetPassword(parameter);
+	}
+	
+	
+	
+	/**
+	 * 根据用户ID获取单个用户对象
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getUserById")  
+	public @ResponseBody Result getUserById(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		if(parameter.getPageNum() == null){
+			parameter.setPageNum(1);
+		}
+		return webUserServ.getUserById(parameter);
 	}
 	
 	/**
@@ -96,7 +125,20 @@ public class WebUserAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return webUserServ.getAddressBook(parameter);
 	}
-//	/**
+	
+	/**
+	 * 保存/更新用户对象
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "saveUser")  
+	public @ResponseBody Result saveUser(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return webUserServ.saveUser(parameter);
+	}
+	
+	//	/**
 //	 * 找回密码:下一步，进入重置密码页面
 //	 * @param param
 //	 * @return

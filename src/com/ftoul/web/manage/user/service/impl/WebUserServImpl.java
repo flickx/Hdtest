@@ -29,6 +29,7 @@ import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.token.TokenUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.manage.user.service.WebUserServ;
+import com.ftoul.web.manage.user.vo.ResetPasswordVo;
 import com.ftoul.web.vo.UsersVO;
 import com.ftoul.web.webservice.UserService;
 
@@ -111,6 +112,17 @@ public class WebUserServImpl implements WebUserServ{
 			throw new Exception("手机号未注册");
 		}
 		return ObjectToResult.getResult(res);
+	}
+	
+	/**
+	 * 根据用户ID获取单个用户对象
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getUserById(Parameter param) throws Exception {
+		User user = (User) hibernateUtil.find(User.class, param.getId()+"");
+		return ObjectToResult.getResult(user);
 	}
 	
 	/**
@@ -221,6 +233,46 @@ public class WebUserServImpl implements WebUserServ{
 		return ObjectToResult.getResult(res);
 	}
 	
+	
+	/**
+	 * 重置密码
+	 */
+	@Override
+	public Result resetPassword(Parameter param) throws Exception {
+		
+		ResetPasswordVo resetPasswordVo = (ResetPasswordVo) JSONObject.toBean((JSONObject) param.getObj(),ResetPasswordVo.class);
+		User user =(User) this.hibernateUtil.find(User.class, param.getId()+"");
+		Result res = new Result();
+		if(user==null){
+			res.setResult(0);
+			res.setMessage("没有该用户");
+			return res;
+		}
+		UserService userService = WebserviceUtil.getService();
+		//通过Webservice验证用户
+		String p2pID=userService.checkUser(user.getUsername(),resetPasswordVo.getOldPassword());
+		if ("".equals(p2pID)) {
+			res.setResult(0);
+			res.setMessage("原密码错误");
+			return res;
+		}
+		
+		//通过webservice修改密码
+		userService.modifyPwd(user.getUsername(),resetPasswordVo.getNewPassword());
+		String hql = "from User where state = 1 and username = '" + user.getUsername()+"'";	
+		User userDb = (User) hibernateUtil.hqlFirst(hql);
+		String passwordVersion = userDb.getPasswordVersion();
+		if(passwordVersion == null)
+			passwordVersion = "1";
+		else{
+			passwordVersion = (Integer.parseInt(passwordVersion)+1)+"";
+		}
+		tokenUtil.uploadSecretKey(userDb);
+		hibernateUtil.update(userDb);
+		res.setResult(1);
+		return ObjectToResult.getResult(res);
+	}
+	
 	@Override
 	public Result getAddressBook(Parameter param) throws Exception {
 		List<Object> bookList = param.getObjList();
@@ -304,5 +356,40 @@ public class WebUserServImpl implements WebUserServ{
 	        System.out.println("req.getRemoteAddr():"+ip);
 	    }
 	    return ip.equals("0:0:0:0:0:0:0:1")?"127.0.0.1":ip;
+	}
+	
+	/**
+	 * 保存/更新用户对象
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result saveUser(Parameter param) throws Exception {
+		User user = (User) JSONObject.toBean((JSONObject) param.getObj(),User.class);
+		Object res;
+		if(Common.isNull(user.getId())){
+			user.setCreateTime(new DateStr().toString());
+			user.setStatic_("1");
+			user.setState("1");
+			res = hibernateUtil.save(user);
+		}else{
+			User newUser = (User) hibernateUtil.find(User.class, user.getId());
+			newUser.setCardId(user.getCardId());
+			newUser.setScore(user.getScore());
+			newUser.setXp(user.getXp());
+			newUser.setEmail(user.getEmail());
+			newUser.setName(user.getName());
+			newUser.setSex(user.getSex());
+//			newUser.setCreatePerson(param.getManageToken().getLoginUser().getLoginName());
+//			newUser.setCreateTime(new DateStr().toString());
+			newUser.setStatic_("1");
+			newUser.setState("1");
+			newUser.setStatic_("1");
+			newUser.setState("1");
+			newUser.setModifyTime(new DateStr().toString());
+//			if(1 == 1) throw new Exception("cuowu ");
+			res = hibernateUtil.update(newUser);
+		}
+		return ObjectToResult.getResult(res);
 	}
 }
