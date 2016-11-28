@@ -29,6 +29,7 @@ import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.token.TokenUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.manage.user.service.WebUserServ;
+import com.ftoul.web.manage.user.vo.ResetPasswordVo;
 import com.ftoul.web.vo.UsersVO;
 import com.ftoul.web.webservice.UserService;
 
@@ -229,6 +230,46 @@ public class WebUserServImpl implements WebUserServ{
 		userService.modifyPwd(user.getUsername(),user.getPassword());
 		tokenUtil.uploadSecretKey(userDb);
 		hibernateUtil.update(userDb);
+		return ObjectToResult.getResult(res);
+	}
+	
+	
+	/**
+	 * 重置密码
+	 */
+	@Override
+	public Result resetPassword(Parameter param) throws Exception {
+		
+		ResetPasswordVo resetPasswordVo = (ResetPasswordVo) JSONObject.toBean((JSONObject) param.getObj(),ResetPasswordVo.class);
+		User user =(User) this.hibernateUtil.find(User.class, param.getId()+"");
+		Result res = new Result();
+		if(user==null){
+			res.setResult(0);
+			res.setMessage("没有该用户");
+			return res;
+		}
+		UserService userService = WebserviceUtil.getService();
+		//通过Webservice验证用户
+		String p2pID=userService.checkUser(user.getUsername(),resetPasswordVo.getOldPassword());
+		if ("".equals(p2pID)) {
+			res.setResult(0);
+			res.setMessage("原密码错误");
+			return res;
+		}
+		
+		//通过webservice修改密码
+		userService.modifyPwd(user.getUsername(),resetPasswordVo.getNewPassword());
+		String hql = "from User where state = 1 and username = '" + user.getUsername()+"'";	
+		User userDb = (User) hibernateUtil.hqlFirst(hql);
+		String passwordVersion = userDb.getPasswordVersion();
+		if(passwordVersion == null)
+			passwordVersion = "1";
+		else{
+			passwordVersion = (Integer.parseInt(passwordVersion)+1)+"";
+		}
+		tokenUtil.uploadSecretKey(userDb);
+		hibernateUtil.update(userDb);
+		res.setResult(1);
 		return ObjectToResult.getResult(res);
 	}
 	
