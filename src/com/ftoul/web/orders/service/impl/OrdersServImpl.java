@@ -38,6 +38,7 @@ import com.ftoul.manage.cart.service.CartServ;
 import com.ftoul.manage.coin.service.CoinSetServ;
 import com.ftoul.po.AfterOpLog;
 import com.ftoul.po.AfterSchedule;
+import com.ftoul.po.BusinessStore;
 import com.ftoul.po.FullCutRule;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
@@ -64,6 +65,7 @@ import com.ftoul.web.vo.OrderStaticCountVo;
 import com.ftoul.web.vo.OrderVo;
 import com.ftoul.web.vo.OrdersLogisticsVo;
 import com.ftoul.web.vo.ShopGoodsParamVo;
+import com.ftoul.web.vo.ShopGoodsVo;
 import com.ftoul.web.webservice.UserService;
 
 @Service("OrdersWebServImpl")
@@ -828,43 +830,90 @@ public class OrdersServImpl implements OrdersServ {
 	@Override
 	public Result getGoods(Parameter param) throws Exception {
 		List<Object> goodsList = new ArrayList<Object>();
-		String id = param.getKey();
-		String[] goodsParams = id.split(":");
+		Map<String, List<ShopGoodsParamVo>> map = ordersUtil.getShopAndGoodsParam(param.getKey());
+		List<ShopGoodsVo> shopGoodsList = new ArrayList<ShopGoodsVo>();
+		Object[] obj = map.keySet().toArray();
 		String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
-		for (int i = 0; i < goodsParams.length; i++) {
-			GoodsVo vo = new GoodsVo();
-			String goodsParam = goodsParams[i];
-			String[] goods = goodsParam.split(",");
-			GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, goods[0]+"");
-			Goods good = goodsP.getGoods();
-			List<Object> goodsEventList = hibernateUtil.hql("from GoodsEvent where id in (select goodsEvent.id from GoodsEventJoin where goods.id='"+good.getId()+"' and state='1') and state='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
-			if(goodsEventList!=null&&goodsEventList.size()>0){
-				for (int j = 0; j < goodsEventList.size(); j++) {
-					GoodsEvent event = (GoodsEvent) goodsEventList.get(j);
-					GoodsEventJoin join = (GoodsEventJoin) hibernateUtil.hqlFirst("from GoodsEventJoin where state = '1' and goods.id='"+good.getId()+"' and goodsEvent.id = '"+event.getId()+"'");
-					if(join.getEventPrice()!=null){
-						vo.setPrice(join.getEventPrice().toString());
-						break;
-					}else if(event.getEventPrice()!=null){
-						vo.setPrice(event.getEventPrice().toString());
-						break;
-					}else if(event.getDiscount()!=null){
-						vo.setPrice(new DecimalFormat("0.00").format(Double.parseDouble(goodsP.getPrice())*Float.parseFloat(event.getDiscount())));
-						break;
-					}else{
-						vo.setPrice(goodsP.getPrice());
+		for (Object object : obj) {
+			ShopGoodsVo shopGoodsVo = new ShopGoodsVo();
+			BusinessStore store = (BusinessStore) hibernateUtil.find(BusinessStore.class, object.toString());
+			shopGoodsVo.setShopId(object.toString());
+			shopGoodsVo.setShopName(store.getStoreName());
+			List<ShopGoodsParamVo> voList = map.get(object);
+			for (ShopGoodsParamVo shopGoodsParamVo : voList) {
+				GoodsVo vo = new GoodsVo();
+				GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, shopGoodsParamVo.getGoodsParamId()+"");
+				Goods good = goodsP.getGoods();
+				List<Object> goodsEventList = hibernateUtil.hql("from GoodsEvent where id in (select goodsEvent.id from GoodsEventJoin where goods.id='"+good.getId()+"' and state='1') and state='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
+				if(goodsEventList!=null&&goodsEventList.size()>0){
+					for (int j = 0; j < goodsEventList.size(); j++) {
+						GoodsEvent event = (GoodsEvent) goodsEventList.get(j);
+						GoodsEventJoin join = (GoodsEventJoin) hibernateUtil.hqlFirst("from GoodsEventJoin where state = '1' and goods.id='"+good.getId()+"' and goodsEvent.id = '"+event.getId()+"'");
+						if(join.getEventPrice()!=null){
+							vo.setPrice(join.getEventPrice().toString());
+							break;
+						}else if(event.getEventPrice()!=null){
+							vo.setPrice(event.getEventPrice().toString());
+							break;
+						}else if(event.getDiscount()!=null){
+							vo.setPrice(new DecimalFormat("0.00").format(Double.parseDouble(goodsP.getPrice())*Float.parseFloat(event.getDiscount())));
+							break;
+						}else{
+							vo.setPrice(goodsP.getPrice());
+						}
 					}
+				}else{
+					vo.setPrice(goodsP.getPrice());
 				}
-			}else{
-				vo.setPrice(goodsP.getPrice());
+				vo.setNum(shopGoodsParamVo.getNum());
+				vo.setParam(goodsP.getParamName());
+				vo.setPic(good.getPicSrc());
+				vo.setTitle(good.getTitle());
+				goodsList.add(vo);
+				shopGoodsVo.setGoodsVoList(goodsList);
+				shopGoodsList.add(shopGoodsVo);
 			}
-			vo.setNum(goods[1]);
-			vo.setParam(goodsP.getParamName());
-			vo.setPic(good.getPicSrc());
-			vo.setTitle(good.getTitle());
-			goodsList.add(vo);
 		}
-		return ObjectToResult.getResult(goodsList);
+		
+		
+		
+		
+//		String[] goodsParams = id.split(":");
+//		String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
+//		for (int i = 0; i < goodsParams.length; i++) {
+//			GoodsVo vo = new GoodsVo();
+//			String goodsParam = goodsParams[i];
+//			String[] goods = goodsParam.split(",");
+//			GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, goods[0]+"");
+//			Goods good = goodsP.getGoods();
+//			List<Object> goodsEventList = hibernateUtil.hql("from GoodsEvent where id in (select goodsEvent.id from GoodsEventJoin where goods.id='"+good.getId()+"' and state='1') and state='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
+//			if(goodsEventList!=null&&goodsEventList.size()>0){
+//				for (int j = 0; j < goodsEventList.size(); j++) {
+//					GoodsEvent event = (GoodsEvent) goodsEventList.get(j);
+//					GoodsEventJoin join = (GoodsEventJoin) hibernateUtil.hqlFirst("from GoodsEventJoin where state = '1' and goods.id='"+good.getId()+"' and goodsEvent.id = '"+event.getId()+"'");
+//					if(join.getEventPrice()!=null){
+//						vo.setPrice(join.getEventPrice().toString());
+//						break;
+//					}else if(event.getEventPrice()!=null){
+//						vo.setPrice(event.getEventPrice().toString());
+//						break;
+//					}else if(event.getDiscount()!=null){
+//						vo.setPrice(new DecimalFormat("0.00").format(Double.parseDouble(goodsP.getPrice())*Float.parseFloat(event.getDiscount())));
+//						break;
+//					}else{
+//						vo.setPrice(goodsP.getPrice());
+//					}
+//				}
+//			}else{
+//				vo.setPrice(goodsP.getPrice());
+//			}
+//			vo.setNum(goods[1]);
+//			vo.setParam(goodsP.getParamName());
+//			vo.setPic(good.getPicSrc());
+//			vo.setTitle(good.getTitle());
+//			goodsList.add(vo);
+//		}
+		return ObjectToResult.getResult(shopGoodsList);
 	}
 	
 	private List sort(List<FullCutRule> list){
