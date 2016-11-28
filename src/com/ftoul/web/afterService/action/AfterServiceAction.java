@@ -98,4 +98,15 @@ public class AfterServiceAction {
 		return afterServiceServ.saveSendGoods(parameter);
 	}
 	
+	/**
+	 * 获取商家发货的物流信息
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getAfterLogistics")
+	public @ResponseBody Result getAfterLogistics(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return afterServiceServ.getAfterLogistics(parameter);
+	}
 }

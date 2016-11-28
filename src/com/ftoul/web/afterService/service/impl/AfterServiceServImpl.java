@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.ftoul.api.KdniaoTrackQueryAPI;
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
@@ -30,9 +31,11 @@ import com.ftoul.util.afterService.AfterServiceUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.orders.OrdersUtil;
 import com.ftoul.web.afterService.service.AfterServiceServ;
+import com.ftoul.web.vo.AfterLogisticsVo;
 import com.ftoul.web.vo.AfterScheduleLogisticsVo;
 import com.ftoul.web.vo.AfterScheduleVo;
 import com.ftoul.web.vo.ManyVsOneVo;
+import com.ftoul.web.vo.OrdersLogisticsVo;
 
 @Service("WebAfterServiceServImpl")
 public class AfterServiceServImpl implements AfterServiceServ {
@@ -207,6 +210,29 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		int result = hibernateUtil.execHql(hql);
 		afterServiceUtil.saveWebAfterOpLog(param, "【买家】已发货");
 		return ObjectToResult.getResult(result);
+	}
+	
+	/**
+	 * 获取商家发货的物流信息
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getAfterLogistics(Parameter param) throws Exception {
+		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
+		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
+		//String res = kdniaoTrackQueryAPI.getOrderTracesByJson("SF", "606102226173");
+		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(after.getBuyerLogCompany().getCode(), after.getBuyerLogOdd());
+		AfterLogisticsVo vo = new AfterLogisticsVo();
+		vo.setServiceCode(after.getServiceCode());
+		vo.setLogisticeCompanyName(after.getBuyerLogCompany().getName());
+		vo.setLogisticeInfo(res);
+		vo.setOdd(after.getBuyerLogOdd());
+		vo.setCreateTime(after.getCreateTime());
+		if(!"null".equals(after.getBuyerLogInfo())){
+			vo.setLogInfo(after.getBuyerLogInfo());
+		}
+		return ObjectToResult.getResult(vo);
 	}
 	
 	

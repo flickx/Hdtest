@@ -25,5 +25,7 @@ public interface AfterServiceServ {
 	Result afterServicePicUpload(Parameter parameter, HttpServletRequest request)  throws Exception;
 
 	public Result saveSendGoods(Parameter parameter)  throws Exception;
+
+	public Result getAfterLogistics(Parameter parameter) throws Exception;
 	
 }
