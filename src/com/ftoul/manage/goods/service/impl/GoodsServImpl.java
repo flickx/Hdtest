@@ -183,6 +183,8 @@ public class GoodsServImpl implements GoodsServ {
 			GoodsType goodsType1 =	(GoodsType) this.hibernateUtil.find(GoodsType.class, goodsVo.getGoodsType1());
 			goods.setGoodsType1(goodsType1);
 		}
+		if(goodsVo.getSubtitle()!=null)
+			goods.setSubtitle(goodsVo.getSubtitle());
 		if(goodsVo.getGoodsType2()!=null){
 			GoodsType goodsType2 =	(GoodsType) this.hibernateUtil.find(GoodsType.class, goodsVo.getGoodsType2());
 			goods.setGoodsType2(goodsType2);
@@ -336,8 +338,8 @@ public class GoodsServImpl implements GoodsServ {
 				"	gt. NAME AS gtName,  " +
 				"	gb. NAME AS gbName,  " +
 				"	gs.grounding,  " +
-				"	gpt. NAME AS gptName  " +
-				
+				"	gpt. NAME AS gptName,  " +
+				"	gs.subtitle  " +
 				"FROM  " +
 				"	Goods gs  " +
 				"JOIN Goods_Param gp ON gs.id = gp.goods_id  " +
@@ -395,6 +397,8 @@ public class GoodsServImpl implements GoodsServ {
 			   goodsListVo.setGrounding(obj[4].toString());
 			if(obj[5]!=null)
 				goodsListVo.setGoodsPropType(obj[5].toString());
+			if(obj[6]!=null)
+				goodsListVo.setSubtitle(obj[6].toString());
 
 			list.add(goodsListVo);
 		}

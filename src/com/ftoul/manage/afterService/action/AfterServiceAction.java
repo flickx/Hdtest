@@ -82,5 +82,17 @@ public class AfterServiceAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return afterServiceServ.saveAfterServiceLogisticsCompany(parameter);
 	}
+	
+	/**
+	 * 修改申请售后状态
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "saveScheduleStatic")  
+	public @ResponseBody Result saveScheduleStatic(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return afterServiceServ.saveScheduleStatic(parameter);
+	}
 
 }

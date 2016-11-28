@@ -27,11 +27,13 @@ public class AfterSchedule implements java.io.Serializable {
 	private String scheduleStatic;
 	private String customsClearanceStatic;
 	private LogisticsCompany logCompany;
+	private String consigee;
 	private String logOdd;
 	private String logInfo;
 	private String tel;
 	private String type;
 	private String reason;
+	private String picSrcs;
 	private String backPrice;
 	private String num;
 	private String msg;
@@ -249,6 +251,22 @@ public class AfterSchedule implements java.io.Serializable {
 
 	public void setLogInfo(String logInfo) {
 		this.logInfo = logInfo;
+	}
+	@Column(name="consigee", length=100)
+	public String getConsigee() {
+		return consigee;
+	}
+
+	public void setConsigee(String consigee) {
+		this.consigee = consigee;
+	}
+	@Column(name="pic_srcs", length=1000)
+	public String getPicSrcs() {
+		return picSrcs;
+	}
+
+	public void setPicSrcs(String picSrcs) {
+		this.picSrcs = picSrcs;
 	}
 	
 }

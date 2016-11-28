@@ -67,6 +67,9 @@ public class Orders  implements java.io.Serializable {
      private String consignee;
      private String consigneeTel;
      private String address;
+     private String shopId;
+     private String parentOrdersId;
+     private String isHasChild;
 
     // Constructors
 
@@ -496,6 +499,33 @@ public class Orders  implements java.io.Serializable {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	
+	@Column(name="shop_id", length=100)
+	public String getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(String shopId) {
+		this.shopId = shopId;
+	}
+	
+	@Column(name="parent_orders_id", length=100)
+	public String getParentOrdersId() {
+		return parentOrdersId;
+	}
+
+	public void setParentOrdersId(String parentOrdersId) {
+		this.parentOrdersId = parentOrdersId;
+	}
+	
+	@Column(name="is_has_child", length=100)
+	public String getIsHasChild() {
+		return isHasChild;
+	}
+
+	public void setIsHasChild(String isHasChild) {
+		this.isHasChild = isHasChild;
 	}
 	
 

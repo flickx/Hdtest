@@ -203,18 +203,6 @@ public class OrdersAction {
 	}
 	
 	/**
-	 * 获取售后进度列表
-	 * @param param 用户ID
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping(value = "getOrderAfterSchedulePage")  
-	public @ResponseBody Result getOrderAfterSchedulePage(String param) throws Exception{
-		Parameter parameter = Common.jsonToParam(param);
-		return ordersServ.getOrderAfterSchedulePage(parameter);
-	}
-	
-	/**
 	 * 根据订单详情主键获取订单详情
 	 * @param param 用户ID
 	 * @return
@@ -224,30 +212,5 @@ public class OrdersAction {
 	public @ResponseBody Result getOrdersDetailById(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return ordersServ.getOrdersDetailById(parameter);
-	}
-	
-	/**
-	 * 保存售后申请
-	 * @param param 用户ID
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping(value = "saveAfter")  
-	public @ResponseBody Result saveAfter(String param) throws Exception{
-		Parameter parameter = Common.jsonToParam(param);
-		return ordersServ.saveAfter(parameter);
-	}
-	
-
-	/**
-	 * 获取售后申请
-	 * @param param 用户ID
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping(value = "getAfterSchedule")  
-	public @ResponseBody Result getAfterSchedule(String param) throws Exception{
-		Parameter parameter = Common.jsonToParam(param);
-		return ordersServ.getAfterSchedule(parameter);
 	}
 }

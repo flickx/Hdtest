@@ -8,6 +8,7 @@ package com.ftoul.manage.goods.vo;
 public class GoodsListVo {
 	private String id;
 	private String title;
+	private String subtitle;
 	private String typeName;
 	private String brandName;
 	private String goodsPropType;
@@ -121,5 +122,12 @@ public class GoodsListVo {
 		this.goodsPropType = goodsPropType;
 	}
 	
+	public String getSubtitle() {
+		return subtitle;
+	}
+
+	public void setSubtitle(String subtitle) {
+		this.subtitle = subtitle;
+	}
 	
 }

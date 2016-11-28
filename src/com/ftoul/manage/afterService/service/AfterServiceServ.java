@@ -20,5 +20,7 @@ public interface AfterServiceServ {
 	Result modifyClearCustom(Parameter parameter) throws Exception;
 
 	Result saveAfterServiceLogisticsCompany(Parameter parameter) throws Exception;
+
+	Result saveScheduleStatic(Parameter parameter) throws Exception;
 	
 }

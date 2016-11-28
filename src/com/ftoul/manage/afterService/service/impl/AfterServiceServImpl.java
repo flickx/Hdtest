@@ -36,7 +36,12 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	@Override
 	public Result getAfterListPage(Parameter param) throws Exception {
 		String queryStr = param.getWhereStr();
-		String hql = " from AfterSchedule where state='1' "+queryStr+" order by createTime desc";
+		String hql = "";
+		if(queryStr!=null){
+			hql = " from AfterSchedule where state='1' "+queryStr+" order by createTime desc";
+		}else{
+			hql = " from AfterSchedule where state='1' order by createTime desc";
+		}
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		List<Object> afterList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
@@ -91,7 +96,17 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		afterVo.setReason(schedule.getReason());
 		afterVo.setNum(schedule.getNum());
 		afterVo.setBackPrice(schedule.getBackPrice());
-		
+		afterVo.setScheduleStatic(schedule.getScheduleStatic());
+		List<AfterSchedule> picSrcs = new ArrayList<AfterSchedule>();
+		if(schedule.getPicSrcs()!=null){
+			String[] picSrc = schedule.getPicSrcs().split(";");
+			for (String src : picSrc) {
+				AfterSchedule afterSchedule = new AfterSchedule();
+				afterSchedule.setPicSrcs(src);
+				picSrcs.add(afterSchedule);
+			}
+		}
+		afterVo.setList(picSrcs);
 		afterVo.setOrderNumber(orders.getOrderNumber());
 		afterVo.setOrderTime(orders.getOrderTime());
 		if("0".equals(orders.getOrderStatic())){
@@ -212,6 +227,20 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		log.setCreatePerson(param.getManageToken().getLoginUser().getLoginName());
 		log.setCreateTime(new DateStr().toString());
 		hibernateUtil.save(log);
+	}
+
+	/**
+	 * 修改申请售后状态
+	 */
+	@Override
+	public Result saveScheduleStatic(Parameter param) throws Exception {
+		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
+		after.setScheduleStatic(param.getKey());
+		after.setModifyPerson(param.getManageToken().getLoginUser().getLoginName());
+		after.setModifyTime(new DateStr().toString());
+		hibernateUtil.update(after);
+		saveAfterOpLog(param,"【商家】修改售后状态为"+ordersUtil.getAfterState(param.getKey()));
+		return ObjectToResult.getResult(after);
 	}
 
 	

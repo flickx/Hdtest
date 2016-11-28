@@ -1,7 +1,8 @@
 package com.ftoul.web.vo;
 
-import com.ftoul.po.LogisticsCompany;
+import java.util.List;
 
+import com.ftoul.po.AfterOpLog;
 
 public class AfterScheduleVo {
 	
@@ -20,6 +21,8 @@ public class AfterScheduleVo {
 	private String logOdd;
 	private String tel;
 	private String state;
+	private String salePrice;
+	private List<Object> list;
 	public String getId() {
 		return id;
 	}
@@ -109,6 +112,18 @@ public class AfterScheduleVo {
 	}
 	public void setLogCompany(String logCompany) {
 		this.logCompany = logCompany;
+	}
+	public String getSalePrice() {
+		return salePrice;
+	}
+	public void setSalePrice(String salePrice) {
+		this.salePrice = salePrice;
+	}
+	public List<Object> getList() {
+		return list;
+	}
+	public void setList(List<Object> list) {
+		this.list = list;
 	}
 
 }

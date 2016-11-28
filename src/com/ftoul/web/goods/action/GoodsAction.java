@@ -18,6 +18,7 @@ import com.ftoul.web.goods.service.GoodsPropTypeServ;
 import com.ftoul.web.goods.service.GoodsPropertyTypeInfoServ;
 import com.ftoul.web.goods.service.GoodsServ;
 import com.ftoul.web.goods.service.GoodsTypeServ;
+import com.ftoul.web.goods.service.UserCollectionServ;
 
 /**
  *
@@ -40,6 +41,8 @@ public class GoodsAction {
 	@Autowired
 	private GoodsPropertyTypeInfoServ goodsPropertyTypeInfoServ;
 	
+	@Autowired
+	private UserCollectionServ userCollectionServ;
 	
 	@Autowired
 	private GoodsServ goodsServ;
@@ -296,4 +299,27 @@ public class GoodsAction {
 		return goodsServ.getGoodsListPageByCross(parameter);
 	}
 	
+	/**
+	 *  新增收藏
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "saveUserCollection")  
+	public @ResponseBody Result saveUserCollection(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return userCollectionServ.saveUserCollection(parameter);
+	}
+
+	/**
+	 *  新增收藏
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "findUserCollection")  
+	public @ResponseBody Result findUserCollection(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return userCollectionServ.findUserCollection(parameter);
+	}
 }

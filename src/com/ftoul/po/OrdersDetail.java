@@ -44,6 +44,7 @@ public class OrdersDetail  implements java.io.Serializable {
      private String state;
      private String price;
      private String eventType;
+     private String isAfter;
 
     // Constructors
 
@@ -220,7 +221,6 @@ public class OrdersDetail  implements java.io.Serializable {
 
     public void setEventType(String eventType) {
 		this.eventType = eventType;
-	
 	}
 
     @Column(name="price", length=32)
@@ -231,4 +231,17 @@ public class OrdersDetail  implements java.io.Serializable {
 	public void setPrice(String price) {
 		this.price = price;
 	}
+
+	@Column(name="is_after", length=1)
+	public String getIsAfter() {
+		return isAfter;
+	}
+
+
+	public void setIsAfter(String isAfter) {
+		this.isAfter = isAfter;
+	}
+	
+	
+	
 }
