@@ -1,5 +1,9 @@
 package com.ftoul.web.vo;
 
+import java.util.List;
+
+import com.ftoul.po.AfterOpLog;
+
 public class AfterScheduleVo {
 	
 	private String id;
@@ -18,6 +22,7 @@ public class AfterScheduleVo {
 	private String tel;
 	private String state;
 	private String salePrice;
+	private List<Object> list;
 	public String getId() {
 		return id;
 	}
@@ -113,6 +118,12 @@ public class AfterScheduleVo {
 	}
 	public void setSalePrice(String salePrice) {
 		this.salePrice = salePrice;
+	}
+	public List<Object> getList() {
+		return list;
+	}
+	public void setList(List<Object> list) {
+		this.list = list;
 	}
 
 }

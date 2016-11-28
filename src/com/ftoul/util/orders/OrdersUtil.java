@@ -1,6 +1,10 @@
 package com.ftoul.util.orders;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,6 +15,8 @@ import com.ftoul.po.Orders;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.orders.service.OrdersServ;
 import com.ftoul.web.vo.ManyVsOneVo;
+import com.ftoul.web.vo.MjGoodsEventVo;
+import com.ftoul.web.vo.ShopGoodsParamVo;
 
 @Component
 public class OrdersUtil {
@@ -171,6 +177,49 @@ public class OrdersUtil {
 		vo.setObj(order);
 		vo.setList(ordersDetailList);
 		return vo;
+	}
+	
+	/**
+	 * 将购买的商品按店铺分组
+	 * @param param
+	 * @return
+	 */
+	public Map<String, List<ShopGoodsParamVo>> getShopAndGoodsParam(String param){
+		Map<String, List<ShopGoodsParamVo>> group = new HashMap<String, List<ShopGoodsParamVo>>();
+		List<ShopGoodsParamVo> goodsParamVo = null;
+		String[] strList = param.split(":");
+		List<ShopGoodsParamVo> voList = new ArrayList<ShopGoodsParamVo>();
+		for (int i = 0; i < strList.length; i++) {
+			String[] str = strList[i].split(",");
+			ShopGoodsParamVo vo = new ShopGoodsParamVo();
+			vo.setGoodsParamId(str[0]);
+			vo.setNum(str[1]);
+			vo.setPrice(str[2]);
+			vo.setShopId(str[3]);
+			voList.add(vo);
+		}
+		
+		for (int j = 0; j < voList.size(); j++) {
+			ShopGoodsParamVo vo = voList.get(j);
+			String shopId = vo.getShopId();
+			if(shopId!=null){
+				goodsParamVo = group.get(shopId);
+				if(goodsParamVo == null){
+					List<ShopGoodsParamVo> newVoList = new ArrayList<ShopGoodsParamVo>();
+					newVoList.add(vo);
+					group.put(shopId, newVoList);
+				}else{
+					goodsParamVo.add(vo);
+					group.put(shopId, goodsParamVo);
+				}
+			}
+		}
+		
+		return group;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(new DateStr("yyMMddHHmmss").toString());
 	}
 	
 }

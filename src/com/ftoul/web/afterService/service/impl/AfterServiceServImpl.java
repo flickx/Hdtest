@@ -1,7 +1,6 @@
 package com.ftoul.web.afterService.service.impl;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -108,7 +107,6 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	 */
 	@Override
 	public Result saveAfter(Parameter param) throws Exception {
-		Serializable s = null;
 		AfterSchedule schedule = (AfterSchedule) Common.jsonToBean(param.getObj().toString(), AfterSchedule.class);
 		AfterOpLog log = new AfterOpLog();
 		if(Common.isNull(schedule.getId())){
@@ -121,7 +119,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			schedule.setState("1");
 			schedule.setCreatePerson(param.getUserId());
 			schedule.setCreateTime(new DateStr().toString());
-			s = hibernateUtil.save(schedule);
+			hibernateUtil.save(schedule);
 			log.setMsg("【用户】申请售后,售后类型为:"+ordersUtil.getAfterType(schedule.getType()));
 			log.setCreatePerson(param.getUserToken().getUser().getUsername());
 			log.setCreateTime(new DateStr().toString());
@@ -142,7 +140,13 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	@Override
 	public Result getAfterSchedule(Parameter param) throws Exception {
 		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
-		return ObjectToResult.getResult(after);
+		List<Object> list = hibernateUtil.hql("from AfterOpLog where state='1' and afterSchedule.id = '"+after.getId()+"' order by createTime desc");
+		AfterScheduleVo vo = new AfterScheduleVo();
+		vo.setList(list);
+		vo.setId(after.getId());
+		vo.setOrderTime(after.getOrdersDetail().getOrders().getOrderTime());
+		vo.setServiceCode(after.getServiceCode());
+		return ObjectToResult.getResult(vo);
 	}
 
 	@Override
@@ -150,26 +154,21 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			HttpServletRequest request) throws Exception {
 		List<MultipartFile> fileList = new ArrayList<MultipartFile>();
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-//		MultiValueMap<String, MultipartFile> multiValuemap= multipartRequest.getMultiFileMap();
 		Map<String, MultipartFile> multiValuemap = multipartRequest.getFileMap();
 		Set set = multiValuemap.entrySet();
 		Iterator it = set.iterator();
 		while(it.hasNext()){
 			Entry entry = (Entry) it.next();
-			System.out.println(entry.getKey());
 			entry.getValue();
 			fileList.add((MultipartFile) entry.getValue());
 		}
-		//List<MultipartFile> fileList = multipartRequest.getFiles("1");
 		String scheduleId = request.getParameter("scheduleId");
 		AfterSchedule afterSchedule = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, scheduleId+"");
 		StringBuffer srcs = new StringBuffer();
 		System.out.println(scheduleId);
 		String path = request.getSession().getServletContext().getRealPath("upload/img/after/");
 		String picPath = "upload/img/after/";
-		//Map<String ,Object> map = new HashMap<String ,Object>();
 		int count = 0;
-		int state = 0;
 		if (fileList.size()>0) {
 			for (MultipartFile multipartFile : fileList) {
 				count++;
@@ -184,11 +183,6 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		            targetFile.mkdirs();  
 		        } 
 		        multipartFile.transferTo(targetFile);
-//				map.put("folderName", "after");
-//				map.put("picAddress", picAddress );
-//				map.put("picName", picName );
-//				map.put("hasUpload", true );
-		        //state = 200;
 			}
 		}
 		afterSchedule.setPicSrcs(srcs.toString());
