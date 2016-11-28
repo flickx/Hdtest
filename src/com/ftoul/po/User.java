@@ -27,6 +27,8 @@ public class User implements java.io.Serializable {
 	private String source;//注册来源
 	private String username;
 	private Integer score;
+	private String nickname;
+	private String birth;
 	private Integer xp;
 	private String email;
 	private String level;
@@ -123,6 +125,26 @@ public class User implements java.io.Serializable {
 	public String getUsername() {
 		return this.username;
 	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+	
+	@Column(name = "nickname", length = 32)
+	public String getNickname() {
+		return this.nickname;
+	}
+	
+
+	public void setBirth(String birth) {
+		this.birth = birth;
+	}
+	
+	@Column(name = "birth", length = 32)
+	public String getBirth() {
+		return this.birth;
+	}
+
 
 	public void setUsername(String username) {
 		this.username = username;
