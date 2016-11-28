@@ -34,5 +34,21 @@ public interface UserCollectionServ{
 	 */
 	Result findUserCollection(Parameter param) throws Exception;
 
-
+	
+	/**
+	 * 获得所有收藏商品.
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getUserCollectionList(Parameter param) throws Exception;
+	
+	
+	/**
+	 * 删除收藏商品.
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result deleteUserCollection(Parameter param) throws Exception;
 }
