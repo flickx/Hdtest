@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.ftoul.common.MD5;
 import com.ftoul.common.ObjectToResult;
+import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
@@ -108,6 +109,24 @@ public class BusinessServImpl implements BusinessServ {
 		return ObjectToResult.getResult(list);
 	}
 	/**
+	 * 获取商家信息对象(分页)
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getBusinessPageList(Parameter param) throws Exception {
+		String queryStr = param.getWhereStr();
+		String hql =null;
+		if(queryStr!=null){
+			hql = "from BusinessStoreLogin"+" where businessStore.business.state =1 "+ queryStr + " order by businessStore.business.createTime desc";
+		}else{
+			hql = "from BusinessStoreLogin"+" where businessStore.business.state =1  order by businessStore.business.createTime desc";
+		}
+		
+		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize()); 
+		return ObjectToResult.getResult(page);
+	}
+	/**
 	 * 获取银行信息对象
 	 * @param param Parameter对象   
 	 * @return 返回结果（前台用Result对象）
@@ -118,6 +137,18 @@ public class BusinessServImpl implements BusinessServ {
 		List<Object> list = hibernateUtil.hql(hql); 
 		return ObjectToResult.getResult(list);
 	}
+	/**
+	 * 获取银行信息对象(分页)
+	 * @param param Parameter对象   
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getBusinessStoreRankList(Parameter param) throws Exception {
+		String hql = "from BusinessStoreRank"+" where state =1 "+ " order by createTime desc";
+		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize()); 
+		return ObjectToResult.getResult(page);
+	}
+	
 	/**
 	 * 获取店铺店铺分类信息对象
 	 * @param param Parameter对象
@@ -134,6 +165,23 @@ public class BusinessServImpl implements BusinessServ {
 		}
 		List<Object> list = hibernateUtil.hql(hql); 
 		return ObjectToResult.getResult(list);
+	}
+	/**
+	 * 获取店铺店铺分类信息对象(分页)
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getBusinessStoreClassifyList(Parameter param) throws Exception {
+		String queryStr = param.getWhereStr();
+		String hql = null;
+		if(queryStr!=null){
+			hql = "from BusinessStoreClassify"+" where state =1 "+  queryStr + " order by createTime desc";
+		}else{
+			hql = "from BusinessStoreClassify"+" where state =1 "+ " order by createTime desc";
+		}
+		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize()); 
+		return ObjectToResult.getResult(page);
 	}
 	/**
 	 * 重置店铺登录对象
