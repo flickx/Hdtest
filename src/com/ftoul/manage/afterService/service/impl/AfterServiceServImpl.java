@@ -171,7 +171,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		after.setModifyTime(new DateStr().toString());
 		after.setModifyPerson(param.getManageToken().getLoginUser().getId());
 		Object o = hibernateUtil.update(after);
-		saveAfterOpLog(param,"【商家】"+ordersUtil.getAfterState(schedule.getScheduleStatic()));
+		saveAfterOpLog(param,"【卖家】"+ordersUtil.getAfterState(schedule.getScheduleStatic()));
 		return ObjectToResult.getResult(o);
 	}
 	
@@ -191,7 +191,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		}else{
 			msg = "已清关";
 		}
-		saveAfterOpLog(param,"【商家】设置清关状态为 "+msg);
+		saveAfterOpLog(param,"【卖家】设置清关状态为 "+msg);
 		return ObjectToResult.getResult(result);
 	}
 
@@ -205,9 +205,9 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			throws Exception {
 		Object obj = param.getObj();
 		LogisticsCompanyVo logisticsCompanyVo = (LogisticsCompanyVo) Common.jsonToBean(obj.toString(), LogisticsCompanyVo.class);
-		String hql = "update AfterSchedule set logCompany.id = '"+logisticsCompanyVo.getLogisticsCompanyID()+"', logOdd = '"+logisticsCompanyVo.getOdd()+"', logInfo = '"+logisticsCompanyVo.getLogInfo()+"', scheduleStatic = '8' where id = '"+logisticsCompanyVo.getId()+"'";
+		String hql = "update AfterSchedule set buyerLogCompany.id = '"+logisticsCompanyVo.getLogisticsCompanyID()+"', buyerLogOdd = '"+logisticsCompanyVo.getOdd()+"', buyerLogInfo = '"+logisticsCompanyVo.getLogInfo()+"', scheduleStatic = '10' where id = '"+logisticsCompanyVo.getId()+"'";
 		int result = hibernateUtil.execHql(hql);
-		saveAfterOpLog(param,"【商家】已发货");
+		saveAfterOpLog(param,"【卖家】已发货");
 		return ObjectToResult.getResult(result);
 	}
 	
@@ -239,7 +239,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		after.setModifyPerson(param.getManageToken().getLoginUser().getLoginName());
 		after.setModifyTime(new DateStr().toString());
 		hibernateUtil.update(after);
-		saveAfterOpLog(param,"【商家】修改售后状态为"+ordersUtil.getAfterState(param.getKey()));
+		saveAfterOpLog(param,"【卖家】修改售后状态为"+ordersUtil.getAfterState(param.getKey()));
 		return ObjectToResult.getResult(after);
 	}
 

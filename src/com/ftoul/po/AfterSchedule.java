@@ -26,11 +26,18 @@ public class AfterSchedule implements java.io.Serializable {
 	private String serviceCode;
 	private String scheduleStatic;
 	private String customsClearanceStatic;
-	private LogisticsCompany logCompany;
-	private String consigee;
-	private String logOdd;
-	private String logInfo;
-	private String tel;
+	private LogisticsCompany sellerLogCompany;
+	private String sellerConsigee;
+	private String sellerLogOdd;
+	private String sellerLogInfo;
+	private String sellerAddress;
+	private String sellerTel;
+	private LogisticsCompany buyerLogCompany;
+	private String buyerConsigee;
+	private String buyerLogOdd;
+	private String buyerLogInfo;
+	private String buyerAddress;
+	private String buyerTel;
 	private String type;
 	private String reason;
 	private String picSrcs;
@@ -57,9 +64,6 @@ public class AfterSchedule implements java.io.Serializable {
 		this.ordersDetail = ordersDetail;
 		this.serviceCode = serviceCode;
 		this.scheduleStatic = scheduleStatic;
-		this.logCompany = logCompany;
-		this.logOdd = logOdd;
-		this.tel = tel;
 		this.state = state;
 		this.createTime = createTime;
 		this.createPerson = createPerson;
@@ -116,24 +120,6 @@ public class AfterSchedule implements java.io.Serializable {
 
 	public void setScheduleStatic(String scheduleStatic) {
 		this.scheduleStatic = scheduleStatic;
-	}
-
-	@Column(name = "log_odd", length = 32)
-	public String getLogOdd() {
-		return this.logOdd;
-	}
-
-	public void setLogOdd(String logOdd) {
-		this.logOdd = logOdd;
-	}
-
-	@Column(name = "tel", length = 32)
-	public String getTel() {
-		return this.tel;
-	}
-
-	public void setTel(String tel) {
-		this.tel = tel;
 	}
 
 	@Column(name = "state", length = 1)
@@ -235,31 +221,6 @@ public class AfterSchedule implements java.io.Serializable {
 		this.customsClearanceStatic = customsClearanceStatic;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "log_company")
-	public LogisticsCompany getLogCompany() {
-		return logCompany;
-	}
-
-	public void setLogCompany(LogisticsCompany logCompany) {
-		this.logCompany = logCompany;
-	}
-	@Column(name="log_info", length=1000)
-	public String getLogInfo() {
-		return logInfo;
-	}
-
-	public void setLogInfo(String logInfo) {
-		this.logInfo = logInfo;
-	}
-	@Column(name="consigee", length=100)
-	public String getConsigee() {
-		return consigee;
-	}
-
-	public void setConsigee(String consigee) {
-		this.consigee = consigee;
-	}
 	@Column(name="pic_srcs", length=1000)
 	public String getPicSrcs() {
 		return picSrcs;
@@ -268,5 +229,116 @@ public class AfterSchedule implements java.io.Serializable {
 	public void setPicSrcs(String picSrcs) {
 		this.picSrcs = picSrcs;
 	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "seller_log_company")
+	public LogisticsCompany getSellerLogCompany() {
+		return sellerLogCompany;
+	}
+
+	public void setSellerLogCompany(LogisticsCompany sellerLogCompany) {
+		this.sellerLogCompany = sellerLogCompany;
+	}
+	
+	@Column(name="seller_consigee", length=32)
+	public String getSellerConsigee() {
+		return sellerConsigee;
+	}
+
+	public void setSellerConsigee(String sellerConsigee) {
+		this.sellerConsigee = sellerConsigee;
+	}
+	
+	@Column(name="seller_log_odd", length=32)
+	public String getSellerLogOdd() {
+		return sellerLogOdd;
+	}
+
+	public void setSellerLogOdd(String sellerLogOdd) {
+		this.sellerLogOdd = sellerLogOdd;
+	}
+	
+	@Column(name="seller_log_info", length=32)
+	public String getSellerLogInfo() {
+		return sellerLogInfo;
+	}
+
+	public void setSellerLogInfo(String sellerLogInfo) {
+		this.sellerLogInfo = sellerLogInfo;
+	}
+	
+	@Column(name="seller_address", length=32)
+	public String getSellerAddress() {
+		return sellerAddress;
+	}
+
+	public void setSellerAddress(String sellerAddress) {
+		this.sellerAddress = sellerAddress;
+	}
+	
+	@Column(name="seller_tel", length=32)
+	public String getSellerTel() {
+		return sellerTel;
+	}
+
+	public void setSellerTel(String sellerTel) {
+		this.sellerTel = sellerTel;
+	}
+	
+	@Column(name="buyer_consigee", length=32)
+	public String getBuyerConsigee() {
+		return buyerConsigee;
+	}
+
+	public void setBuyerConsigee(String buyerConsigee) {
+		this.buyerConsigee = buyerConsigee;
+	}
+
+	@Column(name="buyer_log_odd", length=32)
+	public String getBuyerLogOdd() {
+		return buyerLogOdd;
+	}
+
+	public void setBuyerLogOdd(String buyerLogOdd) {
+		this.buyerLogOdd = buyerLogOdd;
+	}
+
+	@Column(name="buyer_log_info", length=32)
+	public String getBuyerLogInfo() {
+		return buyerLogInfo;
+	}
+
+	public void setBuyerLogInfo(String buyerLogInfo) {
+		this.buyerLogInfo = buyerLogInfo;
+	}
+
+	@Column(name="buyer_address", length=32)
+	public String getBuyerAddress() {
+		return buyerAddress;
+	}
+
+	public void setBuyerAddress(String buyerAddress) {
+		this.buyerAddress = buyerAddress;
+	}
+
+	@Column(name="buyer_tel", length=32)
+	public String getBuyerTel() {
+		return buyerTel;
+	}
+
+	public void setBuyerTel(String buyerTel) {
+		this.buyerTel = buyerTel;
+	}
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "buyer_log_company")
+	public LogisticsCompany getBuyerLogCompany() {
+		return buyerLogCompany;
+	}
+
+	public void setBuyerLogCompany(LogisticsCompany buyerLogCompany) {
+		this.buyerLogCompany = buyerLogCompany;
+	}
+
+	
 	
 }
