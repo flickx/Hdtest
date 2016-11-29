@@ -1,5 +1,7 @@
 package com.ftoul.web.vo;
 
+import java.util.List;
+
 public class OrderPriceVo {
 	
 	private String payable;
@@ -12,6 +14,8 @@ public class OrderPriceVo {
 	private int totalCoinNumber;
 	private double coinPrice;
 	private String flag;
+	private List<Object> volist;
+	private List<ShopGoodsParamVo> shopGoodsParamList;
 	
 	public String getBenPrice() {
 		return benPrice;
@@ -72,6 +76,18 @@ public class OrderPriceVo {
 	}
 	public void setFlag(String flag) {
 		this.flag = flag;
+	}
+	public List<Object> getVolist() {
+		return volist;
+	}
+	public void setVolist(List<Object> volist) {
+		this.volist = volist;
+	}
+	public List<ShopGoodsParamVo> getShopGoodsParamList() {
+		return shopGoodsParamList;
+	}
+	public void setShopGoodsParamList(List<ShopGoodsParamVo> shopGoodsParamList) {
+		this.shopGoodsParamList = shopGoodsParamList;
 	}
 	
 }
