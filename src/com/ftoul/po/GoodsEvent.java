@@ -4,8 +4,11 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -44,6 +47,7 @@ public class GoodsEvent implements java.io.Serializable {
 	private BigDecimal exchangeRate;
 	private String firstOrder;
 	private String homeChannel;
+	private String shopId;
 	// Constructors
 
 	/** default constructor */
@@ -230,6 +234,14 @@ public class GoodsEvent implements java.io.Serializable {
 
 	public void setHomeChannel(String homeChannel) {
 		this.homeChannel = homeChannel;
+	}
+
+	@Column(name = "shop_id", length = 32)
+	public String getShopId() {
+		return shopId;
+	}
+	public void setShopId(String shopId) {
+		this.shopId = shopId;
 	}
 	
 }

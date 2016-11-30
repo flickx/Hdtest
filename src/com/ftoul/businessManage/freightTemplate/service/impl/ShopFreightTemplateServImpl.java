@@ -112,7 +112,7 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 
 	@Override
 	public Result getTemplateByArea(Parameter param) throws Exception {
-		String hql = "from AreaFreightTemplate where state='1' and shopFreightTemplate.id = '" + param.getId() +"' and freightArea like '%" +param.getWhereStr() +"%'" + param.getOrderBy() ;
+		String hql = "from AreaFreightTemplate where state='1' and shopFreightTemplate.id = '" + param.getId() +param.getWhereStr() + param.getOrderBy() ;
 		Object o = hibernateUtil.hqlFirst(hql);
 		return ObjectToResult.getResult(o);
 	}
