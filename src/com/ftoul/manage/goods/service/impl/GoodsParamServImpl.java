@@ -79,12 +79,14 @@ public class GoodsParamServImpl implements GoodsParamServ {
 			goodsParam.setParamName(goodsParamVo.getParamName());
 			goodsParam.setPrice(goodsParamVo.getPrice());
 			goodsParam.setStock(goodsParamVo.getStock());
+			
 			goodsParam.setSaleNumber(Integer.parseInt(goodsParamVo.getSaleNumber()));
 			goodsParam.setMarketPrice(goodsParamVo.getMarketPrice());
 			goodsParam.setCreateTime(new DateStr().toString());
 			goodsParam.setState("1");
 			goods.setState("1");
 			goods.setStep("3");
+			goods.setHasstock("1");//代表有库存
 			res =this.hibernateUtil.save(goodsParam);
 		}
 		else{
