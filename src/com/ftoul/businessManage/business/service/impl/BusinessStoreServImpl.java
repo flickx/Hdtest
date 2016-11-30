@@ -128,4 +128,14 @@ public class BusinessStoreServImpl implements BusinessStoreServ {
 		businessStoreVo.setObjList(businessStoreManageCategoryVoList);
 		return ObjectToResult.getResult(businessStoreVo);
 	}
+//	/**
+//	 * 根据登录token获取商家信息对象
+//	 * @param param Parameter对象
+//	 * @return 返回结果（前台用Result对象）
+//	 */
+//	@Override
+//	public Result getBusinessStorePage(Parameter param) throws Exception {
+//		BusinessStoreLogin businessStoreLogin=(BusinessStoreLogin) hibernateUtil.find(BusinessStoreLogin.class, param.getManageToken().getBusinessStoreLogin().getId());
+//		return ObjectToResult.getResult(businessStoreLogin);
+//	}
 }
