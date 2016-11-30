@@ -103,15 +103,17 @@ public class OrdersServImpl implements OrdersServ {
 		}
 		ordersList = page.getObjList();
 		List<Object> ordersDetailList = new ArrayList<Object>();
+		List<Object> childOrdersDetailList = new ArrayList<Object>();
 		ManyVsOneVo vo;
 		List<Object> list = new ArrayList<Object>();
 		for (int i = 0; i < ordersList.size(); i++) {
 			Orders order = (Orders) ordersList.get(i);
-			if("1".equals(order.getIsHasChild())){
+			if("1".equals(order.getIsHasChild())&&OrdersConstant.NOT_PAY.equals(key)){
 				List<Object> childList = hibernateUtil.hql("from Orders where state='1' and parentOrdersId = '"+order.getId()+"'");
 				for (Object object : childList) {
 					Orders childOrders = (Orders) object;
-					ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+childOrders.getId()+"'");
+					childOrdersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+childOrders.getId()+"'");
+					ordersDetailList.addAll(childOrdersDetailList);
 				}
 			}else{
 				ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
