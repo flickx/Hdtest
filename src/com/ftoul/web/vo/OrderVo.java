@@ -1,6 +1,9 @@
 package com.ftoul.web.vo;
 
+import java.util.List;
+
 public class OrderVo {
+	private String id;
 	private String orderNumber;
 	private String addressId;
 	private String payable;
@@ -13,6 +16,8 @@ public class OrderVo {
 	private String card;
 	private int coinNumber;
 	private Boolean coinFlag;
+	private List<Object> voList;
+	private List<ShopGoodsParamVo> shopGoodsParamList;
 	
 	public String getAddressId() {
 		return addressId;
@@ -85,6 +90,24 @@ public class OrderVo {
 	}
 	public void setCoinNumber(int coinNumber) {
 		this.coinNumber = coinNumber;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public List<ShopGoodsParamVo> getShopGoodsParamList() {
+		return shopGoodsParamList;
+	}
+	public void setShopGoodsParamList(List<ShopGoodsParamVo> shopGoodsParamList) {
+		this.shopGoodsParamList = shopGoodsParamList;
+	}
+	public List<Object> getVoList() {
+		return voList;
+	}
+	public void setVoList(List<Object> voList) {
+		this.voList = voList;
 	}
 	
 }

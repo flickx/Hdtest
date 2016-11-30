@@ -52,6 +52,8 @@ public class GoodsVo {
 	
 	private String typeName;//活动类型
 	private String homeChannel;
+	
+	private String shopId;
 	/**
 	 * @return the picSrc
 	 */
@@ -421,4 +423,13 @@ public class GoodsVo {
 	public void setSubtitle(String subtitle) {
 		this.subtitle = subtitle;
 	}
+
+	public String getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(String shopId) {
+		this.shopId = shopId;
+	}
+	
 }

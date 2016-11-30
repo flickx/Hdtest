@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.ftoul.api.KdniaoTrackQueryAPI;
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
@@ -26,11 +27,15 @@ import com.ftoul.po.AfterOpLog;
 import com.ftoul.po.AfterSchedule;
 import com.ftoul.po.Orders;
 import com.ftoul.po.OrdersDetail;
+import com.ftoul.util.afterService.AfterServiceUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.orders.OrdersUtil;
 import com.ftoul.web.afterService.service.AfterServiceServ;
+import com.ftoul.web.vo.AfterLogisticsVo;
+import com.ftoul.web.vo.AfterScheduleLogisticsVo;
 import com.ftoul.web.vo.AfterScheduleVo;
 import com.ftoul.web.vo.ManyVsOneVo;
+import com.ftoul.web.vo.OrdersLogisticsVo;
 
 @Service("WebAfterServiceServImpl")
 public class AfterServiceServImpl implements AfterServiceServ {
@@ -39,7 +44,8 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	private HibernateUtil hibernateUtil;
 	@Autowired  
 	OrdersUtil ordersUtil;
-	
+	@Autowired  
+	AfterServiceUtil afterServiceUtil;
 	
 	/**
 	 * 根据用户ID获取售后列表
@@ -80,10 +86,10 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			AfterSchedule schedule = (AfterSchedule) list.get(i);
 			vo.setId(schedule.getId());
 			vo.setGoodsName(schedule.getOrdersDetail().getGoodsParam().getGoods().getTitle());
-			if(schedule.getLogCompany()!=null){
-				vo.setLogCompany(schedule.getLogCompany().getName());
+			if(schedule.getSellerLogCompany()!=null){
+				vo.setLogCompany(schedule.getSellerLogCompany().getName());
 			}
-			vo.setLogOdd(schedule.getLogOdd());
+			vo.setLogOdd(schedule.getSellerLogOdd());
 			vo.setOrderId(schedule.getOrdersDetail().getOrders().getId());
 			vo.setOrderStatic(schedule.getOrdersDetail().getOrders().getOrderStatic());
 			vo.setOrderTime(schedule.getOrdersDetail().getOrders().getOrderTime());
@@ -92,7 +98,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			vo.setNum(schedule.getNum());
 			vo.setScheduleStatic(schedule.getScheduleStatic());
 			vo.setServiceCode(schedule.getServiceCode());
-			vo.setTel(schedule.getTel());
+			vo.setTel(schedule.getSellerTel());
 			vo.setUserId(schedule.getUser().getId());
 			vo.setSalePrice(schedule.getOrdersDetail().getPrice());
 			voList.add(vo);
@@ -120,7 +126,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			schedule.setCreatePerson(param.getUserId());
 			schedule.setCreateTime(new DateStr().toString());
 			hibernateUtil.save(schedule);
-			log.setMsg("【用户】申请售后,售后类型为:"+ordersUtil.getAfterType(schedule.getType()));
+			log.setMsg("【买家】申请售后,售后类型为:"+ordersUtil.getAfterType(schedule.getType()));
 			log.setCreatePerson(param.getUserToken().getUser().getUsername());
 			log.setCreateTime(new DateStr().toString());
 			log.setState("1");
@@ -189,5 +195,45 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		hibernateUtil.update(afterSchedule);
 		return ObjectToResult.getResult(afterSchedule);
 	}
+	
+	/**
+	 * 用户发货
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result saveSendGoods(Parameter param)
+			throws Exception {
+		Object obj = param.getObj();
+		AfterScheduleLogisticsVo logisticsVo = (AfterScheduleLogisticsVo) Common.jsonToBean(obj.toString(), AfterScheduleLogisticsVo.class);
+		String hql = "update AfterSchedule set sellerLogCompany.id = '"+logisticsVo.getLogisticsCompanyID()+"', sellerLogOdd = '"+logisticsVo.getOdd()+"', sellerLogInfo = '"+logisticsVo.getLogInfo()+"', sellerAddress = '"+logisticsVo.getAddress()+"', sellerTel = '"+logisticsVo.getTel()+"',scheduleStatic='8' where id = '"+logisticsVo.getId()+"'";
+		int result = hibernateUtil.execHql(hql);
+		afterServiceUtil.saveWebAfterOpLog(param, "【买家】已发货");
+		return ObjectToResult.getResult(result);
+	}
+	
+	/**
+	 * 获取商家发货的物流信息
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getAfterLogistics(Parameter param) throws Exception {
+		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
+		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
+		//String res = kdniaoTrackQueryAPI.getOrderTracesByJson("SF", "606102226173");
+		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(after.getBuyerLogCompany().getCode(), after.getBuyerLogOdd());
+		AfterLogisticsVo vo = new AfterLogisticsVo();
+		vo.setServiceCode(after.getServiceCode());
+		vo.setLogisticeCompanyName(after.getBuyerLogCompany().getName());
+		vo.setLogisticeInfo(res);
+		vo.setOdd(after.getBuyerLogOdd());
+		vo.setCreateTime(after.getCreateTime());
+		if(!"null".equals(after.getBuyerLogInfo())){
+			vo.setLogInfo(after.getBuyerLogInfo());
+		}
+		return ObjectToResult.getResult(vo);
+	}
+	
 	
 }

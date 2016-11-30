@@ -1,12 +1,13 @@
 package com.ftoul.web.vo;
 
 public class GoodsVo {
-	
+	private String id;
 	private String pic;
 	private String title;
 	private String num;
 	private String price;
 	private String param;
+	private String collectionId;
 	public String getPic() {
 		return pic;
 	}
@@ -36,6 +37,18 @@ public class GoodsVo {
 	}
 	public void setParam(String param) {
 		this.param = param;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getCollectionId() {
+		return collectionId;
+	}
+	public void setCollectionId(String collectionId) {
+		this.collectionId = collectionId;
 	}
 
 	

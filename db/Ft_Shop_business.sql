@@ -211,28 +211,28 @@ create table business_store_rank
 
 alter table business_store_rank comment '���̵ȼ���Ϣ��ݱ�';
 
-alter table business add constraint FK_Reference_1 foreign key (base_id)
+alter table business add constraint FK_business_base_1 foreign key (base_id)
       references business_base (id) on delete restrict on update restrict;
 
-alter table business add constraint FK_Reference_2 foreign key (manage_id)
+alter table business add constraint FK_business_manage_2 foreign key (manage_id)
       references business_manage (id) on delete restrict on update restrict;
 
-alter table business add constraint FK_Reference_3 foreign key (bank_id)
+alter table business add constraint FK_business_bank_3 foreign key (bank_id)
       references business_bank (id) on delete restrict on update restrict;
 
-alter table business_store add constraint FK_Reference_4 foreign key (business_id)
+alter table business_store add constraint FK_business_4 foreign key (business_id)
       references business (id) on delete restrict on update restrict;
 
-alter table business_store add constraint FK_Reference_6 foreign key (classify_id)
+alter table business_store add constraint FK_business_store_classify_6 foreign key (classify_id)
       references business_store_classify (id) on delete restrict on update restrict;
 
-alter table business_store add constraint FK_Reference_7 foreign key (rank_id)
+alter table business_store add constraint FK_business_store_rank_7 foreign key (rank_id)
       references business_store_rank (id) on delete restrict on update restrict;
 
-alter table business_store_login add constraint FK_Reference_8 foreign key (store_id)
+alter table business_store_login add constraint FK_business_store_8 foreign key (store_id)
       references business_store (id) on delete restrict on update restrict;
 
-alter table business_store_manage_category add constraint FK_Reference_5 foreign key (store_id)
+alter table business_store_manage_category add constraint FK_business_store_5 foreign key (store_id)
       references business_store (id) on delete restrict on update restrict;
 
 
@@ -258,9 +258,9 @@ create table business_store_login_log
 
 alter table business_store_login_log comment '商家店铺登录日志表';
 
-alter table business_store_login_log add constraint FK_Reference_9 foreign key (login_id)
+alter table business_store_login_log add constraint FK_business_store_login_9 foreign key (login_id)
       references business_store_login (id) on delete restrict on update restrict;
-      drop table if exists business_store_summary;
+drop table if exists business_store_summary;
 
 /*==============================================================*/
 /* Table: business_store_summary                                */
@@ -280,7 +280,7 @@ create table business_store_summary
 
 alter table business_store_summary comment '商家简介信息表';
 
-alter table business_store_summary add constraint FK_Reference_10 foreign key (store_id)
+alter table business_store_summary add constraint FK_business_store_10 foreign key (store_id)
       references business_store (id) on delete restrict on update restrict;
 /*==============================================================*/
 /* Table: goods     去除与店铺的外键，改为字段shop_id  2016.11.16        */
@@ -288,5 +288,5 @@ alter table business_store_summary add constraint FK_Reference_10 foreign key (s
 /*==============================================================*/
 /* Table: business_store_manage   business_store  2016.11.17    */
 /*==============================================================*/
-alter table business_store_manage  add business_store_address varchar(100);
+alter table business_manage  add business_store_address varchar(100);
 alter table business_store add store_id varchar(100);

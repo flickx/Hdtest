@@ -46,7 +46,23 @@ public interface WebUserServ {
 	 */
 	Result doResetPassword(Parameter param)throws Exception;
 	
+	/**
+	 * 重置密码 
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result resetPassword(Parameter param)throws Exception;
+	
 	Result getAddressBook(Parameter param) throws Exception;
+	
+	/**
+	 * 根据用户ID获取单个用户对象
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	
+	Result getUserById(Parameter param) throws Exception;
 //	/**
 //	 * 找回密码 “下一步”
 //	 * @param param
@@ -55,4 +71,10 @@ public interface WebUserServ {
 //	 */
 //	Result toResetPassword(Parameter param)throws Exception;
 	
+	/**
+	 * 保存/更新用户对象
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result saveUser(Parameter param) throws Exception;
 }

@@ -4,6 +4,7 @@ public class ShopGoodsParamVo {
 	
 	private String shopId;
 	private String goodsParamId;
+	private String shopCartId;
 	private String num;
 	private String price;
 	public String getShopId() {
@@ -29,6 +30,12 @@ public class ShopGoodsParamVo {
 	}
 	public void setPrice(String price) {
 		this.price = price;
+	}
+	public String getShopCartId() {
+		return shopCartId;
+	}
+	public void setShopCartId(String shopCartId) {
+		this.shopCartId = shopCartId;
 	}
 
 	
