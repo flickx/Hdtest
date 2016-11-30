@@ -48,6 +48,8 @@ public class GoodsEvent implements java.io.Serializable {
 	private String firstOrder;
 	private String homeChannel;
 	private String shopId;
+	private BigDecimal target;
+	private BigDecimal discountAmount;
 	// Constructors
 
 	/** default constructor */
@@ -242,6 +244,21 @@ public class GoodsEvent implements java.io.Serializable {
 	}
 	public void setShopId(String shopId) {
 		this.shopId = shopId;
+	}
+
+	@Column(name = "target", length = 10)
+	public BigDecimal getTarget() {
+		return target;
+	}
+	public void setTarget(BigDecimal target) {
+		this.target = target;
+	}
+	@Column(name = "discount_amount", length = 10)
+	public BigDecimal getDiscountAmount() {
+		return discountAmount;
+	}
+	public void setDiscountAmount(BigDecimal discountAmount) {
+		this.discountAmount = discountAmount;
 	}
 	
 }

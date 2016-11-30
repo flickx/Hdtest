@@ -319,32 +319,9 @@ public class ShopEventServImpl implements ShopEventServ {
 	 * @return  返回结果（前台用Result对象）
 	 */
 	@Override
-	public Result getGoodsListPage(Parameter parameter) throws Exception {		
-		String queryStr = parameter.getWhereStr();
-		String sql = "SELECT t1.id,t1.title,t1.price,t1.create_time from goods t1 "
-				+ "left join goods_event_join t2 on t1.state = '1' and t2.state = '1' and t2.goods_id = t1.id "
-				+ "left join goods_event t3 on t3.state = '1' and t2.state = '1' and t3.id = t2.event_id "
-				+ "where t1.state = '1' and t1.grounding = '1' "
-				+" and t1.shop_id = '"+parameter.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"'"
-				+ " and (t3.type_name is null or t3.type_name = '满减')";
-		if(queryStr!=null){
-			sql = sql + queryStr + " order by t1.create_time desc";
-		}else{
-			sql = sql+" order by t1.create_time desc";
-		}
-		Page page = hibernateUtil.sqlPage(sql,parameter.getPageNum(),parameter.getPageSize());
-		List<GoodsVo> list = new ArrayList<GoodsVo>();
-		for (int i = 0; i < page.getObjList().size(); i++) {
-			GoodsVo goodsVo = new GoodsVo();
-			Object[] obj = (Object[])page.getObjList().get(i);
-			goodsVo.setId(obj[0].toString());
-			goodsVo.setTitle(obj[1].toString());
-			goodsVo.setPrice(obj[2].toString());
-			goodsVo.setCreateTime(obj[3].toString());
-			list.add(goodsVo);
-		}
-		page.setVoList(list);
-		
+	public Result getGoodsListPage(Parameter param) throws Exception {		
+		String hql = "from Goods where state = '1' and grounding = '1' and shopId = '"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"'";
+		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
