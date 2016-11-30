@@ -94,12 +94,12 @@ public class BusinessStoreServImpl implements BusinessStoreServ {
 		List<Object> list = hibernateUtil.hql(hql);
 		BusinessStoreVo businessStoreVo = new BusinessStoreVo();
 		businessStoreVo.setBusinessStoreLogin(businessStoreLogin);
-		if(list.get(0)!=null){
+		if(list.size()>0){
 			businessStoreVo.setBusinessStoreSummary((BusinessStoreSummary) list.get(0));
 		}
 		String hqla="from BusinessStoreManageCategory where state=1 and storeId='"+businessStoreLogin.getBusinessStore().getStoreId()+"'";
 		List<Object> objlist = hibernateUtil.hql(hqla);
-		if(objlist.get(0)!=null){
+		if(objlist.size()>0){
 			businessStoreVo.setObjList(objlist);
 		}
 		return ObjectToResult.getResult(businessStoreVo);
