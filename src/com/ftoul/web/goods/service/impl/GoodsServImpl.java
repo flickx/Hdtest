@@ -317,12 +317,6 @@ public class GoodsServImpl implements GoodsServ {
 		return ObjectToResult.getResult(goodsVo);
 	}
 	
-	/**
-	 * 查找跨境商品（带分页）
-	 * @param param
-	 * @return
-	 * @throws Exception
-	 */
 
 	@Override
 	public Result getGoodsListPageByCross(Parameter param) throws Exception {
@@ -348,4 +342,7 @@ public class GoodsServImpl implements GoodsServ {
 	    }
 	    return ip.equals("0:0:0:0:0:0:0:1")?"127.0.0.1":ip;
 	}
+
+
+	
 }

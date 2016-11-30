@@ -69,4 +69,5 @@ public interface GoodsServ{
 	
 	Result getGoodsListPageByCross(Parameter parameter)throws Exception;
 
+
 }
