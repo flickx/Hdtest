@@ -1,5 +1,7 @@
 package com.ftoul.po;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
 
 
@@ -45,6 +48,8 @@ public class OrdersDetail  implements java.io.Serializable {
      private String price;
      private String eventType;
      private String isAfter;
+     private String shopId;
+     private BigDecimal totalPrice;
 
     // Constructors
 
@@ -237,10 +242,29 @@ public class OrdersDetail  implements java.io.Serializable {
 		return isAfter;
 	}
 
-
 	public void setIsAfter(String isAfter) {
 		this.isAfter = isAfter;
 	}
+
+	@Column(name="shop_id", length=32)
+	public String getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(String shopId) {
+		this.shopId = shopId;
+	}
+
+	@Column(name="total_price", length=20)
+	public BigDecimal getTotalPrice() {
+		return totalPrice;
+	}
+	
+	public void setTotalPrice(BigDecimal totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+	
+	
 	
 	
 	

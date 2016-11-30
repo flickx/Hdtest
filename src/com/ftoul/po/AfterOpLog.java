@@ -29,6 +29,7 @@ public class AfterOpLog implements java.io.Serializable {
 	private String modifyTime;
 	private String state;
 	private String modifyPerson;
+	private String scheduleStatic;
 
 	// Constructors
 
@@ -144,6 +145,15 @@ public class AfterOpLog implements java.io.Serializable {
 
 	public void setModifyPerson(String modifyPerson) {
 		this.modifyPerson = modifyPerson;
+	}
+	
+	@Column(name = "schedule_static", length = 10)
+	public String getScheduleStatic() {
+		return scheduleStatic;
+	}
+
+	public void setScheduleStatic(String scheduleStatic) {
+		this.scheduleStatic = scheduleStatic;
 	}
 
 }

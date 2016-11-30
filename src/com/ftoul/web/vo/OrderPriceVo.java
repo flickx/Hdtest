@@ -14,7 +14,7 @@ public class OrderPriceVo {
 	private int totalCoinNumber;
 	private double coinPrice;
 	private String flag;
-	private List<Object> volist;
+	private List<Object> voList;
 	private List<ShopGoodsParamVo> shopGoodsParamList;
 	
 	public String getBenPrice() {
@@ -77,17 +77,17 @@ public class OrderPriceVo {
 	public void setFlag(String flag) {
 		this.flag = flag;
 	}
-	public List<Object> getVolist() {
-		return volist;
-	}
-	public void setVolist(List<Object> volist) {
-		this.volist = volist;
-	}
 	public List<ShopGoodsParamVo> getShopGoodsParamList() {
 		return shopGoodsParamList;
 	}
 	public void setShopGoodsParamList(List<ShopGoodsParamVo> shopGoodsParamList) {
 		this.shopGoodsParamList = shopGoodsParamList;
+	}
+	public List<Object> getVoList() {
+		return voList;
+	}
+	public void setVoList(List<Object> voList) {
+		this.voList = voList;
 	}
 	
 }

@@ -1,5 +1,9 @@
 package com.ftoul.businessManage.freightTemplate.service;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 
@@ -51,4 +55,10 @@ public interface ShopFreightTemplateServ {
 	 * @return 返回结果（前台用Result对象）
 	 */
 	Result delAreaFreightTemplateById(Parameter param) throws Exception; 
+	/**
+	 * 通过商家运费模板和区域名称获取区域运费模板
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result getTemplateByArea(Parameter param)throws Exception;
 }
