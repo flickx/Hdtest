@@ -1,7 +1,19 @@
 package com.ftoul.businessManage.business.vo;
 
+import java.util.List;
+
+import com.ftoul.po.Business;
+import com.ftoul.po.BusinessBank;
+import com.ftoul.po.BusinessBase;
+import com.ftoul.po.BusinessManage;
+import com.ftoul.po.BusinessStore;
+import com.ftoul.po.BusinessStoreClassify;
+import com.ftoul.po.BusinessStoreLogin;
+import com.ftoul.po.BusinessStoreManageCategory;
+import com.ftoul.po.BusinessStoreSummary;
+
 public class BusinessStoreVo {
-	//Business
+			//Business
 			private String id;
 			private String operateId;
 			private String operateTime;
@@ -59,6 +71,10 @@ public class BusinessStoreVo {
 			//BusinessStoreSummary
 			private String businessStoreSummaryId;
 			private String summary;
+			
+			private List<Object> objList;
+			private BusinessStoreLogin businessStoreLogin;
+			private BusinessStoreSummary businessStoreSummary;
 			public String getId() {
 				return id;
 			}
@@ -354,5 +370,24 @@ public class BusinessStoreVo {
 			public void setSummary(String summary) {
 				this.summary = summary;
 			}
+			public List<Object> getObjList() {
+				return objList;
+			}
+			public void setObjList(List<Object> objList) {
+				this.objList = objList;
+			}
+			public BusinessStoreLogin getBusinessStoreLogin() {
+				return businessStoreLogin;
+			}
+			public void setBusinessStoreLogin(BusinessStoreLogin businessStoreLogin) {
+				this.businessStoreLogin = businessStoreLogin;
+			}
+			public BusinessStoreSummary getBusinessStoreSummary() {
+				return businessStoreSummary;
+			}
+			public void setBusinessStoreSummary(BusinessStoreSummary businessStoreSummary) {
+				this.businessStoreSummary = businessStoreSummary;
+			}
+			
 			
 }

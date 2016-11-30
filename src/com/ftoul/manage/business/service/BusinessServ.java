@@ -39,6 +39,28 @@ public interface BusinessServ {
 	 */
 	Result getBusinessStoreClassify(Parameter param) throws Exception;
 	/**
+	 * 查询商家信息(分页)
+	 * @param param
+	 * @return 返回结果(前台用Result对象)
+	 * @throws Exception
+	 */
+	Result getBusinessPageList(Parameter param) throws Exception;
+	
+	/**
+	 * 查询商家店铺等级信息(分页)
+	 * @param param
+	 * @return 返回结果(前台用Result对象)
+	 * @throws Exception
+	 */
+	Result getBusinessStoreRankList(Parameter param) throws Exception;
+	/**
+	 * 查询商家店铺分类信息(分页)
+	 * @param param
+	 * @return 返回结果(前台用Result对象)
+	 * @throws Exception
+	 */
+	Result getBusinessStoreClassifyList(Parameter param) throws Exception;
+	/**
 	 * 查询商家店铺分类信息
 	 * @param param
 	 * @return 返回结果(前台用Result对象)

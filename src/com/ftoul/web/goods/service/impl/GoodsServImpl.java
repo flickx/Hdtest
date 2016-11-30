@@ -235,7 +235,9 @@ public class GoodsServImpl implements GoodsServ {
 		if(goods.getCode()!=null)
 		goodsVo.setCode(goods.getCode());
 		goodsVo.setSaleSum(String.valueOf(goods.getSaleSum()));
-			
+		if(null!=goods.getShopId())	{
+			goodsVo.setShopId(goods.getShopId());
+		}
 		return ObjectToResult.getResult(goodsVo);
 		
 	}

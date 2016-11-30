@@ -90,4 +90,14 @@ public class ShopFreightTemplateAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return shopFreightTemplateServ.delAreaFreightTemplateById(parameter);
 	}
+	/**
+	 * 通过商家运费模板和区域名称获取区域运费模板
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value="getTemplateByArea")
+	public @ResponseBody Result getTemplateByArea(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return shopFreightTemplateServ.getTemplateByArea(parameter);
+	}
 }

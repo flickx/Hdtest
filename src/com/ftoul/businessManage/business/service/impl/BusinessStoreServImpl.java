@@ -1,4 +1,4 @@
-package com.ftoul.businessManage.business.service.impl;
+  package com.ftoul.businessManage.business.service.impl;
 
 import java.util.List;
 
@@ -92,7 +92,16 @@ public class BusinessStoreServImpl implements BusinessStoreServ {
 		BusinessStoreLogin businessStoreLogin=(BusinessStoreLogin) hibernateUtil.find(BusinessStoreLogin.class, param.getManageToken().getBusinessStoreLogin().getId());
 		String hql="from BusinessStoreSummary where state=1 and businessStore.id='"+businessStoreLogin.getBusinessStore().getId()+"'";
 		List<Object> list = hibernateUtil.hql(hql);
-		list.add(list.size(), businessStoreLogin);
-		return ObjectToResult.getResult(list);
+		BusinessStoreVo businessStoreVo = new BusinessStoreVo();
+		businessStoreVo.setBusinessStoreLogin(businessStoreLogin);
+		if(list.get(0)!=null){
+			businessStoreVo.setBusinessStoreSummary((BusinessStoreSummary) list.get(0));
+		}
+		String hqla="from BusinessStoreManageCategory where state=1 and storeId='"+businessStoreLogin.getBusinessStore().getStoreId()+"'";
+		List<Object> objlist = hibernateUtil.hql(hqla);
+		if(objlist.get(0)!=null){
+			businessStoreVo.setObjList(objlist);
+		}
+		return ObjectToResult.getResult(businessStoreVo);
 	}
 }

@@ -109,4 +109,11 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 		Object o = hibernateUtil.hqlFirst(hql);
 		return ObjectToResult.getResult(o);
 	}
+
+	@Override
+	public Result getTemplateByArea(Parameter param) throws Exception {
+		String hql = "from AreaFreightTemplate where state='1' and shopFreightTemplate.id = '" + param.getId() +param.getWhereStr() + param.getOrderBy() ;
+		Object o = hibernateUtil.hqlFirst(hql);
+		return ObjectToResult.getResult(o);
+	}
 }
