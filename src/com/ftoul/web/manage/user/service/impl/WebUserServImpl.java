@@ -64,8 +64,13 @@ public class WebUserServImpl implements WebUserServ{
 		String IP=getRemoteHost();
 		String p2pId="";
 		String smsCode=user.getSmsCode();
-		int maxSort=smsCodeUtil.getMaxSmsSort(user.getUsername(), user.getSmscodeType());
-		MessageVerification m=smsCodeUtil.getMaxSmsCode(user.getUsername(),  user.getSmscodeType(), maxSort);
+		int count = smsCodeUtil.getSmsCount(user.getUsername());
+		if (count>4) {
+			res="今日接收短信已超过5条上限";
+			throw new Exception("今日接收短信已超过5条上限");
+		}
+		int maxSort = smsCodeUtil.getMaxSmsSort(user.getUsername(), user.getSmscodeType());
+		MessageVerification m = smsCodeUtil.getMaxSmsCode(user.getUsername(),  user.getSmscodeType(), maxSort);
 		if (isExists) {
 			res="手机号已注册";
 			throw new Exception("手机号已注册");
@@ -187,6 +192,11 @@ public class WebUserServImpl implements WebUserServ{
 		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),UsersVO.class);
 		Object res=null;
 		String smsCodeType=user.getSmscodeType();
+		int count = smsCodeUtil.getSmsCount(user.getUsername());
+		if (count>4) {
+			res="今日接收短信已超过5条上限";
+			throw new Exception("今日接收短信已超过5条上限");
+		}
 		//生成验证码
 		int sort=smsCodeUtil.makeSmsCode(user.getUsername(),smsCodeType);
 		//获取验证码
@@ -211,6 +221,11 @@ public class WebUserServImpl implements WebUserServ{
 		Object res=null;
 		UserService userService = WebserviceUtil.getService();
 		String smsCode=user.getSmsCode();
+		int count = smsCodeUtil.getSmsCount(user.getUsername());
+		if (count>4) {
+			res="今日接收短信已超过5条上限";
+			throw new Exception("今日接收短信已超过5条上限");
+		}
 		int maxSort=smsCodeUtil.getMaxSmsSort(user.getUsername(), user.getSmscodeType());
 		MessageVerification m=smsCodeUtil.getMaxSmsCode(user.getUsername(),  user.getSmscodeType(), maxSort);
 		if (m==null||!smsCode.equals(m.getVerificationCode())) {
