@@ -1,5 +1,6 @@
   package com.ftoul.businessManage.business.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,11 @@ import com.ftoul.businessManage.business.vo.BusinessStoreVo;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.manage.business.vo.BusinessStoreManageCategoryVo;
 import com.ftoul.po.BusinessStoreLogin;
+import com.ftoul.po.BusinessStoreManageCategory;
 import com.ftoul.po.BusinessStoreSummary;
+import com.ftoul.po.GoodsType;
 import com.ftoul.util.hibernate.HibernateUtil;
 /**
  * 
@@ -99,9 +103,29 @@ public class BusinessStoreServImpl implements BusinessStoreServ {
 		}
 		String hqla="from BusinessStoreManageCategory where state=1 and storeId='"+businessStoreLogin.getBusinessStore().getStoreId()+"'";
 		List<Object> objlist = hibernateUtil.hql(hqla);
-		if(objlist.size()>0){
-			businessStoreVo.setObjList(objlist);
+		List<Object> businessStoreManageCategoryVoList = new ArrayList<Object>();
+		if(objlist!=null){
+			BusinessStoreManageCategory businessStoreManageCategory=new BusinessStoreManageCategory();
+			GoodsType goodsType=new GoodsType();
+			for(int i=0;i<objlist.size();i++){
+				BusinessStoreManageCategoryVo businessStoreManageCategoryVo=new BusinessStoreManageCategoryVo();
+				businessStoreManageCategory=(BusinessStoreManageCategory) objlist.get(i);
+				businessStoreManageCategoryVo.setId(businessStoreManageCategory.getId());
+				businessStoreManageCategoryVo.setStoreId(businessStoreManageCategory.getStoreId());
+				businessStoreManageCategoryVo.setState(businessStoreManageCategory.getState());
+				goodsType=(GoodsType) hibernateUtil.find(GoodsType.class, businessStoreManageCategory.getFirstCategory());
+				businessStoreManageCategoryVo.setFirstCategory( businessStoreManageCategory.getFirstCategory());
+				businessStoreManageCategoryVo.setFirstCategoryName(goodsType.getName());
+				goodsType=(GoodsType) hibernateUtil.find(GoodsType.class, businessStoreManageCategory.getTwoCategory());
+				businessStoreManageCategoryVo.setTwoCategory( businessStoreManageCategory.getTwoCategory());
+				businessStoreManageCategoryVo.setTwoCategoryName(goodsType.getName());
+				goodsType=(GoodsType) hibernateUtil.find(GoodsType.class, businessStoreManageCategory.getThreeCategory());
+				businessStoreManageCategoryVo.setThreeCategory( businessStoreManageCategory.getThreeCategory());
+				businessStoreManageCategoryVo.setThreeCategoryName(goodsType.getName());
+				businessStoreManageCategoryVoList.add(businessStoreManageCategoryVo);
+			}
 		}
+		businessStoreVo.setObjList(businessStoreManageCategoryVoList);
 		return ObjectToResult.getResult(businessStoreVo);
 	}
 }
