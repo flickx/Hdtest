@@ -216,8 +216,24 @@ public class OrdersServImpl implements OrdersServ {
 	@Override
 	public Result getOrdersByOrdersId(Parameter param) throws Exception {
 		Orders orders = (Orders) hibernateUtil.find(Orders.class, param.getId()+"");
-		List<Object> ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+orders.getId()+"'");
-		return ObjectToResult.getResult(ordersUtil.transformObject(orders,ordersDetailList));
+		List<Object> ordersDetailList = new ArrayList<Object>();
+		List<Object> oneVoManyList = new ArrayList<Object>();
+		if("1".equals(orders.getIsHasChild())){
+			List<Object> childOrdersList =  hibernateUtil.hql("from Orders where state='1' and parentOrdersId='"+orders.getId()+"'");
+			Orders child = new Orders();
+			List<Object> childDetailList = new ArrayList<Object>();
+			for (Object object : childOrdersList) {
+				child = (Orders) object;
+				childDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+child.getId()+"'");
+				ordersDetailList.addAll(childDetailList);
+				oneVoManyList.add(ordersUtil.transformObject(child,childDetailList));
+			}
+		}else{
+			ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+orders.getId()+"'");
+			oneVoManyList.add(ordersUtil.transformObject(orders,ordersDetailList));
+		}
+		
+		return ObjectToResult.getResult(ordersUtil.transformObject(orders,oneVoManyList));
 	}
 	
 	@Override
@@ -586,7 +602,8 @@ public class OrdersServImpl implements OrdersServ {
 			List<MjGoodsEventVo> mjGoodsEventList =  new ArrayList<MjGoodsEventVo>();
 			for (int i = 0; i < list.size(); i++) {
 				ShopGoodsParamVo shopGoodsParamVo = (ShopGoodsParamVo) list.get(i);
-				orders.setShopId(shopGoodsParamVo.getShopId());
+				BusinessStore businessStore = (BusinessStore)hibernateUtil.find(BusinessStore.class, shopGoodsParamVo.getShopId());
+				orders.setShopId(businessStore);
 				//String goodsParam = goodsParams[i];
 				//String[] goods = goodsParam.split(",");
 				GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, shopGoodsParamVo.getGoodsParamId()+"");

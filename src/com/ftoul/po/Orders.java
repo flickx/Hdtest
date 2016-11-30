@@ -67,7 +67,7 @@ public class Orders  implements java.io.Serializable {
      private String consignee;
      private String consigneeTel;
      private String address;
-     private String shopId;
+     private BusinessStore shopId;
      private String parentOrdersId;
      private String isHasChild;
 
@@ -501,15 +501,6 @@ public class Orders  implements java.io.Serializable {
 		this.address = address;
 	}
 	
-	@Column(name="shop_id", length=100)
-	public String getShopId() {
-		return shopId;
-	}
-
-	public void setShopId(String shopId) {
-		this.shopId = shopId;
-	}
-	
 	@Column(name="parent_orders_id", length=100)
 	public String getParentOrdersId() {
 		return parentOrdersId;
@@ -526,6 +517,16 @@ public class Orders  implements java.io.Serializable {
 
 	public void setIsHasChild(String isHasChild) {
 		this.isHasChild = isHasChild;
+	}
+
+	@ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="shop_id")
+	public BusinessStore getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(BusinessStore shopId) {
+		this.shopId = shopId;
 	}
 	
 
