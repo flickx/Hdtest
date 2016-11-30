@@ -95,7 +95,6 @@ public class BusinessWebServImpl implements BusinessWebServ {
 	 */
 	@Override
 	public Result getBusinessStorePageByGoodsId(Parameter param) throws Exception {
-		param.setId("8af5b38257027c6c015702c60dd102c5");
 			//获取店铺ID
 			Goods goods=(Goods) hibernateUtil.find(Goods.class, param.getId().toString());
 			//店铺详情
