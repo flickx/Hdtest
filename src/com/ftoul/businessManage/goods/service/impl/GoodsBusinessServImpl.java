@@ -178,6 +178,7 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 		Goods  goods = new Goods();
 		goods.setId(goodsVo.getId());
 		goods.setTitle(goodsVo.getTitle());
+		goods.setSubtitle(goodsVo.getSubTitle());
 		goods.setGoodsLabel(goodsVo.getGoodsLabel());
 		if(goodsVo.getGoodsType1()!=null){
 			GoodsType goodsType1 =	(GoodsType) this.hibernateUtil.find(GoodsType.class, goodsVo.getGoodsType1());
