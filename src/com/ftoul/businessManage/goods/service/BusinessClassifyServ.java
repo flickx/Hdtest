@@ -44,4 +44,12 @@ public interface BusinessClassifyServ {
 	 */
 	Result getBusinessClassifyById(Parameter param) throws Exception;
 	
+	/**
+	 * 根据店铺Id获取分类名称
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getBusinessClassifyByShopId(Parameter param) throws Exception;
+	
 }
