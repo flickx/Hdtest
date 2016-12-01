@@ -41,6 +41,7 @@ public class Goods implements java.io.Serializable {
 	private Double price;
 	private String deductionrate;
 	private String skuCode;
+	private String hasstock;
 	private String place;
 	private String grounding;
 	private String crossborder;
@@ -531,6 +532,15 @@ public class Goods implements java.io.Serializable {
 
 	public void setGoodsLabel(String goodsLabel) {
 		this.goodsLabel = goodsLabel;
+	}
+	
+	@Column(name = "hasstock", length = 10)
+	public String getHasstock() {
+		return this.hasstock;
+	}
+
+	public void setHasstock(String hasstock) {
+		this.hasstock = hasstock;
 	}
 	
 }

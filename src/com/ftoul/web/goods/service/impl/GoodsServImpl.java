@@ -144,7 +144,7 @@ public class GoodsServImpl implements GoodsServ {
 			}
 		}
 		//获取商品价格 1.优先取商品活动价格2.取活动促销价格.3 折扣价
-		String hql2 = "select ge.eventName,gej.eventPrice,ge.eventPrice,ge.discount,gej.quantity,ge.eventBegen,ge.eventEnd,gs.picSrc,ge.state,gej.state,ge.typeName,ge.homeChannel from Goods gs,"
+		String hql2 = "select ge.eventName,gej.eventPrice,ge.eventPrice,ge.discount,gej.quantity,ge.eventBegen,ge.eventEnd,gs.picSrc,ge.state,gej.state,ge.typeName,ge.homeChannel,gs.subtitle from Goods gs,"
 				+ "GoodsEventJoin gej,GoodsEvent ge where gs.id = gej.goods.id and ge.id = gej.goodsEvent.id and gej.state = '1' and ge.state = '1' and gs.id ='"+param.getId()+"'";
 		List<Object> eventList = this.hibernateUtil.hql(hql2);
 		Date currentTime = DateUtil.stringFormatToDate(
@@ -177,6 +177,7 @@ public class GoodsServImpl implements GoodsServ {
 					goodsVo.setQuantity(obj[4]+"");
 				}
 				goodsVo.setTypeName(obj[10]+"");
+				goodsVo.setSubtitle(obj[12]+"");
 			}
 			//判断倍蜂币活动是否已经开始
 			String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
@@ -237,6 +238,9 @@ public class GoodsServImpl implements GoodsServ {
 		goodsVo.setSaleSum(String.valueOf(goods.getSaleSum()));
 		if(null!=goods.getShopId())	{
 			goodsVo.setShopId(goods.getShopId());
+		}
+		if(goods.getSubtitle()!=null){
+			goodsVo.setSubtitle(goods.getSubtitle());
 		}
 		return ObjectToResult.getResult(goodsVo);
 		
@@ -319,12 +323,6 @@ public class GoodsServImpl implements GoodsServ {
 		return ObjectToResult.getResult(goodsVo);
 	}
 	
-	/**
-	 * 查找跨境商品（带分页）
-	 * @param param
-	 * @return
-	 * @throws Exception
-	 */
 
 	@Override
 	public Result getGoodsListPageByCross(Parameter param) throws Exception {
@@ -350,4 +348,7 @@ public class GoodsServImpl implements GoodsServ {
 	    }
 	    return ip.equals("0:0:0:0:0:0:0:1")?"127.0.0.1":ip;
 	}
+
+
+	
 }

@@ -51,4 +51,33 @@ public class GoodsParamServImpl implements GoodsParamServ {
 		return ObjectToResult.getResult(res);
 	}
 
+	/**
+	 * 根据goodsId得到总库存
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public int getSumStockBygoodsId(Parameter param) throws Exception {
+		String hql = "from GoodsParam where state ='1' and goods.id ='"+ param.getId()+"'";
+		List<Object>goodsParamList = this.hibernateUtil.hql(hql);
+		int sumStock =0;
+		if(goodsParamList==null||goodsParamList.size()<=0){
+			return 0;
+		}
+		for(Object obj:goodsParamList ){
+			int stock =0;
+			GoodsParam goodsParam = (GoodsParam) obj;
+			if(goodsParam.getStock()==null||goodsParam.getStock()==""){
+				stock =0;
+			}else{
+				stock = Integer.parseInt(goodsParam.getStock());
+			}
+			sumStock+=stock;
+		}
+		return sumStock;
+	}
+	
+	
+
 }

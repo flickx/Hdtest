@@ -340,4 +340,20 @@ public class GoodsAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return userCollectionServ.deleteUserCollection(parameter);
 	}
+	
+	
+	
+	/**
+	 * 根据goodsId得到总库存
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getSumStockBygoodsId")  
+	public @ResponseBody int getSumStockBygoodsId(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return goodsParamServ.getSumStockBygoodsId(parameter);
+	}
+	
+	
 }

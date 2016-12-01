@@ -48,6 +48,7 @@ import com.ftoul.po.UserAddress;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.orders.OrdersUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
+import com.ftoul.web.goods.service.GoodsParamServ;
 import com.ftoul.web.orders.service.OrdersServ;
 import com.ftoul.web.vo.GoodsVo;
 import com.ftoul.web.vo.ManyVsOneVo;
@@ -77,6 +78,8 @@ public class OrdersServImpl implements OrdersServ {
 	CartServ cartServ;
 	@Autowired
 	CoinSetServ coinSetServ;
+	@Autowired
+	GoodsParamServ goodsParamServ;
 	@Autowired  
 	private  HttpServletRequest req;
 	@Autowired  
@@ -178,7 +181,7 @@ public class OrdersServImpl implements OrdersServ {
 	 * 删除/取消订单，减少库存、增加销售量
 	 * @param param
 	 */
-	public void updateGoodsParam(String orderId,String flag){
+	public void updateGoodsParam(String orderId,String flag) throws  Exception{
 		List<Object> list = hibernateUtil.hql("from OrdersDetail where orders.id='"+orderId+"'");
 		for (int i = 0; i < list.size(); i++) {
 			OrdersDetail ordersDetail = (OrdersDetail) list.get(i);
@@ -194,8 +197,17 @@ public class OrdersServImpl implements OrdersServ {
 				goodsParam.setSaleNumber(goodsParam.getSaleNumber()-num);
 				goods.setSaleSum(goods.getSaleSum()-num);
 			}
-			
 			hibernateUtil.update(goodsParam);
+			//判断商品是否还有库存
+			Parameter param = new Parameter();
+			param.setId(goods.getId());
+			int ret =this.goodsParamServ.getSumStockBygoodsId(param);
+			if(ret==0){//无库存
+				goods.setHasstock("0");
+			}
+			else{
+				goods.setHasstock("1");
+			}
 			hibernateUtil.update(goods);
 		}
 	}

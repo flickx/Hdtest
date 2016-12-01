@@ -28,4 +28,15 @@ public interface GoodsParamServ{
  * @return  返回结果（前台用Result对象）
  */
 	Result saveStockFromOrder(Parameter parameter)throws  Exception;
+	
+	/**
+	 * 根据goodsId得到总库存
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	
+	public int getSumStockBygoodsId(Parameter parameter) throws Exception;
+	
+	
 }
