@@ -67,4 +67,15 @@ public class BusinessClassifyAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return businessClassifyServ.getBusinessClassifyById(parameter);
 	}
+	/**
+	 * 根据店铺Id查询
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getBusinessClassifyByShopId")  
+	public @ResponseBody Result getBusinessClassifyByShopId(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return businessClassifyServ.getBusinessClassifyByShopId(parameter);
+	}
 }

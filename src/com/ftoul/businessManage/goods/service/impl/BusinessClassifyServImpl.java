@@ -80,4 +80,11 @@ public class BusinessClassifyServImpl implements BusinessClassifyServ{
 		return ObjectToResult.getResult(businessClassify);
 	}
 
+	@Override
+	public Result getBusinessClassifyByShopId(Parameter param) throws Exception {
+		String hql = "from BusinessClassify where state =1 and shopId = '"+param.getId()+"'";
+		List<Object> list = hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(list);
+	}
+
 }
