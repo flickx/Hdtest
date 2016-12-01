@@ -77,7 +77,38 @@ public class BusinessAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return businessServ.getBusinessStoreClassify(parameter);
 	}
+	/**
+	 * 获取商家资料数据(分页)
+	 * @param param 参数
+	 * @throws Exception
+	 */
+	@RequestMapping(value="getBusinessPageList")
+	public @ResponseBody Result getBusinessPageList(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return businessServ.getBusinessPageList(parameter);
+	}
 	
+	/**
+	 * 获取商家店铺等级数据(分页)
+	 * @param param 参数
+	 * @throws Exception
+	 */
+	@RequestMapping(value="getBusinessStoreRankList")
+	public @ResponseBody Result getBusinessStoreRankList(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return businessServ.getBusinessStoreRankList(parameter);
+	}
+	
+	/**
+	 * 获取商家店铺分类数据(分页)
+	 * @param param 参数
+	 * @throws Exception
+	 */
+	@RequestMapping(value="getBusinessStoreClassifyList")
+	public @ResponseBody Result getBusinessStoreClassifyList(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return businessServ.getBusinessStoreClassifyList(parameter);
+	}
 	/**
 	 * 重置商家账号登录密码
 	 * @param param 参数

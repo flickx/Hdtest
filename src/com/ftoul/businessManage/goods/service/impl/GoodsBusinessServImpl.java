@@ -217,7 +217,8 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 //		//加入shop  先加入id为1的shop
 //		  BusinessStore businessStore=	(BusinessStore) this.hibernateUtil.find(Shop.class, "1");
 //		  if(businessStore!=null)
-			  goods.setShopId("1");
+		
+		goods.setShopId(param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId());
 		//定时上架
 		  if(goodsVo.getGrounding().equals("2")){
 			  goods.setGroundingTime(goodsVo.getGroundingTime());
@@ -349,7 +350,9 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 				"AND gs.state = '1'  " +
 				"JOIN Goods_Prop_Type gpt ON gs.goods_prop_type_id = gpt.id  " +
 				"AND gpt.state = '1'  " +
-				"AND gs.state = '1'  " +parameter.getWhereStr()+
+				"AND gs.state = '1'  " +
+				"AND gs.shop_id = '"+parameter.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' " +parameter.getWhereStr()+
+				
 				"GROUP BY  " +
 				"	gs.id  ";
 		
