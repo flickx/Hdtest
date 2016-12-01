@@ -1326,13 +1326,8 @@ public class OrdersServImpl implements OrdersServ {
 		double payable = 0.00;
 		double orderPrice = 0.00;
 		double benPrice = 0.00;
-		String orderNumber;
-		String isCard;
-		String msg;
-		int coinNumber = 0;
-		int totalCoinNumber = 0;
 		double coinPrice = 0.00;
-		String flag;
+		int totalCoinNumber = 0;
 		OrderPriceVo msgVo = checkGoodsEvent(param);
 		OrderPriceVo vo = new OrderPriceVo();
 		List<Object> voList = new ArrayList<Object>();
@@ -1398,8 +1393,11 @@ public class OrdersServImpl implements OrdersServ {
 			orders.setOrderPrice(vo.getOrderPrice());
 			orders.setBenefitPrice(vo.getBenPrice());
 			hibernateUtil.update(orders);
-			
+			getCoinInfo(param,vo);//获取蜂币
+			getDeductionCoinInfo(param,vo,orders);
+			getDoubleCoinData(param,vo);//参与蜂币翻倍活动
 		}
+		
 		return ObjectToResult.getResult(vo);
 	}
 
