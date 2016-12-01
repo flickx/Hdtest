@@ -342,6 +342,18 @@ public class GoodsAction {
 	}
 	
 	
+	/**
+	 * 取消收藏商品.
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "delUserCollection")  
+	public @ResponseBody Result delUserCollection(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return userCollectionServ.delUserCollection(parameter);
+	}
+	
 	
 	/**
 	 * 根据goodsId得到总库存
