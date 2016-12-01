@@ -352,7 +352,7 @@ public class GoodsServImpl implements GoodsServ {
 				"AND gb.state = '1'  " +
 				"AND gs.state = '1'  " +
 				"JOIN Goods_Prop_Type gpt ON gs.goods_prop_type_id = gpt.id  " +
-				"AND gpt.state = '1'  " +
+				"AND gpt.state = '1'  and gs.shop_id = '1' " +
 				"AND gs.state = '1'  " +parameter.getWhereStr()+
 				"GROUP BY  " +
 				"	gs.id  ";
