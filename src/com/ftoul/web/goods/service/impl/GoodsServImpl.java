@@ -242,6 +242,9 @@ public class GoodsServImpl implements GoodsServ {
 		if(goods.getSubtitle()!=null){
 			goodsVo.setSubtitle(goods.getSubtitle());
 		}
+		if(goods.getGoodsLabel()!=null){
+			goodsVo.setGoodsLabel(goods.getGoodsLabel());
+		}
 		return ObjectToResult.getResult(goodsVo);
 		
 	}

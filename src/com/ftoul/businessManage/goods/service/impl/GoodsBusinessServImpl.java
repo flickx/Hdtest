@@ -2,6 +2,7 @@ package com.ftoul.businessManage.goods.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -284,9 +285,28 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 		}
 		goods.setState("0");
 		goods.setStep("2");
-		goods.setCreateTime(new DateStr().toString());
 		//更新goods
 		goods.setCreateTime(new DateStr().toString());
+		String goodsLabel="";
+		if(null!= goodsVo.getGoodsLabel()){
+			String[] label = goodsVo.getGoodsLabel().split(",");
+			for (int i = 0; i < label.length; i++) {
+				if("1".equals(label[i])){
+					goodsLabel+="超值,";
+				}else if("2".equals(label[i])){
+					goodsLabel+="促销,";
+				}else if("3".equals(label[i])){
+					goodsLabel+="特惠,";
+				}else if("4".equals(label[i])){
+					goodsLabel+="清仓,";
+				}else if("5".equals(label[i])){
+					goodsLabel+="热销,";
+				}else if("6".equals(label[i])){
+					goodsLabel+="大促,";
+				}
+			}
+		}
+		goods.setGoodsLabel(goodsLabel);
 		Object obj = hibernateUtil.update(goods);
 		
 		List<GoodsProp> goodsPropList=	goodsVo.getGoodsPropList();
