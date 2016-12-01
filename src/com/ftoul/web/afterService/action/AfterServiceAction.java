@@ -26,7 +26,7 @@ public class AfterServiceAction {
 	private AfterServiceServ afterServiceServ;
 	
 	/**
-	 * 获取售后列表
+	 * 获取需要申请售后列表
 	 * @param param 用户ID
 	 * @return
 	 * @throws Exception 

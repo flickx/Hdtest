@@ -1,5 +1,7 @@
 package com.ftoul.businessManage.login.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -7,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +50,11 @@ public class StoreLoginServImpl implements StoreLoginServ {
 		ManageTokenVo manageTokenVo = new ManageTokenVo();
 		if(businessStoreLoginList != null && businessStoreLoginList.size() > 0){
 			BusinessStoreLogin businessStoreLoginDb = (BusinessStoreLogin)businessStoreLoginList.get(0);
+			//更新登录时间
+			BusinessStoreLogin bLogin =	(BusinessStoreLogin) hibernateUtil.find(BusinessStoreLogin.class,businessStoreLoginDb.getId() );
+			bLogin.setLoginIp(req.getRemoteAddr());
+			bLogin.setLoginTIme(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			//存储token
 			manageTokenVo = tokenUtil.toManageToken(businessStoreLoginDb);
 			LoginUserLog loginUserLog = new LoginUserLog(); 
 //			loginUserLog.setLoginUser(businessStoreLoginDb);

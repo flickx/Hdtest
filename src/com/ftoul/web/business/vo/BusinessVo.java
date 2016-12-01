@@ -35,6 +35,7 @@ public class BusinessVo {
 		private String bankAccountImg;
 		//BusinessStore
 		private String businessStoreId;
+		private String storeId;
 		private String pic;
 		private String storeName;
 		private String storeDuration;
@@ -375,6 +376,12 @@ public class BusinessVo {
 		}
 		public void setGoodsSaleNum(Integer goodsSaleNum) {
 			this.goodsSaleNum = goodsSaleNum;
+		}
+		public String getStoreId() {
+			return storeId;
+		}
+		public void setStoreId(String storeId) {
+			this.storeId = storeId;
 		}
 		
 }
