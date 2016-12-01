@@ -53,4 +53,15 @@ public class BusinessWebAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return businessWebServ.getBusinessStorePageByGoodsId(parameter);
 	}
+	/**
+	 * 
+	 * 根据商品分类得到店铺商铺列表（带分页）
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value="getStoreGoodsPagebyStoreClassify")
+	public @ResponseBody Result getStoreGoodsPagebyStoreClassify(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return businessWebServ.getStoreGoodsPagebyStoreClassify(parameter);
+	}
 }
