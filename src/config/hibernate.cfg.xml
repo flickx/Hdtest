@@ -133,6 +133,7 @@
 		<mapping class="com.ftoul.po.AfterSchedule"/>
 		<mapping class="com.ftoul.po.AfterOpLog"/>
 		<mapping class="com.ftoul.po.AreaFreightTemplate"/>
+		<mapping class="com.ftoul.po.BusinessClassify"/>
 	</session-factory>
 
 </hibernate-configuration>
