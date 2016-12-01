@@ -85,7 +85,8 @@ public class BusinessWebServImpl implements BusinessWebServ {
 		    }
 			if(businessStoreSummaryList.size()!=0){
 				businessVo.setSummary(businessStoreSummaryList.get(0)+"");
-			}
+		    }
+			
 			return ObjectToResult.getResult(businessVo);
 	}
 	/**
