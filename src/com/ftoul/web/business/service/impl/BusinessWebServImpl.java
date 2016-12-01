@@ -82,9 +82,10 @@ public class BusinessWebServImpl implements BusinessWebServ {
 				businessVo.setPic(businessStore.getPic());
 				businessVo.setVerifyTime(businessStore.getVerifyTime());
 		    }
-			if(businessStoreSummaryList.get(0)!=null){
+		    if(businessStoreSummaryList.size()>0){
 				businessVo.setSummary(businessStoreSummaryList.get(0)+"");
-			}
+		    }
+			
 			return ObjectToResult.getResult(businessVo);
 	}
 	/**
