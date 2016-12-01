@@ -30,4 +30,11 @@ public interface BusinessWebServ {
 	 * @return  返回结果（前台用Result对象）
 	 */
 	public Result getBusinessStorePageByGoodsId(Parameter param) throws Exception;
+	/**
+	 * 
+	 * 根据分类得到店铺商铺列表（带分页）
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	public Result getStoreGoodsPagebyStoreClassify(Parameter param) throws Exception;
 }

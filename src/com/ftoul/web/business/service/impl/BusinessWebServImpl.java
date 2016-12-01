@@ -139,4 +139,17 @@ public class BusinessWebServImpl implements BusinessWebServ {
 //			}
 			return ObjectToResult.getResult(businessVo);
 	}
+	/**
+	 * 
+	 * 根据商品分类得到店铺商品列表（带分页）
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getStoreGoodsPagebyStoreClassify(Parameter param) throws Exception {
+		    String hql = "from Goods where state = '1' and grounding = '1' and id in (select gp.goods.id from GoodsParam gp where gp.state='1') and shopId='"+param.getId()+"' and businessClassifyId= '"+param.getParentId()+"'"+param.getOrderBy();
+			Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+			return ObjectToResult.getResult(page);
+			
+	}
 }
