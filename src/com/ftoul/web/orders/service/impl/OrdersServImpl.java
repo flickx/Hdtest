@@ -104,23 +104,40 @@ public class OrdersServImpl implements OrdersServ {
 		ordersList = page.getObjList();
 		List<Object> ordersDetailList = new ArrayList<Object>();
 		List<Object> childOrdersDetailList = new ArrayList<Object>();
-		ManyVsOneVo vo;
+		ManyVsOneVo vo = new ManyVsOneVo();
 		List<Object> list = new ArrayList<Object>();
-		for (int i = 0; i < ordersList.size(); i++) {
-			Orders order = (Orders) ordersList.get(i);
-			if("1".equals(order.getIsHasChild())&&OrdersConstant.NOT_PAY.equals(key)){
-				List<Object> childList = hibernateUtil.hql("from Orders where state='1' and parentOrdersId = '"+order.getId()+"'");
-				for (Object object : childList) {
-					Orders childOrders = (Orders) object;
-					childOrdersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+childOrders.getId()+"'");
-					ordersDetailList.addAll(childOrdersDetailList);
+		if(OrdersConstant.NOT_PAY.equals(key)){
+			for (int i = 0; i < ordersList.size(); i++) {
+				Orders order = (Orders) ordersList.get(i);
+				if("1".equals(order.getIsHasChild())){
+					List<Object> childList = hibernateUtil.hql("from Orders where state='1' and parentOrdersId = '"+order.getId()+"'");
+					for (Object object : childList) {
+						Orders childOrders = (Orders) object;
+						childOrdersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+childOrders.getId()+"'");
+						ordersDetailList.addAll(childOrdersDetailList);
+					}
+					vo = ordersUtil.transformObject(order,ordersDetailList);
+					list.add(vo);
+				}else{
+					if(order.getParentOrdersId()==null){
+						List<Object> detailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
+						vo = ordersUtil.transformObject(order,detailList);
+						list.add(vo);
+					}
 				}
-			}else{
-				ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
+				
 			}
-			vo = ordersUtil.transformObject(order,ordersDetailList);
-			list.add(vo);
+		}else{
+			for (int i = 0; i < ordersList.size(); i++) {
+				Orders order = (Orders) ordersList.get(i);
+				if(!"1".equals(order.getIsHasChild())){
+					ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
+					vo = ordersUtil.transformObject(order,ordersDetailList);
+					list.add(vo);
+				}
+			}
 		}
+		
 		page.setObjList(null);
 		page.setObjList(list);
 		return ObjectToResult.getResult(page);
@@ -523,8 +540,15 @@ public class OrdersServImpl implements OrdersServ {
 		List<Object> ordersList1 =  hibernateUtil.hql("from Orders where orderStatic = '1' and user.id='"+param.getUserToken().getUser().getId()+"'");
 		List<Object> ordersList3 =  hibernateUtil.hql("from Orders where orderStatic in('2', '3') and user.id='"+param.getUserToken().getUser().getId()+"'");
 		List<Object> ordersList5 =  hibernateUtil.hql("from Orders where orderStatic in('4', '5') and user.id='"+param.getUserToken().getUser().getId()+"'");
+		List<Object> newOrdersList1 = new ArrayList<Object>();
+		for (Object object : ordersList1) {//将有父订单的订单去除掉，只计算父订单为未付款数量
+			Orders orders = (Orders) object;
+			if(orders.getParentOrdersId()==null){
+				newOrdersList1.add(orders);
+			}
+		}
 		OrderStaticCountVo vo = new OrderStaticCountVo();
-		vo.setWaitPaymentCount(String.valueOf(ordersList1.size()));
+		vo.setWaitPaymentCount(String.valueOf(newOrdersList1.size()));
 		vo.setWaitShipmentsCount(String.valueOf(ordersList3.size()));
 		vo.setWaitReceiptCount(String.valueOf(ordersList5.size()));
 		return ObjectToResult.getResult(vo);

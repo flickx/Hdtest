@@ -5,6 +5,7 @@ package com.ftoul.api.sms.util;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -100,7 +101,24 @@ public class SmsCodeUtil {
         }
         return code;
 	}
+	/**
+	 * 获取用户当天收到的短信条数
+	 * @param args
+	 */
+	public int getSmsCount(String mobile){
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        String currentDay = sf.format(c.getTime());
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        String nextDay = sf.format(c.getTime());
+		String queryStr = " and mobile ='" + mobile+"' and createTime < '"+ nextDay + "' and createTime > '" + currentDay +"'";
+		String hql = "from MessageVerification where state = '1'" + queryStr;	
+		List<Object> list = hibernateUtil.hql(hql);
+		//System.out.println("手机号"+mobile+"今日已经接收"+list.size()+"条短信");
+		return list.size();
+	}
 	
 	public static void main(String[] args) {
+		new SmsCodeUtil().getSmsCount("18570614771");
 	}
 }
