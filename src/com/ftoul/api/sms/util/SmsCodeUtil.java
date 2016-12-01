@@ -114,7 +114,7 @@ public class SmsCodeUtil {
 		String queryStr = " and mobile ='" + mobile+"' and createTime < '"+ nextDay + "' and createTime > '" + currentDay +"'";
 		String hql = "from MessageVerification where state = '1'" + queryStr;	
 		List<Object> list = hibernateUtil.hql(hql);
-		System.out.println("手机号"+mobile+"今日已经接收"+list.size()+"条短信");
+		//System.out.println("手机号"+mobile+"今日已经接收"+list.size()+"条短信");
 		return list.size();
 	}
 	
