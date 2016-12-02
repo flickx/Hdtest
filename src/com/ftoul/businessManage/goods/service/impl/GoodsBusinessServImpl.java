@@ -421,7 +421,8 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 			   goodsListVo.setGrounding(obj[4].toString());
 			if(obj[5]!=null)
 				goodsListVo.setGoodsPropType(obj[5].toString());
-
+			if(obj[6]!=null)
+				goodsListVo.setSubtitle(obj[6].toString());
 			list.add(goodsListVo);
 		}
 		page.setVoList(list);
