@@ -55,10 +55,10 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 				shopFreightTemplate.setCreateTime(new DateStr().toString());
 				shopFreightTemplate.setState("1");
 				shopFreightTemplate.setShopAddress("未被配置的区域自动执行默认运费");
-				shopFreightTemplate.setCreatePerson(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
+				shopFreightTemplate.setCreatePerson(param.getUserToken().getUser().getUsername());
 				res = hibernateUtil.save(shopFreightTemplate);
 			}else{
-				shopFreightTemplate.setModifyPerson(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
+				shopFreightTemplate.setModifyPerson(param.getUserToken().getUser().getUsername());
 				shopFreightTemplate.setModifyTime(new DateStr().toString());
 				shopFreightTemplate.setState("1");
 				res = hibernateUtil.update(shopFreightTemplate);
