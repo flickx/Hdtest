@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ftoul.businessManage.shopOrders.service.ShopOrdersServ;
 import com.ftoul.common.Common;
 import com.ftoul.common.ExcelTools;
 import com.ftoul.common.Parameter;
@@ -33,7 +34,7 @@ import com.ftoul.manage.orders.service.OrdersServ;
 public class ShopOrdersAction {
 
 	@Autowired
-	private OrdersServ ordersServ;
+	private ShopOrdersServ ordersServ;
 	
 	/**
 	 * 删除订单

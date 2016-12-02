@@ -178,42 +178,11 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 		String queryStr = param.getWhereStr();
 		String hql;
 		if(queryStr!=null){
-			hql = " from Orders where orderStatic!='0' "+queryStr+" order by orderTime desc";
+			hql = " from Orders where orderStatic!='0' "+queryStr+" and shopId.id='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by orderTime desc";
 		}else{
-			hql = " from Orders where orderStatic!='0' order by orderTime desc";
+			hql = " from Orders where orderStatic!='0' and shopId.id='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by orderTime desc";
 		}
 		
-		//判断表格每列，并按列进行排序
-//		if(param.getSidx().equals("orderTime")){
-//			hql+=" order by orderTime "+param.getSord();
-//		}
-//		if(param.getSidx().equals("orderNumber")){
-//			hql+=" order by orderNumber "+param.getSord();
-//		}
-//		if(param.getSidx().equals("payable")){
-//			hql+=" order by payable "+param.getSord();
-//		}
-//		if(param.getSidx().equals("goodsTotal")){
-//			hql+=" order by goodsTotal "+param.getSord();
-//		}
-//		if(param.getSidx().equals("userName")){
-//			hql+=" order by user "+param.getSord();
-//		}
-//		if(param.getSidx().equals("conginee")){
-//			hql+=" order by logisticsCompany "+param.getSord();
-//		}
-//		if(param.getSidx().equals("tel")){
-//			hql+=" order by userAddress "+param.getSord();
-//		}
-//		if(param.getSidx().equals("orderTime")){
-//			hql+=" order by orderTime "+param.getSord();
-//		}
-//		if(param.getSidx().equals("orderStatic")){
-//			hql+=" order by orderStatic "+param.getSord();
-//		}
-//		if(param.getSidx().equals("orderPrice")){
-//			hql+=" order by orderPrice "+param.getSord();
-//		}
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		List<Object> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
@@ -224,25 +193,7 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 			ordersVo.setOrderNumber(orders.getOrderNumber());
 			ordersVo.setGoodsTotal(orders.getGoodsTotal());
 			ordersVo.setOrderTime(orders.getOrderTime());
-			if("0".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("待提单");
-			}else if("1".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("待付款");
-			}else if("2".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("已付款");
-			}else if("3".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("待发货");
-			}else if("4".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("已发货");
-			}else if("5".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("已收货");
-			}else if("6".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("已完成");
-			}else if("7".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("已删除");
-			}else if("8".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("已取消");
-			}
+			ordersVo.setOrderStatic(ordersUtil.getState(orders.getOrderStatic()));
 			ordersVo.setOrderPrice(orders.getOrderPrice());
 			ordersVo.setPayable(orders.getPayable());
 			hql = " from OrdersDetail where orders.id='"+orders.getId()+"'";
@@ -282,25 +233,7 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 		orderDetailVo.setId(orders.getId());
 		orderDetailVo.setOrderNumber(orders.getOrderNumber());
 		orderDetailVo.setOrderTime(orders.getOrderTime());
-		if("0".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("待提单");
-		}else if("1".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("待付款");
-		}else if("2".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("已付款");
-		}else if("3".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("待发货");
-		}else if("4".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("已发货");
-		}else if("5".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("已收货");
-		}else if("6".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("已完成");
-		}else if("7".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("已删除");
-		}else if("8".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("已取消");
-		}
+		orderDetailVo.setOrderStatic(ordersUtil.getState(orders.getOrderStatic()));
 		if(OrdersConstant.CHINAPAY.equals(orders.getPayType())){
 			orderDetailVo.setPayType("银联支付");
 		}else if(OrdersConstant.ALIPAY.equals(orders.getPayType())){
