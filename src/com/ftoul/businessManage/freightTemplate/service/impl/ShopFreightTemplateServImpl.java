@@ -85,10 +85,10 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 		if(areaFreightTemplate.getId().length()<3){
 			areaFreightTemplate.setState("1");
 			areaFreightTemplate.setCreateTime(new DateStr().toString());
-			areaFreightTemplate.setCreatePerson(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
+			areaFreightTemplate.setCreatePerson(param.getUserToken().getUser().getUsername());
 			res = hibernateUtil.save(areaFreightTemplate);
 		}else{
-			areaFreightTemplate.setModifyPerson(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
+			areaFreightTemplate.setModifyPerson(param.getUserToken().getUser().getUsername());
 			areaFreightTemplate.setModifyTime(new DateStr().toString());
 			areaFreightTemplate.setState("1");
 			res=hibernateUtil.update(areaFreightTemplate);
