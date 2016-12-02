@@ -361,7 +361,7 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 				"	gb. NAME AS gbName,  " +
 				"	gs.grounding,  " +
 				"	gpt. NAME AS gptName  " +
-				
+				"	gs.subtitle  " +
 				"FROM  " +
 				"	Goods gs  " +
 				"JOIN Goods_Param gp ON gs.id = gp.goods_id  " +
