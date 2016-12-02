@@ -29,7 +29,7 @@ import com.ftoul.manage.orders.service.OrdersServ;
  *
  */
 @Controller
-@RequestMapping(value = "/manage/shopOrders")
+@RequestMapping(value = "/businessManage/shopOrders")
 public class ShopOrdersAction {
 
 	@Autowired

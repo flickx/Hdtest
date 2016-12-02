@@ -126,7 +126,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			schedule.setCreatePerson(param.getUserId());
 			schedule.setCreateTime(new DateStr().toString());
 			hibernateUtil.save(schedule);
-			log.setMsg("【买家】申请售后,售后类型为:"+ordersUtil.getAfterType(schedule.getType()));
+			log.setMsg("【买家】申请售后,售后类型为:"+afterServiceUtil.getAfterType(schedule.getType()));
 			log.setCreatePerson(param.getUserToken().getUser().getUsername());
 			log.setCreateTime(new DateStr().toString());
 			log.setState("1");
@@ -146,12 +146,14 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	@Override
 	public Result getAfterSchedule(Parameter param) throws Exception {
 		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
-		List<Object> list = hibernateUtil.hql("from AfterOpLog where state='1' and afterSchedule.id = '"+after.getId()+"' order by createTime desc");
 		AfterScheduleVo vo = new AfterScheduleVo();
-		vo.setList(list);
-		vo.setId(after.getId());
-		vo.setOrderTime(after.getOrdersDetail().getOrders().getOrderTime());
-		vo.setServiceCode(after.getServiceCode());
+		if(after!=null){
+			List<Object> list = hibernateUtil.hql("from AfterOpLog where state='1' and afterSchedule.id = '"+after.getId()+"' order by createTime desc");
+			vo.setList(list);
+			vo.setId(after.getId());
+			vo.setOrderTime(after.getOrdersDetail().getOrders().getOrderTime());
+			vo.setServiceCode(after.getServiceCode());
+		}
 		return ObjectToResult.getResult(vo);
 	}
 
@@ -221,7 +223,6 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	public Result getAfterLogistics(Parameter param) throws Exception {
 		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
 		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
-		//String res = kdniaoTrackQueryAPI.getOrderTracesByJson("SF", "606102226173");
 		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(after.getBuyerLogCompany().getCode(), after.getBuyerLogOdd());
 		AfterLogisticsVo vo = new AfterLogisticsVo();
 		vo.setServiceCode(after.getServiceCode());
