@@ -16,7 +16,7 @@ public interface AfterServiceServ {
 	
 	public Result getAfterListByUserId(Parameter param) throws Exception;
 	
-	Result getOrderAfterSchedulePage(Parameter parameter) throws Exception;
+	Result getAfterSchedulePage(Parameter parameter) throws Exception;
 
 	Result saveAfter(Parameter parameter) throws Exception;
 

@@ -77,7 +77,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	 * 获取售后进度列表
 	 */
 	@Override
-	public Result getOrderAfterSchedulePage(Parameter param) throws Exception {
+	public Result getAfterSchedulePage(Parameter param) throws Exception {
 		Page page = hibernateUtil.hqlPage("from AfterSchedule where state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by createTime desc",param.getPageNum(),param.getPageSize());
 		List list = page.getObjList();
 		List<AfterScheduleVo> voList = new ArrayList<AfterScheduleVo>();

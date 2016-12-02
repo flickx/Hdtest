@@ -77,6 +77,10 @@ public class UserCollectionServImpl implements UserCollectionServ {
 		return ObjectToResult.getResult(num);
 	}
 	
-	
-	
+	@Override
+	public Result delUserCollection(Parameter param) throws Exception {
+		User user =param.getUserToken().getUser();
+		Integer num = hibernateUtil.execHql("update UserCollection set state = '0' where goods.id ='"+param.getId()+"' and user.id= '"+user.getId()+"'");
+		return ObjectToResult.getResult(num);
+	}
 }
