@@ -357,10 +357,10 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 		String sql ="SELECT  " +
 				"	gs.id,  " +
 				"	gs.title,  " +
-				"	gt. NAME AS gtName,  " +
-				"	gb. NAME AS gbName,  " +
+				"	gt.NAME AS gtName,  " +
+				"	gb.NAME AS gbName,  " +
 				"	gs.grounding,  " +
-				"	gpt. NAME AS gptName  " +
+				"	gpt.NAME AS gptName,  " +
 				"	gs.subtitle  " +
 				"FROM  " +
 				"	Goods gs  " +
