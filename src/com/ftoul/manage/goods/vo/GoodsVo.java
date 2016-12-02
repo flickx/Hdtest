@@ -54,6 +54,12 @@ public class GoodsVo {
 	private String homeChannel;
 	
 	private String shopId;
+	
+	private String businessClassifyId;//店铺分类Id
+	
+	private String goodsLabel;//商品标签
+	
+	private String subTitle;//副标题
 	/**
 	 * @return the picSrc
 	 */
@@ -430,6 +436,30 @@ public class GoodsVo {
 
 	public void setShopId(String shopId) {
 		this.shopId = shopId;
+	}
+
+	public String getBusinessClassifyId() {
+		return businessClassifyId;
+	}
+
+	public void setBusinessClassifyId(String businessClassifyId) {
+		this.businessClassifyId = businessClassifyId;
+	}
+
+	public String getGoodsLabel() {
+		return goodsLabel;
+	}
+
+	public void setGoodsLabel(String goodsLabel) {
+		this.goodsLabel = goodsLabel;
+	}
+
+	public String getSubTitle() {
+		return subTitle;
+	}
+
+	public void setSubTitle(String subTitle) {
+		this.subTitle = subTitle;
 	}
 	
 }

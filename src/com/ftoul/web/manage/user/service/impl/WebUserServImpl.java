@@ -395,6 +395,11 @@ public class WebUserServImpl implements WebUserServ{
 			newUser.setEmail(user.getEmail());
 			newUser.setName(user.getName());
 			newUser.setSex(user.getSex());
+			if(user.getNickname()!=null)
+				newUser.setNickname(user.getNickname());
+			if(user.getBirth()!=null)
+				newUser.setBirth(user.getBirth());
+				
 //			newUser.setCreatePerson(param.getManageToken().getLoginUser().getLoginName());
 //			newUser.setCreateTime(new DateStr().toString());
 			newUser.setStatic_("1");

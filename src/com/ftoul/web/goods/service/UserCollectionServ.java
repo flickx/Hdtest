@@ -51,4 +51,12 @@ public interface UserCollectionServ{
 	 * @throws Exception
 	 */
 	Result deleteUserCollection(Parameter param) throws Exception;
+	
+	/**
+	 * 取消收藏商品.
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result delUserCollection(Parameter param) throws Exception;
 }

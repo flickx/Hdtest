@@ -1,4 +1,4 @@
-package com.ftoul.businessManage.orders.action;
+package com.ftoul.businessManage.shopOrders.action;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,9 +28,9 @@ import com.ftoul.manage.orders.service.OrdersServ;
  * @author HuDong
  *
  */
-@Controller("BusinessManageOrdersAction")
-@RequestMapping(value = "/businessManage/orders")
-public class OrdersAction {
+@Controller
+@RequestMapping(value = "/manage/shopOrders")
+public class ShopOrdersAction {
 
 	@Autowired
 	private OrdersServ ordersServ;
@@ -351,5 +351,5 @@ public class OrdersAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return ordersServ.getSendGoodsListPage(parameter);
 	}
-
+	
 }

@@ -2,6 +2,7 @@ package com.ftoul.businessManage.goods.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -177,6 +178,8 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 		Goods  goods = new Goods();
 		goods.setId(goodsVo.getId());
 		goods.setTitle(goodsVo.getTitle());
+		goods.setSubtitle(goodsVo.getSubTitle());
+		goods.setGoodsLabel(goodsVo.getGoodsLabel());
 		if(goodsVo.getGoodsType1()!=null){
 			GoodsType goodsType1 =	(GoodsType) this.hibernateUtil.find(GoodsType.class, goodsVo.getGoodsType1());
 			goods.setGoodsType1(goodsType1);
@@ -192,6 +195,9 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 		if(goodsVo.getGoodsBrandId()!=null){
 			GoodsBrand goodsBrand = (GoodsBrand) this.hibernateUtil.find(GoodsBrand.class, goodsVo.getGoodsBrandId());
 			goods.setGoodsBrand(goodsBrand);
+		}
+		if(goodsVo.getBusinessClassifyId()!=null){
+			goods.setBusinessClassifyId(goodsVo.getBusinessClassifyId());
 		}
 		if(goodsVo.getGoodsPropTypeId()!=null){
 			GoodsPropType goodsPropType = (GoodsPropType) this.hibernateUtil.find(GoodsPropType.class,goodsVo.getGoodsPropTypeId());
@@ -280,9 +286,28 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 		}
 		goods.setState("0");
 		goods.setStep("2");
-		goods.setCreateTime(new DateStr().toString());
 		//更新goods
 		goods.setCreateTime(new DateStr().toString());
+		String goodsLabel="";
+		if(null!= goodsVo.getGoodsLabel()){
+			String[] label = goodsVo.getGoodsLabel().split(",");
+			for (int i = 0; i < label.length; i++) {
+				if("1".equals(label[i])){
+					goodsLabel+="超值,";
+				}else if("2".equals(label[i])){
+					goodsLabel+="促销,";
+				}else if("3".equals(label[i])){
+					goodsLabel+="特惠,";
+				}else if("4".equals(label[i])){
+					goodsLabel+="清仓,";
+				}else if("5".equals(label[i])){
+					goodsLabel+="热销,";
+				}else if("6".equals(label[i])){
+					goodsLabel+="大促,";
+				}
+			}
+		}
+		goods.setGoodsLabel(goodsLabel);
 		Object obj = hibernateUtil.update(goods);
 		
 		List<GoodsProp> goodsPropList=	goodsVo.getGoodsPropList();
@@ -332,11 +357,11 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 		String sql ="SELECT  " +
 				"	gs.id,  " +
 				"	gs.title,  " +
-				"	gt. NAME AS gtName,  " +
-				"	gb. NAME AS gbName,  " +
+				"	gt.NAME AS gtName,  " +
+				"	gb.NAME AS gbName,  " +
 				"	gs.grounding,  " +
-				"	gpt. NAME AS gptName  " +
-				
+				"	gpt.NAME AS gptName,  " +
+				"	gs.subtitle  " +
 				"FROM  " +
 				"	Goods gs  " +
 				"JOIN Goods_Param gp ON gs.id = gp.goods_id  " +
@@ -396,7 +421,8 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 			   goodsListVo.setGrounding(obj[4].toString());
 			if(obj[5]!=null)
 				goodsListVo.setGoodsPropType(obj[5].toString());
-
+			if(obj[6]!=null)
+				goodsListVo.setSubtitle(obj[6].toString());
 			list.add(goodsListVo);
 		}
 		page.setVoList(list);

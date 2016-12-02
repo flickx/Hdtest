@@ -43,10 +43,10 @@ public class AfterServiceAction {
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping(value = "getOrderAfterSchedulePage")  
-	public @ResponseBody Result getOrderAfterSchedulePage(String param) throws Exception{
+	@RequestMapping(value = "getAfterSchedulePage")  
+	public @ResponseBody Result getAfterSchedulePage(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return afterServiceServ.getOrderAfterSchedulePage(parameter);
+		return afterServiceServ.getAfterSchedulePage(parameter);
 	}
 	
 	/**

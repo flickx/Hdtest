@@ -41,6 +41,7 @@ public class Goods implements java.io.Serializable {
 	private Double price;
 	private String deductionrate;
 	private String skuCode;
+	private String hasstock;
 	private String place;
 	private String grounding;
 	private String crossborder;
@@ -68,8 +69,8 @@ public class Goods implements java.io.Serializable {
 	private String modifyPerson;
 	private String state;
 	private String step;
-
-
+	private String businessClassifyId;
+	private String goodsLabel;
 	// Constructors
 
 	/** default constructor */
@@ -515,6 +516,31 @@ public class Goods implements java.io.Serializable {
 
 	public void setSubtitle(String subtitle) {
 		this.subtitle = subtitle;
+	}
+	@Column(name = "business_classify_id", length = 32)
+	public String getBusinessClassifyId() {
+		return businessClassifyId;
+	}
+
+	public void setBusinessClassifyId(String businessClassifyId) {
+		this.businessClassifyId = businessClassifyId;
+	}
+	@Column(name = "goods_label", length = 32)
+	public String getGoodsLabel() {
+		return goodsLabel;
+	}
+
+	public void setGoodsLabel(String goodsLabel) {
+		this.goodsLabel = goodsLabel;
+	}
+	
+	@Column(name = "hasstock", length = 10)
+	public String getHasstock() {
+		return this.hasstock;
+	}
+
+	public void setHasstock(String hasstock) {
+		this.hasstock = hasstock;
 	}
 	
 }

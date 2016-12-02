@@ -53,7 +53,7 @@ public class BusinessWebServImpl implements BusinessWebServ {
 		    String summaryHql = "select bss.summary from business_store_summary as bss where bss.state = '1' and bss.store_id='"+param.getId()+"' ";
 		    List<Object[]> businessStoreSummaryList =hibernateUtil.sql(summaryHql);
 		    //店铺商品总计
-		    String goodsHql = "from Goods where shopId ='"+param.getId()+"' ";
+		    String goodsHql = "from Goods where state = '1' and shopId ='"+param.getId()+"' ";
 		    List<Object> ObjList =(List<Object>) hibernateUtil.hql(goodsHql);
 		    //店铺最近一个月上新商品总计
 		    Date endDate = new Date();
@@ -61,10 +61,10 @@ public class BusinessWebServImpl implements BusinessWebServ {
 		    cl.setTime(endDate);
 		    cl.add(Calendar.MONTH, -1);
 		    Date startDate = cl.getTime();
-		    SimpleDateFormat dd = new SimpleDateFormat("yyyy-MM-dd");
+		    SimpleDateFormat dd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		    String start = dd.format(startDate);
 		    String end = dd.format(endDate);
-		    String goodsMonthHql = "from Goods where shopId ='"+param.getId()+"' and createTime >= '"+start+"' and createTime <= '"+end+"'";
+		    String goodsMonthHql = "from Goods where state = '1' and shopId ='"+param.getId()+"' and createTime >= '"+start+"' and createTime <= '"+end+"'";
 		    List<Object> ObjMonthList =(List<Object>) hibernateUtil.hql(goodsMonthHql);
 		    //店铺商品销量总计
 		    String goodsSaleHql="select sum(gp.sale_number) as number from goods_param as gp left join goods as g on g.id=gp.goods_id where g.shop_id = '"+param.getId()+"'";
@@ -77,14 +77,16 @@ public class BusinessWebServImpl implements BusinessWebServ {
 		    	businessVo.setGoodsSaleNum(Integer.parseInt(saleNumber.get(0)+""));
 		    }
 		    if(businessStore!=null){
-		    	businessVo.setBusinessStoreId(businessStore.getStoreId());
+		    	businessVo.setBusinessStoreId(businessStore.getId());
+		    	businessVo.setStoreId(businessStore.getStoreId());
 				businessVo.setStoreName(businessStore.getStoreName());
 				businessVo.setPic(businessStore.getPic());
 				businessVo.setVerifyTime(businessStore.getVerifyTime());
 		    }
-			if(businessStoreSummaryList.get(0)!=null){
+			if(businessStoreSummaryList.size()!=0){
 				businessVo.setSummary(businessStoreSummaryList.get(0)+"");
-			}
+		    }
+			
 			return ObjectToResult.getResult(businessVo);
 	}
 	/**
@@ -102,7 +104,7 @@ public class BusinessWebServImpl implements BusinessWebServ {
 //		    String summaryHql = "select bss.summary from business_store_summary as bss where bss.state = '1' and bss.store_id='"+goods.getShopId()+"' ";
 //		    List<Object[]> businessStoreSummaryList =hibernateUtil.sql(summaryHql);
 		    //店铺商品总计
-		    String goodsHql = "from Goods where shopId ='"+param.getId()+"' ";
+		    String goodsHql = "from Goods where state = '1' and shopId ='"+businessStore.getId()+"' ";
 		    List<Object> ObjList =(List<Object>) hibernateUtil.hql(goodsHql);
 		    //店铺最近一个月上新商品总计
 		    Date endDate = new Date();
@@ -110,10 +112,10 @@ public class BusinessWebServImpl implements BusinessWebServ {
 		    cl.setTime(endDate);
 		    cl.add(Calendar.MONTH, -1);
 		    Date startDate = cl.getTime();
-		    SimpleDateFormat dd = new SimpleDateFormat("yyyy-MM-dd");
+		    SimpleDateFormat dd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		    String start = dd.format(startDate);
 		    String end = dd.format(endDate);
-		    String goodsMonthHql = "from Goods where shopId ='"+param.getId()+"' and createTime >= '"+start+"' and createTime <= '"+end+"'";
+		    String goodsMonthHql = "from Goods where state = '1' and shopId ='"+businessStore.getId()+"' and createTime >= '"+start+"' and createTime <= '"+end+"'";
 		    List<Object> ObjMonthList =(List<Object>) hibernateUtil.hql(goodsMonthHql);
 		    //店铺商品销量总计
 		    String goodsSaleHql="select sum(gp.sale_number) as number from goods_param as gp left join goods as g on g.id=gp.goods_id where g.shop_id = '"+goods.getShopId()+"'";
@@ -126,7 +128,8 @@ public class BusinessWebServImpl implements BusinessWebServ {
 		    	businessVo.setGoodsSaleNum(Integer.parseInt(saleNumber.get(0)+""));
 		    }
 		    if(businessStore!=null){
-		    	businessVo.setBusinessStoreId(businessStore.getStoreId());
+		    	businessVo.setBusinessStoreId(businessStore.getId());
+		    	businessVo.setStoreId(businessStore.getStoreId());
 				businessVo.setStoreName(businessStore.getStoreName());
 				businessVo.setPic(businessStore.getPic());
 				businessVo.setVerifyTime(businessStore.getVerifyTime());
@@ -135,5 +138,18 @@ public class BusinessWebServImpl implements BusinessWebServ {
 //				businessVo.setSummary(businessStoreSummaryList.get(0)+"");
 //			}
 			return ObjectToResult.getResult(businessVo);
+	}
+	/**
+	 * 
+	 * 根据商品分类得到店铺商品列表（带分页）
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getStoreGoodsPagebyStoreClassify(Parameter param) throws Exception {
+		    String hql = "from Goods where state = '1' and grounding = '1' and id in (select gp.goods.id from GoodsParam gp where gp.state='1') and shopId='"+param.getId()+"' and businessClassifyId= '"+param.getParentId()+"'"+param.getOrderBy();
+			Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+			return ObjectToResult.getResult(page);
+			
 	}
 }
