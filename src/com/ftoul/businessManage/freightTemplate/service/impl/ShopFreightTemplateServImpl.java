@@ -46,7 +46,6 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 		if(param.getObj() == null){
 			ShopFreightTemplate shopFreightTemplate =  new ShopFreightTemplate();
 			shopFreightTemplate.setCreateTime(new DateStr().toString());
-			//shopFreightTemplate.setCreatePerson(param.getUserToken().getUser().getUsername());
 			hibernateUtil.save(shopFreightTemplate);
 			res = shopFreightTemplate;
 		}else{
@@ -55,10 +54,8 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 				shopFreightTemplate.setCreateTime(new DateStr().toString());
 				shopFreightTemplate.setState("1");
 				shopFreightTemplate.setShopAddress("未被配置的区域自动执行默认运费");
-				//shopFreightTemplate.setCreatePerson(param.getUserToken().getUser().getUsername());
 				res = hibernateUtil.save(shopFreightTemplate);
 			}else{
-				shopFreightTemplate.setModifyPerson(param.getUserToken().getUser().getUsername());
 				shopFreightTemplate.setModifyTime(new DateStr().toString());
 				shopFreightTemplate.setState("1");
 				res = hibernateUtil.update(shopFreightTemplate);
@@ -85,10 +82,8 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 		if(areaFreightTemplate.getId().length()<3){
 			areaFreightTemplate.setState("1");
 			areaFreightTemplate.setCreateTime(new DateStr().toString());
-			//areaFreightTemplate.setCreatePerson(param.getUserToken().getUser().getUsername());
 			res = hibernateUtil.save(areaFreightTemplate);
 		}else{
-			//areaFreightTemplate.setModifyPerson(param.getUserToken().getUser().getUsername());
 			areaFreightTemplate.setModifyTime(new DateStr().toString());
 			areaFreightTemplate.setState("1");
 			res=hibernateUtil.update(areaFreightTemplate);

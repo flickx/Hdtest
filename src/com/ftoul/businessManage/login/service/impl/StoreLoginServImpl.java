@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,6 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.user.vo.ManageTokenVo;
 import com.ftoul.po.BusinessStoreLogin;
-import com.ftoul.po.LoginUser;
 import com.ftoul.po.LoginUserLog;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.token.TokenUtil;
@@ -43,6 +41,13 @@ public class StoreLoginServImpl implements StoreLoginServ {
 	@Override
 	public Result login(Parameter param) throws Exception {
 		BusinessStoreLogin businessStoreLogin = (BusinessStoreLogin) JSONObject.toBean((JSONObject) param.getObj(),BusinessStoreLogin.class);
+		//获取绑定的验证码
+		String code = (String)req.getSession().getAttribute("code");
+		//获取用户输入的验证码
+		String usercode = (String)param.getId();
+//		if (!code.equalsIgnoreCase(usercode)) {
+//			throw new Exception("验证码错误");
+//		}
 		String hql = " from BusinessStoreLogin where state = '1' and storeAccount = '" 
 				+ businessStoreLogin.getStoreAccount() + "' and password = '"
 				+ MD5.getMD5(businessStoreLogin.getPassword()) + "'";
