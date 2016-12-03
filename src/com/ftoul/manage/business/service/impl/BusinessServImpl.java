@@ -301,6 +301,40 @@ public class BusinessServImpl implements BusinessServ {
 		return ObjectToResult.getResult(reportDataList);
 	}
 	/**
+	 * 导出Excel店铺分类信息
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result exportBusinessStoreExcel(Parameter parameter)
+			throws Exception {
+		String queryStr = parameter.getWhereStr();
+		String hql = null;
+		if(queryStr!=null){
+			hql = "from BusinessStoreLogin"+" where state =1 "+  queryStr + " order by createTime desc";
+		}else{
+			hql = "from BusinessStoreLogin"+" where state =1 "+ " order by createTime desc";
+		}
+		List<Object> list = hibernateUtil.hql(hql); 
+		List<Object> reportDataList = new ArrayList<Object>();
+		Object[] vo = null;
+		for (int j = 0; j < list.size(); j++) {
+			BusinessStoreLogin businessStoreLogin = (BusinessStoreLogin) list.get(j);
+			vo = new Object[9];
+			vo[0] = businessStoreLogin.getBusinessStore().getBusiness().getId();
+			vo[1] = businessStoreLogin.getBusinessStore().getBusiness().getBusinessBase().getCompanyName();
+			vo[2] = businessStoreLogin.getBusinessStore().getBusiness().getBusinessBase().getLinkmanName();
+			vo[3] = businessStoreLogin.getBusinessStore().getBusiness().getBusinessBase().getLinkmanNumber();
+			vo[4] = businessStoreLogin.getBusinessStore().getStoreName();
+			vo[5] = businessStoreLogin.getBusinessStore().getStoreId();
+			vo[6] = businessStoreLogin.getStoreAccount();
+			vo[7] = businessStoreLogin.getCreateTime();
+			vo[8] = businessStoreLogin.getState();
+			reportDataList.add(vo);
+		}
+		return ObjectToResult.getResult(reportDataList);
+	}
+	/**
 	 * 保存店铺等级信息
 	 * @param param Parameter对象
 	 * @return 返回结果（前台用Result对象）
