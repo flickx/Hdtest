@@ -293,17 +293,20 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 			String[] label = goodsVo.getGoodsLabel().split(",");
 			for (int i = 0; i < label.length; i++) {
 				if("1".equals(label[i])){
-					goodsLabel+="超值,";
+					goodsLabel+="超值";
 				}else if("2".equals(label[i])){
-					goodsLabel+="促销,";
+					goodsLabel+="促销";
 				}else if("3".equals(label[i])){
-					goodsLabel+="特惠,";
+					goodsLabel+="特惠";
 				}else if("4".equals(label[i])){
-					goodsLabel+="清仓,";
+					goodsLabel+="清仓";
 				}else if("5".equals(label[i])){
-					goodsLabel+="热销,";
+					goodsLabel+="热销";
 				}else if("6".equals(label[i])){
-					goodsLabel+="大促,";
+					goodsLabel+="大促";
+				}
+				if(label.length!=1 && i!=label.length-1){
+					goodsLabel+=",";
 				}
 			}
 		}

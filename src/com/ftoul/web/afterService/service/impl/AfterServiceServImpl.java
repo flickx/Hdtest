@@ -153,6 +153,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			vo.setId(after.getId());
 			vo.setOrderTime(after.getOrdersDetail().getOrders().getOrderTime());
 			vo.setServiceCode(after.getServiceCode());
+			vo.setScheduleStatic(after.getScheduleStatic());
 		}
 		return ObjectToResult.getResult(vo);
 	}
@@ -234,6 +235,18 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			vo.setLogInfo(after.getBuyerLogInfo());
 		}
 		return ObjectToResult.getResult(vo);
+	}
+
+	@Override
+	public Result updateAfterScheduleStatic(Parameter param)
+			throws Exception {
+		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
+		if(after!=null){
+			after.setScheduleStatic(param.getKey());
+			hibernateUtil.update(after);
+			afterServiceUtil.saveWebAfterOpLog(param, "【买家】已收货");
+		}
+		return ObjectToResult.getResult(after);
 	}
 	
 	
