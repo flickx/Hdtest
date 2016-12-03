@@ -19,7 +19,7 @@ import com.ftoul.manage.util.upload.service.UploadServ;
 * 
 *
 * 类描述：图片上传的action
-* @author: yw
+* @author: liding
 * @date： 日期：2016年8月2日 时间：下午5:58:49
 * @version 1.0
 *
