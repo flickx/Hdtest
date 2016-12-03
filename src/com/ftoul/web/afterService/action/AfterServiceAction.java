@@ -109,4 +109,16 @@ public class AfterServiceAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return afterServiceServ.getAfterLogistics(parameter);
 	}
+	
+	/**
+	 * 更新状态
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "updateAfterScheduleStatic")
+	public @ResponseBody Result updateAfterScheduleStatic(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return afterServiceServ.updateAfterScheduleStatic(parameter);
+	}
 }

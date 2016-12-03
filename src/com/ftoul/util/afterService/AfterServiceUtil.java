@@ -42,12 +42,65 @@ public class AfterServiceUtil {
 		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
 		AfterOpLog log = new AfterOpLog();
 		log.setAfterSchedule(after);
+		log.setScheduleStatic(after.getScheduleStatic());
 		log.setUserId(param.getUserToken().getUser().getUsername());
 		log.setMsg(msg);
 		log.setState("1");
 		log.setCreatePerson(param.getUserToken().getUser().getUsername());
 		log.setCreateTime(new DateStr().toString());
 		hibernateUtil.save(log);
+	}
+	
+	/**
+	 * 获取售后申请状态
+	 * @param orderState
+	 * @return
+	 */
+	public String getAfterState(String afterState){
+		String state = null;
+		if("1".equals(afterState)){
+			state = "申请售后";
+		}else if("2".equals(afterState)){
+			state = "同意换货";
+		}else if("3".equals(afterState)){
+			state = "拒绝换货";
+		}else if("4".equals(afterState)){
+			state = "同意退款";
+		}else if("5".equals(afterState)){
+			state = "拒绝退款";
+		}else if("6".equals(afterState)){
+			state = "同意退款/不退货";
+		}else if("7".equals(afterState)){
+			state = "拒绝退款/不退货";
+		}else if("8".equals(afterState)){
+			state = "买家已发货";
+		}else if("9".equals(afterState)){
+			state = "商家已收货";
+		}else if("10".equals(afterState)){
+			state = "商家已发货";
+		}else if("11".equals(afterState)){
+			state = "买家已收货";
+		}else if("12".equals(afterState)){
+			state = "商家已退款并完成售后服务";
+		}
+		return state;
+	}
+	
+	/**
+	 * 获取售后申请类型
+	 * @param orderState
+	 * @return
+	 */
+	public String getAfterType(String afterState){
+		String state = null;
+		if("1".equals(afterState)){
+			state = "换货";
+		}else if("2".equals(afterState)){
+			state = "退款";
+		}else if("3".equals(afterState)){
+			state = "退款/不退货";
+		}
+		return state;
 	}
 
 }

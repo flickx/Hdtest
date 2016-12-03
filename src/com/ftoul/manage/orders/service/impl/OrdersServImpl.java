@@ -85,7 +85,6 @@ public class OrdersServImpl implements OrdersServ {
 		ordersUtil.autoCancelOrders(param);
 		String key = param.getKey();
 		List<Object> ordersList;
-		
 		if(OrdersConstant.NOT_PAY.equals(key)){
 			ordersList =  hibernateUtil.hql("from Orders where payStatic = '0' and user.id="+param.getId());
 		}else if(OrdersConstant.NOT_DELIVER.equals(key)){
@@ -227,25 +226,7 @@ public class OrdersServImpl implements OrdersServ {
 			ordersVo.setOrderNumber(orders.getOrderNumber());
 			ordersVo.setGoodsTotal(orders.getGoodsTotal());
 			ordersVo.setOrderTime(orders.getOrderTime());
-			if("0".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("待提单");
-			}else if("1".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("待付款");
-			}else if("2".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("已付款");
-			}else if("3".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("待发货");
-			}else if("4".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("已发货");
-			}else if("5".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("已收货");
-			}else if("6".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("已完成");
-			}else if("7".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("已删除");
-			}else if("8".equals(orders.getOrderStatic())){
-				ordersVo.setOrderStatic("已取消");
-			}
+			ordersVo.setOrderStatic(ordersUtil.getState(orders.getOrderStatic()));
 			ordersVo.setOrderPrice(orders.getOrderPrice());
 			ordersVo.setPayable(orders.getPayable());
 			hql = " from OrdersDetail where orders.id='"+orders.getId()+"'";
@@ -285,25 +266,7 @@ public class OrdersServImpl implements OrdersServ {
 		orderDetailVo.setId(orders.getId());
 		orderDetailVo.setOrderNumber(orders.getOrderNumber());
 		orderDetailVo.setOrderTime(orders.getOrderTime());
-		if("0".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("待提单");
-		}else if("1".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("待付款");
-		}else if("2".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("已付款");
-		}else if("3".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("待发货");
-		}else if("4".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("已发货");
-		}else if("5".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("已收货");
-		}else if("6".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("已完成");
-		}else if("7".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("已删除");
-		}else if("8".equals(orders.getOrderStatic())){
-			orderDetailVo.setOrderStatic("已取消");
-		}
+		orderDetailVo.setOrderStatic(ordersUtil.getState(orders.getOrderStatic()));
 		if(OrdersConstant.CHINAPAY.equals(orders.getPayType())){
 			orderDetailVo.setPayType("银联支付");
 		}else if(OrdersConstant.ALIPAY.equals(orders.getPayType())){
