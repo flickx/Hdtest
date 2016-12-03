@@ -242,9 +242,11 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			throws Exception {
 		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
 		if(after!=null){
-			//after.set
+			after.setScheduleStatic(param.getKey());
+			hibernateUtil.update(after);
+			afterServiceUtil.saveWebAfterOpLog(param, "【买家】已收货");
 		}
-		return null;
+		return ObjectToResult.getResult(after);
 	}
 	
 	
