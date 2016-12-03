@@ -42,6 +42,7 @@ public class AfterServiceUtil {
 		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
 		AfterOpLog log = new AfterOpLog();
 		log.setAfterSchedule(after);
+		log.setScheduleStatic(after.getScheduleStatic());
 		log.setUserId(param.getUserToken().getUser().getUsername());
 		log.setMsg(msg);
 		log.setState("1");
