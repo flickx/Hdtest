@@ -1,7 +1,11 @@
   package com.ftoul.businessManage.business.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +16,7 @@ import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.business.vo.BusinessStoreManageCategoryVo;
+import com.ftoul.po.BusinessStore;
 import com.ftoul.po.BusinessStoreLogin;
 import com.ftoul.po.BusinessStoreManageCategory;
 import com.ftoul.po.BusinessStoreSummary;
@@ -138,4 +143,47 @@ public class BusinessStoreServImpl implements BusinessStoreServ {
 //		BusinessStoreLogin businessStoreLogin=(BusinessStoreLogin) hibernateUtil.find(BusinessStoreLogin.class, param.getManageToken().getBusinessStoreLogin().getId());
 //		return ObjectToResult.getResult(businessStoreLogin);
 //	}
+	/**
+	 * 保存店铺详情
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result saveBusinessStoreSummary(Parameter param) throws Exception {
+		Object res;
+		BusinessStoreSummary businessStoreSummary=(BusinessStoreSummary) JSONObject.toBean((JSONObject) param.getObj(),BusinessStoreSummary.class);
+		String hql="from BusinessStoreSummary where state=1 and businessStore.id= '"+businessStoreSummary.getBusinessStore().getId()+"'";
+		List<Object> list = hibernateUtil.hql(hql); 
+		if(list.size()!=0){
+			BusinessStoreSummary storeSummary=(BusinessStoreSummary) list.get(0);
+			storeSummary.setSummary(businessStoreSummary.getSummary());
+			storeSummary.setBusinessStore(businessStoreSummary.getBusinessStore());
+			storeSummary.setOperateId(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
+			storeSummary.setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			res = hibernateUtil.update(storeSummary);
+		}else{
+			businessStoreSummary.setCreateId(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
+			businessStoreSummary.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			businessStoreSummary.setOperateId(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
+			businessStoreSummary.setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			businessStoreSummary.setState("1");
+			res = hibernateUtil.save(businessStoreSummary);
+		}
+		return ObjectToResult.getResult(res);
+	}
+	/**
+	 * 保存店铺logo
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result saveBusinessStorePic(Parameter param) throws Exception {
+		Object res=1;
+		BusinessStore businessStore=(BusinessStore) JSONObject.toBean((JSONObject) param.getObj(),BusinessStore.class);
+		BusinessStore businessStoreDb=(BusinessStore) hibernateUtil.find(BusinessStore.class,businessStore.getId());
+		businessStoreDb.setPic(businessStore.getPic());
+		businessStoreDb.setOperateId(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
+		businessStoreDb.setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		return ObjectToResult.getResult(res);
+	}
 }

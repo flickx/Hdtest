@@ -16,4 +16,16 @@ public interface BusinessStoreServ {
 	 * @throws Exception
 	 */
 	Result getBusinessPage(Parameter param) throws Exception;
+	/**
+	 * 保存店铺详情
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result saveBusinessStoreSummary(Parameter param) throws Exception;
+	/**
+	 * 保存店铺logo
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result saveBusinessStorePic(Parameter param) throws Exception;
 }
