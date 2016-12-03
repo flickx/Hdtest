@@ -139,7 +139,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		after.setModifyTime(new DateStr().toString());
 		after.setModifyPerson(param.getManageToken().getLoginUser().getId());
 		Object o = hibernateUtil.update(after);
-		saveAfterOpLog(param,"【卖家】"+afterServiceUtil.getAfterState(schedule.getScheduleStatic()));
+		afterServiceUtil.saveAfterOpLog(param,"【卖家】"+afterServiceUtil.getAfterState(schedule.getScheduleStatic()));
 		return ObjectToResult.getResult(o);
 	}
 	
@@ -159,7 +159,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		}else{
 			msg = "已清关";
 		}
-		saveAfterOpLog(param,"【卖家】设置清关状态为 "+msg);
+		afterServiceUtil.saveAfterOpLog(param,"【卖家】设置清关状态为 "+msg);
 		return ObjectToResult.getResult(result);
 	}
 
@@ -175,28 +175,10 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		LogisticsCompanyVo logisticsCompanyVo = (LogisticsCompanyVo) Common.jsonToBean(obj.toString(), LogisticsCompanyVo.class);
 		String hql = "update AfterSchedule set buyerLogCompany.id = '"+logisticsCompanyVo.getLogisticsCompanyID()+"', buyerLogOdd = '"+logisticsCompanyVo.getOdd()+"', buyerLogInfo = '"+logisticsCompanyVo.getLogInfo()+"', scheduleStatic = '10' where id = '"+logisticsCompanyVo.getId()+"'";
 		int result = hibernateUtil.execHql(hql);
-		saveAfterOpLog(param,"【卖家】已发货");
+		afterServiceUtil.saveAfterOpLog(param,"【卖家】已发货");
 		return ObjectToResult.getResult(result);
 	}
 	
-	/**
-	 * 记录售后申请操作日志
-	 * @param param
-	 * @param after
-	 * @param msg
-	 */
-	public void saveAfterOpLog(Parameter param,String msg){
-		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
-		AfterOpLog log = new AfterOpLog();
-		log.setAfterSchedule(after);
-		log.setUserId(param.getManageToken().getLoginUser().getLoginName());
-		log.setMsg(msg);
-		log.setState("1");
-		log.setCreatePerson(param.getManageToken().getLoginUser().getLoginName());
-		log.setCreateTime(new DateStr().toString());
-		hibernateUtil.save(log);
-	}
-
 	/**
 	 * 修改申请售后状态
 	 */
@@ -207,7 +189,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		after.setModifyPerson(param.getManageToken().getLoginUser().getLoginName());
 		after.setModifyTime(new DateStr().toString());
 		hibernateUtil.update(after);
-		saveAfterOpLog(param,"【卖家】修改售后状态为"+afterServiceUtil.getAfterState(param.getKey()));
+		afterServiceUtil.saveAfterOpLog(param,"【卖家】修改售后状态为"+afterServiceUtil.getAfterState(param.getKey()));
 		return ObjectToResult.getResult(after);
 	}
 

@@ -126,6 +126,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			schedule.setCreatePerson(param.getUserId());
 			schedule.setCreateTime(new DateStr().toString());
 			hibernateUtil.save(schedule);
+			log.setScheduleStatic(schedule.getScheduleStatic());
 			log.setMsg("【买家】申请售后,售后类型为:"+afterServiceUtil.getAfterType(schedule.getType()));
 			log.setCreatePerson(param.getUserToken().getUser().getUsername());
 			log.setCreateTime(new DateStr().toString());
