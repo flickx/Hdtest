@@ -19,6 +19,7 @@ import com.ftoul.po.AfterOpLog;
 import com.ftoul.po.AfterSchedule;
 import com.ftoul.po.Orders;
 import com.ftoul.po.OrdersDetail;
+import com.ftoul.util.afterService.AfterServiceUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.orders.OrdersUtil;
 
@@ -29,6 +30,8 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	private HibernateUtil hibernateUtil;
 	@Autowired
 	OrdersUtil ordersUtil;
+	@Autowired
+	AfterServiceUtil afterServiceUtil;
 
 	/**
 	 * 获取售后申请列表
@@ -53,26 +56,9 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			afterVo.setServiceCode(after.getServiceCode());
 			afterVo.setOrderNumber(orders.getOrderNumber());
 			afterVo.setOrderTime(orders.getOrderTime());
-			afterVo.setScheduleStatic(ordersUtil.getAfterState(after.getScheduleStatic()));
-			if("0".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("待提单");
-			}else if("1".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("待付款");
-			}else if("2".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已付款");
-			}else if("3".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("待发货");
-			}else if("4".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已发货");
-			}else if("5".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已收货");
-			}else if("6".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已完成");
-			}else if("7".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已删除");
-			}else if("8".equals(orders.getOrderStatic())){
-				afterVo.setOrderStatic("已取消");
-			}
+			afterVo.setScheduleStatic(afterServiceUtil.getAfterState(after.getScheduleStatic()));
+			afterVo.setType(afterServiceUtil.getAfterType(after.getType()));
+			afterVo.setOrderStatic(ordersUtil.getState(orders.getOrderStatic()));
 			afterVo.setBackPrice(after.getBackPrice());
 			afterVo.setNum(after.getNum());
 			afterVo.setCreateTime(after.getCreateTime());
@@ -109,25 +95,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		afterVo.setList(picSrcs);
 		afterVo.setOrderNumber(orders.getOrderNumber());
 		afterVo.setOrderTime(orders.getOrderTime());
-		if("0".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("待提单");
-		}else if("1".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("待付款");
-		}else if("2".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已付款");
-		}else if("3".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("待发货");
-		}else if("4".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已发货");
-		}else if("5".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已收货");
-		}else if("6".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已完成");
-		}else if("7".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已删除");
-		}else if("8".equals(orders.getOrderStatic())){
-			afterVo.setOrderStatic("已取消");
-		}
+		afterVo.setOrderStatic(ordersUtil.getState(orders.getOrderStatic()));
 		
 		if(orders.getOdd()!=null){
 			afterVo.setOdd(orders.getOdd());
@@ -171,7 +139,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		after.setModifyTime(new DateStr().toString());
 		after.setModifyPerson(param.getManageToken().getLoginUser().getId());
 		Object o = hibernateUtil.update(after);
-		saveAfterOpLog(param,"【卖家】"+ordersUtil.getAfterState(schedule.getScheduleStatic()));
+		afterServiceUtil.saveAfterOpLog(param,"【卖家】"+afterServiceUtil.getAfterState(schedule.getScheduleStatic()));
 		return ObjectToResult.getResult(o);
 	}
 	
@@ -191,7 +159,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		}else{
 			msg = "已清关";
 		}
-		saveAfterOpLog(param,"【卖家】设置清关状态为 "+msg);
+		afterServiceUtil.saveAfterOpLog(param,"【卖家】设置清关状态为 "+msg);
 		return ObjectToResult.getResult(result);
 	}
 
@@ -207,28 +175,10 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		LogisticsCompanyVo logisticsCompanyVo = (LogisticsCompanyVo) Common.jsonToBean(obj.toString(), LogisticsCompanyVo.class);
 		String hql = "update AfterSchedule set buyerLogCompany.id = '"+logisticsCompanyVo.getLogisticsCompanyID()+"', buyerLogOdd = '"+logisticsCompanyVo.getOdd()+"', buyerLogInfo = '"+logisticsCompanyVo.getLogInfo()+"', scheduleStatic = '10' where id = '"+logisticsCompanyVo.getId()+"'";
 		int result = hibernateUtil.execHql(hql);
-		saveAfterOpLog(param,"【卖家】已发货");
+		afterServiceUtil.saveAfterOpLog(param,"【卖家】已发货");
 		return ObjectToResult.getResult(result);
 	}
 	
-	/**
-	 * 记录售后申请操作日志
-	 * @param param
-	 * @param after
-	 * @param msg
-	 */
-	public void saveAfterOpLog(Parameter param,String msg){
-		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
-		AfterOpLog log = new AfterOpLog();
-		log.setAfterSchedule(after);
-		log.setUserId(param.getManageToken().getLoginUser().getLoginName());
-		log.setMsg(msg);
-		log.setState("1");
-		log.setCreatePerson(param.getManageToken().getLoginUser().getLoginName());
-		log.setCreateTime(new DateStr().toString());
-		hibernateUtil.save(log);
-	}
-
 	/**
 	 * 修改申请售后状态
 	 */
@@ -239,7 +189,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		after.setModifyPerson(param.getManageToken().getLoginUser().getLoginName());
 		after.setModifyTime(new DateStr().toString());
 		hibernateUtil.update(after);
-		saveAfterOpLog(param,"【卖家】修改售后状态为"+ordersUtil.getAfterState(param.getKey()));
+		afterServiceUtil.saveAfterOpLog(param,"【卖家】修改售后状态为"+afterServiceUtil.getAfterState(param.getKey()));
 		return ObjectToResult.getResult(after);
 	}
 

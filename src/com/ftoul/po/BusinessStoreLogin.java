@@ -30,7 +30,6 @@ public class BusinessStoreLogin implements java.io.Serializable {
 	private String createId;
 	private String createTime;
 	private String state;
-
 	// Constructors
 
 	/** default constructor */
@@ -163,5 +162,4 @@ public class BusinessStoreLogin implements java.io.Serializable {
 	public void setState(String state) {
 		this.state = state;
 	}
-
 }

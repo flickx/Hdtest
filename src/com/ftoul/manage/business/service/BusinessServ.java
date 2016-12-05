@@ -110,6 +110,13 @@ public interface BusinessServ {
 	 */
 	Result exportBusinessStoreClassifyExcel(Parameter parameter) throws Exception;
 	/**
+	 * 导出店铺信息
+	 * @param param
+	 * @return 返回结果(前台用Result对象)
+	 * @throws Exception
+	 */
+	Result exportBusinessStoreExcel(Parameter parameter) throws Exception;
+	/**
 	 * 保存店铺等级信息
 	 * @param param
 	 * @return 返回结果(前台用Result对象)

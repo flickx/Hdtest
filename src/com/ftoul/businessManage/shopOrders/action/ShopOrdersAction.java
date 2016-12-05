@@ -1,4 +1,4 @@
-package com.ftoul.businessManage.orders.action;
+package com.ftoul.businessManage.shopOrders.action;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ftoul.businessManage.shopOrders.service.ShopOrdersServ;
 import com.ftoul.common.Common;
 import com.ftoul.common.ExcelTools;
 import com.ftoul.common.Parameter;
@@ -28,12 +29,12 @@ import com.ftoul.manage.orders.service.OrdersServ;
  * @author HuDong
  *
  */
-@Controller("BusinessManageOrdersAction")
-@RequestMapping(value = "/businessManage/orders")
-public class OrdersAction {
+@Controller
+@RequestMapping(value = "/businessManage/shopOrders")
+public class ShopOrdersAction {
 
 	@Autowired
-	private OrdersServ ordersServ;
+	private ShopOrdersServ ordersServ;
 	
 	/**
 	 * 删除订单
@@ -351,5 +352,5 @@ public class OrdersAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return ordersServ.getSendGoodsListPage(parameter);
 	}
-
+	
 }

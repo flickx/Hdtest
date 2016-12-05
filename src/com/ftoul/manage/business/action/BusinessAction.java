@@ -218,6 +218,52 @@ public class BusinessAction {
 			return null;
 		}
 		/**
+		 * 导出商家入驻信息
+		 * 
+		 * @param param
+		 * @param response
+		 * @throws IOException
+		 */
+			@RequestMapping(value = "exportBusinessStoreExcel", method = RequestMethod.GET)
+			public ModelAndView exportBusinessStoreExcel(String param,
+					HttpServletResponse response) throws Exception {
+				Parameter parameter = Common.jsonToParam(param);
+				Result result = businessServ.exportBusinessStoreExcel(parameter);
+				List itemList = (List) result.getObj();
+				SimpleDateFormat sd = new SimpleDateFormat("yyyyMMddHHmmss");
+				String fileName =sd.format(new Date()) + ".xls";
+				File file = new File(fileName);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				response.setContentType("application/x-excel");
+				response.setCharacterEncoding("UTF-8");
+				response.addHeader("Content-Disposition",
+						"attachment;filename=" + file.getName());// excel文件名
+
+				try {
+					String[] title = new String[9];
+					title[0] = "商家ID";
+					title[1] = "公司名称";
+					title[2] = "联系人姓名";
+					title[3] = "联系人电话";
+					title[4] = "店铺名称";
+					title[5] = "店铺号";
+					title[6] = "店铺账号";
+					title[7] = "申请时间";
+					title[8] = "状态";
+
+					InputStream is = ExcelTools.getDownloadInputStream("商家店铺信息", title,
+							itemList);
+					FileCopyUtils.copy(is, response.getOutputStream());
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				return null;
+			}
+		/**
 		 * 保存店铺等级信息
 		 * @param param 参数
 		 * @throws Exception

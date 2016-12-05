@@ -16,7 +16,7 @@ public interface AfterServiceServ {
 	
 	public Result getAfterListByUserId(Parameter param) throws Exception;
 	
-	Result getOrderAfterSchedulePage(Parameter parameter) throws Exception;
+	Result getAfterSchedulePage(Parameter parameter) throws Exception;
 
 	Result saveAfter(Parameter parameter) throws Exception;
 
@@ -27,5 +27,7 @@ public interface AfterServiceServ {
 	public Result saveSendGoods(Parameter parameter)  throws Exception;
 
 	public Result getAfterLogistics(Parameter parameter) throws Exception;
+
+	public Result updateAfterScheduleStatic(Parameter parameter) throws Exception;
 	
 }

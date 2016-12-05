@@ -43,10 +43,10 @@ public class AfterServiceAction {
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping(value = "getOrderAfterSchedulePage")  
-	public @ResponseBody Result getOrderAfterSchedulePage(String param) throws Exception{
+	@RequestMapping(value = "getAfterSchedulePage")  
+	public @ResponseBody Result getAfterSchedulePage(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return afterServiceServ.getOrderAfterSchedulePage(parameter);
+		return afterServiceServ.getAfterSchedulePage(parameter);
 	}
 	
 	/**
@@ -108,5 +108,17 @@ public class AfterServiceAction {
 	public @ResponseBody Result getAfterLogistics(String param)throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return afterServiceServ.getAfterLogistics(parameter);
+	}
+	
+	/**
+	 * 更新状态
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "updateAfterScheduleStatic")
+	public @ResponseBody Result updateAfterScheduleStatic(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return afterServiceServ.updateAfterScheduleStatic(parameter);
 	}
 }

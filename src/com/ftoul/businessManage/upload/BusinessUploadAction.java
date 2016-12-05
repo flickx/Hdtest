@@ -1,4 +1,4 @@
-package com.ftoul.manage.util.upload.action;
+package com.ftoul.businessManage.upload;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,15 +19,15 @@ import com.ftoul.manage.util.upload.service.UploadServ;
 * 
 *
 * 类描述：图片上传的action
-* @author: liding
+* @author: yw
 * @date： 日期：2016年8月2日 时间：下午5:58:49
 * @version 1.0
 *
 */
 
-@Controller
-@RequestMapping(value = "/manage/upload")
-public class UploadAction {
+@Controller("BusinessUploadAction")
+@RequestMapping(value = "/businessManage/upload")
+public class BusinessUploadAction {
 	
 	@Autowired
 	private UploadServ uploadServ;
