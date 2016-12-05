@@ -290,3 +290,7 @@ alter table business_store_summary add constraint FK_business_store_10 foreign k
 /*==============================================================*/
 alter table business_manage  add business_licence_address varchar(100);
 alter table business_store add store_id varchar(100);
+/*==============================================================*/
+/* Table: message_verification   添加IP字段                    2016.11.16        */
+/*==============================================================*/
+alert table message_verification add ip varchar(32)
