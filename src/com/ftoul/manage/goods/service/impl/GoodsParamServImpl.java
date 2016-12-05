@@ -85,7 +85,7 @@ public class GoodsParamServImpl implements GoodsParamServ {
 			goodsParam.setState("1");
 			goods.setState("1");
 			goods.setStep("3");
-			goods.setHasstock("1");//代表有库存
+			goods.setHasstock("1");
 			res =this.hibernateUtil.save(goodsParam);
 		}
 		else{
@@ -116,7 +116,6 @@ public class GoodsParamServImpl implements GoodsParamServ {
 					goods.setPrice(Double.valueOf(goodsParamVo.getPrice()));
 					this.hibernateUtil.update(goods);
 				}
-				
 				res =this.hibernateUtil.update(goodsParam);
 		}
 		return ObjectToResult.getResult(res);
@@ -309,6 +308,10 @@ public class GoodsParamServImpl implements GoodsParamServ {
 		goodsParam.setStock(new Integer (ret).toString());
 		Object res;
 		res =this.hibernateUtil.update(goodsParam);
+		Goods goods = (Goods)this.hibernateUtil.find(Goods.class, goodsParam.getGoods().getId()+"");
+		//只要入库了，我们设置商品库存为1
+		goods.setHasstock("1");
+		this.hibernateUtil.update(goods);
 		//加入入库单
 		GoodsPurchase goodsPurchase = new GoodsPurchase();
 		goodsPurchase.setGoodsParam(goodsParam);
