@@ -209,6 +209,7 @@ public class BusinessStore implements java.io.Serializable {
 	public void setState(String state) {
 		this.state = state;
 	}
+	
 	@Column(name = "store_id", length = 100)
 	public String getStoreId() {
 		return storeId;
