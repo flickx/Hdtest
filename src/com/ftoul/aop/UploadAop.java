@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class UploadAop {
 	
-	@Pointcut("execution(* com.ftoul..action.*.*(..))")
+	@Pointcut("execution(* com.ftoul..action.AliPayPayAction.*(..))")
 	private void anyMethod(){}//定义一个切入点
 	@Autowired  
 	private  HttpServletRequest req;
