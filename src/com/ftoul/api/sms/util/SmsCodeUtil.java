@@ -123,9 +123,9 @@ public class SmsCodeUtil {
 		return list.size();
 	}
 
-	public int getSmsCountIP(){
+/*	public int getSmsCountIP(){
 		String hql = "from MessageVerification where state = '1' and ip='"+req.getRemoteAddr()+"'";	
 		List<Object> list = hibernateUtil.hql(hql);
 		return list.size();
-	}
+	}*/
 }
