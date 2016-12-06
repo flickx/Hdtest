@@ -193,8 +193,8 @@ public class WebUserServImpl implements WebUserServ{
 		Object res=null;
 		String smsCodeType=user.getSmscodeType();
 		int count = smsCodeUtil.getSmsCount(user.getUsername());
-//		int countIP = smsCodeUtil.getSmsCountIP();
-		if (count>4) {
+		int countIP = smsCodeUtil.getSmsCountIP();
+		if (count>4||countIP>9) {
 			res="今日接收短信已超过上限";
 			throw new Exception("今日接收短信已超过上限");
 		}

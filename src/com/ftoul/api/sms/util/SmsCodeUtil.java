@@ -122,10 +122,13 @@ public class SmsCodeUtil {
 		//System.out.println("手机号"+mobile+"今日已经接收"+list.size()+"条短信");
 		return list.size();
 	}
-
-/*	public int getSmsCountIP(){
+	/**
+	 * 获取IP当天收到的短信条数
+	 * @param args
+	 */
+	public int getSmsCountIP(){
 		String hql = "from MessageVerification where state = '1' and ip='"+req.getRemoteAddr()+"'";	
 		List<Object> list = hibernateUtil.hql(hql);
 		return list.size();
-	}*/
+	}
 }
