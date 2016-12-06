@@ -18,3 +18,5 @@ genAnnotations=true
 reSettingsFile=/FtShop/src/config/hibernate.reveng.xml
 configFile=/FtShop/src/hibernate.cfg.xml
 createConfigFile=true
+
+

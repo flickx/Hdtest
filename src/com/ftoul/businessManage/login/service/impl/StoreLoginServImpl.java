@@ -3,6 +3,7 @@ package com.ftoul.businessManage.login.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ftoul.businessManage.login.action.CodeAction;
 import com.ftoul.businessManage.login.service.StoreLoginServ;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.MD5;
@@ -42,12 +44,13 @@ public class StoreLoginServImpl implements StoreLoginServ {
 	public Result login(Parameter param) throws Exception {
 		BusinessStoreLogin businessStoreLogin = (BusinessStoreLogin) JSONObject.toBean((JSONObject) param.getObj(),BusinessStoreLogin.class);
 		//获取绑定的验证码
-		String code = (String)req.getSession().getAttribute("code");
+		Map<String,String> codeMap = CodeAction.userCodeMap;
+		String code = codeMap.get("code");
 		//获取用户输入的验证码
 		String usercode = (String)param.getId();
-//		if (!code.equalsIgnoreCase(usercode)) {
-//			throw new Exception("验证码错误");
-//		}
+		if (!code.equalsIgnoreCase(usercode)) {
+			throw new Exception("验证码错误");
+		}
 		String hql = " from BusinessStoreLogin where state = '1' and storeAccount = '" 
 				+ businessStoreLogin.getStoreAccount() + "' and password = '"
 				+ MD5.getMD5(businessStoreLogin.getPassword()) + "'";

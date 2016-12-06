@@ -1,35 +1,38 @@
 package com.ftoul.businessManage.login.action;
 
-import java.awt.Color;  
-import java.awt.Font;  
-import java.awt.Graphics;  
-import java.awt.image.BufferedImage;  
-import java.io.IOException;  
-import java.util.Random;  
-  
-import javax.imageio.ImageIO;  
-import javax.servlet.ServletOutputStream;  
-import javax.servlet.http.HttpServletRequest;  
-import javax.servlet.http.HttpServletResponse;  
-import javax.servlet.http.HttpSession;  
-  
-import org.springframework.stereotype.Controller;  
-import org.springframework.web.bind.annotation.RequestMapping;  
-  
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 @Controller  
-public class CodeController {  
+public class CodeAction {  
+	public static Map<String ,String> userCodeMap = new HashMap<String, String>();
     private int width = 105;//定义图片的width  
     private int height = 32;//定义图片的height  
     private int codeCount = 4;//定义图片上显示验证码的个数  
     private int xx = 20;  
     private int fontHeight = 20;  
     private int codeY = 25;  
+    
 //    char[] codeSequence = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',  
 //            'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',  
 //            'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };  
     char[] codeSequence = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
     @RequestMapping(value = "/code")  
-    public void getCode(HttpServletRequest req, HttpServletResponse resp)  
+    public void getCode(HttpServletRequest res,HttpServletResponse resp)  
             throws IOException {  
   
         // 定义图像buffer  
@@ -83,14 +86,12 @@ public class CodeController {
             // 将产生的四个随机数组合在一起。  
             randomCode.append(code);  
         }  
-        // 将四位数字的验证码保存到Session中。  
-        HttpSession session = req.getSession();  
-        session.setAttribute("code", randomCode.toString());  
-  
+        // 保存验证码
+        userCodeMap.put("code",randomCode.toString());
         // 禁止图像缓存。  
         resp.setHeader("Pragma", "no-cache");  
         resp.setHeader("Cache-Control", "no-cache");  
-        resp.setDateHeader("Expires", 0);  
+        resp.setDateHeader("Expires", 0);   
   
         resp.setContentType("image/jpeg");  
   
