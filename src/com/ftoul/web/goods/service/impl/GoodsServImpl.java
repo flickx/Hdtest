@@ -143,6 +143,13 @@ public class GoodsServImpl implements GoodsServ {
 				goodsParamList.add((GoodsParam)object);
 			}
 		}
+		String sql = "select sum(stock) from goods_param where goods_id='"+param.getId()+"'"+" and state = 1";
+		List<Object[]> stockTotal = this.hibernateUtil.sql(sql);
+		for (int i = 0; i < stockTotal.size(); i++){
+			Double d = Double.parseDouble(String.valueOf(stockTotal.get(0)));
+			String sumStock = new Double(d).intValue()+"";
+			goodsVo.setSumStock(sumStock);
+		}
 		//获取商品价格 1.优先取商品活动价格2.取活动促销价格.3 折扣价
 		String hql2 = "select ge.eventName,gej.eventPrice,ge.eventPrice,ge.discount,gej.quantity,ge.eventBegen,ge.eventEnd,gs.picSrc,ge.state,gej.state,ge.typeName,ge.homeChannel,gs.subtitle from Goods gs,"
 				+ "GoodsEventJoin gej,GoodsEvent ge where gs.id = gej.goods.id and ge.id = gej.goodsEvent.id and gej.state = '1' and ge.state = '1' and gs.id ='"+param.getId()+"'";
