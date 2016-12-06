@@ -125,7 +125,7 @@ public class SmsCodeUtil {
 	/**
 	 * 获取IP当天收到的短信条数
 	 * @param args
-	 */
+	 */ 
 	public int getSmsCountIP(){
 		String hql = "from MessageVerification where state = '1' and ip='"+req.getRemoteAddr()+"'";	
 		List<Object> list = hibernateUtil.hql(hql);
