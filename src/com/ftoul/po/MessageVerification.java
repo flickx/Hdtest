@@ -40,6 +40,7 @@ public class MessageVerification  implements java.io.Serializable {
      private String modifyTime;
      private String modifyPerson;
      private String state;
+     private String ip;
 
 
     // Constructors
@@ -50,7 +51,7 @@ public class MessageVerification  implements java.io.Serializable {
 
     
     /** full constructor */
-    public MessageVerification( String messageType, String content, String verificationCode, String validTime, String createTime, String createPerson, String modifyTime, String modifyPerson, String state) {
+    public MessageVerification( String messageType, String content, String verificationCode, String validTime, String createTime, String createPerson, String modifyTime, String modifyPerson, String state,String ip) {
         this.messageType = messageType;
         this.content = content;
         this.verificationCode = verificationCode;
@@ -60,6 +61,7 @@ public class MessageVerification  implements java.io.Serializable {
         this.modifyTime = modifyTime;
         this.modifyPerson = modifyPerson;
         this.state = state;
+        this.ip=ip;
     }
 
    
@@ -181,4 +183,15 @@ public class MessageVerification  implements java.io.Serializable {
 	public void setSort(int sort) {
 		this.sort = sort;
 	}
+
+	@Column(name="ip", length=32)
+	public String getIp() {
+		return ip;
+	}
+
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+	
 }

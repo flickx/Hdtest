@@ -9,6 +9,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,8 @@ import com.ftoul.util.hibernate.HibernateUtil;
 public class SmsCodeUtil {
 	@Autowired
 	HibernateUtil hibernateUtil;
+	@Autowired
+	private HttpServletRequest req;
 	/**
 	 * 根据用户手机号码和验证码类型获取验证码最大排序
 	 */
@@ -66,6 +70,7 @@ public class SmsCodeUtil {
 		}if (messageType.equals("2")) {
 			content = "【他她乐】亲爱的会员：您的手机找回密码验证码为"+code+"，如非本人操作，请致电客服0731-82208568";
 		}
+		messageVerification.setIp(req.getRemoteAddr());
 		messageVerification.setMobile(mobile);
 		messageVerification.setContent(content);
 		messageVerification.setState("1");
@@ -117,8 +122,13 @@ public class SmsCodeUtil {
 		//System.out.println("手机号"+mobile+"今日已经接收"+list.size()+"条短信");
 		return list.size();
 	}
-	
-	public static void main(String[] args) {
-		new SmsCodeUtil().getSmsCount("18570614771");
+	/**
+	 * 获取IP当天收到的短信条数
+	 * @param args
+	 */
+	public int getSmsCountIP(){
+		String hql = "from MessageVerification where state = '1' and ip='"+req.getRemoteAddr()+"'";	
+		List<Object> list = hibernateUtil.hql(hql);
+		return list.size();
 	}
 }
