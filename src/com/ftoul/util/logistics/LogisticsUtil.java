@@ -11,7 +11,9 @@ import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.po.AreaFreightTemplate;
+import com.ftoul.po.JPositionProvice;
 import com.ftoul.po.ShopFreightTemplate;
+import com.ftoul.po.UserAddress;
 import com.ftoul.util.hibernate.HibernateUtil;
 
 @Component
@@ -73,6 +75,24 @@ public class LogisticsUtil {
 		}
 		return totalFreight;
 	}
+	
+	/**
+	 * 获取用户默认省份，中文
+	 * @param id
+	 * @return
+	 */
+	public String getDefaultUserAddressProvince(String id){
+		String provinceName=null;
+		Object obj = hibernateUtil.hqlFirst("from UserAddress where state='1' and default='true' and user.id='"+id+"'");
+		if(obj!=null){
+			UserAddress address = (UserAddress) obj;
+			Object object = hibernateUtil.hqlFirst("from JPositionProvice where proviceId='"+address.getProvince()+"'"); 
+			JPositionProvice province = (JPositionProvice) object;
+			provinceName = province.getProviceName();
+		}
+		return provinceName;
+	}
+	
 	
 
 }
