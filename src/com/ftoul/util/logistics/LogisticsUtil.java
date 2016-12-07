@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ftoul.api.weiXinPay.util.CommonUtil;
+import com.ftoul.common.Common;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
@@ -39,24 +41,29 @@ public class LogisticsUtil {
 		double defaultFreight;
 		double totalFreight = 0.0;
 		int passNum;
+		boolean flag = false;
 		Object obj = hibernateUtil.hqlFirst("from ShopFreightTemplate where state='1' and shop.id='"+shopId+"'");
 		if(obj!=null){
 			ShopFreightTemplate temp = (ShopFreightTemplate) obj;
 			List<Object> dataList = hibernateUtil.hql("from AreaFreightTemplate where state='1' and shopFreightTemplate.id-'"+temp.getId()+"'");
-			for (Object object : dataList) {
-				AreaFreightTemplate areaFreightTemplate = (AreaFreightTemplate) object;
-				String[] areas = areaFreightTemplate.getFreightArea().split(",");
-				for (String area : areas) {
-					if(province.equals(area)){
-						defaultFreight = areaFreightTemplate.getLessPrice();
-						if(num>areaFreightTemplate.getLess()){
-							passNum = num-areaFreightTemplate.getLess();
-							totalFreight = defaultFreight+(passNum*areaFreightTemplate.getIncreasePrice());
+			if(Common.notNull(province)){
+				for (Object object : dataList) {
+					AreaFreightTemplate areaFreightTemplate = (AreaFreightTemplate) object;
+					String[] areas = areaFreightTemplate.getFreightArea().split(",");
+					for (String area : areas) {
+						if(area.equals(province)){
+							flag = true;
+							defaultFreight = areaFreightTemplate.getLessPrice();
+							if(num>areaFreightTemplate.getLess()){
+								passNum = num-areaFreightTemplate.getLess();
+								totalFreight = defaultFreight+(passNum*areaFreightTemplate.getIncreasePrice());
+							}
+							break;
 						}
 					}
 				}
 			}
-			if(totalFreight==0.0){
+			if(!flag){
 				defaultFreight = Double.parseDouble(temp.getDefaultPrice());
 				if(num>Integer.parseInt(temp.getDefaultFreight())){
 					passNum = num-Integer.parseInt(temp.getDefaultFreight());
