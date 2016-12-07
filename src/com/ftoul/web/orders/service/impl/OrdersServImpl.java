@@ -804,24 +804,25 @@ public class OrdersServImpl implements OrdersServ {
 			vo.setEventName(eventName);
 		}
 		
+		String province = logisticsUtil.getDefaultUserAddressProvince(param.getUserToken().getUser().getId());
+		double freight = logisticsUtil.getFreight(province, vo.getShopId(), goodsNum);
+		vo.setFreight(freight);
 		orders.setOrderTime(new DateStr().toString());
-		orders.setOrderPrice(new DecimalFormat("0.00").format(orderPrice));
-		orders.setPayable(new DecimalFormat("0.00").format(totalPayable));
+		orders.setOrderPrice(new DecimalFormat("0.00").format(orderPrice+freight));
+		orders.setPayable(new DecimalFormat("0.00").format(totalPayable+freight));
 		orders.setBenefitPrice(new DecimalFormat("0.00").format(totalBenPrice));
 		orders.setCreateTime(new DateStr().toString());
 		orders.setModifyPerson(param.getUserId());
 		orders.setModifyTime(new DateStr().toString());
 		hibernateUtil.save(orders);
 		vo.setGoodsNum(goodsNum);
-		vo.setPayable(new DecimalFormat("0.00").format(totalPayable));
-		vo.setOrderPrice(new DecimalFormat("0.00").format(orderPrice));
+		vo.setPayable(new DecimalFormat("0.00").format(totalPayable+freight));
+		vo.setOrderPrice(new DecimalFormat("0.00").format(orderPrice+freight));
 		vo.setBenPrice(new DecimalFormat("0.00").format(totalBenPrice));
 		vo.setOrderNumber(orders.getOrderNumber());
 		vo.setIsCard(isCard);
 		vo.setVoList(goodsVoList);
-		String province = logisticsUtil.getDefaultUserAddressProvince(param.getUserToken().getUser().getId());
-		double freight = logisticsUtil.getFreight(province, vo.getShopId(), goodsNum);
-		vo.setFreight(freight);
+		
 		//getCoinInfo(param,vo);//获取蜂币
 		//getDeductionCoinInfo(param,vo,orders);
 		//getDoubleCoinData(param,vo);//参与蜂币翻倍活动
@@ -1466,7 +1467,7 @@ public class OrdersServImpl implements OrdersServ {
 				vo.setCoinNumber(totalCoinNumber);
 				vo.setCoinPrice(coinPrice);
 				vo.setOrderNumber(orders.getOrderNumber());
-				vo.setOrderPrice(String.valueOf(orderPrice));
+				vo.setOrderPrice(String.valueOf(orderPrice+freight));
 				vo.setPayable(String.valueOf(payable));
 				vo.setTotalCoinNumber(totalCoinNumber);
 				vo.setVoList(voList);
