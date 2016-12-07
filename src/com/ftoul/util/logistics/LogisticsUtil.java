@@ -83,7 +83,7 @@ public class LogisticsUtil {
 	 */
 	public String getDefaultUserAddressProvince(String id){
 		String provinceName=null;
-		Object obj = hibernateUtil.hqlFirst("from UserAddress where state='1' and default='true' and user.id='"+id+"'");
+		Object obj = hibernateUtil.hqlFirst("from UserAddress where state='1' and defulat='true' and user.id='"+id+"'");
 		if(obj!=null){
 			UserAddress address = (UserAddress) obj;
 			Object object = hibernateUtil.hqlFirst("from JPositionProvice where proviceId='"+address.getProvince()+"'"); 
