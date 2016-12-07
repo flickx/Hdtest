@@ -458,6 +458,9 @@ public class OrdersServImpl implements OrdersServ {
 					newOrderPrice = orderPrice - coinPrice;
 					if(newOrderPrice==0){
 						orders.setOrderStatic("2");
+						orders.setPayStatic("1");
+						orders.setPayTime(new DateStr().toString());
+						orders.setPayType("4");//全蜂币支付方式
 					}
 					orders.setBeeCoins((int)coinNumber+"");
 					orders.setCoinPrice(new DecimalFormat("0.00").format(coinPrice));
@@ -671,7 +674,7 @@ public class OrdersServImpl implements OrdersServ {
 			if(goodsEventList!=null&&goodsEventList.size()>0){
 				for (int j = 0; j < goodsEventList.size(); j++) {
 					GoodsEvent event = (GoodsEvent) goodsEventList.get(j);
-					if("满减".equals(event.getTypeName())){
+					if("阶梯满减".equals(event.getTypeName())){
 						mjVo = new MjGoodsEventVo();
 						mjVo.setGoodsEvent(event);
 						eventName = event.getEventName();
@@ -692,8 +695,8 @@ public class OrdersServImpl implements OrdersServ {
 					}
 					
 					if(j==goodsEventList.size()-1){
-						if(mjVo!=null){//参加了满减活动
-							if(j==0){//只参加了满减活动
+						if(mjVo!=null){//参加了阶梯满减活动
+							if(j==0){//只参加了阶梯满减活动
 								price = Double.parseDouble(goodsP.getPrice());
 								payable = price*num;
 								totalPayable += payable;

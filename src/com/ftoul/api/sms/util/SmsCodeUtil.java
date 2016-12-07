@@ -128,7 +128,12 @@ public class SmsCodeUtil {
 	 * @param args
 	 */
 	public int getSmsCountIP(){
-		String hql = "from MessageVerification where state = '1' and ip='"+req.getRemoteAddr()+"'";	
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        String currentDay = sf.format(c.getTime());
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        String nextDay = sf.format(c.getTime());
+		String hql = "from MessageVerification where state = '1' and ip='"+req.getRemoteAddr()+"' and createTime< '"+nextDay+"' and createTime>'"+currentDay+"'";
 		List<Object> list = hibernateUtil.hql(hql);
 		return list.size();
 	}

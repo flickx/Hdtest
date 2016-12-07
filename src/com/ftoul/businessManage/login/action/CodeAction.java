@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller  
+@RequestMapping(value="businessManage/login")
 public class CodeAction {  
 	public static Map<String ,String> userCodeMap = new HashMap<String, String>();
     private int width = 105;//定义图片的width  
