@@ -42,10 +42,10 @@ public class LogisticsUtil {
 		double totalFreight = 0.0;
 		int passNum;
 		boolean flag = false;
-		Object obj = hibernateUtil.hqlFirst("from ShopFreightTemplate where state='1' and shop.id='"+shopId+"'");
+		Object obj = hibernateUtil.hqlFirst("from ShopFreightTemplate where state='1' and shopId='"+shopId+"'");
 		if(obj!=null){
 			ShopFreightTemplate temp = (ShopFreightTemplate) obj;
-			List<Object> dataList = hibernateUtil.hql("from AreaFreightTemplate where state='1' and shopFreightTemplate.id-'"+temp.getId()+"'");
+			List<Object> dataList = hibernateUtil.hql("from AreaFreightTemplate where state='1' and shopFreightTemplate.id='"+temp.getId()+"'");
 			if(Common.notNull(province)){
 				for (Object object : dataList) {
 					AreaFreightTemplate areaFreightTemplate = (AreaFreightTemplate) object;
