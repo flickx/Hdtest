@@ -11,7 +11,7 @@ import com.ftoul.common.Result;
 import com.ftoul.util.hibernate.HibernateUtil;
 
 @Component
-public class LogisticsCompanyUtil {
+public class LogisticsUtil {
 	
 	@Autowired
 	private HibernateUtil hibernateUtil;
