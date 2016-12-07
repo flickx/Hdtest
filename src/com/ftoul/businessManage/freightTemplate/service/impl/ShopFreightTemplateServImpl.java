@@ -1,5 +1,7 @@
 package com.ftoul.businessManage.freightTemplate.service.impl;
 
+import java.util.List;
+
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +16,11 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.po.AreaFreightTemplate;
+import com.ftoul.po.BusinessStore;
+import com.ftoul.po.JPositionProvice;
 import com.ftoul.po.ShopFreightTemplate;
 import com.ftoul.util.hibernate.HibernateUtil;
+import com.ftoul.web.vo.AddressVo;
 /**
  * 
  * @author liding
@@ -39,27 +44,31 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
-
+	
 	@Override
 	public Result saveShopFreightTemplate(Parameter param) throws Exception {
+		ShopFreightTemplate shopFreightTemplate=(ShopFreightTemplate) JSONObject.toBean((JSONObject) param.getObj(),ShopFreightTemplate.class);		
 		Object res;
-		if(param.getObj() == null){
-			ShopFreightTemplate shopFreightTemplate =  new ShopFreightTemplate();
+		if(Common.isNull(shopFreightTemplate.getId())){
+			String shopId = param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId();
+			shopFreightTemplate.setShopId(shopId);
 			shopFreightTemplate.setCreateTime(new DateStr().toString());
+			shopFreightTemplate.setShopAddress("未被配置的区域自动执行默认运费");
+			shopFreightTemplate.setState("1");
+			String activety = shopFreightTemplate.getActivety();
+			if ("是".equals(activety)) {
+				hibernateUtil.execHql("update ShopFreightTemplate set activety = '否' where shopId ='"+shopId+"'");
+			}
 			hibernateUtil.save(shopFreightTemplate);
 			res = shopFreightTemplate;
 		}else{
-			ShopFreightTemplate shopFreightTemplate=(ShopFreightTemplate) JSONObject.toBean((JSONObject) param.getObj(),ShopFreightTemplate.class);			
-			if(Common.isNull(shopFreightTemplate.getId())){
-				shopFreightTemplate.setCreateTime(new DateStr().toString());
-				shopFreightTemplate.setState("1");
-				shopFreightTemplate.setShopAddress("未被配置的区域自动执行默认运费");
-				res = hibernateUtil.save(shopFreightTemplate);
-			}else{
-				shopFreightTemplate.setModifyTime(new DateStr().toString());
-				shopFreightTemplate.setState("1");
-				res = hibernateUtil.update(shopFreightTemplate);
+			String activety = shopFreightTemplate.getActivety();
+			if ("是".equals(activety)) {
+				hibernateUtil.execHql("update ShopFreightTemplate set activety = '否' where shopId ='"+shopFreightTemplate.getShopId()+"'");
 			}
+			shopFreightTemplate.setModifyTime(new DateStr().toString());
+			shopFreightTemplate.setState("1");
+			res = hibernateUtil.update(shopFreightTemplate);
 		}
 		return ObjectToResult.getResult(res);
 	}
@@ -111,4 +120,18 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 		Object o = hibernateUtil.hqlFirst(hql);
 		return ObjectToResult.getResult(o);
 	}
+	
+	@Override
+	public Result getProvinces(Parameter param) throws Exception {
+		String hql = "from JPositionProvice";
+		List<Object> proviceList = hibernateUtil.hql(hql);
+		for (int i = 0; i < proviceList.size(); i++) {
+			AddressVo proviceVo = new AddressVo();
+			JPositionProvice provice = (JPositionProvice) proviceList.get(i);
+			proviceVo.setText(provice.getProviceName());
+			proviceVo.setValue(provice.getProviceId());
+		}
+		return ObjectToResult.getResult(proviceList);
+	}
+	
 }

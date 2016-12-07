@@ -100,4 +100,15 @@ public class ShopFreightTemplateAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return shopFreightTemplateServ.getTemplateByArea(parameter);
 	}
+	/**
+	 * 获取省份
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="getProvinces")
+	public @ResponseBody Result getProvinces(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return shopFreightTemplateServ.getProvinces(parameter);
+	}
 }

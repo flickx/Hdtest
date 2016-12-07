@@ -22,6 +22,7 @@ public class AreaFreightTemplate implements java.io.Serializable {
 
 	private String id;
 	private ShopFreightTemplate shopFreightTemplate;
+	private String provinceId;
 	private String freightArea;
 	private Integer less;
 	private Double lessPrice;

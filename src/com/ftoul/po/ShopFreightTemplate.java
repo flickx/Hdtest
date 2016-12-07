@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
 
 
@@ -29,7 +30,7 @@ public class ShopFreightTemplate  implements java.io.Serializable {
 	 */
 	 private static final long serialVersionUID = -735994700427760647L;
 	 private String id;
-     private Shop shop;
+     private String shopId;
      private String templateName;
      private String templateType;
      private String shopAddress;
@@ -46,7 +47,7 @@ public class ShopFreightTemplate  implements java.io.Serializable {
      private String modifyTime;
      private String modifyPerson;
      private String state;
-
+     private String activety;
     // Constructors
 
     /** default constructor */
@@ -55,8 +56,7 @@ public class ShopFreightTemplate  implements java.io.Serializable {
 
     
     /** full constructor */
-    public ShopFreightTemplate(Shop shop, String shopAddress, String shopTime, String freeShop, String priceType, String defaultFreight, String defaultPrice, String increaseUnit, String increasePrice, String kdId, String createTime, String createPerson, String modifyTime, String modifyPerson, String state) {
-        this.shop = shop;
+    public ShopFreightTemplate(String shopAddress, String shopTime, String freeShop, String priceType, String defaultFreight, String defaultPrice, String increaseUnit, String increasePrice, String kdId, String createTime, String createPerson, String modifyTime, String modifyPerson, String state) {
         this.shopAddress = shopAddress;
         this.shopTime = shopTime;
         this.freeShop = freeShop;
@@ -86,18 +86,16 @@ public class ShopFreightTemplate  implements java.io.Serializable {
     public void setId(String id) {
         this.id = id;
     }
-	@ManyToOne(fetch=FetchType.EAGER)
-        @JoinColumn(name="shop_id")
+    @Column(name="shop_id", length=32)
+	public String getShopId() {
+		return shopId;
+	}
+	public void setShopId(String shopId) {
+		this.shopId = shopId;
+	}
 
-    public Shop getShop() {
-        return this.shop;
-    }
-    
-    public void setShop(Shop shop) {
-        this.shop = shop;
-    }
-    
-    @Column(name="template_name", length=100)
+
+	@Column(name="template_name", length=100)
 	public String getTemplateName() {
 		return templateName;
 	}
@@ -245,7 +243,6 @@ public class ShopFreightTemplate  implements java.io.Serializable {
     }
     
     @Column(name="state", length=1)
-
     public String getState() {
         return this.state;
     }
@@ -253,5 +250,12 @@ public class ShopFreightTemplate  implements java.io.Serializable {
     public void setState(String state) {
         this.state = state;
     }
-
+    @Column(name="activety", length=1)
+	public String getActivety() {
+		return activety;
+	}
+	public void setActivety(String activety) {
+		this.activety = activety;
+	}
+    
 }
