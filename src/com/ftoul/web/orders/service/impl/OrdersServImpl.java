@@ -458,6 +458,9 @@ public class OrdersServImpl implements OrdersServ {
 					newOrderPrice = orderPrice - coinPrice;
 					if(newOrderPrice==0){
 						orders.setOrderStatic("2");
+						orders.setPayStatic("1");
+						orders.setPayTime(new DateStr().toString());
+						orders.setPayType("4");//全蜂币支付方式
 					}
 					orders.setBeeCoins((int)coinNumber+"");
 					orders.setCoinPrice(new DecimalFormat("0.00").format(coinPrice));
