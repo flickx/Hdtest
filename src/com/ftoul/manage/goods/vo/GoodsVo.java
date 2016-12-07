@@ -60,6 +60,8 @@ public class GoodsVo {
 	private String goodsLabel;//商品标签
 	
 	private String subTitle;//副标题
+	
+	private String sumStock;//总库存
 	/**
 	 * @return the picSrc
 	 */
@@ -460,6 +462,14 @@ public class GoodsVo {
 
 	public void setSubTitle(String subTitle) {
 		this.subTitle = subTitle;
+	}
+
+	public String getSumStock() {
+		return sumStock;
+	}
+
+	public void setSumStock(String sumStock) {
+		this.sumStock = sumStock;
 	}
 	
 }
