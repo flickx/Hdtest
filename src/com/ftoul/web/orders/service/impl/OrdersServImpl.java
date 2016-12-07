@@ -38,6 +38,7 @@ import com.ftoul.po.GoodsEvent;
 import com.ftoul.po.GoodsEventJoin;
 import com.ftoul.po.GoodsEventLog;
 import com.ftoul.po.GoodsParam;
+import com.ftoul.po.JPositionProvice;
 import com.ftoul.po.Orders;
 import com.ftoul.po.OrdersDetail;
 import com.ftoul.po.OrdersPay;
@@ -46,6 +47,7 @@ import com.ftoul.po.SystemSet;
 import com.ftoul.po.User;
 import com.ftoul.po.UserAddress;
 import com.ftoul.util.hibernate.HibernateUtil;
+import com.ftoul.util.logistics.LogisticsUtil;
 import com.ftoul.util.orders.OrdersUtil;
 import com.ftoul.util.price.PriceUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
@@ -87,6 +89,8 @@ public class OrdersServImpl implements OrdersServ {
 	OrdersUtil ordersUtil;
 	@Autowired  
 	PriceUtil priceUtil;
+	@Autowired  
+	LogisticsUtil logisticsUtil;
 	/**
 	 * 根据用户ID获取订单列表
 	 * @param param Parameter对象
@@ -289,6 +293,9 @@ public class OrdersServImpl implements OrdersServ {
 		Orders orders = (Orders) hibernateUtil.hqlFirst("from Orders where orderNumber='"+vo.getOrderNumber()+"'");
 		orders.setConsignee(userAddress.getConsignee());
 		orders.setConsigneeTel(userAddress.getTel());
+		Object obj = hibernateUtil.hqlFirst("from JPositionProvice where proviceId='"+userAddress.getProvince()+"'"); 
+		JPositionProvice province = (JPositionProvice) obj;
+		orders.setProvince(province.getProviceName());
 		orders.setAddress(userAddress.getName()+userAddress.getAddress());
 		orders.setOrderTime(new DateStr().toString());
 		orders.setModifyTime(new DateStr().toString());
@@ -311,6 +318,7 @@ public class OrdersServImpl implements OrdersServ {
 				Map orderPriceVo = (Map) object;
 				Orders child = (Orders) hibernateUtil.hqlFirst("from Orders where orderNumber='"+orderPriceVo.get("orderNumber")+"'");
 				child.setConsignee(userAddress.getConsignee());
+				child.setProvince(province.getProviceName());
 				child.setConsigneeTel(userAddress.getTel());
 				child.setAddress(userAddress.getName()+userAddress.getAddress());
 				child.setOrderTime(new DateStr().toString());
@@ -639,6 +647,7 @@ public class OrdersServImpl implements OrdersServ {
 		double totalBenPrice = 0.00;//总优惠金额
 		double costPrice = 0.00;//折后单价
 		double costPayable = 0.00;//折后总价
+		int goodsNum=0;
 		String isCard = "no";
 		String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
 		List<Object> goodsVoList = new ArrayList<Object>();
@@ -650,12 +659,14 @@ public class OrdersServImpl implements OrdersServ {
 			BusinessStore businessStore = (BusinessStore)hibernateUtil.find(BusinessStore.class, shopGoodsParamVo.getShopId());
 			orders.setShopId(businessStore);
 			vo.setShopName(businessStore.getStoreName());
+			vo.setShopId(businessStore.getId());
 			GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, shopGoodsParamVo.getGoodsParamId()+"");
 			Goods good = goodsP.getGoods();
 			if("1".equals(good.getCrossborder())){//判断是否是跨境商品1是
 				isCard = "yes";
 			}
 			int num= Integer.parseInt(shopGoodsParamVo.getNum());
+			goodsNum+=num;
 			GoodsVo goodsVo = new GoodsVo();
 			goodsVo.setId(shopGoodsParamVo.getGoodsParamId());
 			goodsVo.setNum(shopGoodsParamVo.getNum());
@@ -801,13 +812,16 @@ public class OrdersServImpl implements OrdersServ {
 		orders.setModifyPerson(param.getUserId());
 		orders.setModifyTime(new DateStr().toString());
 		hibernateUtil.save(orders);
-		
+		vo.setGoodsNum(goodsNum);
 		vo.setPayable(new DecimalFormat("0.00").format(totalPayable));
 		vo.setOrderPrice(new DecimalFormat("0.00").format(orderPrice));
 		vo.setBenPrice(new DecimalFormat("0.00").format(totalBenPrice));
 		vo.setOrderNumber(orders.getOrderNumber());
 		vo.setIsCard(isCard);
 		vo.setVoList(goodsVoList);
+		String province = logisticsUtil.getDefaultUserAddressProvince(param.getUserToken().getUser().getId());
+		double freight = logisticsUtil.getFreight(province, vo.getShopId(), goodsNum);
+		vo.setFreight(freight);
 		//getCoinInfo(param,vo);//获取蜂币
 		//getDeductionCoinInfo(param,vo,orders);
 		//getDoubleCoinData(param,vo);//参与蜂币翻倍活动
@@ -1393,6 +1407,7 @@ public class OrdersServImpl implements OrdersServ {
 		double orderPrice = 0.00;
 		double benPrice = 0.00;
 		double coinPrice = 0.00;
+		double freight = 0.00;
 		int totalCoinNumber = 0;
 		OrderPriceVo msgVo = checkGoodsEvent(param);
 		OrderPriceVo vo = new OrderPriceVo();
@@ -1416,6 +1431,7 @@ public class OrdersServImpl implements OrdersServ {
 					payable += Double.parseDouble(orderPriceVo.getPayable());
 					orderPrice += Double.parseDouble(orderPriceVo.getOrderPrice());
 					benPrice += Double.parseDouble(orderPriceVo.getBenPrice());
+					freight += orderPriceVo.getFreight();
 				}
 				
 				vo.setBenPrice(String.valueOf(benPrice));
@@ -1443,6 +1459,7 @@ public class OrdersServImpl implements OrdersServ {
 					payable += Double.parseDouble(orderPriceVo.getPayable());
 					orderPrice += Double.parseDouble(orderPriceVo.getOrderPrice());
 					benPrice += Double.parseDouble(orderPriceVo.getBenPrice());
+					freight += orderPriceVo.getFreight();
 				}
 				
 				vo.setBenPrice(String.valueOf(benPrice));
@@ -1453,6 +1470,7 @@ public class OrdersServImpl implements OrdersServ {
 				vo.setPayable(String.valueOf(payable));
 				vo.setTotalCoinNumber(totalCoinNumber);
 				vo.setVoList(voList);
+				vo.setFreight(freight);
 				//vo.setShopGoodsParamList(list);
 			}
 			orders.setPayable(vo.getPayable());
@@ -1462,6 +1480,7 @@ public class OrdersServImpl implements OrdersServ {
 			getCoinInfo(param,vo);//获取蜂币
 			getDeductionCoinInfo(param,vo,orders);
 			getDoubleCoinData(param,vo);//参与蜂币翻倍活动
+			//logisticsUtil.getFreight(province, shopId, num);
 		}
 		
 		return ObjectToResult.getResult(vo);

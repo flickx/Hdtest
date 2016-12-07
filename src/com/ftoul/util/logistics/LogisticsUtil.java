@@ -44,7 +44,7 @@ public class LogisticsUtil {
 		double totalFreight = 0.0;
 		int passNum;
 		boolean flag = false;
-		Object obj = hibernateUtil.hqlFirst("from ShopFreightTemplate where state='1' and shopId='"+shopId+"'");
+		Object obj = hibernateUtil.hqlFirst("from ShopFreightTemplate where state='1' and activety='是' and shopId='"+shopId+"'");
 		if(obj!=null){
 			ShopFreightTemplate temp = (ShopFreightTemplate) obj;
 			List<Object> dataList = hibernateUtil.hql("from AreaFreightTemplate where state='1' and shopFreightTemplate.id='"+temp.getId()+"'");
@@ -59,6 +59,8 @@ public class LogisticsUtil {
 							if(num>areaFreightTemplate.getLess()){
 								passNum = num-areaFreightTemplate.getLess();
 								totalFreight = defaultFreight+(passNum*areaFreightTemplate.getIncreasePrice());
+							}else{
+								totalFreight = defaultFreight;
 							}
 							break;
 						}
@@ -70,6 +72,8 @@ public class LogisticsUtil {
 				if(num>Integer.parseInt(temp.getDefaultFreight())){
 					passNum = num-Integer.parseInt(temp.getDefaultFreight());
 					totalFreight = defaultFreight+(passNum*Double.parseDouble(temp.getIncreasePrice()));
+				}else{
+					totalFreight = defaultFreight;
 				}
 			}
 		}
