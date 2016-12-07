@@ -66,9 +66,9 @@ public class SmsCodeUtil {
 		messageVerification.setSort(sort);
 		String content=""; 
 		if (messageType.equals("1")) {
-			content = "【他她乐】亲爱的会员：您的手机注册验证码为"+code+"，如非本人操作，请致电客服0731-82208568";
+			content = "【他她乐】亲爱的"+mobile+"手机用户：您的注册验证码为"+code+"，如非本人操作，请致电客服0731-82208568";
 		}if (messageType.equals("2")) {
-			content = "【他她乐】亲爱的会员：您的手机找回密码验证码为"+code+"，如非本人操作，请致电客服0731-82208568";
+			content = "【他她乐】亲爱的"+mobile+"手机用户：您的找回密码验证码为"+code+"，如非本人操作，请致电客服0731-82208568";
 		}
 		messageVerification.setIp(req.getRemoteAddr());
 		messageVerification.setMobile(mobile);
@@ -114,6 +114,7 @@ public class SmsCodeUtil {
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
         String currentDay = sf.format(c.getTime());
+        
         c.add(Calendar.DAY_OF_MONTH, 1);
         String nextDay = sf.format(c.getTime());
 		String queryStr = " and mobile ='" + mobile+"' and createTime < '"+ nextDay + "' and createTime > '" + currentDay +"'";
