@@ -47,6 +47,7 @@ import com.ftoul.po.User;
 import com.ftoul.po.UserAddress;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.orders.OrdersUtil;
+import com.ftoul.util.price.PriceUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.goods.service.GoodsParamServ;
 import com.ftoul.web.orders.service.OrdersServ;
@@ -84,6 +85,8 @@ public class OrdersServImpl implements OrdersServ {
 	private  HttpServletRequest req;
 	@Autowired  
 	OrdersUtil ordersUtil;
+	@Autowired  
+	PriceUtil priceUtil;
 	/**
 	 * 根据用户ID获取订单列表
 	 * @param param Parameter对象
@@ -640,6 +643,7 @@ public class OrdersServImpl implements OrdersServ {
 		String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
 		List<Object> goodsVoList = new ArrayList<Object>();
 		List<MjGoodsEventVo> mjGoodsEventList =  new ArrayList<MjGoodsEventVo>();
+		List<MjGoodsEventVo> mmjGoodsEventList =  new ArrayList<MjGoodsEventVo>();
 		String eventName="";
 		for (int i = 0; i < list.size(); i++) {
 			ShopGoodsParamVo shopGoodsParamVo = (ShopGoodsParamVo) list.get(i);
@@ -671,12 +675,17 @@ public class OrdersServImpl implements OrdersServ {
 			//查询此商品参加的有效活动
 			List<Object> goodsEventList = hibernateUtil.hql("from GoodsEvent where id in (select goodsEvent.id from GoodsEventJoin where goods.id='"+good.getId()+"' and state='1') and state='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
 			MjGoodsEventVo mjVo = null;
+			MjGoodsEventVo mmjVo = null;
 			if(goodsEventList!=null&&goodsEventList.size()>0){
 				for (int j = 0; j < goodsEventList.size(); j++) {
 					GoodsEvent event = (GoodsEvent) goodsEventList.get(j);
-					if("阶梯满减".equals(event.getTypeName())){
+					if("满减".equals(event.getTypeName())){
 						mjVo = new MjGoodsEventVo();
 						mjVo.setGoodsEvent(event);
+						eventName = event.getEventName();
+					}else if("每满减".equals(event.getTypeName())){
+						mmjVo = new MjGoodsEventVo();
+						mmjVo.setGoodsEvent(event);
 						eventName = event.getEventName();
 					}else{
 						GoodsEventJoin join = (GoodsEventJoin) hibernateUtil.hqlFirst("from GoodsEventJoin where state = '1' and goods.id='"+good.getId()+"' and goodsEvent.id = '"+event.getId()+"'");
@@ -695,7 +704,7 @@ public class OrdersServImpl implements OrdersServ {
 					}
 					
 					if(j==goodsEventList.size()-1){
-						if(mjVo!=null){//参加了阶梯满减活动
+						if(mjVo!=null){//参加阶梯满减活动
 							if(j==0){//只参加了阶梯满减活动
 								price = Double.parseDouble(goodsP.getPrice());
 								payable = price*num;
@@ -706,6 +715,17 @@ public class OrdersServImpl implements OrdersServ {
 							mjVo.setOrderPrice(mjOrderPrice);
 							mjVo.setGoods(good);
 							mjGoodsEventList.add(mjVo);
+						}else if(mmjVo!=null){//参加每满减活动
+							if(j==0){//只参加了每满减活动
+								price = Double.parseDouble(goodsP.getPrice());
+								payable = price*num;
+								totalPayable += payable;
+								costPayable = payable;
+							}
+							mjOrderPrice = costPayable;
+							mmjVo.setOrderPrice(mjOrderPrice);
+							mmjVo.setGoods(good);
+							mmjGoodsEventList.add(mmjVo);
 						}else{//没参加满减活动
 							orderPrice += costPayable;
 						}
@@ -732,30 +752,44 @@ public class OrdersServImpl implements OrdersServ {
 //			System.out.println("需满减订单支付："+(mjOrderPrice));
 		System.out.println("--------满减开始--------");
 		List<Double> mjPrice = new ArrayList<Double>();
-		//指定商品满减活动
+		List<Double> mmjPrice = new ArrayList<Double>();
+		//阶梯满减活动
 		if(mjGoodsEventList.size()>0&&mjGoodsEventList.get(0)!=null){
 			Map<String, Double> group = getMjGoodsEventGroup(mjGoodsEventList);
 			mjPrice = MjGoodsEventGroupCount(group);
 		}
-		//判断是否有全场满减活动
-		Object qcmj = hibernateUtil.hqlFirst("from GoodsEvent where state='1' and universal ='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
 		
-		if(qcmj!=null){
-			GoodsEvent event = (GoodsEvent) qcmj;
-			eventName = event.getEventName();
-			Map<String, Double> qcGroup = new HashMap<String, Double>();
-			if(mjPrice.size()>0){
-				totalBenPrice += mjPrice.get(1);
-				qcGroup.put(event.getId(), mjPrice.get(0)+orderPrice);
-			}else{
-				qcGroup.put(event.getId(), orderPrice);
-			}
-			
-			mjPrice = MjGoodsEventGroupCount(qcGroup);
+		if(mmjGoodsEventList.size()>0&&mmjGoodsEventList.get(0)!=null){
+			Map<String, Double> group = getMjGoodsEventGroup(mjGoodsEventList);
+			mmjPrice = priceUtil.MmjGoodsEventGroupCount(group);
 		}
+		
+		//判断是否有全场满减活动
+//		Object qcmj = hibernateUtil.hqlFirst("from GoodsEvent where typeName='满减' state='1' and universal ='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
+//		
+//		if(qcmj!=null){
+//			GoodsEvent event = (GoodsEvent) qcmj;
+//			eventName = event.getEventName();
+//			Map<String, Double> qcGroup = new HashMap<String, Double>();
+//			if(mjPrice.size()>0){
+//				totalBenPrice += mjPrice.get(1);
+//				qcGroup.put(event.getId(), mjPrice.get(0)+orderPrice);
+//			}else{
+//				qcGroup.put(event.getId(), orderPrice);
+//			}
+//			
+//			mjPrice = MjGoodsEventGroupCount(qcGroup);
+//		}
+		
 		if(mjPrice.size()>0){
-			orderPrice = mjPrice.get(0);
+			orderPrice += mjPrice.get(0);
 			totalBenPrice += mjPrice.get(1);
+			vo.setEventName(eventName);
+		}
+		
+		if(mmjPrice.size()>0){
+			orderPrice += mmjPrice.get(0);
+			totalBenPrice += mmjPrice.get(1);
 			vo.setEventName(eventName);
 		}
 		
