@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.util.logistics.LogisticsCompanyUtil;
+import com.ftoul.util.logistics.LogisticsUtil;
 
 /**
  * 物流管理
@@ -20,7 +20,7 @@ import com.ftoul.util.logistics.LogisticsCompanyUtil;
 public class LogisticsCompanyAction {
 
 	@Autowired
-	private LogisticsCompanyUtil logisticsCompanyUtil; 
+	private LogisticsUtil logisticsUtil; 
 	
 	/**
 	 * 获取物流列表
@@ -31,7 +31,7 @@ public class LogisticsCompanyAction {
 	@RequestMapping(value = "getLogisticsCompany")  
 	public @ResponseBody Result getLogisticsCompany(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return logisticsCompanyUtil.getLogisticsCompany(parameter);
+		return logisticsUtil.getLogisticsCompany(parameter);
 	}
 	
 	
