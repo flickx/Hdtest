@@ -1,6 +1,5 @@
 package com.ftoul.web.goods.service.impl;
 
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +26,7 @@ import com.ftoul.po.GoodsUploadpic;
 import com.ftoul.po.User;
 import com.ftoul.po.UserBrowse;
 import com.ftoul.util.hibernate.HibernateUtil;
+import com.ftoul.util.logistics.LogisticsUtil;
 import com.ftoul.util.price.PriceUtil;
 import com.ftoul.web.goods.service.GoodsBrandServ;
 import com.ftoul.web.goods.service.GoodsPropTypeServ;
@@ -58,6 +58,9 @@ public class GoodsServImpl implements GoodsServ {
 	private PriceUtil priceUtil;
 	@Autowired
 	private HttpServletRequest req;
+	
+	@Autowired
+	private LogisticsUtil logisticsUtil;
 	/**
 	 * 保存/更新商品对象
 	 * @param param Parameter对象
@@ -134,7 +137,14 @@ public class GoodsServImpl implements GoodsServ {
 				goodsPropList.add((GoodsProp)obj);
 			}
 		}
-		
+		//计算运费
+		String provice = null;
+		if(null!=param.getUserToken()){
+			provice = logisticsUtil.getDefaultUserAddressProvince(param.getUserToken().getUser().getId());
+		}
+		//String userId = param.getUserToken().getUser().getId();
+		double freight = logisticsUtil.getFreight(provice,goods.getShopId(),1);
+		goodsVo.setFreight(freight);
 		String hql1 ="from GoodsParam where state=1 and goods.id='"+param.getId()+"'";
 		List<Object> gpList = this.hibernateUtil.hql(hql1);
 		List<GoodsParam> goodsParamList = new ArrayList<GoodsParam>();

@@ -62,6 +62,8 @@ public class GoodsVo {
 	private String subTitle;//副标题
 	
 	private String sumStock;//总库存
+	
+	private double freight;//运费
 	/**
 	 * @return the picSrc
 	 */
@@ -470,6 +472,14 @@ public class GoodsVo {
 
 	public void setSumStock(String sumStock) {
 		this.sumStock = sumStock;
+	}
+
+	public double getFreight() {
+		return freight;
+	}
+
+	public void setFreight(double freight) {
+		this.freight = freight;
 	}
 	
 }

@@ -70,7 +70,7 @@ public class Orders  implements java.io.Serializable {
      private BusinessStore shopId;
      private String parentOrdersId;
      private String isHasChild;
-
+     private String province;
     // Constructors
 
     /** default constructor */
@@ -527,6 +527,15 @@ public class Orders  implements java.io.Serializable {
 
 	public void setShopId(BusinessStore shopId) {
 		this.shopId = shopId;
+	}
+
+	@Column(name="province", length=100)
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
 	}
 	
 
