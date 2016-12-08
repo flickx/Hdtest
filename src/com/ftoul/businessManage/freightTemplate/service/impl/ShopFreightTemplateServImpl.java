@@ -16,6 +16,8 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.po.AreaFreightTemplate;
+import com.ftoul.po.FullCutRule;
+import com.ftoul.po.GoodsEvent;
 import com.ftoul.po.JPositionProvice;
 import com.ftoul.po.ShopFreightTemplate;
 import com.ftoul.util.hibernate.HibernateUtil;
@@ -46,28 +48,37 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 	
 	@Override
 	public Result saveShopFreightTemplate(Parameter param) throws Exception {
-		ShopFreightTemplate shopFreightTemplate=(ShopFreightTemplate) JSONObject.toBean((JSONObject) param.getObj(),ShopFreightTemplate.class);		
-		Object res;
-		if(Common.isNull(shopFreightTemplate.getId())){
-			String shopId = param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId();
-			shopFreightTemplate.setShopId(shopId);
-			shopFreightTemplate.setCreateTime(new DateStr().toString());
-			shopFreightTemplate.setShopAddress("未被配置的区域自动执行默认运费");
-			shopFreightTemplate.setState("1");
-			String activety = shopFreightTemplate.getActivety();
-			if ("是".equals(activety)) {
-				hibernateUtil.execHql("update ShopFreightTemplate set activety = '否' where shopId ='"+shopId+"'");
+		Object res;		
+		String shopId = param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId();
+		if(param.getObj() == null){
+			ShopFreightTemplate s =  new ShopFreightTemplate();
+			s.setShopId(shopId);
+			s.setShopAddress("未被配置的区域自动执行默认运费");
+			s.setCreateTime(new DateStr().toString());
+			hibernateUtil.save(s);
+			res = s;
+		}
+		else{
+			ShopFreightTemplate shopFreightTemplate=(ShopFreightTemplate) JSONObject.toBean((JSONObject) param.getObj(),ShopFreightTemplate.class);
+			if(Common.isNull(shopFreightTemplate.getId())){
+				shopFreightTemplate.setShopId(shopId);
+				shopFreightTemplate.setCreateTime(new DateStr().toString());
+				shopFreightTemplate.setShopAddress("未被配置的区域自动执行默认运费");
+				shopFreightTemplate.setState("1");
+				String activety = shopFreightTemplate.getActivety();
+				if ("是".equals(activety)) {
+					hibernateUtil.execHql("update ShopFreightTemplate set activety = '否' where shopId ='"+shopId+"'");
+				}
+				res=hibernateUtil.save(shopFreightTemplate);
+			}else{
+				String activety = shopFreightTemplate.getActivety();
+				if ("是".equals(activety)) {
+					hibernateUtil.execHql("update ShopFreightTemplate set activety = '否' where shopId ='"+shopFreightTemplate.getShopId()+"'");
+				}
+				shopFreightTemplate.setModifyTime(new DateStr().toString());
+				shopFreightTemplate.setState("1");
+				res = hibernateUtil.update(shopFreightTemplate);
 			}
-			hibernateUtil.save(shopFreightTemplate);
-			res = shopFreightTemplate;
-		}else{
-			String activety = shopFreightTemplate.getActivety();
-			if ("是".equals(activety)) {
-				hibernateUtil.execHql("update ShopFreightTemplate set activety = '否' where shopId ='"+shopFreightTemplate.getShopId()+"'");
-			}
-			shopFreightTemplate.setModifyTime(new DateStr().toString());
-			shopFreightTemplate.setState("1");
-			res = hibernateUtil.update(shopFreightTemplate);
 		}
 		return ObjectToResult.getResult(res);
 	}
@@ -92,6 +103,7 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 			areaFreightTemplate.setCreateTime(new DateStr().toString());
 			res = hibernateUtil.save(areaFreightTemplate);
 		}else{
+			//AreaFreightTemplate area = (AreaFreightTemplate) hibernateUtil.find(AreaFreightTemplate.class, areaFreightTemplate.getId());
 			areaFreightTemplate.setModifyTime(new DateStr().toString());
 			areaFreightTemplate.setState("1");
 			res=hibernateUtil.update(areaFreightTemplate);
