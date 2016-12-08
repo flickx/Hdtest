@@ -16,7 +16,6 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.po.AreaFreightTemplate;
-import com.ftoul.po.BusinessStore;
 import com.ftoul.po.JPositionProvice;
 import com.ftoul.po.ShopFreightTemplate;
 import com.ftoul.util.hibernate.HibernateUtil;
@@ -33,7 +32,7 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 
 	@Override
 	public Result getShopFreightTemplatePage(Parameter param) throws Exception {
-		String hql = "from ShopFreightTemplate where state = '1'" + param.getWhereStr() + param.getOrderBy() ;
+		String hql = "from ShopFreightTemplate where state = '1' and shopId = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
