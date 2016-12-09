@@ -132,9 +132,9 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 		String whereStr = param.getWhereStr();
 		String hql;
 		if(whereStr!=null){
-			hql = "from OrdersPay where state = '1' "+whereStr+" order by createTime desc";
+			hql = "from OrdersPay where state = '1' "+whereStr+"and orders.shopId.id='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by createTime desc";
 		}else{
-			hql = "from OrdersPay where state = '1' order by createTime desc";
+			hql = "from OrdersPay where state = '1' and orders.shopId.id='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by createTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		List<Object> list = page.getObjList();
@@ -182,7 +182,6 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 		}else{
 			hql = " from Orders where orderStatic!='0' and shopId.id='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by orderTime desc";
 		}
-		
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		List<Object> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
@@ -205,15 +204,11 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 				ordersDetailVoList.add(goodsPicSrc);
 			}
 			ordersVo.setGoodPicSrcs(ordersDetailVoList);
-//			if(orders.getUserAddress()!=null){
-//				ordersVo.setUserName(orders.getUser().getUsername());
-//				ordersVo.setTel(orders.getUserAddress().getTel());
-//				ordersVo.setConginee(orders.getUserAddress().getConsignee());
-//			}
 			ordersVo.setUserName(orders.getUser().getUsername());
 			ordersVo.setTel(orders.getConsigneeTel());
 			ordersVo.setConginee(orders.getConsignee());
 			ordersVo.setAddress(orders.getAddress());
+			ordersVo.setFreight(orders.getFreight().toString());
 			voList.add(ordersVo);
 		}
 		page.setObjList(voList);

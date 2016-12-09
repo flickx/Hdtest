@@ -187,6 +187,9 @@ public class GoodsServImpl implements GoodsServ {
 								float f = Float.parseFloat(String.valueOf(goods.getPrice()))*Float.parseFloat(obj[3]+"");
 								goodsVo.setEventPrice(new DecimalFormat("0.00").format(f));	
 							}
+						}else{
+							float f = Float.parseFloat(String.valueOf(goods.getPrice()));
+							goodsVo.setEventPrice(new DecimalFormat("0.00").format(f));	
 						}
 					}
 				}

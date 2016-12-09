@@ -185,37 +185,6 @@ public class OrdersServImpl implements OrdersServ {
 			hql = " from Orders where orderStatic!='0' order by orderTime desc";
 		}
 		
-		//判断表格每列，并按列进行排序
-//		if(param.getSidx().equals("orderTime")){
-//			hql+=" order by orderTime "+param.getSord();
-//		}
-//		if(param.getSidx().equals("orderNumber")){
-//			hql+=" order by orderNumber "+param.getSord();
-//		}
-//		if(param.getSidx().equals("payable")){
-//			hql+=" order by payable "+param.getSord();
-//		}
-//		if(param.getSidx().equals("goodsTotal")){
-//			hql+=" order by goodsTotal "+param.getSord();
-//		}
-//		if(param.getSidx().equals("userName")){
-//			hql+=" order by user "+param.getSord();
-//		}
-//		if(param.getSidx().equals("conginee")){
-//			hql+=" order by logisticsCompany "+param.getSord();
-//		}
-//		if(param.getSidx().equals("tel")){
-//			hql+=" order by userAddress "+param.getSord();
-//		}
-//		if(param.getSidx().equals("orderTime")){
-//			hql+=" order by orderTime "+param.getSord();
-//		}
-//		if(param.getSidx().equals("orderStatic")){
-//			hql+=" order by orderStatic "+param.getSord();
-//		}
-//		if(param.getSidx().equals("orderPrice")){
-//			hql+=" order by orderPrice "+param.getSord();
-//		}
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		List<Object> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
@@ -238,15 +207,22 @@ public class OrdersServImpl implements OrdersServ {
 				ordersDetailVoList.add(goodsPicSrc);
 			}
 			ordersVo.setGoodPicSrcs(ordersDetailVoList);
-//			if(orders.getUserAddress()!=null){
-//				ordersVo.setUserName(orders.getUser().getUsername());
-//				ordersVo.setTel(orders.getUserAddress().getTel());
-//				ordersVo.setConginee(orders.getUserAddress().getConsignee());
-//			}
 			ordersVo.setUserName(orders.getUser().getUsername());
 			ordersVo.setTel(orders.getConsigneeTel());
 			ordersVo.setConginee(orders.getConsignee());
 			ordersVo.setAddress(orders.getAddress());
+			ordersVo.setFreight(orders.getFreight().toString());
+			if(orders.getShopId()!=null){
+				ordersVo.setShopName(orders.getShopId().getStoreName());
+			}
+			if("1".equals(orders.getIsHasChild())){
+				ordersVo.setIsHasChild("是");
+			}
+			Orders parent = (Orders) hibernateUtil.find(Orders.class, orders.getParentOrdersId()+"");
+			if(parent!=null){
+				ordersVo.setParentOrderNumber(parent.getOrderNumber());
+			}
+			
 			voList.add(ordersVo);
 		}
 		page.setObjList(voList);
@@ -275,6 +251,8 @@ public class OrdersServImpl implements OrdersServ {
 			orderDetailVo.setPayType("微信支付");
 		}else if(OrdersConstant.ALIQBPAY.equals(orders.getPayType())){
 			orderDetailVo.setPayType("支付宝钱包支付");
+		}else if(OrdersConstant.FBPAY.equals(orders.getPayType())){
+			orderDetailVo.setPayType("全蜂币支付");
 		}
 		OrdersPay pay = (OrdersPay) hibernateUtil.hqlFirst("from OrdersPay where orders.id='"+orders.getId()+"'");
 		if(pay!=null){
@@ -289,6 +267,11 @@ public class OrdersServImpl implements OrdersServ {
 		}else{
 			orderDetailVo.setBeeCoins("无");
 		}
+		if(orders.getParentOrdersId()!=null){
+			orderDetailVo.setIsHasParentOrder("有父订单");
+		}else{
+			orderDetailVo.setIsHasParentOrder("无父订单");
+		}
 		orderDetailVo.setPayAble(orders.getPayable());
 		orderDetailVo.setBenefitMoney(orders.getBenefitPrice());//订单优惠金额
 		orderDetailVo.setModifyPrice(orders.getBenefitPrice());//订单修改金额
@@ -299,28 +282,16 @@ public class OrdersServImpl implements OrdersServ {
 				orderDetailVo.setClearCustomState("已清关");
 			}
 		}
-		
-		//orderDetailVo.setCouponId();//优惠券码
-		//orderDetailVo.setCouponName();//优惠券名称
 		if(orders.getLogisticsCompany()!=null){
 			orderDetailVo.setCompany(orders.getLogisticsCompany().getName());
 		}else{
 			orderDetailVo.setCompany("无");
 		}
-		
-//		if(orders.getUserAddress()!=null){
-//			orderDetailVo.setAddress(orders.getUserAddress().getName()+"  "+orders.getUserAddress().getAddress());
-//			orderDetailVo.setTel(orders.getUserAddress().getTel());
-//			orderDetailVo.setConsignee(orders.getUserAddress().getConsignee());
-//		}
+		orderDetailVo.setFreight(orders.getFreight().toString());
+
 		orderDetailVo.setTel(orders.getConsigneeTel());
 		orderDetailVo.setConsignee(orders.getConsignee());
 		orderDetailVo.setAddress(orders.getAddress());
-//		else{
-//			orderDetailVo.setAddress("无");
-//			orderDetailVo.setTel("无");
-//			orderDetailVo.setConsignee("无");
-//		}
 		if(orders.getUser().getCardId()!=null){
 			orderDetailVo.setCard(orders.getUser().getCardId());
 		}else{

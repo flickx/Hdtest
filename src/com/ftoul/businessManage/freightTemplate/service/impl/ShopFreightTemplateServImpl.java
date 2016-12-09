@@ -16,8 +16,6 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.po.AreaFreightTemplate;
-import com.ftoul.po.FullCutRule;
-import com.ftoul.po.GoodsEvent;
 import com.ftoul.po.JPositionProvice;
 import com.ftoul.po.ShopFreightTemplate;
 import com.ftoul.util.hibernate.HibernateUtil;

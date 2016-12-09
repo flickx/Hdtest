@@ -18,6 +18,7 @@ public class OrderDetailVo {
 	private String modifyPrice;
 	private String company;
 	private String odd;
+	private String freight;
 	private String consignee;
 	private String address;
 	private String tel;
@@ -28,6 +29,7 @@ public class OrderDetailVo {
 	private String payType;
 	private String serilNumber;
 	private String card;
+	private String isHasParentOrder;
 	
 	private List<GoodsVo> goodsVoList;
 	
@@ -180,6 +182,18 @@ public class OrderDetailVo {
 	}
 	public void setCard(String card) {
 		this.card = card;
+	}
+	public String getFreight() {
+		return freight;
+	}
+	public void setFreight(String freight) {
+		this.freight = freight;
+	}
+	public String getIsHasParentOrder() {
+		return isHasParentOrder;
+	}
+	public void setIsHasParentOrder(String isHasParentOrder) {
+		this.isHasParentOrder = isHasParentOrder;
 	}
 
 }
