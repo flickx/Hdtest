@@ -10,11 +10,17 @@ import com.ftoul.common.Result;
  */
 public interface BusinessServ {
 	/**
-	 * 保存/更新商家对象
+	 * 保存商家对象
 	 * @param param Parameter对象
 	 * @return 返回结果（前台用Result对象）
 	 */
 	Result saveBusiness(Parameter param) throws Exception;
+	/**
+	 * 更新商家对象
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result updateBusiness(Parameter param) throws Exception;
 	
 	/**
 	 * 查询商家信息
@@ -151,5 +157,13 @@ public interface BusinessServ {
 	 * @throws Exception
 	 */
 	Result delBusinessStoreManageCategoryPage(Parameter parameter) throws Exception;
+	/**
+	 * 删除商家上传图片信息
+	 * @param param
+	 * @return 返回结果(前台用Result对象)
+	 * @throws Exception
+	 */
+	Result delIdCardUploadpic(Parameter parameter) throws Exception;
+	
 }
 

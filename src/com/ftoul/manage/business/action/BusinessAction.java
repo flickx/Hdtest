@@ -46,6 +46,16 @@ public class BusinessAction {
 		return businessServ.saveBusiness(parameter);
 	}
 	/**
+	 * 保存/更新商家数据
+	 * @param param 当前商家参数
+	 * @throws Exception
+	 */
+	@RequestMapping(value="updateBusiness")
+	public @ResponseBody Result updateBusiness(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return businessServ.updateBusiness(parameter);
+	}
+	/**
 	 * 获取商家资料数据
 	 * @param param 参数
 	 * @throws Exception
@@ -312,5 +322,15 @@ public class BusinessAction {
 		public @ResponseBody Result delBusinessStoreManageCategoryPage(String param)throws Exception{
 			Parameter parameter = Common.jsonToParam(param);
 			return businessServ.delBusinessStoreManageCategoryPage(parameter);
+		}
+		/**
+		 * 删除商家入驻图片
+		 * @param param 参数
+		 * @throws Exception
+		 */
+		@RequestMapping(value="delIdCardUploadpic")
+		public @ResponseBody Result delIdCardUploadpic(String param)throws Exception{
+			Parameter parameter = Common.jsonToParam(param);
+			return businessServ.delIdCardUploadpic(parameter);
 		}
 }

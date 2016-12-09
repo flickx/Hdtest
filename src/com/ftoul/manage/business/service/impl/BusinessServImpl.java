@@ -89,7 +89,41 @@ public class BusinessServImpl implements BusinessServ {
 			res = hibernateUtil.save(businessStoreLogin);
 		return ObjectToResult.getResult(res);
 	}
-
+	/**
+	 * 更新商家对象
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result updateBusiness(Parameter param) throws Exception {
+		BusinessStoreLogin businessStoreLogin=(BusinessStoreLogin) JSONObject.toBean((JSONObject) param.getObj(),BusinessStoreLogin.class);
+		Object res;
+			//基本信息
+			businessStoreLogin.getBusinessStore().getBusiness().getBusinessBase().setOperateId(param.getManageToken().getLoginUser().getLoginName());
+			businessStoreLogin.getBusinessStore().getBusiness().getBusinessBase().setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			res = hibernateUtil.update(businessStoreLogin.getBusinessStore().getBusiness().getBusinessBase());
+			//经营信息
+			businessStoreLogin.getBusinessStore().getBusiness().getBusinessManage().setOperateId(param.getManageToken().getLoginUser().getLoginName());
+			businessStoreLogin.getBusinessStore().getBusiness().getBusinessManage().setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			res = hibernateUtil.update(businessStoreLogin.getBusinessStore().getBusiness().getBusinessManage());
+			//银行信息
+			businessStoreLogin.getBusinessStore().getBusiness().getBusinessBank().setOperateId(param.getManageToken().getLoginUser().getLoginName());
+			businessStoreLogin.getBusinessStore().getBusiness().getBusinessBank().setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			res = hibernateUtil.update(businessStoreLogin.getBusinessStore().getBusiness().getBusinessBank());
+			//商家信息
+			businessStoreLogin.getBusinessStore().getBusiness().setOperateId(param.getManageToken().getLoginUser().getLoginName());
+			businessStoreLogin.getBusinessStore().getBusiness().setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			res = hibernateUtil.update(businessStoreLogin.getBusinessStore().getBusiness());
+			//店铺信息
+			businessStoreLogin.getBusinessStore().setOperateId(param.getManageToken().getLoginUser().getLoginName());
+			businessStoreLogin.getBusinessStore().setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			res = hibernateUtil.update(businessStoreLogin.getBusinessStore());
+			//店铺登录信息
+			businessStoreLogin.setOperateId(param.getManageToken().getLoginUser().getLoginName());
+			businessStoreLogin.setOperateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			res = hibernateUtil.update(businessStoreLogin);
+		return ObjectToResult.getResult(res);
+	}
 	/**
 	 * 获取商家信息对象
 	 * @param param Parameter对象
@@ -419,6 +453,12 @@ public class BusinessServImpl implements BusinessServ {
 		String hql="update BusinessStoreManageCategory set state = '0' where id in ("+StrUtil.getIds(parameter.getId())+")";
 		Integer res;
 		res = hibernateUtil.execHql(hql);
+		return ObjectToResult.getResult(res);
+	}
+
+	@Override
+	public Result delIdCardUploadpic(Parameter parameter) throws Exception {
+		Integer res=0;
 		return ObjectToResult.getResult(res);
 	}
 }
