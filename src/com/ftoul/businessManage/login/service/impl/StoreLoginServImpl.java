@@ -53,7 +53,8 @@ public class StoreLoginServImpl implements StoreLoginServ {
 		}
 		String hql = " from BusinessStoreLogin where state = '1' and storeAccount = '" 
 				+ businessStoreLogin.getStoreAccount() + "' and password = '"
-				+ MD5.getMD5(businessStoreLogin.getPassword()) + "'";
+				+ MD5.getMD5(businessStoreLogin.getPassword()) 
+				+ "' and businessStore.storeId= '"+businessStoreLogin.getBusinessStore().getStoreId()+"'";
 		List<Object> businessStoreLoginList = hibernateUtil.hql(hql);
 		ManageTokenVo manageTokenVo = new ManageTokenVo();
 		if(businessStoreLoginList != null && businessStoreLoginList.size() > 0){
@@ -84,9 +85,9 @@ public class StoreLoginServImpl implements StoreLoginServ {
 			loginUserLog.setOperationTime(new DateStr().toString());
 			loginUserLog.setIpAddress(req.getRemoteAddr());
 			loginUserLog.setResStatic(res.getStatus()+"");
-			loginUserLog.setResText("使用"+businessStoreLogin.getStoreAccount()+"的用户登陆，用户名/密码错误");
+			loginUserLog.setResText("使用"+businessStoreLogin.getStoreAccount()+"的用户登陆，店铺号/用户名/密码错误");
 			hibernateUtil.save(loginUserLog);
-			throw new Exception("用户或密码错误");
+			throw new Exception("店铺号或用户或密码错误");
 		}
 		return ObjectToResult.getResult(manageTokenVo);
 	}
