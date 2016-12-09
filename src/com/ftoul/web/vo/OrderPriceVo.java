@@ -7,6 +7,7 @@ public class OrderPriceVo {
 	
 	private String payable;
 	private String orderPrice;
+	private double goodsTotalPrice;
 	private String benPrice;
 	private String orderNumber;
 	private String isCard;
@@ -124,6 +125,12 @@ public class OrderPriceVo {
 	}
 	public void setFreight(double freight) {
 		this.freight = freight;
+	}
+	public double getGoodsTotalPrice() {
+		return goodsTotalPrice;
+	}
+	public void setGoodsTotalPrice(double goodsTotalPrice) {
+		this.goodsTotalPrice = goodsTotalPrice;
 	}
 	
 }

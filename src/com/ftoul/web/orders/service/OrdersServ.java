@@ -50,4 +50,6 @@ public interface OrdersServ {
 
 	Result getOrdersDetailById(Parameter parameter) throws Exception;
 
+	Result getOrdersFreightByOrderNumber(Parameter parameter) throws Exception;
+
 }

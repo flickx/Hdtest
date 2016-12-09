@@ -45,17 +45,19 @@ public class PriceUtil {
 			discountAmount = goodsEvent.getDiscountAmount().doubleValue();
 			//订单总价
 			double value = group.get(key);
+			System.out.println(goodsEvent.getEventName()+"活动【前】的订单价："+value);
 			per = Math.floor(value/target);
 			discountAmount = discountAmount*per;
 			value = value - discountAmount;
+			System.out.println(goodsEvent.getEventName()+"活动【后】的订单价："+value);
 			orderPrice += value;
 			benPrice += discountAmount;
 		}
 		List<Double> result = new ArrayList<Double>();
 		result.add(orderPrice);
 		result.add(benPrice);
-		System.out.println("每满减后的订单价格："+orderPrice);
-		System.out.println("每满减优惠："+benPrice);
+		System.out.println("最终每满减后的订单价格："+orderPrice);
+		System.out.println("最终每满减优惠："+benPrice);
 		return result;
 		
 	}
