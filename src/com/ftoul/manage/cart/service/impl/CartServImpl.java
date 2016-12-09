@@ -42,7 +42,7 @@ public class CartServImpl implements CartServ {
 		String goodsSql = "select sc.id,sc.number,gs.pic_src,gs.title,gp.param_name,sc.goods_param_id,gs.id as goodsId,gp.stock,gp.price,gs.shop_id"
 					+" from shop_car sc  join goods_param gp on sc.goods_param_id = gp.id and gp.state =1 and sc.state = 1 "
 					+" join goods gs on gp.goods_id=gs.id and gs.state = 1 and sc.state = 1"
-					+" where sc.user_id='" + param.getUserToken().getUser().getId() +"' and sc.state = 1 and gs.state = 1";
+					+" where sc.user_id='" + param.getUserToken().getUser().getId() +"' and sc.state = 1 and gs.state = 1 order by gs.shop_id";
 		List<Object[]> shopCarList = hibernateUtil.sql(goodsSql);
 		List<ShopCarVO> voList = new ArrayList<ShopCarVO>();
 		for (int i = 0; i < shopCarList.size(); i++) {
