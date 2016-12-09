@@ -25,7 +25,7 @@ import com.ftoul.web.vo.AddressVo;
 /**
  * 
  * @author liding
- *
+ * 
  */
 @Service("ShopFreightTemplateServImpl")
 public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
@@ -34,46 +34,62 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 
 	@Override
 	public Result getShopFreightTemplatePage(Parameter param) throws Exception {
-		String hql = "from ShopFreightTemplate where state = '1' and shopId = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		String hql = "from ShopFreightTemplate where state = '1' and shopId = '"
+				+ param.getId()
+				+ "' "
+				+ param.getWhereStr()
+				+ param.getOrderBy();
+		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(),
+				param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 
 	@Override
 	public Result getAreaFreightTemplateById(Parameter param) throws Exception {
-		String hql = "from AreaFreightTemplate where state='1' and shopFreightTemplate.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		String hql = "from AreaFreightTemplate where state='1' and shopFreightTemplate.id = '"
+				+ param.getId()
+				+ "' "
+				+ param.getWhereStr()
+				+ param.getOrderBy();
+		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(),
+				param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
-	
+
 	@Override
 	public Result saveShopFreightTemplate(Parameter param) throws Exception {
-		Object res;		
-		String shopId = param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId();
-		if(param.getObj() == null){
-			ShopFreightTemplate s =  new ShopFreightTemplate();
+		Object res;
+		String shopId = param.getManageToken().getBusinessStoreLogin()
+				.getBusinessStore().getId();
+		if (param.getObj() == null) {
+			ShopFreightTemplate s = new ShopFreightTemplate();
 			s.setShopId(shopId);
 			s.setShopAddress("未被配置的区域自动执行默认运费");
 			s.setCreateTime(new DateStr().toString());
 			hibernateUtil.save(s);
 			res = s;
-		}
-		else{
-			ShopFreightTemplate shopFreightTemplate=(ShopFreightTemplate) JSONObject.toBean((JSONObject) param.getObj(),ShopFreightTemplate.class);
-			if(Common.isNull(shopFreightTemplate.getId())){
+		} else {
+			ShopFreightTemplate shopFreightTemplate = (ShopFreightTemplate) JSONObject
+					.toBean((JSONObject) param.getObj(),
+							ShopFreightTemplate.class);
+			if (Common.isNull(shopFreightTemplate.getId())) {
 				shopFreightTemplate.setShopId(shopId);
 				shopFreightTemplate.setCreateTime(new DateStr().toString());
 				shopFreightTemplate.setShopAddress("未被配置的区域自动执行默认运费");
 				shopFreightTemplate.setState("1");
 				String activety = shopFreightTemplate.getActivety();
 				if ("是".equals(activety)) {
-					hibernateUtil.execHql("update ShopFreightTemplate set activety = '否' where shopId ='"+shopId+"'");
+					hibernateUtil
+							.execHql("update ShopFreightTemplate set activety = '否' where shopId ='"
+									+ shopId + "'");
 				}
-				res=hibernateUtil.save(shopFreightTemplate);
-			}else{
+				res = hibernateUtil.save(shopFreightTemplate);
+			} else {
 				String activety = shopFreightTemplate.getActivety();
 				if ("是".equals(activety)) {
-					hibernateUtil.execHql("update ShopFreightTemplate set activety = '否' where shopId ='"+shopFreightTemplate.getShopId()+"'");
+					hibernateUtil
+							.execHql("update ShopFreightTemplate set activety = '否' where shopId ='"
+									+ shopFreightTemplate.getShopId() + "'");
 				}
 				shopFreightTemplate.setModifyTime(new DateStr().toString());
 				shopFreightTemplate.setState("1");
@@ -85,53 +101,65 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 
 	@Override
 	public Result delShopFreightTemplate(Parameter param) throws Exception {
-		Integer num = hibernateUtil.execHql("update ShopFreightTemplate set state = '0' where id in ("+StrUtil.getIds(param.getId())+")");
+		Integer num = hibernateUtil
+				.execHql("update ShopFreightTemplate set state = '0' where id in ("
+						+ StrUtil.getIds(param.getId()) + ")");
 		return ObjectToResult.getResult(num);
 	}
 
 	@Override
-	public Result saveShopAreaFreightTemplate(Parameter param)
-			throws Exception {
-		AreaFreightTemplate areaFreightTemplate=(AreaFreightTemplate) JSONObject.toBean((JSONObject) param.getObj(),AreaFreightTemplate.class);
-		ShopFreightTemplate shopFreightTemplate = (ShopFreightTemplate) hibernateUtil.find(ShopFreightTemplate.class, param.getId()+"");
-		if (shopFreightTemplate!=null) {
+	public Result saveShopAreaFreightTemplate(Parameter param) throws Exception {
+		AreaFreightTemplate areaFreightTemplate = (AreaFreightTemplate) JSONObject
+				.toBean((JSONObject) param.getObj(), AreaFreightTemplate.class);
+		ShopFreightTemplate shopFreightTemplate = (ShopFreightTemplate) hibernateUtil
+				.find(ShopFreightTemplate.class, param.getId() + "");
+		if (shopFreightTemplate != null) {
 			areaFreightTemplate.setShopFreightTemplate(shopFreightTemplate);
 		}
 		Object res;
-		if(areaFreightTemplate.getId().length()<3){
+		if (areaFreightTemplate.getId().length() < 3) {
 			areaFreightTemplate.setState("1");
 			areaFreightTemplate.setCreateTime(new DateStr().toString());
 			res = hibernateUtil.save(areaFreightTemplate);
-		}else{
-			//AreaFreightTemplate area = (AreaFreightTemplate) hibernateUtil.find(AreaFreightTemplate.class, areaFreightTemplate.getId());
+		} else {
+			// AreaFreightTemplate area = (AreaFreightTemplate)
+			// hibernateUtil.find(AreaFreightTemplate.class,
+			// areaFreightTemplate.getId());
 			areaFreightTemplate.setModifyTime(new DateStr().toString());
 			areaFreightTemplate.setState("1");
-			res=hibernateUtil.update(areaFreightTemplate);
+			res = hibernateUtil.update(areaFreightTemplate);
 		}
 		return ObjectToResult.getResult(res);
 	}
 
 	@Override
-	public Result delAreaFreightTemplateById(Parameter param)
-			throws Exception {
-		Integer num = hibernateUtil.execHql("update AreaFreightTemplate set state = '0' where id in ("+StrUtil.getIds(param.getId())+")");
+	public Result delAreaFreightTemplateById(Parameter param) throws Exception {
+		Integer num = hibernateUtil
+				.execHql("update AreaFreightTemplate set state = '0' where id in ("
+						+ StrUtil.getIds(param.getId()) + ")");
 		return ObjectToResult.getResult(num);
 	}
 
 	@Override
 	public Result getShopFreightTemplateById(Parameter param) throws Exception {
-		String hql = "from ShopFreightTemplate where state='1' and id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
+		String hql = "from ShopFreightTemplate where state='1' and id = '"
+				+ param.getId() + "' " + param.getWhereStr()
+				+ param.getOrderBy();
 		Object o = hibernateUtil.hqlFirst(hql);
 		return ObjectToResult.getResult(o);
 	}
 
 	@Override
 	public Result getTemplateByArea(Parameter param) throws Exception {
-		String hql = "from AreaFreightTemplate where state='1' and shopFreightTemplate.id = '" + param.getId() +param.getWhereStr() + param.getOrderBy() ;
+		String hql = "from AreaFreightTemplate where state='1' and shopFreightTemplate.id = '"
+				+ param.getId()
+				+ "'"
+				+ param.getWhereStr()
+				+ param.getOrderBy();
 		Object o = hibernateUtil.hqlFirst(hql);
 		return ObjectToResult.getResult(o);
 	}
-	
+
 	@Override
 	public Result getProvinces(Parameter param) throws Exception {
 		String hql = "from JPositionProvice";
@@ -144,5 +172,5 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 		}
 		return ObjectToResult.getResult(proviceList);
 	}
-	
+
 }
