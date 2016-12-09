@@ -676,7 +676,7 @@ public class OrdersServImpl implements OrdersServ {
 			Map<String, Double> group = getMjGoodsEventGroup(mjGoodsEventList);
 			mjPrice = MjGoodsEventGroupCount(group);
 		}
-		
+		//每满减
 		if(mmjGoodsEventList.size()>0&&mmjGoodsEventList.get(0)!=null){
 			Map<String, Double> group = getMjGoodsEventGroup(mmjGoodsEventList);
 			mmjPrice = priceUtil.MmjGoodsEventGroupCount(group);
@@ -724,6 +724,7 @@ public class OrdersServImpl implements OrdersServ {
 		orders.setCreateTime(new DateStr().toString());
 		orders.setModifyPerson(param.getUserId());
 		orders.setModifyTime(new DateStr().toString());
+		System.out.println("店铺："+orders.getShopId().getStoreName()+"，订单号："+orders.getOrderNumber()+",商品最终总价格："+orders.getGoodsTotalPrice().doubleValue()+",订单金额（包含运费）："+orders.getOrderPrice()+",运费："+orders.getFreight().doubleValue());
 		hibernateUtil.save(orders);
 		vo.setGoodsNum(goodsNum);
 		vo.setFreight(freight);
