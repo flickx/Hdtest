@@ -132,9 +132,9 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 		String whereStr = param.getWhereStr();
 		String hql;
 		if(whereStr!=null){
-			hql = "from OrdersPay where state = '1' "+whereStr+" order by createTime desc";
+			hql = "from OrdersPay where state = '1' "+whereStr+"and orders.shopId.id='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by createTime desc";
 		}else{
-			hql = "from OrdersPay where state = '1' order by createTime desc";
+			hql = "from OrdersPay where state = '1' and orders.shopId.id='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by createTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		List<Object> list = page.getObjList();

@@ -21,6 +21,7 @@ public class AfterScheduleVo {
 	private String orderStatic;
 	private String orderTime;
 	private String createTime;
+	private String shopName;
 	private List<AfterSchedule> list;
 	
 	private String company;
@@ -234,6 +235,12 @@ public class AfterScheduleVo {
 	}
 	public void setList(List<AfterSchedule> list) {
 		this.list = list;
+	}
+	public String getShopName() {
+		return shopName;
+	}
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
 	}
 	
 }

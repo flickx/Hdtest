@@ -247,6 +247,17 @@ public class OrdersServImpl implements OrdersServ {
 			ordersVo.setTel(orders.getConsigneeTel());
 			ordersVo.setConginee(orders.getConsignee());
 			ordersVo.setAddress(orders.getAddress());
+			if(orders.getShopId()!=null){
+				ordersVo.setShopName(orders.getShopId().getStoreName());
+			}
+			if("1".equals(orders.getIsHasChild())){
+				ordersVo.setIsHasChild("是");
+			}
+			Orders parent = (Orders) hibernateUtil.find(Orders.class, orders.getParentOrdersId()+"");
+			if(parent!=null){
+				ordersVo.setParentOrderNumber(parent.getOrderNumber());
+			}
+			
 			voList.add(ordersVo);
 		}
 		page.setObjList(voList);

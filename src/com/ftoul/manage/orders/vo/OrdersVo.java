@@ -17,7 +17,8 @@ public class OrdersVo {
 	private String orderStatic;
 	private String orderPrice;//实付金额
 	private String shopName;
-	
+	private String isHasChild;
+	private String parentOrderNumber;
 	/**
 	 * @return the address
 	 */
@@ -102,7 +103,17 @@ public class OrdersVo {
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
 	}
-	
-	
+	public String getIsHasChild() {
+		return isHasChild;
+	}
+	public void setIsHasChild(String isHasChild) {
+		this.isHasChild = isHasChild;
+	}
+	public String getParentOrderNumber() {
+		return parentOrderNumber;
+	}
+	public void setParentOrderNumber(String parentOrderNumber) {
+		this.parentOrderNumber = parentOrderNumber;
+	}
 
 }
