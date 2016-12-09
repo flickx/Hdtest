@@ -368,6 +368,8 @@ public class OrdersServImpl implements OrdersServ {
 						ordersDetail.setPrice(event.getEventPrice().toString());
 					}else if(event.getDiscount()!=null){
 						ordersDetail.setPrice(new DecimalFormat("0.00").format(Double.parseDouble(goodsP.getPrice())*Float.parseFloat(event.getDiscount())));
+					}else{
+						ordersDetail.setPrice(goodsP.getPrice());
 					}
 				}else{
 					ordersDetail.setPrice(goodsP.getPrice());
@@ -598,7 +600,7 @@ public class OrdersServImpl implements OrdersServ {
 			if(goodsEventList!=null&&goodsEventList.size()>0){
 				for (int j = 0; j < goodsEventList.size(); j++) {
 					GoodsEvent event = (GoodsEvent) goodsEventList.get(j);
-					if("满减".equals(event.getTypeName())){
+					if("阶梯满减".equals(event.getTypeName())){
 						mjVo = new MjGoodsEventVo();
 						mjVo.setGoodsEvent(event);
 						eventName = event.getEventName();
@@ -615,7 +617,8 @@ public class OrdersServImpl implements OrdersServ {
 						}else if(event.getDiscount()!=null){
 							//折扣单价
 							costPrice = Double.parseDouble(new DecimalFormat("0.00").format(Double.parseDouble(goodsP.getPrice())*Float.parseFloat(event.getDiscount())));
-							//saveGoodsEventLog(param.getUserToken().getUser(), event, orders, goodsP, String.valueOf(num),costPrice,costPayable,benPrice);
+						}else{
+							costPrice = Double.parseDouble(goodsP.getPrice());
 						}
 						costPayable = costPrice*num;
 						payable = costPrice*num;
@@ -665,10 +668,6 @@ public class OrdersServImpl implements OrdersServ {
 			}
 			goodsVoList.add(goodsVo);
 		}
-//			System.out.println("订单总价："+totalPayable);
-//			System.out.println("订单优惠："+totalBenPrice);
-//			System.out.println("普通订单支付："+(orderPrice));
-//			System.out.println("需满减订单支付："+(mjOrderPrice));
 		System.out.println("--------满减开始--------");
 		List<Double> mjPrice = new ArrayList<Double>();
 		List<Double> mmjPrice = new ArrayList<Double>();
