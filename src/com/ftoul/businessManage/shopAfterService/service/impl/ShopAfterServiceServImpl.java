@@ -86,6 +86,7 @@ public class ShopAfterServiceServImpl implements ShopAfterServiceServ {
 		afterVo.setNum(schedule.getNum());
 		afterVo.setBackPrice(schedule.getBackPrice());
 		afterVo.setScheduleStatic(schedule.getScheduleStatic());
+		afterVo.setType(schedule.getType());
 		List<AfterSchedule> picSrcs = new ArrayList<AfterSchedule>();
 		if(schedule.getPicSrcs()!=null){
 			String[] picSrc = schedule.getPicSrcs().split(";");

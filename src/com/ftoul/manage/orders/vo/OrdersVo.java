@@ -19,6 +19,7 @@ public class OrdersVo {
 	private String shopName;
 	private String isHasChild;
 	private String parentOrderNumber;
+	private String freight;
 	/**
 	 * @return the address
 	 */
@@ -114,6 +115,12 @@ public class OrdersVo {
 	}
 	public void setParentOrderNumber(String parentOrderNumber) {
 		this.parentOrderNumber = parentOrderNumber;
+	}
+	public String getFreight() {
+		return freight;
+	}
+	public void setFreight(String freight) {
+		this.freight = freight;
 	}
 
 }

@@ -388,22 +388,22 @@ public class OrdersServImpl implements OrdersServ {
 			}
 			updateGoodsParam(child.getId(),"add");
 		}
-
+		orders.setOrderPrice(String.valueOf(orders.getGoodsTotalPrice().doubleValue()+totalFreight));
 		double coinNumber = 0;
 		if(vo.getCoinFlag()){
 			OrderPriceVo priceVo = new OrderPriceVo();
 			getCoinInfo(param,priceVo);
-			double goodsTotalPrice = orders.getGoodsTotalPrice().doubleValue();
+			double orderPrice = Double.valueOf(orders.getOrderPrice());
 			double coinPrice;
 			int newCoinNumber = priceVo.getCoinNumber();
 			if(newCoinNumber>=vo.getCoinNumber()){
 				double base = priceVo.getCoinPrice()/priceVo.getCoinNumber();
-				double newGoodsTotalPrice = goodsTotalPrice - priceVo.getCoinPrice();
-				if(newGoodsTotalPrice<0){
-					coinNumber = Math.floor(goodsTotalPrice/base);
+				double newOrderPrice = orderPrice - priceVo.getCoinPrice();
+				if(newOrderPrice<0){
+					coinNumber = Math.floor(orderPrice/base);
 					coinPrice = coinNumber*base;
-					newGoodsTotalPrice = goodsTotalPrice - coinPrice;
-					if(newGoodsTotalPrice==0){
+					newOrderPrice = orderPrice - coinPrice;
+					if(newOrderPrice==0){
 						orders.setOrderStatic("2");
 						orders.setPayStatic("1");
 						orders.setPayTime(new DateStr().toString());
@@ -422,11 +422,11 @@ public class OrdersServImpl implements OrdersServ {
 					}
 					orders.setBeeCoins((int)coinNumber+"");
 					orders.setCoinPrice(new DecimalFormat("0.00").format(coinPrice));
-					orders.setGoodsTotalPrice(new BigDecimal(newGoodsTotalPrice));
+					orders.setOrderPrice(String.valueOf(newOrderPrice));
 				}else{
 					orders.setBeeCoins(String.valueOf((int)priceVo.getCoinNumber()));
 					orders.setCoinPrice(new DecimalFormat("0.00").format(priceVo.getCoinPrice()));
-					orders.setGoodsTotalPrice(new BigDecimal(newGoodsTotalPrice));
+					orders.setOrderPrice(String.valueOf(newOrderPrice));
 				}
 				
 			}else{
@@ -436,7 +436,6 @@ public class OrdersServImpl implements OrdersServ {
 			
 		}
 		orders.setFreight(new BigDecimal(totalFreight));
-		orders.setOrderPrice(String.valueOf(orders.getGoodsTotalPrice().doubleValue()+totalFreight));
 		hibernateUtil.save(orders);
 		if(vo.getCoinFlag()){
 			if(coinNumber!=0){

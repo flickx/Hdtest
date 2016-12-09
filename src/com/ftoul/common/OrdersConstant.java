@@ -34,6 +34,8 @@ public class OrdersConstant {
 	public static final String WXPAY = "3";
 	/**支付宝钱包支付*/
 	public static final String ALIQBPAY = "4";
+	/**蜂币支付*/
+	public static final String FBPAY = "5";
 	
 
 }
