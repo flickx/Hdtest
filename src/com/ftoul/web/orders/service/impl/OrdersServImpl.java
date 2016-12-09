@@ -408,6 +408,17 @@ public class OrdersServImpl implements OrdersServ {
 						orders.setPayStatic("1");
 						orders.setPayTime(new DateStr().toString());
 						orders.setPayType("5");//全蜂币支付方式
+						if("1".equals(orders.getIsHasChild())){
+							List<Object> childList = hibernateUtil.hql("from Orders where parentOrdersId='"+orders.getId()+"'");
+							for (Object object : childList) {
+								Orders childOrder = (Orders) object;
+								childOrder.setOrderStatic("2");
+								childOrder.setPayStatic("1");
+								childOrder.setPayTime(new DateStr().toString());
+								childOrder.setPayType("5");//全蜂币支付方式
+								hibernateUtil.update(childOrder);
+							}
+						}
 					}
 					orders.setBeeCoins((int)coinNumber+"");
 					orders.setCoinPrice(new DecimalFormat("0.00").format(coinPrice));

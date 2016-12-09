@@ -1,4 +1,4 @@
-package com.ftoul.manage.afterService.service.impl;
+package com.ftoul.businessManage.shopAfterService.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,16 +6,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ftoul.businessManage.shopAfterService.service.ShopAfterServiceServ;
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.manage.afterService.service.AfterServiceServ;
 import com.ftoul.manage.logistics.vo.LogisticsCompanyVo;
 import com.ftoul.manage.orders.vo.AfterScheduleVo;
-import com.ftoul.po.AfterOpLog;
 import com.ftoul.po.AfterSchedule;
 import com.ftoul.po.Orders;
 import com.ftoul.po.OrdersDetail;
@@ -23,8 +22,8 @@ import com.ftoul.util.afterService.AfterServiceUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.orders.OrdersUtil;
 
-@Service("AfterServiceServImpl")
-public class AfterServiceServImpl implements AfterServiceServ {
+@Service("ShopAfterServiceServImpl")
+public class ShopAfterServiceServImpl implements ShopAfterServiceServ {
 
 	@Autowired
 	private HibernateUtil hibernateUtil;
@@ -41,9 +40,9 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		String queryStr = param.getWhereStr();
 		String hql = "";
 		if(queryStr!=null){
-			hql = " from AfterSchedule where state='1' "+queryStr+" order by createTime desc";
+			hql = " from AfterSchedule where state='1' and ordersDetail.shopId='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"'"+queryStr+" order by createTime desc";
 		}else{
-			hql = " from AfterSchedule where state='1' order by createTime desc";
+			hql = " from AfterSchedule where state='1' and ordersDetail.shopId='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by createTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		List<Object> afterList = page.getObjList();
@@ -196,8 +195,4 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		afterServiceUtil.saveAfterOpLog(param,"【卖家】修改售后状态为"+afterServiceUtil.getAfterState(param.getKey()));
 		return ObjectToResult.getResult(after);
 	}
-
-	
-	
-	
 }
