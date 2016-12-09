@@ -213,4 +213,16 @@ public class OrdersAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return ordersServ.getOrdersDetailById(parameter);
 	}
+	
+	/**
+	 * 根据订单号查询该订单所在默认地址的运费
+	 * @param param 用户ID
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getOrdersFreightByOrderNumber")  
+	public @ResponseBody Result getOrdersFreightByOrderNumber(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return ordersServ.getOrdersFreightByOrderNumber(parameter);
+	}
 }

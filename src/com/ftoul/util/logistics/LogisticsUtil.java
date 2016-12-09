@@ -47,33 +47,35 @@ public class LogisticsUtil {
 		Object obj = hibernateUtil.hqlFirst("from ShopFreightTemplate where state='1' and activety='是' and shopId='"+shopId+"'");
 		if(obj!=null){
 			ShopFreightTemplate temp = (ShopFreightTemplate) obj;
-			List<Object> dataList = hibernateUtil.hql("from AreaFreightTemplate where state='1' and shopFreightTemplate.id='"+temp.getId()+"'");
-			if(Common.notNull(province)){
-				for (Object object : dataList) {
-					AreaFreightTemplate areaFreightTemplate = (AreaFreightTemplate) object;
-					String[] areas = areaFreightTemplate.getFreightArea().split(",");
-					for (String area : areas) {
-						if(area.equals(province)){
-							flag = true;
-							defaultFreight = areaFreightTemplate.getLessPrice();
-							if(num>areaFreightTemplate.getLess()){
-								passNum = num-areaFreightTemplate.getLess();
-								totalFreight = defaultFreight+(passNum*areaFreightTemplate.getIncreasePrice());
-							}else{
-								totalFreight = defaultFreight;
+			if(!"1".equals(temp.getFreeShop())){
+				List<Object> dataList = hibernateUtil.hql("from AreaFreightTemplate where state='1' and shopFreightTemplate.id='"+temp.getId()+"'");
+				if(Common.notNull(province)){
+					for (Object object : dataList) {
+						AreaFreightTemplate areaFreightTemplate = (AreaFreightTemplate) object;
+						String[] areas = areaFreightTemplate.getFreightArea().split(",");
+						for (String area : areas) {
+							if(area.equals(province)){
+								flag = true;
+								defaultFreight = areaFreightTemplate.getLessPrice();
+								if(num>areaFreightTemplate.getLess()){
+									passNum = num-areaFreightTemplate.getLess();
+									totalFreight = defaultFreight+(passNum*areaFreightTemplate.getIncreasePrice());
+								}else{
+									totalFreight = defaultFreight;
+								}
+								break;
 							}
-							break;
 						}
 					}
 				}
-			}
-			if(!flag){
-				defaultFreight = Double.parseDouble(temp.getDefaultPrice());
-				if(num>Integer.parseInt(temp.getDefaultFreight())){
-					passNum = num-Integer.parseInt(temp.getDefaultFreight());
-					totalFreight = defaultFreight+(passNum*Double.parseDouble(temp.getIncreasePrice()));
-				}else{
-					totalFreight = defaultFreight;
+				if(!flag){
+					defaultFreight = Double.parseDouble(temp.getDefaultPrice());
+					if(num>Integer.parseInt(temp.getDefaultFreight())){
+						passNum = num-Integer.parseInt(temp.getDefaultFreight());
+						totalFreight = defaultFreight+(passNum*Double.parseDouble(temp.getIncreasePrice()));
+					}else{
+						totalFreight = defaultFreight;
+					}
 				}
 			}
 		}

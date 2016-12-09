@@ -26,6 +26,7 @@ public class OrdersUtil {
 	
 	@Autowired
 	private HibernateUtil hibernateUtil;
+	
 	/**
 	 * 自动取消订单
 	 */

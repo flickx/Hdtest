@@ -1,5 +1,7 @@
 package com.ftoul.po;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
 
 
@@ -71,6 +74,8 @@ public class Orders  implements java.io.Serializable {
      private String parentOrdersId;
      private String isHasChild;
      private String province;
+     private BigDecimal freight;
+     private BigDecimal goodsTotalPrice;
     // Constructors
 
     /** default constructor */
@@ -536,6 +541,24 @@ public class Orders  implements java.io.Serializable {
 
 	public void setProvince(String province) {
 		this.province = province;
+	}
+
+	@Column(name="freight", length=20)
+	public BigDecimal getFreight() {
+		return freight;
+	}
+
+	public void setFreight(BigDecimal freight) {
+		this.freight = freight;
+	}
+
+	@Column(name="goods_Total_Price", length=20)
+	public BigDecimal getGoodsTotalPrice() {
+		return goodsTotalPrice;
+	}
+
+	public void setGoodsTotalPrice(BigDecimal goodsTotalPrice) {
+		this.goodsTotalPrice = goodsTotalPrice;
 	}
 	
 
