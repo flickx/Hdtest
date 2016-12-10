@@ -3,6 +3,7 @@ package com.ftoul.api.weiXinPay.service.impl;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -80,15 +81,26 @@ public class WeiXinPayServImpl implements WeiXinPayServ{
 	@Override
 	public void payReturn(Map<Object, Object> resultMap) throws Exception {
 		String merOrderNo = (String) resultMap.get("out_trade_no");
-		String hql = "from Orders where orderNumber = '" + merOrderNo + "'";
-		Orders orders = (Orders) hibernateUtil.hqlFirst(hql);
+		Orders orders = (Orders) hibernateUtil.hqlFirst("from Orders where orderNumber = '" + merOrderNo + "'");
 		orders.setPayType("3");
-		OrdersPay ordersPay = new OrdersPay();
 		orders.setModifyTime(new DateStr().toString());
 		orders.setOrderStatic("2");
 		orders.setPayStatic("1");
 		orders.setPayTime(new DateStr().toString());
+		if("1".equals(orders.getIsHasChild())){//如果有子订单，将子订单的付款信息也填充满
+			List<Object> childList = hibernateUtil.hql("from Orders where state='1' and parentOrdersId='"+orders.getId()+"'");
+			for (Object object : childList) {
+				Orders child = (Orders) object;
+				child.setModifyTime(new DateStr().toString());
+				child.setOrderStatic("2");
+				child.setPayStatic("1");
+				child.setPayType("3");
+				child.setPayTime(new DateStr().toString());
+				hibernateUtil.update(child);
+			}
+		}
 		
+		OrdersPay ordersPay = new OrdersPay();
 		ordersPay.setOrders(orders);
 		ordersPay.setCreateTime(new DateStr().toString());
 		ordersPay.setPayPrice(orders.getOrderPrice());
