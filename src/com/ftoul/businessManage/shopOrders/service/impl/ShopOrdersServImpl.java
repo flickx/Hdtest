@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ftoul.businessManage.shopOrders.service.ShopOrdersServ;
+import com.ftoul.businessManage.shopOrders.vo.StaticCountVo;
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
@@ -21,6 +22,7 @@ import com.ftoul.manage.orders.vo.GoodsVo;
 import com.ftoul.manage.orders.vo.OrderDetailVo;
 import com.ftoul.manage.orders.vo.OrdersPayVo;
 import com.ftoul.manage.orders.vo.OrdersVo;
+import com.ftoul.po.AfterSchedule;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.Orders;
@@ -31,6 +33,7 @@ import com.ftoul.po.UserOpLog;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.orders.OrdersUtil;
 import com.ftoul.web.vo.ManyVsOneVo;
+import com.ftoul.web.vo.OrderStaticCountVo;
 
 @Service("ShopOrdersServImpl")
 public class ShopOrdersServImpl implements ShopOrdersServ {
@@ -742,6 +745,25 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 			reportDataList.add(vo);
 		}
 		return ObjectToResult.getResult(reportDataList);
+	}
+
+	/**
+	 * 获取订单、售后单所有状态数量
+	 * @param param 用户ID
+	 * @return
+	 * @throws Exception 
+	 */
+	@Override
+	public Result getAllStaticSizeByShopId(Parameter param)
+			throws Exception {
+		List<Object> ordersList1 =  hibernateUtil.hql("from Orders where orderStatic = '2' and shopId.id='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"'");//待发货订单
+		List<Object> after1 =  hibernateUtil.hql("from AfterSchedule where scheduleStatic ='1' and type='1' and ordersDetail.shopId='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"'");//换货的售后单
+		List<Object> after2 =  hibernateUtil.hql("from AfterSchedule where scheduleStatic ='1' and type in('2','3') and ordersDetail.shopId='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"'");//退款的售后单
+		StaticCountVo vo = new StaticCountVo();
+		vo.setFaHuoNum(ordersList1.size());
+		vo.setHuanHuoNum(after1.size());
+		vo.setTuiKuanNum(after2.size());
+		return ObjectToResult.getResult(vo);
 	}
 
 }

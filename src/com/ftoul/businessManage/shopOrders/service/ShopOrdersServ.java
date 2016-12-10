@@ -49,4 +49,6 @@ public interface ShopOrdersServ {
 	
 	Result getOrdersPayExportList(Parameter param) throws Exception;
 
+	Result getAllStaticSizeByShopId(Parameter parameter) throws Exception;
+
 }

@@ -353,4 +353,16 @@ public class ShopOrdersAction {
 		return ordersServ.getSendGoodsListPage(parameter);
 	}
 	
+	/**
+	 * 获取订单、售后单所有状态数量
+	 * @param param 用户ID
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getAllStaticSizeByShopId")  
+	public @ResponseBody Result getAllStaticSizeByShopId(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return ordersServ.getAllStaticSizeByShopId(parameter);
+	}
+	
 }
