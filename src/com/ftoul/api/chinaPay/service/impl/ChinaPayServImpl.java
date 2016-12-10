@@ -118,6 +118,7 @@ public class ChinaPayServImpl implements ChinaPayServ{
 					hibernateUtil.update(child);
 				}
 			}
+			
 			ordersPay.setOrders(orders);
 			ordersPay.setCreateTime(new DateStr().toString());
 			ordersPay.setPayPrice(orders.getOrderPrice());

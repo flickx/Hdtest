@@ -31,6 +31,7 @@ import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.manage.cart.service.CartServ;
 import com.ftoul.manage.coin.service.CoinSetServ;
+import com.ftoul.po.AfterSchedule;
 import com.ftoul.po.BusinessStore;
 import com.ftoul.po.FullCutRule;
 import com.ftoul.po.Goods;
@@ -487,6 +488,7 @@ public class OrdersServImpl implements OrdersServ {
 		List<Object> ordersList1 =  hibernateUtil.hql("from Orders where orderStatic = '1' and user.id='"+param.getUserToken().getUser().getId()+"'");
 		List<Object> ordersList3 =  hibernateUtil.hql("from Orders where orderStatic in('2', '3') and user.id='"+param.getUserToken().getUser().getId()+"'");
 		List<Object> ordersList5 =  hibernateUtil.hql("from Orders where orderStatic in('4', '5') and user.id='"+param.getUserToken().getUser().getId()+"'");
+		List<Object> afterList =  hibernateUtil.hql("from AfterSchedule where scheduleStatic='1' and user.id='"+param.getUserToken().getUser().getId()+"'"); 
 		List<Object> newOrdersList1 = new ArrayList<Object>();
 		for (Object object : ordersList1) {//将有父订单的订单去除掉，只计算父订单为未付款数量
 			Orders orders = (Orders) object;
@@ -498,6 +500,7 @@ public class OrdersServImpl implements OrdersServ {
 		vo.setWaitPaymentCount(String.valueOf(newOrdersList1.size()));
 		vo.setWaitShipmentsCount(String.valueOf(ordersList3.size()));
 		vo.setWaitReceiptCount(String.valueOf(ordersList5.size()));
+		vo.setAfterCount(String.valueOf(afterList.size()));
 		return ObjectToResult.getResult(vo);
 	}
 

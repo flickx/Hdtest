@@ -5,6 +5,7 @@ public class OrderStaticCountVo {
 	private String waitPaymentCount;
 	private String waitShipmentsCount;
 	private String waitReceiptCount;
+	private String afterCount;
 	
 	public String getWaitPaymentCount() {
 		return waitPaymentCount;
@@ -23,6 +24,12 @@ public class OrderStaticCountVo {
 	}
 	public void setWaitReceiptCount(String waitReceiptCount) {
 		this.waitReceiptCount = waitReceiptCount;
+	}
+	public String getAfterCount() {
+		return afterCount;
+	}
+	public void setAfterCount(String afterCount) {
+		this.afterCount = afterCount;
 	}
 	
 
