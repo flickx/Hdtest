@@ -211,7 +211,9 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 			ordersVo.setTel(orders.getConsigneeTel());
 			ordersVo.setConginee(orders.getConsignee());
 			ordersVo.setAddress(orders.getAddress());
-			ordersVo.setFreight(orders.getFreight().toString());
+			if(orders.getFreight()!=null){
+				ordersVo.setFreight(orders.getFreight().toString());
+			}
 			voList.add(ordersVo);
 		}
 		page.setObjList(voList);
