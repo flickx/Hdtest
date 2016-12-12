@@ -17,6 +17,7 @@ import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
+import com.ftoul.manage.goods.vo.GoodsListVo;
 import com.ftoul.manage.goods.vo.GoodsVo;
 import com.ftoul.manage.goodsEvent.service.GoodsEventServ;
 import com.ftoul.po.EventOrderVO;
@@ -155,11 +156,47 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 * @param param Parameter对象
 	 * @return返回结果（前台用Result对象）
 	 */
-	public Result getAllGoods(Parameter param) throws Exception{
-		String hql = "from Goods where state = '1' and grounding = '1' ";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
-		return ObjectToResult.getResult(page);
-	}
+	public Result getAllGoods(Parameter parameter) throws Exception{
+			String sql ="SELECT  " +
+					"	gs.id,  " +
+					"	gs.title,  " +
+					"   gs.pic_src,"+
+					"   gs.price "+
+					"FROM  " +
+					"	Goods gs  " +
+					"JOIN Goods_Param gp ON gs.id = gp.goods_id  " +
+					"AND gs.state = '1'  " +
+					"AND gp.state = '1'  " +
+					"LEFT JOIN Goods_Type gt ON gs.goods_type3 = gt.id  " +
+					"AND gt.state = '1'  " +	
+					"AND gs.state = '1'  " +
+					"LEFT JOIN Goods_Brand gb ON gs.goods_brand_id = gb.id  " +
+					"AND gb.state = '1'  " +
+					"AND gs.state = '1'  " +
+					"JOIN Goods_Prop_Type gpt ON gs.goods_prop_type_id = gpt.id  " +
+					"AND gpt.state = '1'  " +
+					"AND gs.state = '1'  " +
+					"AND gs.grounding = '1'  " +
+					"GROUP BY  " +
+					"	gs.id  ";
+			Page page = hibernateUtil.sqlPage(sql,parameter.getPageNum(),parameter.getPageSize());
+			List<GoodsListVo> list = new ArrayList<GoodsListVo>();
+			for (int i = 0; i < page.getObjList().size(); i++) {
+				GoodsListVo goodsListVo = new GoodsListVo();
+				Object[] obj = (Object[])page.getObjList().get(i);
+				if(obj[0]!=null)
+				  goodsListVo.setId(obj[0].toString());
+				if(obj[1]!=null)
+				  goodsListVo.setTitle(obj[1].toString());
+				if(obj[2]!=null)
+				  goodsListVo.setPicSrc(obj[2].toString());
+				if(obj[3]!=null)
+				  goodsListVo.setPrice(obj[3].toString());
+				list.add(goodsListVo);
+			}
+			page.setVoList(list);
+			return ObjectToResult.getResult(page);
+		}
 	/**
 	 * 通过活动ID获取所有活动商品
 	 * @param param Parameter对象

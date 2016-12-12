@@ -32,6 +32,18 @@ public class OrdersVo {
 	public void setAddress(String address) {
 		this.address = address;
 	}
+	/**
+	 * @return the address
+	 */
+	public String getAddress() {
+		return address;
+	}
+	/**
+	 * @param address the address to set
+	 */
+	public void setAddress(String address) {
+		this.address = address;
+	}
 	public String getId() {
 		return id;
 	}
