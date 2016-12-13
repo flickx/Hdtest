@@ -143,7 +143,7 @@ public class ShopAfterServiceServImpl implements ShopAfterServiceServ {
 		after.setScheduleStatic(schedule.getScheduleStatic());
 		after.setMsg(schedule.getMsg());
 		after.setModifyTime(new DateStr().toString());
-		after.setModifyPerson(param.getManageToken().getLoginUser().getId());
+//		after.setModifyPerson(param.getManageToken().getLoginUser().getId());
 		Object o = hibernateUtil.update(after);
 		afterServiceUtil.saveAfterOpLog(param,"【卖家】"+afterServiceUtil.getAfterState(schedule.getScheduleStatic()));
 		return ObjectToResult.getResult(o);
