@@ -383,7 +383,8 @@ public class OrdersServImpl implements OrdersServ {
 			}
 			updateGoodsParam(child.getId(),"add");
 		}
-		orders.setOrderPrice(String.valueOf(orders.getGoodsTotalPrice().doubleValue()+totalFreight));
+		//orders.setOrderPrice(String.valueOf(orders.getGoodsTotalPrice().doubleValue()+totalFreight));
+		orders.setOrderPrice(new BigDecimal(orders.getGoodsTotalPrice().doubleValue()).add(new BigDecimal(totalFreight)).toString());
 		double coinNumber = 0;
 		if(vo.getCoinFlag()){
 			OrderPriceVo priceVo = new OrderPriceVo();
@@ -417,11 +418,11 @@ public class OrdersServImpl implements OrdersServ {
 					}
 					orders.setBeeCoins((int)coinNumber+"");
 					orders.setCoinPrice(new DecimalFormat("0.00").format(coinPrice));
-					orders.setOrderPrice(String.valueOf(newOrderPrice));
+					orders.setOrderPrice(new DecimalFormat("0.00").format(newOrderPrice));
 				}else{
 					orders.setBeeCoins(String.valueOf((int)priceVo.getCoinNumber()));
 					orders.setCoinPrice(new DecimalFormat("0.00").format(priceVo.getCoinPrice()));
-					orders.setOrderPrice(String.valueOf(newOrderPrice));
+					orders.setOrderPrice(new DecimalFormat("0.00").format(newOrderPrice));
 				}
 				
 			}else{
