@@ -20,27 +20,10 @@ public class OrdersVo {
 	private String isHasChild;
 	private String parentOrderNumber;
 	private String freight;
-	/**
-	 * @return the address
-	 */
+
 	public String getAddress() {
 		return address;
 	}
-	/**
-	 * @param address the address to set
-	 */
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	/**
-	 * @return the address
-	 */
-	public String getAddress() {
-		return address;
-	}
-	/**
-	 * @param address the address to set
-	 */
 	public void setAddress(String address) {
 		this.address = address;
 	}
