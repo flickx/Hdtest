@@ -176,8 +176,8 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		AfterSchedule afterSchedule = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, scheduleId+"");
 		StringBuffer srcs = new StringBuffer();
 		System.out.println(scheduleId);
-		String path = request.getSession().getServletContext().getRealPath("upload/img/after/");
-		String picPath = "upload/img/after/";
+		String path = request.getSession().getServletContext().getRealPath("/upload/img/after/");
+		String picPath = "/upload/img/after/";
 		int count = 0;
 		if (fileList.size()>0) {
 			for (MultipartFile multipartFile : fileList) {
