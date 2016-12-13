@@ -211,7 +211,9 @@ public class OrdersServImpl implements OrdersServ {
 			ordersVo.setTel(orders.getConsigneeTel());
 			ordersVo.setConginee(orders.getConsignee());
 			ordersVo.setAddress(orders.getAddress());
-			ordersVo.setFreight(orders.getFreight().toString());
+			if(orders.getFreight()!=null){
+				ordersVo.setFreight(orders.getFreight().toString());
+			}
 			if(orders.getShopId()!=null){
 				ordersVo.setShopName(orders.getShopId().getStoreName());
 			}
