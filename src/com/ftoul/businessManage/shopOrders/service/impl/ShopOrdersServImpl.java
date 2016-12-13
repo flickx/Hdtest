@@ -266,28 +266,14 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 				orderDetailVo.setClearCustomState("已清关");
 			}
 		}
-		
-		//orderDetailVo.setCouponId();//优惠券码
-		//orderDetailVo.setCouponName();//优惠券名称
 		if(orders.getLogisticsCompany()!=null){
 			orderDetailVo.setCompany(orders.getLogisticsCompany().getName());
 		}else{
 			orderDetailVo.setCompany("无");
 		}
-		
-//		if(orders.getUserAddress()!=null){
-//			orderDetailVo.setAddress(orders.getUserAddress().getName()+"  "+orders.getUserAddress().getAddress());
-//			orderDetailVo.setTel(orders.getUserAddress().getTel());
-//			orderDetailVo.setConsignee(orders.getUserAddress().getConsignee());
-//		}
 		orderDetailVo.setTel(orders.getConsigneeTel());
 		orderDetailVo.setConsignee(orders.getConsignee());
 		orderDetailVo.setAddress(orders.getAddress());
-//		else{
-//			orderDetailVo.setAddress("无");
-//			orderDetailVo.setTel("无");
-//			orderDetailVo.setConsignee("无");
-//		}
 		if(orders.getUser().getCardId()!=null){
 			orderDetailVo.setCard(orders.getUser().getCardId());
 		}else{
@@ -298,6 +284,9 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 			orderDetailVo.setOdd(orders.getOdd());
 		}else{
 			orderDetailVo.setOdd("无");
+		}
+		if(orders.getFreight()!=null){
+			orderDetailVo.setFreight(orders.getFreight().toString());
 		}
 		orderDetailVo.setFeedBack(orders.getFeedback());
 		List<Object> detailList = hibernateUtil.hql("from OrdersDetail where orders.id = '"+orders.getId()+"'");
