@@ -31,7 +31,6 @@ import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.manage.cart.service.CartServ;
 import com.ftoul.manage.coin.service.CoinSetServ;
-import com.ftoul.po.AfterSchedule;
 import com.ftoul.po.BusinessStore;
 import com.ftoul.po.FullCutRule;
 import com.ftoul.po.Goods;
@@ -70,8 +69,6 @@ public class OrdersServImpl implements OrdersServ {
 
 	@Autowired
 	private HibernateUtil hibernateUtil;
-//	@Autowired
-//	ChinaPayTestUtil chinaPayTestUtil;
 	@Autowired
 	ChinaPayUtil chinaPayUtil;
 	@Autowired
@@ -485,7 +482,7 @@ public class OrdersServImpl implements OrdersServ {
 			throws Exception {
 		
 		List<Object> ordersList1 =  hibernateUtil.hql("from Orders where orderStatic = '1' and user.id='"+param.getUserToken().getUser().getId()+"'");
-		List<Object> ordersList3 =  hibernateUtil.hql("from Orders where orderStatic in('2', '3') and user.id='"+param.getUserToken().getUser().getId()+"'");
+		List<Object> ordersList3 =  hibernateUtil.hql("from Orders where orderStatic in('2', '3') and isHasChild!='1' and user.id='"+param.getUserToken().getUser().getId()+"'");//待发货
 		List<Object> ordersList5 =  hibernateUtil.hql("from Orders where orderStatic in('4', '5') and user.id='"+param.getUserToken().getUser().getId()+"'");
 		List<Object> afterList =  hibernateUtil.hql("from AfterSchedule where scheduleStatic='1' and user.id='"+param.getUserToken().getUser().getId()+"'"); 
 		List<Object> newOrdersList1 = new ArrayList<Object>();
