@@ -384,8 +384,6 @@ public class OrdersServImpl implements OrdersServ {
 				ordersDetail.setState("1");
 				hibernateUtil.save(ordersDetail);
 				countGoodsEevntJoin(goodsP.getGoods().getId(),(String)shopGoodsParamVo.get("num"));//删除参加活动的商品数量
-				param.setId(shopGoodsParamVo.get("shopCartId"));
-				cartServ.delShopCart(param);
 			}
 			updateGoodsParam(child.getId(),"add");
 		}
@@ -446,6 +444,8 @@ public class OrdersServImpl implements OrdersServ {
 			}
 			
 		}
+		//删除购物车的内容
+		ordersUtil.delShopCart(param);
 		return ObjectToResult.getResult(orders);
 	}
 	

@@ -4,18 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.Parameter;
+import com.ftoul.manage.cart.service.CartServ;
+import com.ftoul.po.GoodsParam;
 import com.ftoul.po.Orders;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.orders.service.OrdersServ;
 import com.ftoul.web.vo.ManyVsOneVo;
-import com.ftoul.web.vo.MjGoodsEventVo;
+import com.ftoul.web.vo.OrderVo;
 import com.ftoul.web.vo.ShopGoodsParamVo;
 
 @Component
@@ -23,7 +25,8 @@ public class OrdersUtil {
 	
 	@Autowired
 	OrdersServ ordersServ;
-	
+	@Autowired
+	CartServ cartServ;
 	@Autowired
 	private HibernateUtil hibernateUtil;
 	
@@ -174,6 +177,47 @@ public class OrdersUtil {
 		}
 		
 		return group;
+	}
+	
+	/**
+	 * 删除购物车的内容
+	 * @param param
+	 * @throws Exception
+	 */
+	public void delShopCart(Parameter param) throws Exception{
+		OrderVo vo = (OrderVo) Common.jsonToBean(param.getObj().toString(), OrderVo.class);
+		String[] strList = vo.getGoodsParameter().split(":");
+		for (int i = 0; i < strList.length; i++) {
+			String[] str = strList[i].split(",");
+			param.setId(str[3]);
+			cartServ.delShopCart(param);
+		}
+	}
+	
+	/**
+	 * 根据goodsId得到总库存
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public int getSumStockBygoodsId(Parameter param) throws Exception {
+		String hql = "from GoodsParam where state ='1' and goods.id ='"+ param.getId()+"'";
+		List<Object>goodsParamList = this.hibernateUtil.hql(hql);
+		int sumStock =0;
+		if(goodsParamList==null||goodsParamList.size()<=0){
+			return 0;
+		}
+		for(Object obj:goodsParamList ){
+			int stock =0;
+			GoodsParam goodsParam = (GoodsParam) obj;
+			if(goodsParam.getStock()==null||goodsParam.getStock()==""){
+				stock =0;
+			}else{
+				stock = Integer.parseInt(goodsParam.getStock());
+			}
+			sumStock+=stock;
+		}
+		return sumStock;
 	}
 	
 	public static void main(String[] args) {
