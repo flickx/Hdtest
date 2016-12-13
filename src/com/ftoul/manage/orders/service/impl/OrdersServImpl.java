@@ -403,6 +403,17 @@ public class OrdersServImpl implements OrdersServ {
 	public Result saveOrderStatic(Parameter parameter) throws Exception {
 		String hql = "update Orders set orderStatic ='"+parameter.getKey()+"' where id='"+parameter.getId()+"'";
 		int result = hibernateUtil.execHql(hql);
+		Orders orders = (Orders) hibernateUtil.find(Orders.class, parameter.getId()+"");
+		if("1".equals(orders.getIsHasChild())){
+			List<Object> childList = hibernateUtil.hql("from Orders where parentOrdersId='"+orders.getId()+"'");
+			for (Object object : childList) {
+				Orders child = (Orders) object;
+				child.setOrderStatic("2");
+				child.setModifyTime(new DateStr().toString());
+				child.setModifyPerson(parameter.getManageToken().getLoginUser().getLoginName());
+				hibernateUtil.update(child);
+			}
+		}
 		UserOpLog log = new UserOpLog();
 		log.setCreateTime(new DateStr().toString());
 		log.setOpTime(new DateStr().toString());
@@ -410,7 +421,7 @@ public class OrdersServImpl implements OrdersServ {
 		log.setOpTypeName("修改订单状态");
 		log.setOpReason("后台修改订单状态");
 		log.setState("1");
-		log.setOrders((Orders) hibernateUtil.find(Orders.class, parameter.getId()+""));
+		log.setOrders(orders);
 		hibernateUtil.save(log);
 		return ObjectToResult.getResult(result);
 	}

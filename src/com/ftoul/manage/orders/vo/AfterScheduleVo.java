@@ -30,6 +30,7 @@ public class AfterScheduleVo {
 	private String address;
 	private String consigneeTel;
 	private String mobil;
+	private String freight;
 	
 	private String goodsId;
 	private String goodsPicSrcs;
@@ -241,6 +242,12 @@ public class AfterScheduleVo {
 	}
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
+	}
+	public String getFreight() {
+		return freight;
+	}
+	public void setFreight(String freight) {
+		this.freight = freight;
 	}
 	
 }

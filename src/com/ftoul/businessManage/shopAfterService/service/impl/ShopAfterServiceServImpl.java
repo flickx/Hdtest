@@ -115,7 +115,9 @@ public class ShopAfterServiceServImpl implements ShopAfterServiceServ {
 		afterVo.setAddress(orders.getAddress());
 		afterVo.setConsignee(orders.getConsignee());
 		afterVo.setConsigneeTel(orders.getConsigneeTel());
-		
+		if(orders.getFreight()!=null){
+			afterVo.setFreight(orders.getFreight().toString());
+		}
 		afterVo.setGoodsName(od.getGoodsParam().getGoods().getTitle());
 		afterVo.setGoodsPicSrcs(od.getGoodsParam().getGoods().getPicSrc());
 		afterVo.setSku(od.getGoodsParam().getGoods().getSkuCode());

@@ -87,6 +87,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		afterVo.setNum(schedule.getNum());
 		afterVo.setBackPrice(schedule.getBackPrice());
 		afterVo.setScheduleStatic(schedule.getScheduleStatic());
+		afterVo.setType(schedule.getType());
 		List<AfterSchedule> picSrcs = new ArrayList<AfterSchedule>();
 		if(schedule.getPicSrcs()!=null){
 			String[] picSrc = schedule.getPicSrcs().split(";");
@@ -115,6 +116,9 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		afterVo.setAddress(orders.getAddress());
 		afterVo.setConsignee(orders.getConsignee());
 		afterVo.setConsigneeTel(orders.getConsigneeTel());
+		if(orders.getFreight()!=null){
+			afterVo.setFreight(orders.getFreight().toString());
+		}
 		
 		afterVo.setGoodsName(od.getGoodsParam().getGoods().getTitle());
 		afterVo.setGoodsPicSrcs(od.getGoodsParam().getGoods().getPicSrc());
