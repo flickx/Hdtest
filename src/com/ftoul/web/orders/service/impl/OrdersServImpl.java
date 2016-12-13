@@ -218,16 +218,15 @@ public class OrdersServImpl implements OrdersServ {
 			}
 			hibernateUtil.update(goodsParam);
 			//判断商品是否还有库存
-//			Parameter param = new Parameter();
-//			param.setId(goods.getId());
-//			int ret =this.goodsParamServ.getSumStockBygoodsId(param);
-//			if(ret==0){//无库存
-//				goods.setHasstock("0");
-//			}
-//			else{
-//				goods.setHasstock("1");
-//			}
-//			hibernateUtil.update(goods);
+			Parameter param = new Parameter();
+			param.setId(goods.getId());
+			int ret =ordersUtil.getSumStockBygoodsId(param);
+			if(ret==0){//无库存
+				goods.setHasstock("0");
+			}else{
+				goods.setHasstock("1");
+			}
+			hibernateUtil.update(goods);
 		}
 	}
 	
