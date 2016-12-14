@@ -165,10 +165,8 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	public Result afterServicePicUpload(Parameter parameter,
 			HttpServletRequest request) throws Exception {
 		List<MultipartFile> fileList = new ArrayList<MultipartFile>();
-		//MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-		MultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-		MultipartHttpServletRequest multipartRequest = resolver.resolveMultipart(request);
-
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		
 		Map<String, MultipartFile> multiValuemap = multipartRequest.getFileMap();
 		Set set = multiValuemap.entrySet();
 		Iterator it = set.iterator();
