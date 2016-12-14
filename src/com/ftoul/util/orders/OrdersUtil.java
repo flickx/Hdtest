@@ -1,6 +1,8 @@
 package com.ftoul.util.orders;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.Parameter;
 import com.ftoul.manage.cart.service.CartServ;
+import com.ftoul.po.FullCutRule;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.Orders;
 import com.ftoul.util.hibernate.HibernateUtil;
@@ -219,6 +222,7 @@ public class OrdersUtil {
 		}
 		return sumStock;
 	}
+	
 	
 	public static void main(String[] args) {
 		System.out.println(new DateStr("yyMMddHHmmss").toString());

@@ -3,6 +3,7 @@ package com.ftoul.util.price;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import com.ftoul.po.FullCutRule;
 import com.ftoul.po.GoodsEvent;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.orders.service.OrdersServ;
+import com.ftoul.web.vo.MjGoodsEventVo;
 import com.ftoul.web.vo.OrderPriceVo;
 
 @Component
@@ -62,6 +64,45 @@ public class PriceUtil {
 		
 	}
 	
+	/**
+	 * 阶梯满减活动价格计算
+	 * @param group
+	 */
+	public List<Double> MjGoodsEventGroupCount(Map<String, Double> group){
+		FullCutRule rule = new FullCutRule();
+		double orderPrice = 0.0;
+		double benPrice = 0.0;
+		for (String key : group.keySet()) {
+			//满减对象
+			List<Object> list = hibernateUtil.hql("from FullCutRule where state='1' and goodsEvent.id='"+key+"'");
+			List<FullCutRule> ruleList = new ArrayList<FullCutRule>();
+			for (int i = 0; i < list.size(); i++) {
+				rule = (FullCutRule) list.get(i);
+				ruleList.add(rule);
+			}
+			ruleList = sort(ruleList);
+			//订单总价
+			double value = group.get(key);
+			double temp = value;
+			for (int i = ruleList.size()-1; i >= 0; i--) {
+				rule = (FullCutRule) ruleList.get(i);
+				if(value>=rule.getTarget()){
+					temp = temp - rule.getDiscountAmount();
+					benPrice += rule.getDiscountAmount();
+					break;
+				}
+			}
+			orderPrice += temp;
+		
+		}
+		List<Double> result = new ArrayList<Double>();
+		result.add(orderPrice);
+		result.add(benPrice);
+		System.out.println("满减后的订单价格："+orderPrice);
+		System.out.println("满减优惠："+benPrice);
+		return result;
+		
+	}
 	
 	private List sort(List<FullCutRule> list){
 		Collections.sort(list, new Comparator<FullCutRule>() {
@@ -72,7 +113,31 @@ public class PriceUtil {
 		return list;
 	}
 	
-
+	/**
+	 * 将参加满减活动的商品进行分组
+	 * @param mjGoodsEventList
+	 * @return
+	 */
+	public Map<String, Double> getMjGoodsEventGroup(List<MjGoodsEventVo> mjGoodsEventList){
+		Map<String, Double> group = new HashMap<String, Double>();
+		String type = null;
+		Double moneyTotal = 0.0;
+		for (int i = 0; i < mjGoodsEventList.size(); i++) {
+			MjGoodsEventVo vo = mjGoodsEventList.get(i);
+			if(vo!=null){
+				type = vo.getGoodsEvent().getId();
+				moneyTotal = group.get(type);
+				if(moneyTotal == null){
+					moneyTotal = 0.0;
+				}
+				group.put(type, moneyTotal + vo.getOrderPrice());
+			}
+		}
+		
+		return group;
+	}
+	
+	
 	public static void main(String[] args) {
 		double a = 130;
 		double b = 100;
