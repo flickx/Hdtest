@@ -165,6 +165,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	public Result afterServicePicUpload(Parameter parameter,
 			HttpServletRequest request) throws Exception {
 		List<MultipartFile> fileList = new ArrayList<MultipartFile>();
+		System.out.println("contenxtType类型："+request.getContentType());
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		
 		Map<String, MultipartFile> multiValuemap = multipartRequest.getFileMap();
