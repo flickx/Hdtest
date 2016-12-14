@@ -25,10 +25,10 @@ public class AfterServiceUtil {
 		AfterOpLog log = new AfterOpLog();
 		log.setAfterSchedule(after);
 		log.setScheduleStatic(after.getScheduleStatic());
-//		log.setUserId(param.getManageToken().getLoginUser().getLoginName());
+		log.setUserId(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
 		log.setMsg(msg);
 		log.setState("1");
-		log.setCreatePerson(param.getManageToken().getLoginUser().getLoginName());
+		log.setCreatePerson(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
 		log.setCreateTime(new DateStr().toString());
 		hibernateUtil.save(log);
 	}
