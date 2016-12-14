@@ -383,8 +383,11 @@ public class OrdersServImpl implements OrdersServ {
 			}
 			updateGoodsParam(child.getId(),"add");
 		}
-		//orders.setOrderPrice(String.valueOf(orders.getGoodsTotalPrice().doubleValue()+totalFreight));
-		orders.setOrderPrice(new BigDecimal(orders.getGoodsTotalPrice().doubleValue()).add(new BigDecimal(totalFreight)).toString());
+		orders.setOrderPrice(String.valueOf(orders.getGoodsTotalPrice().doubleValue()+totalFreight));
+		BigDecimal goodsTotalPriceD = new BigDecimal(orders.getGoodsTotalPrice().doubleValue());
+		BigDecimal totalFreightB = new BigDecimal(totalFreight);
+		orders.setOrderPrice(String.valueOf(goodsTotalPriceD.add(totalFreightB).doubleValue()));
+		//orders.setOrderPrice(new BigDecimal(orders.getGoodsTotalPrice().doubleValue()).add(new BigDecimal(totalFreight)).toString());
 		double coinNumber = 0;
 		if(vo.getCoinFlag()){
 			OrderPriceVo priceVo = new OrderPriceVo();
@@ -1357,6 +1360,9 @@ public class OrdersServImpl implements OrdersServ {
 					benPrice += Double.parseDouble(orderPriceVo.getBenPrice());
 					freight += orderPriceVo.getFreight();
 					goodsTotalNum += orderPriceVo.getGoodsNum();
+					if("1".equals(orderPriceVo.getIsCard())){
+						vo.setIsCard("yes");
+					}
 				}
 				
 				vo.setBenPrice(String.valueOf(benPrice));
@@ -1384,6 +1390,9 @@ public class OrdersServImpl implements OrdersServ {
 				list = map.get(object);
 				OrderPriceVo orderPriceVo = getOrdersPayable(param, list, orders);
 				voList.add(orderPriceVo);
+				if("yes".equals(orderPriceVo.getIsCard())){
+					vo.setIsCard("yes");
+				}
 				vo.setBenPrice(orderPriceVo.getBenPrice());
 				vo.setCoinNumber(orderPriceVo.getCoinNumber());
 				vo.setCoinPrice(orderPriceVo.getCoinPrice());
@@ -1437,4 +1446,9 @@ public class OrdersServImpl implements OrdersServ {
 		return ObjectToResult.getResult(vo);
 	}
 
+	public static void main(String[] args) {
+		BigDecimal a = new BigDecimal(12.01);
+		BigDecimal b = new BigDecimal(0.01);
+		System.out.println(String.valueOf(a.add(b).doubleValue()));
+	}
 }
