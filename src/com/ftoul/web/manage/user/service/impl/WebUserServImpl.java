@@ -66,7 +66,7 @@ public class WebUserServImpl implements WebUserServ{
 		String p2pId="";
 		String smsCode=user.getSmsCode();
 		int count = smsCodeUtil.getSmsCount(user.getUsername());
-		if (count>4) {
+		if (count>5) {
 			res="今日接收短信已超过5条上限";
 			throw new Exception("今日接收短信已超过5条上限");
 		}
@@ -199,7 +199,7 @@ public class WebUserServImpl implements WebUserServ{
 		String smsCodeType=user.getSmscodeType();
 		int count = smsCodeUtil.getSmsCount(user.getUsername());
 		int countIP = smsCodeUtil.getSmsCountIP();
-		if (count>4||countIP>9) {
+		if (count>5||countIP>9) {
 			res="今日接收短信已超过上限";
 			throw new Exception("今日接收短信已超过上限");
 		}
@@ -228,7 +228,7 @@ public class WebUserServImpl implements WebUserServ{
 		UserService userService = WebserviceUtil.getService();
 		String smsCode=user.getSmsCode();
 		int count = smsCodeUtil.getSmsCount(user.getUsername());
-		if (count>4) {
+		if (count>5) {
 			res="今日接收短信已超过5条上限";
 			throw new Exception("今日接收短信已超过5条上限");
 		}
