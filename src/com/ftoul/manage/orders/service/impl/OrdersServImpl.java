@@ -289,8 +289,10 @@ public class OrdersServImpl implements OrdersServ {
 		}else{
 			orderDetailVo.setCompany("无");
 		}
-		orderDetailVo.setFreight(orders.getFreight().toString());
-
+		if(orders.getFreight()!=null){
+			orderDetailVo.setFreight(orders.getFreight().toString());
+		}
+		
 		orderDetailVo.setTel(orders.getConsigneeTel());
 		orderDetailVo.setConsignee(orders.getConsignee());
 		orderDetailVo.setAddress(orders.getAddress());
