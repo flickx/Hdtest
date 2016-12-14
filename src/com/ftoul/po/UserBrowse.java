@@ -14,7 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
  * UserBrowse entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "user_browse", catalog = "ftoul_shop")
+@Table(name = "user_browse")
 public class UserBrowse implements java.io.Serializable {
 
 	// Fields

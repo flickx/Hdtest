@@ -14,7 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
  * BusinessStoreLogin entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "business_store_login", catalog = "ftoul_shop")
+@Table(name = "business_store_login")
 public class BusinessStoreLogin implements java.io.Serializable {
 
 	// Fields

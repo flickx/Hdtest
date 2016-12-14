@@ -14,7 +14,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "area_freight_template", catalog = "ftoul_shop")
+@Table(name = "area_freight_template")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)  
 public class AreaFreightTemplate implements java.io.Serializable {
 

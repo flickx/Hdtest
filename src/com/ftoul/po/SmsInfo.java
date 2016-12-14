@@ -11,7 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
  * SmsInfo entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "sms_info", catalog = "ftoul_shop")
+@Table(name = "sms_info")
 public class SmsInfo implements java.io.Serializable {
 
 	// Fields

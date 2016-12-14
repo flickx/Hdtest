@@ -15,9 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * BaseRoleAuthor entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="base_role_author"
-    ,catalog="ftoul_shop"
-)
+@Table(name="base_role_author")
 
 public class BaseRoleAuthor  implements java.io.Serializable {
 

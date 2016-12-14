@@ -12,9 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
  * JPositionCity entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="j_position_city"
-    ,catalog="ftoul_shop"
-)
+@Table(name="j_position_city")
 
 public class JPositionCity  implements java.io.Serializable {
 

@@ -15,7 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * 满减规则实体类
  */
 @Entity
-@Table(name = "full_cut_rule", catalog = "ftoul_shop")
+@Table(name = "full_cut_rule")
 public class FullCutRule implements java.io.Serializable {
 
 	// Fields

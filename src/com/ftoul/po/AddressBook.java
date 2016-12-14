@@ -12,7 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
  * AddressBook entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "address_book", catalog = "ftoul_shop")
+@Table(name = "address_book")
 public class AddressBook implements java.io.Serializable {
 
 	// Fields

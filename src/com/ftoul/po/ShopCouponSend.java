@@ -15,9 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * ShopCouponSend entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="shop_coupon_send"
-    ,catalog="ftoul_shop"
-)
+@Table(name="shop_coupon_send")
 
 public class ShopCouponSend  implements java.io.Serializable {
 

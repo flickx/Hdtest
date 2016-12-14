@@ -15,9 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * GoodsPropertyTypeInfo entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="goods_property_type_info"
-    ,catalog="ftoul_shop"
-)
+@Table(name="goods_property_type_info")
 
 public class GoodsPropertyTypeInfo  implements java.io.Serializable {
 

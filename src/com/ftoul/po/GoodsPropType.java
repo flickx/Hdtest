@@ -15,9 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * GoodsPropType entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="goods_prop_type"
-    ,catalog="ftoul_shop"
-)
+@Table(name="goods_prop_type")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE) 
 public class GoodsPropType  implements java.io.Serializable {
 

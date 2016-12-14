@@ -15,9 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * UserSroce entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="user_sroce"
-    ,catalog="ftoul_shop"
-)
+@Table(name="user_sroce")
 
 public class UserSroce  implements java.io.Serializable {
 

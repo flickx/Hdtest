@@ -14,7 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
  * UserToken entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "user_token", catalog = "ftoul_shop")
+@Table(name = "user_token")
 public class UserToken implements java.io.Serializable {
 
 	// Fields
