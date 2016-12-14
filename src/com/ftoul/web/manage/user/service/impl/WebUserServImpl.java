@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.ftoul.api.sms.util.MessageUtil;
 import com.ftoul.api.sms.util.SmsCodeUtil;
+import com.ftoul.businessManage.login.action.CodeAction;
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
@@ -76,8 +77,8 @@ public class WebUserServImpl implements WebUserServ{
 			throw new Exception("手机号已注册");
 		}
 		if (m==null||!smsCode.equals(m.getVerificationCode())) {
-			res="验证码错误";
-			throw new Exception("验证码错误");
+			res="短信验证码错误";
+			throw new Exception("短信验证码错误");
 		}
 		else{
 			//新增用户到p2p，带回新增的用户id
@@ -115,6 +116,10 @@ public class WebUserServImpl implements WebUserServ{
 		if (!isExists&&smsCodeType.equals("2")) {
 			res="手机号未注册";
 			throw new Exception("手机号未注册");
+		}
+		if (!CodeAction.userCodeMap.get("code").equalsIgnoreCase(user.getImgCode())) {
+			res="图形验证码错误";
+			throw new Exception("图形验证码错误");
 		}
 		return ObjectToResult.getResult(res);
 	}
@@ -204,8 +209,8 @@ public class WebUserServImpl implements WebUserServ{
 		MessageVerification m=smsCodeUtil.getMaxSmsCode(user.getUsername(), smsCodeType,sort);
 		
 		if (m==null) {			
-			res="请先获取验证码";
-			throw new Exception("请先获取验证码");
+			res="请先获取短信验证码";
+			throw new Exception("请先获取短信验证码");
 		}else{
 		//发送短信验证码
 		MessageUtil.send(user.getUsername(), m.getContent());	
@@ -230,8 +235,8 @@ public class WebUserServImpl implements WebUserServ{
 		int maxSort=smsCodeUtil.getMaxSmsSort(user.getUsername(), user.getSmscodeType());
 		MessageVerification m=smsCodeUtil.getMaxSmsCode(user.getUsername(),  user.getSmscodeType(), maxSort);
 		if (m==null||!smsCode.equals(m.getVerificationCode())) {
-			res="验证码错误";
-			throw new Exception("验证码错误");
+			res="短信验证码错误";
+			throw new Exception("短信验证码错误");
 		}
 		String hql = "from User where state = 1 and username = '" + user.getUsername()+"'";	
 		User userDb = (User) hibernateUtil.hqlFirst(hql);

@@ -24,7 +24,7 @@ public class UsersVO {
 	private String state;
 	private String oldPassword;
 	private String source;
-	
+	private String imgCode;
 	/**
 	 * @return the source
 	 */
@@ -192,6 +192,18 @@ public class UsersVO {
 	 */
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	/**
+	 * @return the imgCode
+	 */
+	public String getImgCode() {
+		return imgCode;
+	}
+	/**
+	 * @param imgCode the imgCode to set
+	 */
+	public void setImgCode(String imgCode) {
+		this.imgCode = imgCode;
 	}
 	
 }
