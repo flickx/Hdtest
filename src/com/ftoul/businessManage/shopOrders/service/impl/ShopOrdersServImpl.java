@@ -242,6 +242,8 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 			orderDetailVo.setPayType("微信支付");
 		}else if(OrdersConstant.ALIQBPAY.equals(orders.getPayType())){
 			orderDetailVo.setPayType("支付宝钱包支付");
+		}else if(OrdersConstant.FBPAY.equals(orders.getPayType())){
+			orderDetailVo.setPayType("全蜂币支付");
 		}
 		OrdersPay pay = (OrdersPay) hibernateUtil.hqlFirst("from OrdersPay where orders.id='"+orders.getId()+"'");
 		if(pay!=null){
