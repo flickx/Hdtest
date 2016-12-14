@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.ftoul.api.KdniaoTrackQueryAPI;
 import com.ftoul.common.Common;
@@ -163,7 +165,10 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	public Result afterServicePicUpload(Parameter parameter,
 			HttpServletRequest request) throws Exception {
 		List<MultipartFile> fileList = new ArrayList<MultipartFile>();
-		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		//MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		MultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+		MultipartHttpServletRequest multipartRequest = resolver.resolveMultipart(request);
+
 		Map<String, MultipartFile> multiValuemap = multipartRequest.getFileMap();
 		Set set = multiValuemap.entrySet();
 		Iterator it = set.iterator();
