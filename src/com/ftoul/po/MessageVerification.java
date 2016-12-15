@@ -15,9 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * MessageVerification entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="message_verification"
-    ,catalog="ftoul_shop"
-)
+@Table(name="message_verification")
 
 public class MessageVerification  implements java.io.Serializable {
 

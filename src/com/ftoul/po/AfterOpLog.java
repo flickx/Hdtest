@@ -14,7 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
  * AfterOpLog entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "after_op_log", catalog = "ftoul_shop")
+@Table(name = "after_op_log")
 public class AfterOpLog implements java.io.Serializable {
 
 	// Fields

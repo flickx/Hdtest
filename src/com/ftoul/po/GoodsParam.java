@@ -18,9 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
  * GoodsParam entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="goods_param"
-    ,catalog="ftoul_shop"
-)
+@Table(name="goods_param")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE) 
 public class GoodsParam  implements java.io.Serializable {
 

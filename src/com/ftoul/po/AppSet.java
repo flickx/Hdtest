@@ -11,7 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
  * AppSet entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "app_set", catalog = "ftoul_shop")
+@Table(name = "app_set")
 public class AppSet implements java.io.Serializable {
 
 	// Fields

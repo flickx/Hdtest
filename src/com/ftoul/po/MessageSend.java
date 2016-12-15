@@ -15,9 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * MessageSend entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="message_send"
-    ,catalog="ftoul_shop"
-)
+@Table(name="message_send")
 
 public class MessageSend  implements java.io.Serializable {
 

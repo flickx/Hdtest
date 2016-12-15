@@ -14,7 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
  * Gift entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "gift", catalog = "ftoul_shop")
+@Table(name = "gift")
 public class Gift implements java.io.Serializable {
 
 	// Fields

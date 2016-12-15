@@ -11,7 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
  * JPositionProvice entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "j_position_provice", catalog = "ftoul_shop")
+@Table(name = "j_position_provice")
 public class JPositionProvice implements java.io.Serializable {
 
 	// Fields

@@ -15,9 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * IndexCarouselPic entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="index_carousel_pic"
-    ,catalog="ftoul_shop"
-)
+@Table(name="index_carousel_pic")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE) 
 public class IndexCarouselPic  implements java.io.Serializable {
 

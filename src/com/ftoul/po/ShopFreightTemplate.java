@@ -16,9 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
  * ShopFreightTemplate entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="shop_freight_template"
-    ,catalog="ftoul_shop"
-)
+@Table(name="shop_freight_template")
 
 public class ShopFreightTemplate  implements java.io.Serializable {
 

@@ -11,7 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
  * BaseResource entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "base_resource", catalog = "ftoul_shop")
+@Table(name = "base_resource")
 public class BaseResource implements java.io.Serializable {
 
 	// Fields

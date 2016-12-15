@@ -15,7 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * AfterSchedule entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "after_schedule", catalog = "ftoul_shop")
+@Table(name = "after_schedule")
 public class AfterSchedule implements java.io.Serializable {
 
 	// Fields

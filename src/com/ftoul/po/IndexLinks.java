@@ -12,9 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
  * IndexLinks entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="index_links"
-    ,catalog="ftoul_shop"
-)
+@Table(name="index_links")
 
 public class IndexLinks  implements java.io.Serializable {
 

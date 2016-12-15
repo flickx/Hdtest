@@ -19,7 +19,7 @@ import org.hibernate.annotations.GenericGenerator;
  * 活动 商品关联实体类
  */
 @Entity
-@Table(name = "goods_event_join", catalog = "ftoul_shop")
+@Table(name = "goods_event_join")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)  
 public class GoodsEventJoin implements java.io.Serializable {
 

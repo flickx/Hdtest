@@ -14,7 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
  * GoodsUploadpic entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "goods_uploadpic", catalog = "ftoul_shop")
+@Table(name = "goods_uploadpic")
 public class GoodsUploadpic implements java.io.Serializable {
 
 	private static final long serialVersionUID = -5588754152218498485L;

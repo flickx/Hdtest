@@ -19,7 +19,7 @@ import org.hibernate.annotations.GenericGenerator;
  * GoodsEvent entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "goods_event", catalog = "ftoul_shop")
+@Table(name = "goods_event")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE) 
 public class GoodsEvent implements java.io.Serializable {
 

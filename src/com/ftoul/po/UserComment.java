@@ -15,9 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * UserComment entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="user_comment"
-    ,catalog="ftoul_shop"
-)
+@Table(name="user_comment")
 
 public class UserComment  implements java.io.Serializable {
 

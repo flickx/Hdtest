@@ -15,9 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * UserOperation entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="user_operation"
-    ,catalog="ftoul_shop"
-)
+@Table(name="user_operation")
 
 public class UserOperation  implements java.io.Serializable {
 

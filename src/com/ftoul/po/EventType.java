@@ -12,7 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
  * 活动类型实体类
  */
 @Entity
-@Table(name = "event_type", catalog = "ftoul_shop", uniqueConstraints = @UniqueConstraint(columnNames = "type_code"))
+@Table(name = "event_type", uniqueConstraints = @UniqueConstraint(columnNames = "type_code"))
 public class EventType implements java.io.Serializable {
 
 	// Fields

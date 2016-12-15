@@ -15,9 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * UserMessage entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="user_message"
-    ,catalog="ftoul_shop"
-)
+@Table(name="user_message")
 
 public class UserMessage  implements java.io.Serializable {
 

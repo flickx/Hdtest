@@ -18,9 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
  * OrdersDetail entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="orders_detail"
-    ,catalog="ftoul_shop"
-)
+@Table(name="orders_detail")
 
 public class OrdersDetail  implements java.io.Serializable {
 

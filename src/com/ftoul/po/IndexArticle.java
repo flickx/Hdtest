@@ -12,9 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
  * IndexArticle entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name="index_article"
-    ,catalog="ftoul_shop"
-)
+@Table(name="index_article")
 
 public class IndexArticle  implements java.io.Serializable {
 

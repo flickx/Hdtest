@@ -11,7 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
  * LogisticsCompany entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "logistics_company", catalog = "ftoul_shop")
+@Table(name = "logistics_company")
 public class LogisticsCompany implements java.io.Serializable {
 
 	// Fields
