@@ -159,7 +159,12 @@ public class OrdersUtil {
 			vo.setGoodsParamId(str[0]);
 			vo.setNum(str[1]);
 			vo.setPrice(str[2]);
-			vo.setShopId(str[4]);
+			if(str.length==4){
+				vo.setShopId("1");
+			}else{
+				vo.setShopId(str[4]);
+			}
+			
 			voList.add(vo);
 		}
 		
