@@ -1,6 +1,5 @@
 package com.ftoul.web.goods.service.impl;
 
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -186,6 +185,9 @@ public class GoodsServImpl implements GoodsServ {
 						if(null!=obj[3]&&!"".equals(obj[3]+"")){
 							if(!"1".equals(obj[3]+"")){
 								float f = Float.parseFloat(String.valueOf(goods.getPrice()))*Float.parseFloat(obj[3]+"");
+								goodsVo.setEventPrice(new DecimalFormat("0.00").format(f));	
+							}else{
+								float f = Float.parseFloat(String.valueOf(goods.getPrice()));
 								goodsVo.setEventPrice(new DecimalFormat("0.00").format(f));	
 							}
 						}else{
