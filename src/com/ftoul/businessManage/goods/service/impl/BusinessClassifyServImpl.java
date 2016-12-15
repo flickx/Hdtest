@@ -32,7 +32,7 @@ public class BusinessClassifyServImpl implements BusinessClassifyServ{
 			
 			BusinessClassify bc = (BusinessClassify) hibernateUtil.find(BusinessClassify.class, businessClassify.getId());
 			//重复性判断
-			List<Object> list = hibernateUtil.hql("from BusinessClassify where state = '1' and id != '"+businessClassify.getId()+"'"+" and name = '"+businessClassify.getName()+"'");
+			List<Object> list = hibernateUtil.hql("from BusinessClassify where state = '1' and id != '"+businessClassify.getId()+"'"+" and name = '"+businessClassify.getName()+"'"+" and shopId = '"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"'");
 			if(list.size()>0){
 				throw new Exception("店铺分类名称已存在，保存失败");
 			}else{
@@ -43,7 +43,7 @@ public class BusinessClassifyServImpl implements BusinessClassifyServ{
 			}
 		}else{
 			//重复性判断
-			List<Object> list = hibernateUtil.hql("from BusinessClassify where state = '1' and name = '"+businessClassify.getName()+"'");
+			List<Object> list = hibernateUtil.hql("from BusinessClassify where state = '1' and name = '"+businessClassify.getName()+"'"+" and shopId = '"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"'");
 			if(list.size()>0){
 				throw new Exception("店铺分类名称已存在，保存失败");
 			}
