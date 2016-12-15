@@ -117,10 +117,7 @@ public class WebUserServImpl implements WebUserServ{
 			res="手机号未注册";
 			throw new Exception("手机号未注册");
 		}
-		if (!CodeAction.userCodeMap.get("code").equalsIgnoreCase(user.getImgCode())) {
-			res="图形验证码错误";
-			throw new Exception("图形验证码错误");
-		}
+		
 		return ObjectToResult.getResult(res);
 	}
 	
@@ -193,9 +190,12 @@ public class WebUserServImpl implements WebUserServ{
 	 */
 	@Override
 	public Result sendSmsCode(Parameter param) throws Exception {
-
 		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),UsersVO.class);
 		Object res=null;
+		if (!CodeAction.userCodeMap.get("code").equalsIgnoreCase(user.getImgCode())) {
+			res="图形验证码错误";
+			throw new Exception("图形验证码错误");
+		}
 		String smsCodeType=user.getSmscodeType();
 		int count = smsCodeUtil.getSmsCount(user.getUsername());
 		int countIP = smsCodeUtil.getSmsCountIP();
