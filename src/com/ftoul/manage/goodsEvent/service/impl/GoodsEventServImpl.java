@@ -381,10 +381,15 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	@Override
 	public Result getGoodsListPage(Parameter parameter) throws Exception {		
 		String queryStr = parameter.getWhereStr();
-		String sql = "SELECT t1.id,t1.title,t1.price,t1.create_time from goods t1 "
+//		String sql = "SELECT distinct t1.id,t1.title,gp.param_name,t1.price,t1.create_time from goods t1 "
+//				+ "left join goods_param gp on gp.goods_id = t1.id "
+//				+ "left join goods_event_join t2 on t1.state = '1' and t2.state = '1' and t2.goods_id = t1.id "
+//				+ "left join goods_event t3 on t3.state = '1' and t2.state = '1' and t3.id = t2.event_id "
+//				+ "where t1.state = '1' and t1.grounding = '1' and t1.shop_id ='1'";
+		String sql = "SELECT distinct t1.id,t1.title,t1.price,t1.create_time from goods t1 "
 				+ "left join goods_event_join t2 on t1.state = '1' and t2.state = '1' and t2.goods_id = t1.id "
 				+ "left join goods_event t3 on t3.state = '1' and t2.state = '1' and t3.id = t2.event_id "
-				+ "where t1.state = '1' and t1.grounding = '1' and t1.shop_id ='1' and (t3.type_name is null or t3.type_name = '满减' and t3.home_channel != '1')";
+				+ "where t1.state = '1' and t1.grounding = '1' and t1.shop_id ='1'";
 		if(queryStr!=null){
 			sql = sql + queryStr + " order by t1.create_time desc";
 		}else{

@@ -320,7 +320,13 @@ public class ShopEventServImpl implements ShopEventServ {
 	 */
 	@Override
 	public Result getGoodsListPage(Parameter param) throws Exception {		
-		String hql = "from Goods where state = '1' and grounding = '1' and shopId = '"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"'";
+		String queryStr = param.getWhereStr();
+		String hql = "from Goods where state = '1' and grounding = '1' and shopId = '"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' ";
+		if(queryStr!=null){
+			hql = hql + queryStr + " order by createTime desc";
+		}else{
+			hql = hql+" order by createTime desc";
+		}
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
