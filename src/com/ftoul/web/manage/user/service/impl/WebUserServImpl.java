@@ -62,7 +62,7 @@ public class WebUserServImpl implements WebUserServ{
 		Object res=null;
 		UserService userService = WebserviceUtil.getService();
 		boolean isExists=userService.checkUserExists(user.getUsername());
-		String IP=getRemoteHost();
+		String IP= SmsCodeUtil.getLocalIp(req);
 		String p2pId="";
 		String smsCode=user.getSmsCode();
 		int count = smsCodeUtil.getSmsCount(user.getUsername());
@@ -141,8 +141,7 @@ public class WebUserServImpl implements WebUserServ{
 	public Result login(Parameter param) throws Exception {
 		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),UsersVO.class);
 		UserService userService = WebserviceUtil.getService();
-		InetAddress address = InetAddress.getLocalHost(); 
-		String IP=address.getHostAddress();
+		String ip = SmsCodeUtil.getLocalIp(req);
 		Object res=null;
 		String queryStr = " and username =" + user.getUsername()+" and mobil =" + user.getUsername();
 		String hql = "from User where state = 1 " + queryStr;			
@@ -170,7 +169,7 @@ public class WebUserServImpl implements WebUserServ{
 				u.setCreatePerson(user.getUsername());
 				u.setState("1");
 				u.setSource("p2p");
-				u.setIp(IP);
+				u.setIp(ip);
 				u.setStatic_("1");
 				res=hibernateUtil.save(u);
 			}else if (list.size()>0) {
