@@ -133,6 +133,7 @@ public class SmsCodeUtil {
         String currentDay = sf.format(c.getTime());
         c.add(Calendar.DAY_OF_MONTH, 1);
         String nextDay = sf.format(c.getTime());
+        System.out.println("短信ip:"+req.getRemoteAddr());
 		String hql = "from MessageVerification where state = '1' and ip='"+req.getRemoteAddr()+"' and createTime< '"+nextDay+"' and createTime>'"+currentDay+"'";
 		List<Object> list = hibernateUtil.hql(hql);
 		return list.size();
