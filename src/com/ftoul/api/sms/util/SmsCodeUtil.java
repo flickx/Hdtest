@@ -136,7 +136,7 @@ public class SmsCodeUtil {
         String nextDay = sf.format(c.getTime());
 		String hql = "from MessageVerification where state = '1' and ip='"+ip+"' and createTime< '"+nextDay+"' and createTime>'"+currentDay+"'";
 		List<Object> list = hibernateUtil.hql(hql);
-		System.out.println("ip:"+req.getRemoteAddr()+"今日已经接收"+list.size()+"条短信");
+		System.out.println("ip:"+ip+"今日已经接收"+list.size()+"条短信");
 		return list.size();
 	}
 	
