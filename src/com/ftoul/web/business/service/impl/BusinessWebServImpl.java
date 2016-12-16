@@ -80,6 +80,7 @@ public class BusinessWebServImpl implements BusinessWebServ {
 		    	businessVo.setBusinessStoreId(businessStore.getId());
 		    	businessVo.setStoreId(businessStore.getStoreId());
 				businessVo.setStoreName(businessStore.getStoreName());
+				businessVo.setLinkmanNumber(businessStore.getBusiness().getBusinessBase().getLinkmanNumber());
 				businessVo.setPic(businessStore.getPic());
 				businessVo.setVerifyTime(businessStore.getVerifyTime());
 		    }
@@ -132,6 +133,7 @@ public class BusinessWebServImpl implements BusinessWebServ {
 		    	businessVo.setStoreId(businessStore.getStoreId());
 				businessVo.setStoreName(businessStore.getStoreName());
 				businessVo.setPic(businessStore.getPic());
+				businessVo.setLinkmanNumber(businessStore.getBusiness().getBusinessBase().getLinkmanNumber());
 				businessVo.setVerifyTime(businessStore.getVerifyTime());
 		    }
 //			if(businessStoreSummaryList.size()!=0){
