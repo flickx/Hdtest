@@ -120,7 +120,7 @@ public class SmsCodeUtil {
 		String queryStr = " and mobile ='" + mobile+"' and createTime < '"+ nextDay + "' and createTime > '" + currentDay +"'";
 		String hql = "from MessageVerification where state = '1'" + queryStr;	
 		List<Object> list = hibernateUtil.hql(hql);
-		System.out.println("手机号"+mobile+"今日已经接收"+list.size()+"条短信");
+		//System.out.println("手机号"+mobile+"今日已经接收"+list.size()+"条短信");
 		return list.size();
 	}
 	/**
@@ -133,9 +133,9 @@ public class SmsCodeUtil {
         String currentDay = sf.format(c.getTime());
         c.add(Calendar.DAY_OF_MONTH, 1);
         String nextDay = sf.format(c.getTime());
-        System.out.println("短信ip:"+req.getRemoteAddr());
 		String hql = "from MessageVerification where state = '1' and ip='"+req.getRemoteAddr()+"' and createTime< '"+nextDay+"' and createTime>'"+currentDay+"'";
 		List<Object> list = hibernateUtil.hql(hql);
+		System.out.println("ip"+req.getRemoteAddr()+"今日已经接收"+list.size()+"条短信");
 		return list.size();
 	}
 }
