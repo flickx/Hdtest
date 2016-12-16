@@ -384,7 +384,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		String sql = "SELECT distinct t1.id,t1.title,t1.price,t1.create_time from goods t1 "
 				+ "left join goods_event_join t2 on t1.state = '1' and t2.state = '1' and t2.goods_id = t1.id "
 				+ "left join goods_event t3 on t3.state = '1' and t2.state = '1' and t3.id = t2.event_id "
-				+ "where t1.state = '1' and t1.grounding = '1' and t1.shop_id ='1' and t3.event_begen < '"+ now +"' < t3.event_end";
+				+ "where t1.state = '1' and t1.grounding = '1' and t1.shop_id ='"+parameter.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"'";
 		
 		if(queryStr!=null){
 			sql = sql + queryStr + " order by t1.create_time desc";
