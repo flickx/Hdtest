@@ -133,9 +133,27 @@ public class SmsCodeUtil {
         String currentDay = sf.format(c.getTime());
         c.add(Calendar.DAY_OF_MONTH, 1);
         String nextDay = sf.format(c.getTime());
-		String hql = "from MessageVerification where state = '1' and ip='"+req.getRemoteAddr()+"' and createTime< '"+nextDay+"' and createTime>'"+currentDay+"'";
+		String hql = "from MessageVerification where state = '1' and ip='"+getRemoteHost()+"' and createTime< '"+nextDay+"' and createTime>'"+currentDay+"'";
 		List<Object> list = hibernateUtil.hql(hql);
 		System.out.println("ip:"+req.getRemoteAddr()+"今日已经接收"+list.size()+"条短信");
 		return list.size();
+	}
+	
+	public String getRemoteHost(){
+	    String ip = req.getHeader("x-forwarded-for");
+	    System.out.println("x-forwarded-for:"+ip);
+	    if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+	        ip = req.getHeader("Proxy-Client-IP");
+	        System.out.println("Proxy-Client-IP:"+ip);
+	    }
+	    if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+	        ip = req.getHeader("WL-Proxy-Client-IP");
+	        System.out.println("WL-Proxy-Client-IP:"+ip);
+	    }
+	    if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)){
+	        ip = req.getRemoteAddr();
+	        System.out.println("req.getRemoteAddr():"+ip);
+	    }
+	    return ip.equals("0:0:0:0:0:0:0:1")?"127.0.0.1":ip;
 	}
 }
