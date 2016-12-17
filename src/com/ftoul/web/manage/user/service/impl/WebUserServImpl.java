@@ -191,6 +191,8 @@ public class WebUserServImpl implements WebUserServ{
 	public Result sendSmsCode(Parameter param) throws Exception {
 		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),UsersVO.class);
 		Object res=null;
+		String ip = SmsCodeUtil.getLocalIp(req);
+		System.out.println("请求接收短信的IP: "+ip);
 		if (!CodeAction.userCodeMap.get("code").equalsIgnoreCase(user.getImgCode())) {
 			res="图形验证码错误";
 			throw new Exception("图形验证码错误");
