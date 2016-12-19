@@ -15,13 +15,18 @@ import com.ftoul.common.DateStr;
 import com.ftoul.common.Parameter;
 import com.ftoul.manage.cart.service.CartServ;
 import com.ftoul.po.FullCutRule;
+import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.Orders;
+import com.ftoul.po.OrdersDetail;
+import com.ftoul.po.OrdersSet;
 import com.ftoul.util.hibernate.HibernateUtil;
+import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.orders.service.OrdersServ;
 import com.ftoul.web.vo.ManyVsOneVo;
 import com.ftoul.web.vo.OrderVo;
 import com.ftoul.web.vo.ShopGoodsParamVo;
+import com.ftoul.web.webservice.UserService;
 
 @Component
 public class OrdersUtil {
@@ -38,7 +43,28 @@ public class OrdersUtil {
 	 */
 	
 	public void autoCancelOrders(Parameter param) throws Exception {
-		ordersServ.autoCancelOrders(param);
+		//ordersServ.autoCancelOrders(param);
+		String now = new DateStr().toString();
+		List<Object> list = hibernateUtil.hql("from Orders where state='1' and orderStatic ='1'");
+		for (int i = 0; i < list.size(); i++) {
+			Orders order = (Orders) list.get(i);
+			long min = new DateStr().compare(now,order.getOrderTime());
+			List<Object> setList = hibernateUtil.hql("from OrdersSet where state='1'");
+			if(setList!=null&&setList.size()>0){
+				OrdersSet set = (OrdersSet) setList.get(0);
+				String time = set.getAutoCancleTime();
+				if(min>=(Double.parseDouble(time)*60)){
+					order.setOrderStatic("8");
+					order.setModifyTime(now);
+					hibernateUtil.update(order);
+					updateGoodsParam(order.getId(),"cancel");
+					if(order.getBeeCoins()!=null){
+						updateCoinInfo(order.getUser().getUsername(),-Integer.parseInt(order.getBeeCoins()));
+					}
+				}
+			}
+			
+		}
 	}
 	
 	/**
@@ -70,38 +96,17 @@ public class OrdersUtil {
 		return state;
 	}
 	
-	
-	
 	/**
-	 * 生成订单号
+	 * 生成订单号 年月日时分秒+6位随机数，总共18位
 	 * @return
 	 */
 	public String getOrderNumber(){
-		Object obj = hibernateUtil.hqlFirst("select max(orderNumber) from Orders");
-		String max = "";
-		String seq = "";
-		String current = new DateStr("yyyyMMdd").toString();
-		if(obj!=null){
-			max = obj.toString();
-			String time = max.substring(0, 8);
-			seq = max.substring(8);
-			if(current.equals(time)){
-				seq = String.valueOf(Integer.parseInt(seq)+1);
-				int length = seq.length();
-				int l = 6-length;
-				if(l!=0){
-					for (int i = 0; i < l; i++) {
-						seq = "0"+seq;
-					}
-				}
-			}else{
-				seq ="000001";
-			}
-		}else{
-			seq ="000001";
-		}
-		max = current+seq;
-		return max;
+		String current = new DateStr("yyMMddHHmmss").toString();
+		String code = "";
+        for (int i = 0; i < 6; i++) {
+            code = code + (int)(Math.random() * 9);
+        }
+		return current+code;
 	}
 	
 	/**
@@ -226,6 +231,51 @@ public class OrdersUtil {
 			sumStock+=stock;
 		}
 		return sumStock;
+	}
+	
+	/**
+	 * 删除/取消订单，减少库存、增加销售量
+	 * @param param
+	 */
+	public void updateGoodsParam(String orderId,String flag) throws  Exception{
+		List<Object> list = hibernateUtil.hql("from OrdersDetail where orders.id='"+orderId+"'");
+		for (int i = 0; i < list.size(); i++) {
+			OrdersDetail ordersDetail = (OrdersDetail) list.get(i);
+			int num = Integer.parseInt(ordersDetail.getNumber());
+			GoodsParam goodsParam = ordersDetail.getGoodsParam();
+			Goods goods = goodsParam.getGoods();
+			if("add".equals(flag)){
+				goodsParam.setStock(String.valueOf(Integer.parseInt(goodsParam.getStock())-num));
+				goodsParam.setSaleNumber(goodsParam.getSaleNumber()+num);
+				goods.setSaleSum(goods.getSaleSum()+num);
+			}else if("cancel".equals(flag)){
+				goodsParam.setStock(String.valueOf(Integer.parseInt(goodsParam.getStock())+num));
+				goodsParam.setSaleNumber(goodsParam.getSaleNumber()-num);
+				goods.setSaleSum(goods.getSaleSum()-num);
+			}
+			hibernateUtil.update(goodsParam);
+			//判断商品是否还有库存
+			Parameter param = new Parameter();
+			param.setId(goods.getId());
+			int ret = getSumStockBygoodsId(param);
+			if(ret==0){//无库存
+				goods.setHasstock("0");
+			}else{
+				goods.setHasstock("1");
+			}
+			hibernateUtil.update(goods);
+		}
+	}
+	
+	/**
+	 * 修改用户蜂币
+	 * @param param
+	 * @param vo
+	 * @throws Exception
+	 */
+	public void updateCoinInfo(String param,int num) throws Exception{
+		UserService userService = WebserviceUtil.getService();
+		userService.modifyIntegral(param, num);
 	}
 	
 	

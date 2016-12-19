@@ -38,7 +38,7 @@ public interface OrdersServ {
 
 	Result getGoods(Parameter parameter) throws Exception;
 	
-	OrderPriceVo getOrderGoodsBenPrice(Parameter param) throws Exception;
+	//OrderPriceVo getOrderGoodsBenPrice(Parameter param) throws Exception;
 
 	Result getOrdersById(Parameter parameter) throws Exception;
 
@@ -46,7 +46,7 @@ public interface OrdersServ {
 	
 	Result getOrdersByOrdersNumber(Parameter param) throws Exception;
 	
-	Result autoCancelOrders(Parameter param) throws Exception;
+	//Result autoCancelOrders(Parameter param) throws Exception;
 
 	Result getOrdersDetailById(Parameter parameter) throws Exception;
 

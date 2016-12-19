@@ -26,9 +26,9 @@ public class PriceUtil {
 	@Autowired
 	private HibernateUtil hibernateUtil;
 	
-	public OrderPriceVo getOrderGoodsBenPrice(Parameter param) throws Exception{
-		return ordersServ.getOrderGoodsBenPrice(param);
-	}
+//	public OrderPriceVo getOrderGoodsBenPrice(Parameter param) throws Exception{
+//		return ordersServ.getOrderGoodsBenPrice(param);
+//	}
 	
 	/**
 	 * 每满减活动价格计算

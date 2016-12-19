@@ -23,5 +23,18 @@ public class GoodsEventUtil {
 		String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
 		return hibernateUtil.hqlFirst("from GoodsEvent where state='1' and universal ='1' and shopId ='"+shopId+"' and typeName = '"+eventType+"' and  eventBegen<='"+current+"' and eventEnd>='"+current+"'");
 	}
+	
+	/**
+	 * 检查某活动类型在当前时间是否存在
+	 * @param eventType
+	 * @return
+	 */
+	public Object checkExistGoodsEvent(String eventType){
+		String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
+		String hql = "from GoodsEvent where state='1' and typeName = '"+eventType+"' and eventBegen<='"+current+"' and eventEnd>='"+current+"'";
+		Object obj = hibernateUtil.hqlFirst(hql);
+		return obj;
+		
+	}
 
 }
