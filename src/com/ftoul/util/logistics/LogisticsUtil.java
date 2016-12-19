@@ -94,7 +94,9 @@ public class LogisticsUtil {
 			UserAddress address = (UserAddress) obj;
 			Object object = hibernateUtil.hqlFirst("from JPositionProvice where proviceId='"+address.getProvince()+"'"); 
 			JPositionProvice province = (JPositionProvice) object;
-			provinceName = province.getProviceName();
+			if(province!=null){
+				provinceName = province.getProviceName();
+			}
 		}
 		return provinceName;
 	}

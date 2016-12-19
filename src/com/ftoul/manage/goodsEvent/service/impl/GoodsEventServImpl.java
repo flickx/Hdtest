@@ -177,8 +177,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 					"AND gpt.state = '1'  " +
 					"AND gs.state = '1'  " +
 					"AND gs.grounding = '1'  " +
-					"GROUP BY  " +
-					"	gs.id  ";
+					"GROUP BY gs.id order by rand()  ";
 			Page page = hibernateUtil.sqlPage(sql,parameter.getPageNum(),parameter.getPageSize());
 			List<GoodsListVo> list = new ArrayList<GoodsListVo>();
 			for (int i = 0; i < page.getObjList().size(); i++) {
@@ -374,22 +373,19 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	}
 	/**
 	 * 
-	 * 得到商品列表（带分页） 一类活动不能重叠，须在商品选择时就排除掉当期选择过的商品。
+	 * 得到单品促销商品列表
 	 * @param   param Parameter对象
 	 * @return  返回结果（前台用Result对象）
 	 */
 	@Override
 	public Result getGoodsListPage(Parameter parameter) throws Exception {		
 		String queryStr = parameter.getWhereStr();
-//		String sql = "SELECT distinct t1.id,t1.title,gp.param_name,t1.price,t1.create_time from goods t1 "
-//				+ "left join goods_param gp on gp.goods_id = t1.id "
-//				+ "left join goods_event_join t2 on t1.state = '1' and t2.state = '1' and t2.goods_id = t1.id "
-//				+ "left join goods_event t3 on t3.state = '1' and t2.state = '1' and t3.id = t2.event_id "
-//				+ "where t1.state = '1' and t1.grounding = '1' and t1.shop_id ='1'";
+		String now = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
 		String sql = "SELECT distinct t1.id,t1.title,t1.price,t1.create_time from goods t1 "
 				+ "left join goods_event_join t2 on t1.state = '1' and t2.state = '1' and t2.goods_id = t1.id "
 				+ "left join goods_event t3 on t3.state = '1' and t2.state = '1' and t3.id = t2.event_id "
 				+ "where t1.state = '1' and t1.grounding = '1' and t1.shop_id ='1'";
+		
 		if(queryStr!=null){
 			sql = sql + queryStr + " order by t1.create_time desc";
 		}else{

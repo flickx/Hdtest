@@ -70,7 +70,7 @@ public class SmsCodeUtil {
 		}if (messageType.equals("2")) {
 			content = "【他她乐】亲爱的"+mobile+"手机用户：您的找回密码验证码为"+code+"，如非本人操作，请致电客服0731-82208568";
 		}
-		messageVerification.setIp(req.getRemoteAddr());
+		messageVerification.setIp(SmsCodeUtil.getLocalIp(req));
 		messageVerification.setMobile(mobile);
 		messageVerification.setContent(content);
 		messageVerification.setState("1");
@@ -120,7 +120,7 @@ public class SmsCodeUtil {
 		String queryStr = " and mobile ='" + mobile+"' and createTime < '"+ nextDay + "' and createTime > '" + currentDay +"'";
 		String hql = "from MessageVerification where state = '1'" + queryStr;	
 		List<Object> list = hibernateUtil.hql(hql);
-		//System.out.println("手机号"+mobile+"今日已经接收"+list.size()+"条短信");
+		System.out.println("手机号"+mobile+"今日已经接收"+list.size()+"条短信");
 		return list.size();
 	}
 	/**
@@ -128,13 +128,45 @@ public class SmsCodeUtil {
 	 * @param args
 	 */
 	public int getSmsCountIP(){
+		String ip = getLocalIp(req);
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
         String currentDay = sf.format(c.getTime());
         c.add(Calendar.DAY_OF_MONTH, 1);
         String nextDay = sf.format(c.getTime());
-		String hql = "from MessageVerification where state = '1' and ip='"+req.getRemoteAddr()+"' and createTime< '"+nextDay+"' and createTime>'"+currentDay+"'";
+		String hql = "from MessageVerification where state = '1' and ip='"+ip+"' and createTime< '"+nextDay+"' and createTime>'"+currentDay+"'";
 		List<Object> list = hibernateUtil.hql(hql);
+		System.out.println("ip:"+ip+"今日已经接收"+list.size()+"条短信");
 		return list.size();
 	}
+	
+    /**
+    * 从Request对象中获得客户端IP，处理了HTTP代理服务器和Nginx的反向代理截取了ip
+    * @param request
+    * @return ip
+    */
+  public static String getLocalIp(HttpServletRequest request) {
+      String remoteAddr = request.getRemoteAddr();
+      String forwarded = request.getHeader("X-Forwarded-For");
+      String realIp = request.getHeader("X-Real-IP");
+
+      String ip = null;
+      if (realIp == null) {
+          if (forwarded == null) {
+              ip = remoteAddr;
+          } else {
+              ip = remoteAddr + "/" + forwarded.split(",")[0];
+          }
+      } else {
+          if (realIp.equals(forwarded)) {
+              ip = realIp;
+          } else {
+              if(forwarded != null){
+                  forwarded = forwarded.split(",")[0];
+              }
+              ip = realIp + "/" + forwarded;
+          }
+      }
+      return ip;
+  }
 }

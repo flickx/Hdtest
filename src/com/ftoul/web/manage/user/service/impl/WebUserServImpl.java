@@ -3,6 +3,7 @@
  */
 package com.ftoul.web.manage.user.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +63,7 @@ public class WebUserServImpl implements WebUserServ{
 		Object res=null;
 		UserService userService = WebserviceUtil.getService();
 		boolean isExists=userService.checkUserExists(user.getUsername());
-		String IP=getRemoteHost();
+		String IP= SmsCodeUtil.getLocalIp(req);
 		String p2pId="";
 		String smsCode=user.getSmsCode();
 		int count = smsCodeUtil.getSmsCount(user.getUsername());
@@ -141,8 +142,7 @@ public class WebUserServImpl implements WebUserServ{
 	public Result login(Parameter param) throws Exception {
 		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),UsersVO.class);
 		UserService userService = WebserviceUtil.getService();
-		InetAddress address = InetAddress.getLocalHost(); 
-		String IP=address.getHostAddress();
+		String ip = SmsCodeUtil.getLocalIp(req);
 		Object res=null;
 		String queryStr = " and username =" + user.getUsername()+" and mobil =" + user.getUsername();
 		String hql = "from User where state = 1 " + queryStr;			
@@ -170,7 +170,7 @@ public class WebUserServImpl implements WebUserServ{
 				u.setCreatePerson(user.getUsername());
 				u.setState("1");
 				u.setSource("p2p");
-				u.setIp(IP);
+				u.setIp(ip);
 				u.setStatic_("1");
 				res=hibernateUtil.save(u);
 			}else if (list.size()>0) {
@@ -189,31 +189,40 @@ public class WebUserServImpl implements WebUserServ{
 	 * 发送短信验证码
 	 */
 	@Override
-	public Result sendSmsCode(Parameter param) throws Exception {
+	public Result sendSmsCode(Parameter param){
 		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),UsersVO.class);
 		Object res=null;
-		if (!CodeAction.userCodeMap.get("code").equalsIgnoreCase(user.getImgCode())) {
-			res="图形验证码错误";
-			throw new Exception("图形验证码错误");
-		}
-		String smsCodeType=user.getSmscodeType();
-		int count = smsCodeUtil.getSmsCount(user.getUsername());
-		int countIP = smsCodeUtil.getSmsCountIP();
-		if (count>5||countIP>9) {
-			res="今日接收短信已超过上限";
-			throw new Exception("今日接收短信已超过上限");
-		}
-		//生成验证码
-		int sort=smsCodeUtil.makeSmsCode(user.getUsername(),smsCodeType);
-		//获取验证码
-		MessageVerification m=smsCodeUtil.getMaxSmsCode(user.getUsername(), smsCodeType,sort);
-		
-		if (m==null) {			
-			res="请先获取短信验证码";
-			throw new Exception("请先获取短信验证码");
-		}else{
-		//发送短信验证码
-		MessageUtil.send(user.getUsername(), m.getContent());	
+		String ip = SmsCodeUtil.getLocalIp(req);
+		System.out.println("请求接收短信的IP: "+ip);
+		try {
+			if (!CodeAction.userCodeMap.get("code").equalsIgnoreCase(user.getImgCode())) {
+				res="图形验证码错误";
+				throw new Exception("图形验证码错误");
+			}
+			String smsCodeType=user.getSmscodeType();
+			int count = smsCodeUtil.getSmsCount(user.getUsername());
+			int countIP = smsCodeUtil.getSmsCountIP();
+			if (count>5) {
+				res="此手机今天可接收短信已超5条上限";
+				throw new Exception("此手机今天可接收短信已超5条上限");
+			}if(countIP>9){
+				res="IP今日接收短信已超上限";
+				throw new Exception("IP今日接收短信已超上限");
+			}
+			//生成验证码
+			int sort=smsCodeUtil.makeSmsCode(user.getUsername(),smsCodeType);
+			//获取验证码
+			MessageVerification m=smsCodeUtil.getMaxSmsCode(user.getUsername(), smsCodeType,sort);
+			
+			if (m==null) {			
+				res="请先获取短信验证码";
+				throw new Exception("请先获取短信验证码");
+			}else{
+			//发送短信验证码
+			MessageUtil.send(user.getUsername(), m.getContent());	
+			}
+		}catch (Exception e) {
+			
 		}
 		return ObjectToResult.getResult(res);
 	}
