@@ -67,7 +67,8 @@ public class BusinessWebServImpl implements BusinessWebServ {
 		    String goodsMonthHql = "from Goods where state = '1' and grounding = '1' and shopId ='"+param.getId()+"' and createTime >= '"+start+"' and createTime <= '"+end+"'";
 		    List<Object> ObjMonthList =(List<Object>) hibernateUtil.hql(goodsMonthHql);
 		    //店铺商品销量总计
-		    String goodsSaleHql="select sum(gp.sale_number) as number from goods_param as gp left join goods as g on g.id=gp.goods_id where g.shop_id = '"+param.getId()+"'";
+//		    String goodsSaleHql="select sum(gp.sale_number) as number from goods_param as gp left join goods as g on g.id=gp.goods_id where g.shop_id = '"+param.getId()+"'";
+		    String goodsSaleHql="select sum(gp.sale_number) as number from goods_param as gp left join goods as g on g.id=gp.goods_id where g.state = 1 and gp.state = 1 and g.shop_id = '"+param.getId()+"'";
 		    List<Object[]> saleNumber=hibernateUtil.sql(goodsSaleHql);
 		    //装载前台视图对象
 		    BusinessVo businessVo=new BusinessVo();
