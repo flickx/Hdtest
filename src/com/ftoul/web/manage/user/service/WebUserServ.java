@@ -38,7 +38,7 @@ public interface WebUserServ {
 	 * @return
 	 * @throws Exception
 	 */
-	Result sendSmsCode(UsersVO usersvo)throws Exception;
+	Result sendSmsCode(Parameter param)throws Exception;
 	/**
 	 * 找回密码 
 	 * @param param

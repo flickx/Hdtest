@@ -189,8 +189,8 @@ public class WebUserServImpl implements WebUserServ{
 	 * 发送短信验证码
 	 */
 	@Override
-	public Result sendSmsCode(UsersVO user) throws Exception {
-//		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),UsersVO.class);
+	public Result sendSmsCode(Parameter param) throws Exception {
+		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),UsersVO.class);
 		Object res=null;
 		String ip = SmsCodeUtil.getLocalIp(req);
 		System.out.println("请求接收短信的IP: "+ip);
