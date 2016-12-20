@@ -381,25 +381,32 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	public Result getGoodsListPage(Parameter parameter) throws Exception {		
 		String queryStr = parameter.getWhereStr();
 		String now = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
-		String sql = "SELECT distinct t1.id,t1.title,t1.price,t1.create_time from goods t1 "
-				+ "left join goods_event_join t2 on t1.state = '1' and t2.state = '1' and t2.goods_id = t1.id "
-				+ "left join goods_event t3 on t3.state = '1' and t2.state = '1' and t3.id = t2.event_id "
-				+ "where t1.state = '1' and t1.grounding = '1' and t1.shop_id ='1'";
-		
+		String sql = "select g.id,g.title,g.price,g.create_time from goods g where g.id not in(SELECT distinct t1.id from goods t1 "
+					+ "left join goods_event_join t2 on t1.state = '1' and t2.state = '1' and t2.goods_id = t1.id "
+					+ "left join goods_event t3 on t3.state = '1' and t2.state = '1' and t3.id = t2.event_id "
+					+ "where t1.state = '1' and t1.grounding = '1' and t1.shop_id ='1' and t3.event_begen<'" + now + "'< t3.event_end) ";	
 		if(queryStr!=null){
-			sql = sql + queryStr + " order by t1.create_time desc";
+			sql = sql + queryStr + " order by g.create_time desc";
 		}else{
-			sql = sql+" order by t1.create_time desc";
+			sql = sql+" order by g.create_time desc";
 		}
 		Page page = hibernateUtil.sqlPage(sql,parameter.getPageNum(),parameter.getPageSize());
 		List<GoodsVo> list = new ArrayList<GoodsVo>();
 		for (int i = 0; i < page.getObjList().size(); i++) {
 			GoodsVo goodsVo = new GoodsVo();
 			Object[] obj = (Object[])page.getObjList().get(i);
-			goodsVo.setId(obj[0].toString());
-			goodsVo.setTitle(obj[1].toString());
-			goodsVo.setPrice(obj[2].toString());
-			goodsVo.setCreateTime(obj[3].toString());
+			if (obj[0]!=null) {
+				goodsVo.setId(obj[0].toString());
+			}
+			if (obj[1]!=null) {
+				goodsVo.setTitle(obj[1].toString());
+			}
+			if (obj[2]!=null) {
+				goodsVo.setPrice(obj[2].toString());
+			}
+			if (obj[3]!=null) {
+				goodsVo.setCreateTime(obj[3].toString());
+			}
 			list.add(goodsVo);
 		}
 		page.setVoList(list);
