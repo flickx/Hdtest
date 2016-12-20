@@ -203,6 +203,7 @@ public class OrdersUtil {
 		for (int i = 0; i < strList.length; i++) {
 			String[] str = strList[i].split(",");
 			param.setId(str[3]);
+			
 			cartServ.delShopCart(param);
 		}
 	}

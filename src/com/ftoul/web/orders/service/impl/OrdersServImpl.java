@@ -949,64 +949,6 @@ public class OrdersServImpl implements OrdersServ {
 		return ObjectToResult.getResult(shopGoodsList);
 	}
 	
-//	/**
-//	 * 给购物车提供价格接口
-//	 * @param param
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	@Override
-//	public OrderPriceVo getOrderGoodsBenPrice(Parameter param) throws Exception {
-//		double payable = 0.0;
-//		double costPrice = 0.0;// 折后单价
-//		double totalCostPrice = 0.0;// 折后总单价
-//		String id = (String)param.getId();
-//		List<Object> list = hibernateUtil.hql("select price from GoodsParam where goods.id = '"+id+"'");
-//		String goodsPrice = (String)list.get(0);
-//		Date currentTime = DateUtil.stringFormatToDate(
-//				DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss"),
-//				"yyyy/MM/dd HH:mm:ss");
-//		List<Object> goodsEventJoinList = hibernateUtil
-//				.hql("from GoodsEventJoin where state='1' and goods.id='" + id
-//						+ "'");
-//		if (goodsEventJoinList != null && goodsEventJoinList.size() > 0) {
-//			for (int j = 0; j < goodsEventJoinList.size(); j++) {
-//				GoodsEventJoin join = (GoodsEventJoin) goodsEventJoinList
-//						.get(j);
-//				GoodsEvent event = join.getGoodsEvent();
-//				Date begin = DateUtil.stringFormatToDate(event.getEventBegen(),
-//						"yyyy/MM/dd HH:mm:ss");
-//				Date end = DateUtil.stringFormatToDate(event.getEventEnd(),
-//						"yyyy/MM/dd HH:mm:ss");
-//				if (currentTime.after(begin) && currentTime.before(end)
-//						&& "1".equals(event.getState()) && join.getQuantity() != null
-//						&& join.getQuantity() > 0) {
-//					if (!"满减".equals(event.getTypeName())) {
-//						payable = Double.parseDouble(goodsPrice);
-//						// 折后单价
-//						costPrice = Double
-//								.parseDouble(new DecimalFormat("0.00")
-//										.format(payable
-//												* Float.parseFloat(event
-//														.getDiscount())));
-//						totalCostPrice += costPrice;
-//					}
-//				} else {
-//					payable = Double.parseDouble(goodsPrice);
-//					totalCostPrice = payable;
-//				}
-//			}
-//		} else {
-//			double price = Double.parseDouble(goodsPrice);
-//			payable = price;
-//			totalCostPrice = price;
-//		}
-//		OrderPriceVo vo = new OrderPriceVo();
-//		vo.setPayable(String.valueOf(payable));
-//		vo.setOrderPrice(String.valueOf(totalCostPrice));
-//		return vo;
-//	}
-
 	/**
 	 * 通过主键获取订单信息
 	 * @param param
@@ -1076,37 +1018,6 @@ public class OrdersServImpl implements OrdersServ {
 		Integer num = hibernateUtil.execHql("update Orders set confirmStatic = '1',orderStatic = '6' where id = '"+param.getId()+"'");
 		return ObjectToResult.getResult(num);
 	}
-	
-//	/**
-//	 * 自动取消订单
-//	 * @param param Parameter对象
-//	 * @return返回结果（前台用Result对象）
-//	 */
-//	@Override
-//	public Result autoCancelOrders(Parameter param) throws Exception {
-//		String now = new DateStr().toString();
-//		List<Object> list = hibernateUtil.hql("from Orders where state='1' and orderStatic ='1'");
-//		for (int i = 0; i < list.size(); i++) {
-//			Orders order = (Orders) list.get(i);
-//			long min = new DateStr().compare(now,order.getOrderTime());
-//			List<Object> setList = hibernateUtil.hql("from OrdersSet where state='1'");
-//			if(setList!=null&&setList.size()>0){
-//				OrdersSet set = (OrdersSet) setList.get(0);
-//				String time = set.getAutoCancleTime();
-//				if(min>=(Double.parseDouble(time)*60)){
-//					order.setOrderStatic("8");
-//					order.setModifyTime(now);
-//					hibernateUtil.update(order);
-//					ordersUtil.updateGoodsParam(order.getId(),"cancel");
-//					if(order.getBeeCoins()!=null){
-//						ordersUtil.updateCoinInfo(order.getUser().getUsername(),-Integer.parseInt(order.getBeeCoins()));
-//					}
-//				}
-//			}
-//			
-//		}
-//		return ObjectToResult.getResult(new Object());
-//	}
 	
 	/**
 	 * 检查购买商品参加的活动类型、数量
