@@ -381,7 +381,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	public Result getGoodsListPage(Parameter parameter) throws Exception {		
 		String queryStr = parameter.getWhereStr();
 		String now = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
-		String sql = "select g.id,g.title,g.price,g.create_time from goods g where g.id not in(SELECT distinct t1.id from goods t1 "
+		String sql = "select g.id,g.title,g.price,g.create_time from goods g where g.state = '1' and g.id not in(SELECT distinct t1.id from goods t1 "
 					+ "left join goods_event_join t2 on t1.state = '1' and t2.state = '1' and t2.goods_id = t1.id "
 					+ "left join goods_event t3 on t3.state = '1' and t2.state = '1' and t3.id = t2.event_id "
 					+ "where t1.state = '1' and t1.grounding = '1' and t1.shop_id ='1' and t3.event_begen<'" + now + "'< t3.event_end) ";	
