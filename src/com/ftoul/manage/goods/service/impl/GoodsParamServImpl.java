@@ -7,6 +7,7 @@ import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
@@ -305,6 +306,9 @@ public class GoodsParamServImpl implements GoodsParamServ {
 		String amountStr = param.getKey();
 		int amount = Integer.parseInt(amountStr);
 		int ret  =amount+stock;
+		if(ret<0){
+			throw new Exception("库存数不能小于0");
+		}
 		goodsParam.setStock(new Integer (ret).toString());
 		Object res;
 		res =this.hibernateUtil.update(goodsParam);
