@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.ftoul.app.goods.action;
+package com.ftoul.app.action.goods;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

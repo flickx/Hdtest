@@ -1,4 +1,4 @@
-package com.ftoul.app.goods.action.vo;
+package com.ftoul.app.vo;
 
 import java.util.List;
 
