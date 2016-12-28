@@ -177,11 +177,11 @@ public class MyInterceptor {
 					String op = opToSql(rule.getOp());
 					String data = "";
 					if("like".equals(op) || "not like".equals(op))
-						data = " '%" + rule.getData() + "%' ";
+						data = " '%" + escapeExprSpecialWord(rule.getData()) + "%' ";
 					else if(rule.getFun()!=null && rule.getFun())
-						data = " " + rule.getData() + " ";
+						data = " " + escapeExprSpecialWord(rule.getData()) + " ";
 					else
-						data = " '" + rule.getData() + "' ";
+						data = " '" + escapeExprSpecialWord(rule.getData()) + "' ";
 					whereStr += " " + rule.getField() + " " + op + data ;
 				}
 				whereStr = " and (" + whereStr + ")";
@@ -193,7 +193,21 @@ public class MyInterceptor {
 		}
 		this.parameters = param;
 	}
-	
+	/** 
+	 * 转义正则特殊字符 （$()*+.[]?\^{},|） 
+	 *  
+	 * @param keyword 
+	 * @return 
+	 */  
+	public String escapeExprSpecialWord(String keyword) {  
+		String[] fbsArr = { "\\", "$","'","%", "(", ")", "*", "+", ".", "[", "]", "?", "^", "{", "}", "|" };  
+		for (String key : fbsArr) {
+			if (keyword.contains(key)) {
+				keyword = keyword.replace(key, "\\\\" + key);
+			}
+		}  
+	    return keyword;  
+	}  
 //	@AfterReturning("anyMethod()")
 //	public void doAfter(){
 //		System.out.println("后置通知");
