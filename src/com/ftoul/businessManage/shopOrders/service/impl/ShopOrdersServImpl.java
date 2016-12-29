@@ -299,7 +299,9 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 			ordersDetail = (OrdersDetail) detailList.get(i);
 			goodsVo.setNumber(ordersDetail.getNumber());
 			goodsVo.setPrice(ordersDetail.getGoodsParam().getPrice());
-			goodsVo.setTotalPrice(String.valueOf(Double.parseDouble(ordersDetail.getNumber())*Double.parseDouble(ordersDetail.getGoodsParam().getPrice())));//总价
+			goodsVo.setCurrentPrice(ordersDetail.getPrice());
+			//goodsVo.setTotalPrice(String.valueOf(Double.parseDouble(ordersDetail.getNumber())*Double.parseDouble(ordersDetail.getGoodsParam().getPrice())));//总价
+			goodsVo.setTotalPrice(ordersDetail.getTotalPrice().toString());
 			goodsVo.setCostPrice(ordersDetail.getGoodsParam().getCostprice());
 			//判断是否有供货商
 			if(null!=ordersDetail.getGoodsParam().getGoods().getGoodsCanal()){

@@ -8,6 +8,7 @@ public class GoodsVo {
 	private String param;
 	private String number;
 	private String price;
+	private String currentPrice;
 	private String totalPrice;
 	private String marketPrice;
 	private String costPrice;//进货价
@@ -79,6 +80,12 @@ public class GoodsVo {
 	}
 	public void setSku(String sku) {
 		this.sku = sku;
+	}
+	public String getCurrentPrice() {
+		return currentPrice;
+	}
+	public void setCurrentPrice(String currentPrice) {
+		this.currentPrice = currentPrice;
 	}
 
 }

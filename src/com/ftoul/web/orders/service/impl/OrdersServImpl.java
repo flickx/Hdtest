@@ -650,6 +650,7 @@ public class OrdersServImpl implements OrdersServ {
 			}
 			if(costPrice>0){
 				goodsVo.setPrice(String.valueOf(costPrice));
+				costPrice = 0.00;
 			}else{
 				goodsVo.setPrice(String.valueOf(price));
 			}
