@@ -24,8 +24,8 @@ import com.ftoul.web.manage.user.service.WebUserServ;
  * @date:2016年7月20日 下午4:35:39
  * @类说明 : 前台用户注册，登录
  */
-@Controller
-@RequestMapping(value = "/web/manage/user")
+@Controller("AppWebUserAction")
+@RequestMapping(value = "/app/user")
 public class WebUserAction {
 	@Autowired
 	private WebUserServ webUserServ;

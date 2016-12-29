@@ -15,8 +15,8 @@ import com.ftoul.util.logistics.LogisticsUtil;
  * @author HuDong
  *
  */
-@Controller
-@RequestMapping(value = "/web/logistics")
+@Controller("AppLogisticsCompanyAction")
+@RequestMapping(value = "/app/logistics")
 public class LogisticsCompanyAction {
 
 	@Autowired

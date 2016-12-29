@@ -23,8 +23,8 @@ import com.ftoul.manage.appSet.service.AppSetServ;
  * @version 1.0
  *
  */
-@Controller("AppSetWebAction")
-@RequestMapping(value = "/web/appSet")
+@Controller("AppAppSetWebAction")
+@RequestMapping(value = "/app/appSet")
 public class AppSetAction {
 	@Autowired
 	private AppSetServ appSetServ;

@@ -18,8 +18,8 @@ import com.ftoul.web.orders.service.OrdersServ;
  * @author HuDong
  *
  */
-@Controller("WebAfterServiceAction")
-@RequestMapping(value = "/web/afterService")
+@Controller("AppAfterServiceAction")
+@RequestMapping(value = "/app/afterService")
 public class AfterServiceAction {
 
 	@Autowired

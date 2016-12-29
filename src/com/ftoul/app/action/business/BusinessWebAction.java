@@ -15,8 +15,8 @@ import com.ftoul.web.business.service.BusinessWebServ;
  * 商家
  *
  */
-@Controller
-@RequestMapping(value="/web/business")
+@Controller("AppBusinessWebAction")
+@RequestMapping(value="/app/business")
 public class BusinessWebAction {
 	@Autowired
 	private BusinessWebServ businessWebServ;

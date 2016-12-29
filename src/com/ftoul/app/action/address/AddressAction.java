@@ -15,8 +15,8 @@ import com.ftoul.web.address.service.AddressServ;
  * @author hud
  *
  */
-@Controller("AddressWebAction")
-@RequestMapping(value = "/web/address")
+@Controller("AppAddressWebAction")
+@RequestMapping(value = "/app/address")
 public class AddressAction {
 	
 	@Autowired

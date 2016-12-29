@@ -19,8 +19,8 @@ import com.ftoul.web.home.service.HomeServ;
  * @date:2016年8月15日 下午3:42:16
  * @类说明 : 前台首页
  */
-@Controller
-@RequestMapping(value = "/web/home")
+@Controller("AppHomeAction")
+@RequestMapping(value = "/app/home")
 public class HomeAction {
 	@Autowired
 	private HomeServ homeServ;

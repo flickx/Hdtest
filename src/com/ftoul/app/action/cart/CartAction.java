@@ -10,8 +10,8 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.cart.service.CartServ;
 
-@Controller("CartWebAction")
-@RequestMapping("/web/cart")
+@Controller("AppCartWebAction")
+@RequestMapping("/app/cart")
 public class CartAction {
 	
 	@Autowired

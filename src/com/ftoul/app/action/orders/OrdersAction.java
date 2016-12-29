@@ -15,8 +15,8 @@ import com.ftoul.web.orders.service.OrdersServ;
  * @author HuDong
  *
  */
-@Controller("OrdersWebAction")
-@RequestMapping(value = "/web/orders")
+@Controller("AppOrdersAction")
+@RequestMapping(value = "/app/orders")
 public class OrdersAction {
 
 	@Autowired

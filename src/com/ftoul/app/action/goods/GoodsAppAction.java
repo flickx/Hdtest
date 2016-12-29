@@ -31,7 +31,7 @@ import com.ftoul.web.goods.service.UserCollectionServ;
  * @version 1.0
  *
  */
-@Controller("GoodsAppAction")
+@Controller("AppGoodsAppAction")
 @RequestMapping(value = "/app/goods")
 public class GoodsAppAction {
 	@Autowired

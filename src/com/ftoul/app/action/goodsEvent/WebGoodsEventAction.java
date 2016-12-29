@@ -17,8 +17,8 @@ import com.ftoul.manage.goodsEvent.service.GoodsEventServ;
  * @author
  *
  */
-@Controller("webEvent")
-@RequestMapping(value = "/web/goodsEvent")
+@Controller("AppEvent")
+@RequestMapping(value = "/app/goodsEvent")
 public class WebGoodsEventAction {
 	
 	@Autowired
