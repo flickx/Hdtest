@@ -239,7 +239,41 @@ public class WebUserServImpl implements WebUserServ {
 		}
 		return ObjectToResult.getResult(res);
 	}
+	/**
+	 * 发送短信验证码
+	 */
+	@Override
+	public Result sendAppSmsCode(Parameter param) throws Exception {
+		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),
+				UsersVO.class);
+		Object res = null;
+		String ip = SmsCodeUtil.getLocalIp(req);
+		String smsCodeType = user.getSmscodeType();
+		int count = smsCodeUtil.getSmsCount(user.getUsername());
+		int countIP = smsCodeUtil.getSmsCountIP();
+		if (count > 5) {
+			res = "此手机今天可接收短信已超5条上限";
+			throw new Exception("此手机今天可接收短信已超5条上限");
+		}
+		if (countIP > 9) {
+			res = "IP今日接收短信已超上限";
+			throw new Exception("IP今日接收短信已超上限");
+		}
+		// 生成验证码
+		int sort = smsCodeUtil.makeSmsCode(user.getUsername(), smsCodeType);
+		// 获取验证码
+		MessageVerification m = smsCodeUtil.getMaxSmsCode(user.getUsername(),
+				smsCodeType, sort);
 
+		if (m == null) {
+			res = "请先获取短信验证码";
+			throw new Exception("请先获取短信验证码");
+		} else {
+			// 发送短信验证码
+			MessageUtil.send(user.getUsername(), m.getContent());
+		}
+		return ObjectToResult.getResult(res);
+	}
 	/**
 	 * 找回密码
 	 */

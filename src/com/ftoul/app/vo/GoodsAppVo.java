@@ -2,10 +2,6 @@ package com.ftoul.app.vo;
 
 import java.util.List;
 
-import com.ftoul.po.GoodsParam;
-import com.ftoul.po.GoodsProp;
-import com.ftoul.po.GoodsUploadpic;
-
 
 public class GoodsAppVo {
 	
@@ -27,14 +23,14 @@ public class GoodsAppVo {
 	private String goodsEventName;//活动名称
 	private String eventPrice;//活动价格
 	
-	private List<GoodsProp> goodsPropList;//商品规格
+	private List<GoodsPropAppVo> goodsPropList;//商品规格
 	
-	private List<GoodsParam> goodsParamList;//商品参数
+	private List<GoodsParamAppVo> goodsParamList;//商品参数
 	
 	
-	private List<GoodsUploadpic> goodsPicList;//前台商品图
+	private List<GoodsPicAppVo> goodsPicList;//前台商品图
 	
-	private List<GoodsUploadpic> goodsPicInfoList;//前台商品详情图
+	private List<GoodsPicAppVo> goodsPicInfoList;//前台商品详情图
 	
 	public String getId() {
 		return id;
@@ -172,36 +168,37 @@ public class GoodsAppVo {
 		this.eventPrice = eventPrice;
 	}
 
-	public List<GoodsProp> getGoodsPropList() {
+	
+	public List<GoodsPropAppVo> getGoodsPropList() {
 		return goodsPropList;
 	}
 
-	public void setGoodsPropList(List<GoodsProp> goodsPropList) {
+	public void setGoodsPropList(List<GoodsPropAppVo> goodsPropList) {
 		this.goodsPropList = goodsPropList;
 	}
 
-	public List<GoodsParam> getGoodsParamList() {
+	public List<GoodsParamAppVo> getGoodsParamList() {
 		return goodsParamList;
 	}
 
-	public void setGoodsParamList(List<GoodsParam> goodsParamList) {
+	public void setGoodsParamList(List<GoodsParamAppVo> goodsParamList) {
 		this.goodsParamList = goodsParamList;
 	}
 
-	public List<GoodsUploadpic> getGoodsPicList() {
+	public List<GoodsPicAppVo> getGoodsPicList() {
 		return goodsPicList;
 	}
 
-	public void setGoodsPicList(List<GoodsUploadpic> goodsPicList) {
+	public void setGoodsPicList(List<GoodsPicAppVo> goodsPicList) {
 		this.goodsPicList = goodsPicList;
 	}
 
-	public List<GoodsUploadpic> getGoodsPicInfoList() {
+	public List<GoodsPicAppVo> getGoodsPicInfoList() {
 		return goodsPicInfoList;
 	}
 
-	public void setGoodsPicInfoList(List<GoodsUploadpic> goodsPicInfoList) {
+	public void setGoodsPicInfoList(List<GoodsPicAppVo> goodsPicInfoList) {
 		this.goodsPicInfoList = goodsPicInfoList;
 	}
-	
+
 }

@@ -40,6 +40,13 @@ public interface WebUserServ {
 	 */
 	Result sendSmsCode(Parameter param)throws Exception;
 	/**
+	 * app端发送短信验证码
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result sendAppSmsCode(Parameter param)throws Exception;
+	/**
 	 * 找回密码 
 	 * @param param
 	 * @return
