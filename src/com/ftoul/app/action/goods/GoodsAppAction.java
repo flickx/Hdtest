@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ftoul.api.sms.util.MessageUtil;
+import com.ftoul.app.vo.GoodsAppVo;
 import com.ftoul.common.Common;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
@@ -267,6 +268,27 @@ public class GoodsAppAction {
 		Parameter parameter = Common.jsonToParam(param);
 		Result ret =  goodsServ.getGoodsDetail(parameter);
 		GoodsVo goodsVo = (GoodsVo)ret.getObj();
+		GoodsAppVo goodsAppVo = new GoodsAppVo();
+		goodsAppVo.setId(goodsVo.getId());
+		goodsAppVo.setTitle(goodsVo.getTitle());
+		goodsAppVo.setPrice(goodsVo.getPrice());
+		goodsAppVo.setPicSrc(goodsVo.getPicSrc());
+		goodsAppVo.setQuantity(goodsVo.getQuantity());
+		goodsAppVo.setGoodsBrandId(goodsVo.getGoodsBrandId());
+		goodsAppVo.setStock(goodsVo.getStock());
+		goodsAppVo.setTypeName(goodsVo.getTypeName());
+		goodsAppVo.setShopId(goodsVo.getShopId());
+		goodsAppVo.setBusinessClassifyId(goodsVo.getBusinessClassifyId());
+		goodsAppVo.setGoodsLabel(goodsVo.getGoodsLabel());
+		goodsAppVo.setSubTitle(goodsVo.getSubtitle());
+		goodsAppVo.setSumStock(goodsVo.getSumStock());
+		goodsAppVo.setFreight(goodsVo.getFreight());
+		goodsAppVo.setGrounding(goodsVo.getGrounding());
+		goodsAppVo.setGoodsEventName(goodsVo.getGoodsEventName());
+		goodsAppVo.setEventPrice(goodsVo.getEventPrice());
+		goodsAppVo.setGoodsParamList(goodsVo.getGoodsParamList());
+		goodsAppVo.setGoodsPicList(goodsVo.getGoodsPicList());
+		goodsAppVo.setGoodsPicInfoList(goodsVo.getGoodsPicInfoList());
 		return ObjectToResult.getResult(goodsVo);
 	}
 	
