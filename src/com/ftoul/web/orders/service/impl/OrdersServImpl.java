@@ -537,6 +537,7 @@ public class OrdersServImpl implements OrdersServ {
 		}
 			
 		double price = 0.00;
+		double goodsPrice = 0.00;
 		double totalPayable = 0.00;
 		double payable = 0.00;
 		double mjOrderPrice = 0.00;
@@ -587,30 +588,36 @@ public class OrdersServImpl implements OrdersServ {
 			if(goodsEventList!=null&&goodsEventList.size()>0){
 				for (int j = 0; j < goodsEventList.size(); j++) {
 					GoodsEvent event = (GoodsEvent) goodsEventList.get(j);
-					if("阶梯满减".equals(event.getTypeName())){
-						mjVo = new MjGoodsEventVo();
-						mjVo.setGoodsEvent(event);
-						eventName = event.getEventName();
-					}else if("每满减".equals(event.getTypeName())){
-						mmjVo = new MjGoodsEventVo();
-						mmjVo.setGoodsEvent(event);
-						eventName = event.getEventName();
+//					if("阶梯满减".equals(event.getTypeName())){
+//						mjVo = new MjGoodsEventVo();
+//						mjVo.setGoodsEvent(event);
+//						eventName = event.getEventName();
+//					}else if("每满减".equals(event.getTypeName())){
+//						mmjVo = new MjGoodsEventVo();
+//						mmjVo.setGoodsEvent(event);
+//						eventName = event.getEventName();
+//					}
+					
+					GoodsEventJoin join = (GoodsEventJoin) hibernateUtil.hqlFirst("from GoodsEventJoin where state = '1' and goods.id='"+good.getId()+"' and goodsEvent.id = '"+event.getId()+"'");
+					if(join.getEventPrice()!=null){//活动关联的商品的价格
+						costPrice = join.getEventPrice().doubleValue();
+					}else if(event.getEventPrice()!=null){//活动价格
+						costPrice = event.getEventPrice().doubleValue();
+					}else if(event.getDiscount()!=null){//折扣单价
+						costPrice = Double.parseDouble(new DecimalFormat("0.00").format(Double.parseDouble(goodsP.getPrice())*Float.parseFloat(event.getDiscount())));
 					}else{
-						GoodsEventJoin join = (GoodsEventJoin) hibernateUtil.hqlFirst("from GoodsEventJoin where state = '1' and goods.id='"+good.getId()+"' and goodsEvent.id = '"+event.getId()+"'");
-						if(join.getEventPrice()!=null){//商品活动价格
-							costPrice = join.getEventPrice().doubleValue();
-						}else if(event.getEventPrice()!=null){
-							costPrice = event.getEventPrice().doubleValue();
-						}else if(event.getDiscount()!=null){
-							//折扣单价
-							costPrice = Double.parseDouble(new DecimalFormat("0.00").format(Double.parseDouble(goodsP.getPrice())*Float.parseFloat(event.getDiscount())));
-						}else{
-							costPrice = Double.parseDouble(goodsP.getPrice());
-						}
-						costPayable = costPrice*num;
-						payable = costPrice*num;
-						totalPayable += payable;
+						costPrice = Double.parseDouble(goodsP.getPrice());
 					}
+					costPayable = costPrice*num;//当前商品折后总价
+					//payable = costPrice*num;//当前商品原总价
+					goodsPrice = Double.parseDouble(goodsP.getPrice());//商品原价
+					payable = goodsPrice*num;//当前商品原总价
+					totalPayable += payable;//订单原总价
+					
+					//判断此商品是否参加了阶梯满减活动
+					mjVo = priceUtil.getMjGoodsEvent(good, "阶梯满减");
+					//判断此商品是否参加了每满减活动
+					mmjVo = priceUtil.getMjGoodsEvent(good, "每满减");
 					
 					if(j==goodsEventList.size()-1){
 						if(mjVo!=null){//参加阶梯满减活动
@@ -646,7 +653,7 @@ public class OrdersServImpl implements OrdersServ {
 				payable = price*num;
 				totalPayable += payable;
 				orderPrice += payable;
-				System.out.println("无优惠活动："+goodsP.getGoods().getId()+goodsP.getGoods().getTitle()+"的单价为"+price+",数量为"+num+"总价为"+payable);
+				System.out.println("无优惠活动："+goodsP.getGoods().getId()+goodsP.getGoods().getTitle()+"的单价为"+price+",数量为"+num+"原总价为"+payable);
 			}
 			if(costPrice>0){
 				goodsVo.setPrice(String.valueOf(costPrice));
@@ -722,11 +729,7 @@ public class OrdersServImpl implements OrdersServ {
 		vo.setOrderNumber(orders.getOrderNumber());
 		vo.setIsCard(isCard);
 		vo.setVoList(goodsVoList);
-		
-		//getCoinInfo(param,vo);//获取蜂币
-		//getDeductionCoinInfo(param,vo,orders);
-		//getDoubleCoinData(param,vo);//参与蜂币翻倍活动
-		//}
+
 		return vo;
 	}
 	

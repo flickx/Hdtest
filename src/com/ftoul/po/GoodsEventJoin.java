@@ -35,6 +35,8 @@ public class GoodsEventJoin implements java.io.Serializable {
 	private Integer quantity;
 	private String state;
 	private BigDecimal eventPrice;
+	private GoodsType goodsType;
+	private String GoodsTypeLevel;
 	// Constructors
 
 	/** default constructor */
@@ -110,6 +112,24 @@ public class GoodsEventJoin implements java.io.Serializable {
 	 */
 	public void setEventPrice(BigDecimal eventPrice) {
 		this.eventPrice = eventPrice;
+	}
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "goods_type_id")
+	public GoodsType getGoodsType() {
+		return this.goodsType;
+	}
+
+	public void setGoodsType(GoodsType goodsType) {
+		this.goodsType = goodsType;
+	}
+	
+	@Column(name = "goods_type_level", length = 1)
+	public String getGoodsTypeLevel() {
+		return GoodsTypeLevel;
+	}
+
+	public void setGoodsTypeLevel(String goodsTypeLevel) {
+		GoodsTypeLevel = goodsTypeLevel;
 	}
 	
 }
