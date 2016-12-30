@@ -1,18 +1,24 @@
 package com.ftoul.app.action.cart;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ftoul.app.vo.ShopCarAppVo;
 import com.ftoul.common.Common;
+import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.cart.service.CartServ;
+import com.ftoul.web.vo.ShopCarVO;
 
 @Controller("AppCartWebAction")
 @RequestMapping("/app/cart")
-public class CartAction {
+public class CartAppAction {
 	
 	@Autowired
 	private CartServ cartServ;
@@ -25,7 +31,29 @@ public class CartAction {
 	@RequestMapping(value = "getShopCartByUserId")  
 	public @ResponseBody Result getShopCartByUserId(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return cartServ.getShopCartByUserId(parameter);
+		Result ret = cartServ.getShopCartByUserId(parameter);
+		List<ShopCarVO> shopCarList = (List<ShopCarVO>)ret.getObj();
+		List<ShopCarAppVo> shopCarAppList = new ArrayList<ShopCarAppVo>();
+		for (int i = 0; i < shopCarList.size(); i++) {
+			ShopCarVO shopCarVO = shopCarList.get(i);
+			ShopCarAppVo shopCarAppVo = new ShopCarAppVo();
+			shopCarAppVo.setId(shopCarVO.getId());
+			shopCarAppVo.setUserId(shopCarVO.getUserId());
+			shopCarAppVo.setGoodsParamId(shopCarVO.getGoodsParamId());
+			shopCarAppVo.setNumber(shopCarVO.getNumber());
+			shopCarAppVo.setPicSrc(shopCarVO.getPicSrc());
+			shopCarAppVo.setTitle(shopCarVO.getTitle());
+			shopCarAppVo.setPrice(shopCarVO.getPrice());
+			shopCarAppVo.setParamName(shopCarVO.getParamName());
+			shopCarAppVo.setGoodsId(shopCarVO.getGoodsId());
+			shopCarAppVo.setEventPrice(shopCarVO.getEventPrice());
+			shopCarAppVo.setStock(shopCarVO.getStock());
+			shopCarAppVo.setTypeName(shopCarVO.getTypeName());
+			shopCarAppVo.setShopId(shopCarVO.getShopId());
+			shopCarAppVo.setShopName(shopCarVO.getShopName());
+			shopCarAppList.add(shopCarAppVo);
+		}
+		return ObjectToResult.getResult(shopCarAppList);
 	}
 	/**
 	 * 保存购物车信息
