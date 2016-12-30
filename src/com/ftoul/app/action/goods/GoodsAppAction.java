@@ -3,6 +3,9 @@
  */
 package com.ftoul.app.action.goods;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,11 +13,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ftoul.api.sms.util.MessageUtil;
 import com.ftoul.app.vo.GoodsAppVo;
+import com.ftoul.app.vo.GoodsParamAppVo;
+import com.ftoul.app.vo.GoodsPicAppVo;
+import com.ftoul.app.vo.GoodsPropAppVo;
 import com.ftoul.common.Common;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.goods.vo.GoodsVo;
+import com.ftoul.po.GoodsParam;
+import com.ftoul.po.GoodsProp;
+import com.ftoul.po.GoodsUploadpic;
 import com.ftoul.web.goods.service.GoodsBrandServ;
 import com.ftoul.web.goods.service.GoodsParamServ;
 import com.ftoul.web.goods.service.GoodsPropTypeServ;
@@ -273,23 +282,79 @@ public class GoodsAppAction {
 		goodsAppVo.setTitle(goodsVo.getTitle());
 		goodsAppVo.setPrice(goodsVo.getPrice());
 		goodsAppVo.setPicSrc(goodsVo.getPicSrc());
-		goodsAppVo.setQuantity(goodsVo.getQuantity());
+		if(null!=goodsVo.getQuantity()){
+			goodsAppVo.setQuantity(goodsVo.getQuantity());
+		}
 		goodsAppVo.setGoodsBrandId(goodsVo.getGoodsBrandId());
 		goodsAppVo.setStock(goodsVo.getStock());
-		goodsAppVo.setTypeName(goodsVo.getTypeName());
+		if(null!=goodsVo.getTypeName()){
+			goodsAppVo.setTypeName(goodsVo.getTypeName());
+		}
 		goodsAppVo.setShopId(goodsVo.getShopId());
 		goodsAppVo.setBusinessClassifyId(goodsVo.getBusinessClassifyId());
-		goodsAppVo.setGoodsLabel(goodsVo.getGoodsLabel());
-		goodsAppVo.setSubTitle(goodsVo.getSubtitle());
+		if(null!=goodsVo.getGoodsLabel()){
+			goodsAppVo.setGoodsLabel(goodsVo.getGoodsLabel());
+		}
+		if(null!=goodsVo.getSubtitle()){
+			goodsAppVo.setSubTitle(goodsVo.getSubtitle());
+		}
+		
 		goodsAppVo.setSumStock(goodsVo.getSumStock());
-		goodsAppVo.setFreight(goodsVo.getFreight());
+		//goodsAppVo.setFreight(goodsVo.getFreight());
 		goodsAppVo.setGrounding(goodsVo.getGrounding());
-		goodsAppVo.setGoodsEventName(goodsVo.getGoodsEventName());
-		goodsAppVo.setEventPrice(goodsVo.getEventPrice());
-		goodsAppVo.setGoodsParamList(goodsVo.getGoodsParamList());
-		goodsAppVo.setGoodsPicList(goodsVo.getGoodsPicList());
-		goodsAppVo.setGoodsPicInfoList(goodsVo.getGoodsPicInfoList());
-		return ObjectToResult.getResult(goodsVo);
+		if(null!=goodsVo.getGoodsEventName()){
+			goodsAppVo.setGoodsEventName(goodsVo.getGoodsEventName());
+		}
+		if(null!=goodsVo.getEventPrice()){
+			goodsAppVo.setEventPrice(goodsVo.getEventPrice());
+		}
+		//商品参数
+		List<GoodsParamAppVo> paramAppList = new ArrayList<GoodsParamAppVo>(); 
+		for (int i = 0; i < goodsVo.getGoodsParamList().size(); i++) {
+			GoodsParamAppVo paramAppVo = new GoodsParamAppVo();
+			GoodsParam goodsParam = goodsVo.getGoodsParamList().get(i);
+			paramAppVo.setId(goodsParam.getId());
+			paramAppVo.setGoodsId(goodsParam.getGoods().getId());
+			paramAppVo.setParamName(goodsParam.getParamName());
+			paramAppVo.setPrice(goodsParam.getPrice());
+			paramAppVo.setStock(goodsParam.getStock());
+			paramAppVo.setSaleNumber(goodsParam.getSaleNumber());
+			paramAppVo.setMarketPrice(goodsParam.getMarketPrice());
+			paramAppList.add(paramAppVo);
+		}
+		goodsAppVo.setGoodsParamList(paramAppList);
+		
+		//前台商品图
+		List<GoodsPicAppVo> picAppList = new ArrayList<GoodsPicAppVo>(); 
+		for (int i = 0; i < goodsVo.getGoodsPicList().size(); i++) {
+			GoodsPicAppVo goodsPicVo = new GoodsPicAppVo();
+			GoodsUploadpic goodsUploadpic = goodsVo.getGoodsPicList().get(i);
+			goodsPicVo.setPicSrc(goodsUploadpic.getPicSrc());
+			picAppList.add(goodsPicVo);
+		}
+		goodsAppVo.setGoodsPicList(picAppList);
+		
+		//前台商品详情图
+		List<GoodsPicAppVo> picInfoAppList = new ArrayList<GoodsPicAppVo>(); 
+		for (int i = 0; i < goodsVo.getGoodsPicInfoList().size(); i++) {
+			GoodsPicAppVo goodsPicVo = new GoodsPicAppVo();
+			GoodsUploadpic goodsUploadpic = goodsVo.getGoodsPicInfoList().get(i);
+			goodsPicVo.setPicSrc(goodsUploadpic.getPicSrc());
+			picInfoAppList.add(goodsPicVo);
+		}
+		goodsAppVo.setGoodsPicInfoList(picInfoAppList);
+		
+		//商品规格
+		List<GoodsPropAppVo> propAppList = new ArrayList<GoodsPropAppVo>();
+		for (int i = 0; i < goodsVo.getGoodsPropList().size(); i++) {
+			GoodsPropAppVo propAppVo = new GoodsPropAppVo();
+			GoodsProp goodsProp = goodsVo.getGoodsPropList().get(i);
+			propAppVo.setContent(goodsProp.getContent());
+			propAppVo.setName(goodsProp.getGoodsPropertyTypeInfo().getName());
+			propAppList.add(propAppVo);
+		}
+		goodsAppVo.setGoodsPropList(propAppList);
+		return ObjectToResult.getResult(goodsAppVo);
 	}
 	
 	/**
