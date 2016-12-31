@@ -23,6 +23,7 @@ public class GoodsAppVo {
 	private String goodsEventName;//活动名称
 	private String eventPrice;//活动价格
 	private String storePic;//店铺图片
+	private String saleSum;//销量
 	private ShopVo shopVo;//店铺vo
 	
 	
@@ -218,6 +219,14 @@ public class GoodsAppVo {
 
 	public void setShopVo(ShopVo shopVo) {
 		this.shopVo = shopVo;
+	}
+
+	public String getSaleSum() {
+		return saleSum;
+	}
+
+	public void setSaleSum(String saleSum) {
+		this.saleSum = saleSum;
 	}
 
 }

@@ -102,6 +102,7 @@ public class GoodsAppServImpl implements GoodsAppServ {
 		goodsAppVo.setSumStock(goodsVo.getSumStock());
 		goodsAppVo.setFreight(goodsVo.getFreight());
 		goodsAppVo.setGrounding(goodsVo.getGrounding());
+		goodsAppVo.setSaleSum(goodsVo.getSaleSum());
 		if(null!=goodsVo.getGoodsEventName()){
 			goodsAppVo.setGoodsEventName(goodsVo.getGoodsEventName());
 		}
