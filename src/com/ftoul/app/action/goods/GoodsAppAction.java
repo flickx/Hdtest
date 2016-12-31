@@ -24,6 +24,8 @@ import com.ftoul.manage.goods.vo.GoodsVo;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.GoodsProp;
 import com.ftoul.po.GoodsUploadpic;
+import com.ftoul.web.business.service.BusinessWebServ;
+import com.ftoul.web.business.vo.BusinessVo;
 import com.ftoul.web.goods.service.GoodsBrandServ;
 import com.ftoul.web.goods.service.GoodsParamServ;
 import com.ftoul.web.goods.service.GoodsPropTypeServ;
@@ -67,6 +69,8 @@ public class GoodsAppAction {
 	@Autowired
 	private GoodsBrandServ goodsBrandServ;
 	
+	@Autowired
+	private BusinessWebServ businessWebServ;
 	/**
 	 * 获取下一级商品类别
 	 * @param param 当前级别参数
@@ -276,7 +280,9 @@ public class GoodsAppAction {
 	public @ResponseBody Result getGoodsDetail(String param) throws Exception{	
 		Parameter parameter = Common.jsonToParam(param);
 		Result ret =  goodsServ.getGoodsDetail(parameter);
+		Result result = businessWebServ.getBusinessStorePageByGoodsId(parameter);
 		GoodsVo goodsVo = (GoodsVo)ret.getObj();
+		BusinessVo businessVo = (BusinessVo)result.getObj();
 		GoodsAppVo goodsAppVo = new GoodsAppVo();
 		goodsAppVo.setId(goodsVo.getId());
 		goodsAppVo.setTitle(goodsVo.getTitle());
@@ -354,6 +360,10 @@ public class GoodsAppAction {
 			propAppList.add(propAppVo);
 		}
 		goodsAppVo.setGoodsPropList(propAppList);
+		goodsAppVo.setStorePic(businessVo.getPic());
+		goodsAppVo.setGoodsSaleNum(businessVo.getGoodsSaleNum());
+		goodsAppVo.setGoodsNum(businessVo.getGoodsNum());
+		goodsAppVo.setGoodsMonthNum(businessVo.getGoodsMonthNum());
 		return ObjectToResult.getResult(goodsAppVo);
 	}
 	

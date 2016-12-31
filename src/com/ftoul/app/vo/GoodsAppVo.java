@@ -22,6 +22,10 @@ public class GoodsAppVo {
 	private String grounding;//是否上架 1:上架 0：下架
 	private String goodsEventName;//活动名称
 	private String eventPrice;//活动价格
+	private String storePic;//店铺图片
+	private Integer goodsSaleNum;//销售量
+	private Integer goodsNum;//全部商品数量
+	private Integer goodsMonthNum;//上新商品
 	
 	private List<GoodsPropAppVo> goodsPropList;//商品规格
 	
@@ -200,5 +204,39 @@ public class GoodsAppVo {
 	public void setGoodsPicInfoList(List<GoodsPicAppVo> goodsPicInfoList) {
 		this.goodsPicInfoList = goodsPicInfoList;
 	}
+
+	public String getStorePic() {
+		return storePic;
+	}
+
+	public void setStorePic(String storePic) {
+		this.storePic = storePic;
+	}
+
+	public Integer getGoodsSaleNum() {
+		return goodsSaleNum;
+	}
+
+	public void setGoodsSaleNum(Integer goodsSaleNum) {
+		this.goodsSaleNum = goodsSaleNum;
+	}
+
+	public Integer getGoodsNum() {
+		return goodsNum;
+	}
+
+	public void setGoodsNum(Integer goodsNum) {
+		this.goodsNum = goodsNum;
+	}
+
+	public Integer getGoodsMonthNum() {
+		return goodsMonthNum;
+	}
+
+	public void setGoodsMonthNum(Integer goodsMonthNum) {
+		this.goodsMonthNum = goodsMonthNum;
+	}
+
+	
 
 }
