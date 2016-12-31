@@ -40,7 +40,7 @@ import com.ftoul.web.goods.service.GoodsTypeServ;
 * @version 1.0
 *
 */
-@Service("AppGoodsImpl")
+@Service("GoodsAppServImpl")
 public class GoodsAppServImpl implements GoodsAppServ {
 
 	@Autowired
