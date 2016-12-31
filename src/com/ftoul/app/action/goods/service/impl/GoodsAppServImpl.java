@@ -100,7 +100,7 @@ public class GoodsAppServImpl implements GoodsAppServ {
 			goodsAppVo.setSubTitle(goodsVo.getSubtitle());
 		}
 		goodsAppVo.setSumStock(goodsVo.getSumStock());
-		//goodsAppVo.setFreight(goodsVo.getFreight());
+		goodsAppVo.setFreight(goodsVo.getFreight());
 		goodsAppVo.setGrounding(goodsVo.getGrounding());
 		if(null!=goodsVo.getGoodsEventName()){
 			goodsAppVo.setGoodsEventName(goodsVo.getGoodsEventName());
@@ -156,7 +156,7 @@ public class GoodsAppServImpl implements GoodsAppServ {
 		goodsAppVo.setGoodsPropList(propAppList);
 		//店铺信息
 		ShopVo shopVo = new ShopVo();
-		shopVo.setStoreId(businessVo.getId());
+		shopVo.setStoreId(goodsVo.getShopId());
 		shopVo.setStoreName(businessVo.getStoreName());
 		shopVo.setStorePic(businessVo.getPic());
 		shopVo.setGoodsSaleNum(businessVo.getGoodsSaleNum());
