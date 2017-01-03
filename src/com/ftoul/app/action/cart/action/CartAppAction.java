@@ -10,8 +10,6 @@ import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.cart.service.CartServ;
-import com.ftoul.po.User;
-import com.ftoul.po.UserToken;
 
 @Controller("CartAppAction")
 @RequestMapping("/app/cart")
@@ -30,13 +28,7 @@ public class CartAppAction {
 	 */
 	@RequestMapping(value = "getShopCartByUserId")  
 	public @ResponseBody Result getShopCartByUserId(String param) throws Exception{
-		UserToken userToken = new UserToken();
-		User user = new User();
-		user.setId("8af5b382576fd59701577034e6dd005a");
-		userToken.setUser(user);
-		Parameter parameter = new Parameter();
-		parameter.setUserToken(userToken);
-		//Parameter parameter = Common.jsonToParam(param);
+		Parameter parameter = Common.jsonToParam(param);
 		return cartAppServ.getShopCartByUserId(parameter);
 	}
 	/**
