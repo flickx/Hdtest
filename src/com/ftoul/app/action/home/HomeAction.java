@@ -3,11 +3,14 @@
  */
 package com.ftoul.app.action.home;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ftoul.app.vo.IndexCarouselAppVo;
 import com.ftoul.common.Common;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
@@ -34,7 +37,9 @@ public class HomeAction {
 	@RequestMapping(value = "getIndexCarouselList") 
 	public @ResponseBody Result getIndexCarouselList(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return homeServ.getIndexCarouselList(parameter);
+		Result re =  homeServ.getIndexCarouselList(parameter);
+		List<IndexCarouselAppVo> index = (List<IndexCarouselAppVo>)re.getObj();
+		return ObjectToResult.getResult(index);
 	}
 	/**
 	 * 获取server time

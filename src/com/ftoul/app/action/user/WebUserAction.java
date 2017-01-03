@@ -3,20 +3,17 @@
  */
 package com.ftoul.app.action.user;
 
-import java.util.Enumeration;
-
-import javax.servlet.http.HttpServletRequest;
-
-import net.sf.json.JSONObject;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ftoul.app.vo.UserAppVo;
 import com.ftoul.common.Common;
+import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.po.UserToken;
 import com.ftoul.web.manage.user.service.WebUserServ;
 
 /**
@@ -52,7 +49,7 @@ public class WebUserAction {
 		return webUserServ.checkUserExists(parameter);
 	}
 	/**
-	 * 登录
+	 * app登录
 	 * @param param
 	 * @return
 	 * @throws Exception
@@ -60,7 +57,13 @@ public class WebUserAction {
 	@RequestMapping(value = "login") 
 	public @ResponseBody Result login(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return webUserServ.login(parameter);
+		Result r = webUserServ.login(parameter);
+		UserToken userToken = (UserToken)r.getObj();
+		UserAppVo vo = new UserAppVo();
+		vo.setTel(userToken.getUser().getUsername());
+		vo.setUsername(userToken.getUser().getUsername());
+		vo.setToken(userToken);
+		return ObjectToResult.getResult(vo);
 	}
 	/**
 	 * 获取短信验证码

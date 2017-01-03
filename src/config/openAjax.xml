@@ -6,6 +6,7 @@
 		<list>/web/demo</list>
 		<list>/web/goods</list>
 		<list>/app/goods</list>
+		<list>/app/user</list>
 		<list>/api</list>
 		<list>/test</list>
 		<list>/web/manage/user</list>
