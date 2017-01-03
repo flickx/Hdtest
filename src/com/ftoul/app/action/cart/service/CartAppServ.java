@@ -37,7 +37,7 @@ public interface CartAppServ {
 	
 	
 	/**
-	 * 获取商品列表
+	 * 获取为你推荐商品列表
 	 * @param param
 	 * @return
 	 * @throws Exception

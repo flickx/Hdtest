@@ -9,7 +9,6 @@ import com.ftoul.app.action.cart.service.CartAppServ;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.manage.cart.service.CartServ;
 
 @Controller("CartAppAction")
 @RequestMapping("/app/cart")
@@ -17,9 +16,6 @@ public class CartAppAction {
 	
 	@Autowired
 	private CartAppServ cartAppServ;
-	
-	@Autowired
-	private CartServ cartServ;
 	/**
 	 * 根据用户ID获取购物车信息
 	 * @param param
@@ -40,7 +36,7 @@ public class CartAppAction {
 	@RequestMapping(value = "saveShopCart")  
 	public @ResponseBody Result saveShopCart(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return cartServ.saveShopCart(parameter);
+		return cartAppServ.saveShopCart(parameter);
 	}
 	/**
 	 * 修改购物车数量
@@ -51,7 +47,7 @@ public class CartAppAction {
 	@RequestMapping(value = "updateShopCart")  
 	public @ResponseBody Result updateShopCart(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return cartServ.updateShopCart(parameter);
+		return cartAppServ.updateShopCart(parameter);
 	}
 	
 	/**
@@ -63,7 +59,7 @@ public class CartAppAction {
 	@RequestMapping(value = "delShopCart")  
 	public @ResponseBody Result delShopCart(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return cartServ.delShopCart(parameter);
+		return cartAppServ.delShopCart(parameter);
 	}
 	/**
 	 * 清空购物车
@@ -74,7 +70,7 @@ public class CartAppAction {
 	@RequestMapping(value = "clearShopCart")  
 	public @ResponseBody Result clearShopCart(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return cartServ.clearShopCart(parameter);
+		return cartAppServ.clearShopCart(parameter);
 	}
 	/**
 	 * 推荐商品
@@ -85,6 +81,6 @@ public class CartAppAction {
 	@RequestMapping(value = "getGoodsList")  
 	public @ResponseBody Result getGoodsList(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return cartServ.getGoodsList(parameter);
+		return cartAppServ.getGoodsList(parameter);
 	}
 }

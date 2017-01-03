@@ -15,13 +15,12 @@ import com.ftoul.web.orders.service.OrdersServ;
  * @author HuDong
  *
  */
-@Controller("AppOrdersAction")
+@Controller("OrdersAppAction")
 @RequestMapping(value = "/app/orders")
-public class OrdersAction {
+public class OrdersAppAction {
 
 	@Autowired
 	private OrdersServ ordersServ;
-	
 	/**
 	 * 保存订单信息
 	 * @param param 用户ID

@@ -10,15 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ftoul.app.action.cart.service.CartAppServ;
+import com.ftoul.app.vo.CollectionAppVo;
 import com.ftoul.app.vo.ShopCarAppVo;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.DateUtil;
 import com.ftoul.common.ObjectToResult;
-import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.manage.cart.service.CartServ;
+import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.ShopCar;
 import com.ftoul.po.User;
@@ -131,9 +132,16 @@ public class CartAppServImpl implements CartAppServ {
 
 	@Override
 	public Result getGoodsList(Parameter param) throws Exception {
-		String hql = "from Goods where state = '1' order by createTime desc ";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), 6);
-		return ObjectToResult.getResult(page);
+		Result result = cartServ.getGoodsList(param);
+		List<Goods> goodsList = (List<Goods>)result.getObj();
+		List<CollectionAppVo> collectionVoList = new ArrayList<CollectionAppVo>();
+		for (int i = 0; i < goodsList.size(); i++) {
+			CollectionAppVo collectionAppVo = new CollectionAppVo();
+			collectionAppVo.setTitle(goodsList.get(i).getTitle());
+			collectionAppVo.setGoodsPic(goodsList.get(i).getPicSrc());
+			collectionVoList.add(collectionAppVo);
+		}
+		return ObjectToResult.getResult(collectionVoList);        
 	}
 
 	@Override

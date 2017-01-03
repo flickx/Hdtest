@@ -8,6 +8,7 @@
 		<list>/app/goods</list>
 		<list>/app/user</list>
 		<list>/app/cart</list>
+		<list>/app/orders</list>
 		<list>/api</list>
 		<list>/test</list>
 		<list>/web/manage/user</list>

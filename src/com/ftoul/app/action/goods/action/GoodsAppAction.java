@@ -101,7 +101,7 @@ public class GoodsAppAction {
 	@RequestMapping(value = "getUserCollectionList")  
 	public @ResponseBody Result getUserCollectionList(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return userCollectionServ.getUserCollectionList(parameter);
+		return goodsAppServ.getUserCollectionList(parameter);
 	}
 	
 	/**
