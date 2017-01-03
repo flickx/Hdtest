@@ -22,6 +22,10 @@ public class GoodsAppVo {
 	private String grounding;//是否上架 1:上架 0：下架
 	private String goodsEventName;//活动名称
 	private String eventPrice;//活动价格
+	private String storePic;//店铺图片
+	private String saleSum;//销量
+	private ShopVo shopVo;//店铺vo
+	
 	
 	private List<GoodsPropAppVo> goodsPropList;//商品规格
 	
@@ -199,6 +203,30 @@ public class GoodsAppVo {
 
 	public void setGoodsPicInfoList(List<GoodsPicAppVo> goodsPicInfoList) {
 		this.goodsPicInfoList = goodsPicInfoList;
+	}
+
+	public String getStorePic() {
+		return storePic;
+	}
+
+	public void setStorePic(String storePic) {
+		this.storePic = storePic;
+	}
+
+	public ShopVo getShopVo() {
+		return shopVo;
+	}
+
+	public void setShopVo(ShopVo shopVo) {
+		this.shopVo = shopVo;
+	}
+
+	public String getSaleSum() {
+		return saleSum;
+	}
+
+	public void setSaleSum(String saleSum) {
+		this.saleSum = saleSum;
 	}
 
 }
