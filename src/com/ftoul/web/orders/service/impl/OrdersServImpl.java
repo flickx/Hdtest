@@ -615,6 +615,7 @@ public class OrdersServImpl implements OrdersServ {
 						costPrice = Double.parseDouble(goodsP.getPrice());
 					}
 					System.out.println(event.getEventName()+":"+goodsP.getGoods().getId()+":"+goodsP.getGoods().getTitle()+"的优惠价为"+costPrice+",数量为"+num+"总价为"+payable+"订单商品价为"+totalPayable);
+					System.out.println(event.getEventName()+":"+goodsP.getGoods().getId()+":"+goodsP.getGoods().getTitle()+"的优惠价为"+costPrice+",数量为"+num+"总价为"+payable+"订单商品价为"+totalPayable);
 					costPayable = costPrice*num;//当前商品折后总价
 					//payable = costPrice*num;//当前商品原总价
 					goodsPrice = Double.parseDouble(goodsP.getPrice());//商品原价
