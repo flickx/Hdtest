@@ -21,4 +21,12 @@ public interface GoodsAppServ{
 	Result getGoodsDetail(Parameter parameter) throws Exception;
 	
 
+
+	/**
+	 * 获得所有收藏商品.
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getUserCollectionList(Parameter param) throws Exception;
 }

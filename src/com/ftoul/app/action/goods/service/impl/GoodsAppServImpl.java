@@ -13,6 +13,7 @@ import com.ftoul.app.vo.GoodsAppVo;
 import com.ftoul.app.vo.GoodsParamAppVo;
 import com.ftoul.app.vo.GoodsPicAppVo;
 import com.ftoul.app.vo.GoodsPropAppVo;
+import com.ftoul.app.vo.GoodsWebVo;
 import com.ftoul.app.vo.ShopVo;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
@@ -21,6 +22,7 @@ import com.ftoul.manage.goods.vo.GoodsVo;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.GoodsProp;
 import com.ftoul.po.GoodsUploadpic;
+import com.ftoul.po.UserCollection;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.logistics.LogisticsUtil;
 import com.ftoul.util.price.PriceUtil;
@@ -30,6 +32,7 @@ import com.ftoul.web.goods.service.GoodsBrandServ;
 import com.ftoul.web.goods.service.GoodsPropTypeServ;
 import com.ftoul.web.goods.service.GoodsServ;
 import com.ftoul.web.goods.service.GoodsTypeServ;
+import com.ftoul.web.goods.service.UserCollectionServ;
 
 /**
 * 
@@ -66,6 +69,8 @@ public class GoodsAppServImpl implements GoodsAppServ {
 	@Autowired
 	private BusinessWebServ businessWebServ;
 	
+	@Autowired
+	private UserCollectionServ userCollectionServ;
 	/**
 	 * 
 	 * 得到商品详情
@@ -166,4 +171,21 @@ public class GoodsAppServImpl implements GoodsAppServ {
 		goodsAppVo.setShopVo(shopVo);
 		return ObjectToResult.getResult(goodsAppVo);
 	}
+
+	@Override
+	public Result getUserCollectionList(Parameter param) throws Exception {
+		Result result = userCollectionServ.getUserCollectionList(param);
+		List<UserCollection> list = (List<UserCollection>)result.getObj();
+		List<GoodsWebVo> goodsVoList = new ArrayList<GoodsWebVo>();
+		for (int i = 0; i < list.size(); i++) {
+			UserCollection userCollection = list.get(i);
+			GoodsWebVo goodsVo = new GoodsWebVo();
+			goodsVo.setGoodsPic(userCollection.getGoods().getPicSrc());
+			goodsVo.setTitle(userCollection.getGoods().getTitle());
+			goodsVo.setPrice(userCollection.getGoods().getPrice());
+			goodsVoList.add(goodsVo);
+		}
+		return ObjectToResult.getResult(goodsVoList);
+	}
+	
 }
