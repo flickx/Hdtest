@@ -5,10 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ftoul.app.action.address.service.AddressAppServ;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.web.address.service.AddressServ;
 
 /**
  * 用户地址操作相关类
@@ -20,7 +20,7 @@ import com.ftoul.web.address.service.AddressServ;
 public class AddressAppAction {
 	
 	@Autowired
-	private AddressServ addressServ;
+	private AddressAppServ addressAppServ;
 	
 	/**
 	 * 保存/更新用户对象
@@ -31,7 +31,7 @@ public class AddressAppAction {
 	@RequestMapping(value = "saveUserAddress")  
 	public @ResponseBody Result saveUserAddress(String param) throws Exception {
 		Parameter parameter = Common.jsonToParam(param);
-		return addressServ.saveUserAddress(parameter);
+		return addressAppServ.saveUserAddress(parameter);
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class AddressAppAction {
 	@RequestMapping(value = "saveDefaultUserAddress")  
 	public @ResponseBody Result saveDefaultUserAddress(String param) throws Exception {
 		Parameter parameter = Common.jsonToParam(param);
-		return addressServ.saveDefaultUserAddress(parameter);
+		return addressAppServ.saveDefaultUserAddress(parameter);
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class AddressAppAction {
 	@RequestMapping(value = "delUserAddress")  
 	public @ResponseBody Result delUserAddress(String param) throws Exception {
 		Parameter parameter = Common.jsonToParam(param);
-		return addressServ.delUserAddress(parameter);
+		return addressAppServ.delUserAddress(parameter);
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class AddressAppAction {
 	@RequestMapping(value = "getUserAddressById")  
 	public @ResponseBody Result getUserAddressById(String param) throws Exception {
 		Parameter parameter = Common.jsonToParam(param);
-		return addressServ.getUserAddressById(parameter);
+		return addressAppServ.getUserAddressById(parameter);
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public class AddressAppAction {
 	@RequestMapping(value = "getUserDefaultAddressById")  
 	public @ResponseBody Result getUserDefaultAddressById(String param) throws Exception {
 		Parameter parameter = Common.jsonToParam(param);
-		return addressServ.getUserDefaultAddressById(parameter);
+		return addressAppServ.getUserDefaultAddressById(parameter);
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public class AddressAppAction {
 	@RequestMapping(value = "getUserAddressListByUserId")  
 	public @ResponseBody Result getUserAddressListByUserId(String param) throws Exception {
 		Parameter parameter = Common.jsonToParam(param);
-		return addressServ.getUserAddressListByUserId(parameter);
+		return addressAppServ.getUserAddressListByUserId(parameter);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class AddressAppAction {
 	@RequestMapping(value = "getAddress")  
 	public @ResponseBody Result getAddress(String param) throws Exception {
 		Parameter parameter = Common.jsonToParam(param);
-		return addressServ.getAddress(parameter);
+		return addressAppServ.getAddress(parameter);
 	}
 	
 	

@@ -99,7 +99,19 @@ public class AddressAppServImpl implements AddressAppServ {
 	@Override
 	public Result getUserDefaultAddressById(Parameter param)
 			throws Exception {
-		return addressServ.getUserDefaultAddressById(param);
+		Result result = addressServ.getUserDefaultAddressById(param);
+		UserAddress userAddress = (UserAddress)result.getObj();
+		AddressAppVo appVo = new AddressAppVo();
+		appVo.setId(userAddress.getId());
+		appVo.setName(userAddress.getName());
+		appVo.setProvince(userAddress.getProvince());
+		appVo.setCounty(userAddress.getCounty());
+		appVo.setCity(userAddress.getCity());
+		appVo.setTel(userAddress.getTel());
+		appVo.setConsignee(userAddress.getConsignee());
+		appVo.setDefulat(userAddress.getDefulat());
+		appVo.setAddress(userAddress.getAddress());
+		return ObjectToResult.getResult(appVo);
 	}
 	
 	/**
