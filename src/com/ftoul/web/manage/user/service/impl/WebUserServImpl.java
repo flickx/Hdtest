@@ -23,6 +23,7 @@ import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.exption.MyExption;
 import com.ftoul.po.AddressBook;
 import com.ftoul.po.MessageVerification;
 import com.ftoul.po.User;
@@ -206,23 +207,32 @@ public class WebUserServImpl implements WebUserServ {
 		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),
 				UsersVO.class);
 		Object res = null;
-		String ip = SmsCodeUtil.getLocalIp(req);
-		System.out.println("请求接收短信的IP: " + ip);
+		if (user == null) {
+			res = "没有传相应的用户信息";
+			throw new MyExption("没有传相应的用户信息");
+		}
+		if (CodeAction.userCodeMap.get("code")==null) {
+			res = "没有图形验证码";
+			throw new MyExption("没有图形验证码");
+		}
 		if (!CodeAction.userCodeMap.get("code").equalsIgnoreCase(
 				user.getImgCode())) {
 			res = "图形验证码错误";
-			throw new Exception("图形验证码错误");
+			throw new MyExption("图形验证码错误");
 		}
+		String ip = SmsCodeUtil.getLocalIp(req);
+		System.out.println("请求接收短信的IP: " + ip);
+		
 		String smsCodeType = user.getSmscodeType();
 		int count = smsCodeUtil.getSmsCount(user.getUsername());
 		int countIP = smsCodeUtil.getSmsCountIP();
-		if (count > 5) {
+		if (count >= 5) {
 			res = "此手机今天可接收短信已超5条上限";
-			throw new Exception("此手机今天可接收短信已超5条上限");
+			throw new MyExption("此手机今天可接收短信已超5条上限");
 		}
 		if (countIP > 9) {
 			res = "IP今日接收短信已超上限";
-			throw new Exception("IP今日接收短信已超上限");
+			throw new MyExption("IP今日接收短信已超上限");
 		}
 		// 生成验证码
 		int sort = smsCodeUtil.makeSmsCode(user.getUsername(), smsCodeType);

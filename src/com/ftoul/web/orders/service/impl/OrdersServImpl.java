@@ -356,8 +356,9 @@ public class OrdersServImpl implements OrdersServ {
 		int coinNumber = 0;
 		if(vo.getCoinFlag()){
 			OrderPriceVo priceVo = new OrderPriceVo();
-			getCoinInfo(param,priceVo);
-			double orderPrice = Double.valueOf(orders.getOrderPrice());
+			ordersUtil.getCoinInfo(param,priceVo);
+			//double orderPrice = Double.valueOf(orders.getOrderPrice());
+			double orderPrice = orders.getGoodsTotalPrice().doubleValue();
 			double coinPrice;
 			int newCoinNumber = priceVo.getCoinNumber();
 			if(newCoinNumber>=vo.getCoinNumber()){
@@ -376,30 +377,35 @@ public class OrdersServImpl implements OrdersServ {
 					coinNumber = coinNumberB.intValue();
 					
 					if(newOrderPrice==0||newOrderPrice==0.0||newOrderPrice==0.00){
-						orders.setOrderStatic("2");
-						orders.setPayStatic("1");
-						orders.setPayTime(new DateStr().toString());
-						orders.setPayType("5");//全蜂币支付方式
-						if("1".equals(orders.getIsHasChild())){
-							List<Object> childList = hibernateUtil.hql("from Orders where parentOrdersId='"+orders.getId()+"'");
-							for (Object object : childList) {
-								Orders childOrder = (Orders) object;
-								childOrder.setOrderStatic("2");
-								childOrder.setPayStatic("1");
-								childOrder.setPayTime(new DateStr().toString());
-								childOrder.setPayType("5");//全蜂币支付方式
-								hibernateUtil.update(childOrder);
+						if(totalFreight==0.00){
+							orders.setOrderPrice(new DecimalFormat("0.00").format(newOrderPrice));
+							orders.setOrderStatic("2");
+							orders.setPayStatic("1");
+							orders.setPayTime(new DateStr().toString());
+							orders.setPayType("5");//全蜂币支付方式
+							if("1".equals(orders.getIsHasChild())){
+								List<Object> childList = hibernateUtil.hql("from Orders where parentOrdersId='"+orders.getId()+"'");
+								for (Object object : childList) {
+									Orders childOrder = (Orders) object;
+									childOrder.setOrderStatic("2");
+									childOrder.setPayStatic("1");
+									childOrder.setPayTime(new DateStr().toString());
+									childOrder.setPayType("5");//全蜂币支付方式
+									hibernateUtil.update(childOrder);
+								}
 							}
+						}else{
+							orders.setOrderPrice(new DecimalFormat("0.00").format(totalFreight));
 						}
 					}
 					//orders.setBeeCoins((int)coinNumber+"");
 					orders.setBeeCoins(coinNumber+"");
 					orders.setCoinPrice(new DecimalFormat("0.00").format(coinPrice));
-					orders.setOrderPrice(new DecimalFormat("0.00").format(newOrderPrice));
+					//orders.setOrderPrice(new DecimalFormat("0.00").format(newOrderPrice));
 				}else{
 					orders.setBeeCoins(String.valueOf((int)priceVo.getCoinNumber()));
 					orders.setCoinPrice(new DecimalFormat("0.00").format(priceVo.getCoinPrice()));
-					orders.setOrderPrice(new DecimalFormat("0.00").format(newOrderPrice));
+					orders.setOrderPrice(new DecimalFormat("0.00").format(newOrderPrice+totalFreight));
 				}
 				
 			}else{
@@ -571,7 +577,7 @@ public class OrdersServImpl implements OrdersServ {
 			goodsVo.setParam(goodsP.getParamName());
 			goodsVo.setPic(good.getPicSrc());
 			goodsVo.setTitle(good.getTitle());
-			List<Object> goodsEventJoinList = hibernateUtil.hql("from GoodsEventJoin where goods.id='"+good.getId()+"' and state='1' and goodsEvent.eventBegen<='"+current+"' and goodsEvent.eventEnd>='"+current+"'");
+			List<Object> goodsEventJoinList = hibernateUtil.hql("from GoodsEventJoin where goodsEvent.state='1' and goods.id='"+good.getId()+"' and state='1' and goodsEvent.eventBegen<='"+current+"' and goodsEvent.eventEnd>='"+current+"'");
 			for (int j = 0; j < goodsEventJoinList.size(); j++) {
 				GoodsEventJoin eventJoin = (GoodsEventJoin) goodsEventJoinList.get(j);
 				int quantity = eventJoin.getQuantity();
@@ -608,6 +614,7 @@ public class OrdersServImpl implements OrdersServ {
 					}else{
 						costPrice = Double.parseDouble(goodsP.getPrice());
 					}
+					System.out.println(event.getEventName()+":"+goodsP.getGoods().getId()+":"+goodsP.getGoods().getTitle()+"的优惠价为"+costPrice+",数量为"+num+"总价为"+payable+"订单商品价为"+totalPayable);
 					costPayable = costPrice*num;//当前商品折后总价
 					//payable = costPrice*num;//当前商品原总价
 					goodsPrice = Double.parseDouble(goodsP.getPrice());//商品原价
@@ -653,7 +660,7 @@ public class OrdersServImpl implements OrdersServ {
 				payable = price*num;
 				totalPayable += payable;
 				orderPrice += payable;
-				System.out.println("无优惠活动："+goodsP.getGoods().getId()+goodsP.getGoods().getTitle()+"的单价为"+price+",数量为"+num+"原总价为"+payable);
+				System.out.println("无优惠活动："+goodsP.getGoods().getId()+":"+goodsP.getGoods().getTitle()+"的单价为"+price+",数量为"+num+"总价为"+payable+"订单商品价为"+totalPayable);
 			}
 			if(costPrice>0){
 				goodsVo.setPrice(String.valueOf(costPrice));
@@ -729,132 +736,7 @@ public class OrdersServImpl implements OrdersServ {
 		vo.setOrderNumber(orders.getOrderNumber());
 		vo.setIsCard(isCard);
 		vo.setVoList(goodsVoList);
-
 		return vo;
-	}
-	
-	/**
-	 * 获取用户蜂币
-	 * @param param
-	 * @param vo
-	 * @throws Exception
-	 */
-	private void getCoinInfo(Parameter param,OrderPriceVo vo) throws Exception{
-		UserService userService = WebserviceUtil.getService();
-		int coinNumber = userService.getIntegral(param.getUserToken().getUser().getUsername());
-		Result result = coinSetServ.getCoinSet(param);
-		SystemSet set = (SystemSet) result.getObj();
-		String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
-		if(set!=null){
-			vo.setCoinNumber(coinNumber);
-			vo.setTotalCoinNumber(coinNumber);
-			double price = Double.parseDouble(set.getValue());
-			//如果商品享受蜂币翻倍则蜂币按翻倍规则计算抵扣蜂币
-			String params = param.getKey();
-			String[] goodsParams = {};
-			if (params == null) {
-				OrderVo v = (OrderVo) Common.jsonToBean(param.getObj().toString(), OrderVo.class);
-				goodsParams = v.getGoodsParameter().split(":");
-			}else{
-				goodsParams = param.getKey().split(":");
-			}
-			List<Object> goodsEventJoinList = new ArrayList<Object>();
-			for (int i = 0; i < goodsParams.length; i++) {
-				String goodsParam = goodsParams[i];
-				String[] goods = goodsParam.split(",");
-				GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, goods[0]+"");
-				Goods good = goodsP.getGoods();
-				goodsEventJoinList = hibernateUtil.hql("from GoodsEventJoin where goods.id='"+good.getId()+"' and state='1'");
-			}
-			for (int j = 0; j < goodsEventJoinList.size(); j++) {
-				GoodsEventJoin eventJoin = (GoodsEventJoin) goodsEventJoinList.get(j);
-				GoodsEvent goodsEvent = eventJoin.getGoodsEvent();
-				if("1".equals(goodsEvent.getHomeChannel())){
-					String hql = "select o from OrdersDetail od, Orders o where od.orders.id = o.id  and od.eventType in (select typeName from GoodsEvent where homeChannel='1' and state='1') and od.state='1' and o.orderStatic !='8' and o.state='1' and o.user.id= '"+param.getUserToken().getUser().getId()+"'";
-
-					List<Object> orderList = hibernateUtil.hql(hql);				
-					if (orderList.size() == 0) {
-//					vo.setMsg("您已有订单享受蜂币翻倍抵扣，不可再次享受翻倍抵扣，请知悉！");
-					GoodsEvent ge =(GoodsEvent) this.hibernateUtil.hqlFirst("from GoodsEvent where typeName='蜂币翻倍' and eventBegen<='"+current+"' and eventEnd>='"+current+"' and state='1'");
-//					base = base*(ge.getExchangeRate().doubleValue());
-					//原始倍率*活动翻倍率
-					if (ge!=null) {
-						price = ge.getExchangeRate().doubleValue()*price;
-						BigDecimal b = new BigDecimal(price);  
-						price = b.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();  
-					}
-					}
-				}
-			}
-			vo.setCoinPrice(coinNumber*price);
-		}
-	}
-	
-	/**
-	 * 获取可抵扣的蜂币
-	 * @throws Exception
-	 */
-	private void getDeductionCoinInfo(Parameter param,OrderPriceVo vo, Orders orders) throws Exception{
-		double orderPrice = Double.parseDouble(orders.getOrderPrice());
-		int coinNumber = vo.getCoinNumber();//账户总蜂币
-		double newCoinNumber;
-		double coinPrice = vo.getCoinPrice();
-		double base = coinPrice/coinNumber;
-		
-		double newOrderPrice = orderPrice - coinPrice;
-		if(newOrderPrice<0){
-			BigDecimal orderPriceB = new BigDecimal(Double.toString(orderPrice));
-			BigDecimal baseB = new BigDecimal(Double.toString(base));
-			double value = orderPriceB.divide(baseB,2,BigDecimal.ROUND_UP).doubleValue();
-			newCoinNumber = Math.floor(value);
-			coinPrice = newCoinNumber*base;
-			newOrderPrice = orderPrice - coinPrice;
-			vo.setCoinNumber((int)newCoinNumber);
-			vo.setCoinPrice(coinPrice);
-		}
-	}
-	/**
-	 * 蜂币翻倍活动抵扣价格计算 
-	 * modify by 李丁
-	 * @param param
-	 * @param vo
-	 */
-	public void getDoubleCoinData(Parameter param,OrderPriceVo vo){
-//		Object obj = checkExistGoodsEvent("蜂币翻倍");
-//		GoodsEvent goodsEvent = new GoodsEvent();
-		String id = param.getKey();
-		String[] goodsParams = id.split(":");
-		String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
-		String hql = "from Orders where state='1' and orderTime>='' and orderTime<=''";
-		for (int i = 0; i < goodsParams.length; i++) {
-			String goodsParam = goodsParams[i];
-			String[] goods = goodsParam.split(",");
-			GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, goods[0]+"");
-			Goods good = goodsP.getGoods();
-			//查询此商品是否参加了倍蜂币活动
-			List<Object> goodsEventList = 
-					hibernateUtil.hql("from GoodsEvent where id in (select goodsEvent.id from GoodsEventJoin where goods.id='"+good.getId()+"' and state='1') and state='1' and homeChannel = '1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
-			for (int j = 0; j < goodsEventList.size(); j++) {
-				GoodsEvent event = (GoodsEvent) goodsEventList.get(j);
-				if("1".equals(event.getFirstOrder())){
-//					hql = "select od from OrdersDetail od, Orders o where od.orders.id = o.id and o.orderStatic not in('0','8') and od.goodsParam.id = '"+goodsP.getId()+"' and od.eventType='"+event.getTypeName()+"' and od.eventBegen='"+event.getEventBegen()+"' and od.eventEnd = '"+event.getEventEnd()+"' and o.user.username = '"+param.getUserToken().getUser().getUsername()+"'";
-					hql = "select od from OrdersDetail od, Orders o where od.orders.id = o.id and o.orderStatic not in('0','8') and od.goodsParam.goods.id = '"+good.getId()+"' and od.eventType='"+event.getTypeName()+"' and od.eventBegen='"+event.getEventBegen()+"' and od.eventEnd = '"+event.getEventEnd()+"' and o.user.username = '"+param.getUserToken().getUser().getUsername()+"'";
-					List<Object> ordersDetailList = hibernateUtil.hql(hql);
-					if(ordersDetailList.size()>0){
-						vo.setMsg("你已经购买过【"+good.getTitle()+"】了，此商品参加的【"+event.getEventName()+"】活动一人只能购买一件");
-					}
-					
-				}
-			}
-		}
-//		BigDecimal doubleRate;
-//		if(obj!=null){
-//			goodsEvent = (GoodsEvent) obj;
-//			doubleRate = goodsEvent.getExchangeRate();
-//			double newCoinPrice = new BigDecimal(vo.getCoinPrice()).multiply(doubleRate).doubleValue();
-//			vo.setCoinPrice(newCoinPrice);
-//			vo.setFlag("1");
-//		}
 	}
 	
 	/**
@@ -1109,6 +991,9 @@ public class OrdersServImpl implements OrdersServ {
 				
 				for (int i = 0; i < voList.size(); i++) {
 					OrderPriceVo orderPriceVo = (OrderPriceVo) voList.get(i);
+					if(orderPriceVo.getMsg()!=null){
+						return ObjectToResult.getResult(orderPriceVo);
+					}
 					payable += Double.parseDouble(orderPriceVo.getPayable());
 					orderPrice += Double.parseDouble(orderPriceVo.getOrderPrice());
 					benPrice += Double.parseDouble(orderPriceVo.getBenPrice());
@@ -1127,6 +1012,7 @@ public class OrdersServImpl implements OrdersServ {
 				vo.setOrderPrice(String.valueOf(orderPrice+freight));
 				vo.setPayable(String.valueOf(payable));
 				vo.setTotalCoinNumber(totalCoinNumber);
+				vo.setGoodsTotalPrice(orderPrice);
 				vo.setVoList(voList);
 				orders.setGoodsTotalPrice(new BigDecimal(orderPrice));
 				orders.setFreight(new BigDecimal(vo.getFreight()));
@@ -1143,6 +1029,9 @@ public class OrdersServImpl implements OrdersServ {
 				Object object = key[0];
 				list = map.get(object);
 				OrderPriceVo orderPriceVo = getOrdersPayable(param, list, orders);
+				if(orderPriceVo.getMsg()!=null){
+					return ObjectToResult.getResult(orderPriceVo);
+				}
 				voList.add(orderPriceVo);
 				if("yes".equals(orderPriceVo.getIsCard())){
 					vo.setIsCard("yes");
@@ -1154,13 +1043,14 @@ public class OrdersServImpl implements OrdersServ {
 				vo.setOrderPrice(String.valueOf(Double.valueOf(orderPriceVo.getOrderPrice())+orderPriceVo.getFreight()));
 				vo.setPayable(orderPriceVo.getPayable());
 				vo.setTotalCoinNumber(orderPriceVo.getTotalCoinNumber());
+				vo.setGoodsTotalPrice(Double.valueOf(orderPriceVo.getOrderPrice()));
 				vo.setVoList(voList);
 				vo.setFreight(orderPriceVo.getFreight());
 			}
 			
-			getCoinInfo(param,vo);//获取蜂币
-			getDeductionCoinInfo(param,vo,orders);
-			getDoubleCoinData(param,vo);//参与蜂币翻倍活动
+			ordersUtil.getCoinInfo(param,vo);//获取蜂币
+			ordersUtil.getDeductionCoinInfo(param,vo,orders);
+			ordersUtil.getDoubleCoinData(param,vo);//参与蜂币翻倍活动
 		}
 		
 		return ObjectToResult.getResult(vo);

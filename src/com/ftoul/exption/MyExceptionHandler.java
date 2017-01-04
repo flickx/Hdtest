@@ -41,12 +41,15 @@ public class MyExceptionHandler implements HandlerExceptionResolver {
         Map<String, ?> attributes = new HashMap();
 		try {
 			attributes = mapper.readValue(mapper.writeValueAsString(result), Map.class);
-		} catch (Exception e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 		} 
         view.setAttributesMap(attributes);
         mav.setView(view);
-        ex.printStackTrace();
+        if(ex instanceof MyExption)
+        	System.out.println(ex.getMessage());
+        else
+        	ex.printStackTrace();
         log.error(ex);
         return mav;
 	}
