@@ -8,6 +8,9 @@ public class ShopVo {
 	private Integer goodsSaleNum;//销售量
 	private Integer goodsNum;//全部商品数量
 	private Integer goodsMonthNum;//上新商品
+	private String verifyTime;//开店时间
+	private String summary;//店铺简介
+	private String businessStoreId;//查询ID
 	public String getStoreId() {
 		return storeId;
 	}
@@ -43,6 +46,24 @@ public class ShopVo {
 	}
 	public void setStorePic(String storePic) {
 		this.storePic = storePic;
+	}
+	public String getVerifyTime() {
+		return verifyTime;
+	}
+	public void setVerifyTime(String verifyTime) {
+		this.verifyTime = verifyTime;
+	}
+	public String getSummary() {
+		return summary;
+	}
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+	public String getBusinessStoreId() {
+		return businessStoreId;
+	}
+	public void setBusinessStoreId(String businessStoreId) {
+		this.businessStoreId = businessStoreId;
 	}
 	
 	

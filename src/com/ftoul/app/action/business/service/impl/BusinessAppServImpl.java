@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.ftoul.app.action.business.service.BusinessAppServ;
 import com.ftoul.app.vo.GoodsWebVo;
+import com.ftoul.app.vo.ShopVo;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.po.Goods;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.business.service.BusinessWebServ;
+import com.ftoul.web.business.vo.BusinessVo;
 
 /**
  * 
@@ -62,7 +64,19 @@ public class BusinessAppServImpl implements BusinessAppServ {
 	 */
 	@Override
 	public Result getBusinessStorePage(Parameter param) throws Exception {
-		return businessWebServ.getBusinessStorePage(param);
+		Result result = businessWebServ.getBusinessStorePage(param);
+		BusinessVo businessVo = (BusinessVo)result.getObj();
+		ShopVo shopVo = new ShopVo();
+		shopVo.setStoreId(businessVo.getStoreId());
+		shopVo.setBusinessStoreId(businessVo.getBusinessStoreId());
+		shopVo.setStoreName(businessVo.getStoreName());
+		shopVo.setStorePic(businessVo.getPic());
+		shopVo.setGoodsMonthNum(businessVo.getGoodsMonthNum());
+		shopVo.setGoodsNum(businessVo.getGoodsNum());
+		shopVo.setGoodsSaleNum(businessVo.getGoodsSaleNum());
+		shopVo.setVerifyTime(businessVo.getVerifyTime());
+		shopVo.setSummary(businessVo.getSummary());
+		return ObjectToResult.getResult(shopVo);
 	}
 
 	/**
