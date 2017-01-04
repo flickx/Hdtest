@@ -65,7 +65,17 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
-	
+	/**
+	 * 获取所有"限时抢"
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getLimitEventList(Parameter param) throws Exception {
+		String hql = "from GoodsEvent where state = '1' and shopId is null and typeName = '限时抢'";
+		List<Object> list = hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(list);
+	}
 	/**
 	 * 根据活动ID获取单个活动对象
 	 * @param param Parameter对象
@@ -202,9 +212,19 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 * @return返回结果（前台用Result对象）
 	 */
 	public Result getGoodsByEventId(Parameter param) throws Exception{		
-		String hql = "from GoodsEventJoin where state='1' and goods.grounding = '1'  and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
+		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1'  and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
+	}
+	/**
+	 * 获取app所有限时抢商品列表
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	public Result getTimeLimitGoods(String id) throws Exception{		
+		String hql = "from GoodsEventJoin where state='1' and goodsEvent.id= '"+id+"' and goods.state='1' and goods.grounding = '1' ";
+		List<Object> list = hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(list);
 	}
 	/**
 	 * 通过活动代码获取所有活动商品
@@ -212,7 +232,30 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 * @return返回结果（前台用Result对象）
 	 */
 	public Result getGoodsByEventCode(Parameter param) throws Exception{		
-		String hql = "from GoodsEventJoin where state='1' and goods.grounding = '1' " + param.getWhereStr() + param.getOrderBy();
+		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' " + param.getWhereStr() + param.getOrderBy();
+		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		return ObjectToResult.getResult(page);
+	}
+	/**
+	 * 通过活动代码获取app端首页活动商品
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	public Result getAppGoodsByEventCode(Parameter param) throws Exception{		
+		String typeName = param.getId().toString();
+		if ("sqp".equals(typeName)) {
+			typeName = "省钱趴";
+		}
+		if ("csh".equals(typeName)) {
+			typeName = "超实惠";
+		}
+		if ("tshh".equals(typeName)) {
+			typeName = "特色好货";
+		}
+		if ("dpx".equals(typeName)) {
+			typeName = "大牌秀";
+		}
+		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.typeName= '" + typeName+ "'";
 		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
@@ -290,6 +333,17 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		GoodsEventJoinVo goodsEventJoinVo=(GoodsEventJoinVo)JSONObject.toBean((JSONObject) param.getObj(),GoodsEventJoinVo.class);
 		Object num = hibernateUtil.execHql("update GoodsEventJoin set quantity = '"+goodsEventJoinVo.getQuantity()+"',eventPrice = "+goodsEventJoinVo.getEventPrice()+"  where id ='"+goodsEventJoinVo.getId()+"'");
 		return ObjectToResult.getResult(num);
+	}
+	/**
+	 * 获取app首页每日上新商品
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getAppNewestGoodsList(Parameter param) throws Exception{
+		String hql="from Goods where state='1' and grounding = '1' order by createTime desc";
+		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		return ObjectToResult.getResult(page);
 	}
 	/**
 	 * 获取每日上新商品

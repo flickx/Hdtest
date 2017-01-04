@@ -3,8 +3,6 @@
  */
 package com.ftoul.web.manage.user.service.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
 

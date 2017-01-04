@@ -4,7 +4,7 @@ public class IndexGoodsAppVo {
 	
 	private String goodsId;//ID
 	private String title;//商品名称
-	private String price;//商品价格
+	private double price;//商品价格
 	private String picSrc;//商品图片 主图
 	
 	public String getGoodsId() {
@@ -23,11 +23,11 @@ public class IndexGoodsAppVo {
 		this.title = title;
 	}
 
-	public String getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(String price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 
