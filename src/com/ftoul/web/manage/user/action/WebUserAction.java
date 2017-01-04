@@ -67,9 +67,9 @@ public class WebUserAction {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "sendSmsCode",method=RequestMethod.POST) 
-	public Result sendSmsCode(@RequestBody  UsersVO usersvo) throws Exception{
-//		Parameter parameter = Common.jsonToParam(param);
-		return webUserServ.sendSmsCode(usersvo);
+	public Result sendSmsCode(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return webUserServ.sendSmsCode(parameter);
 	}
 	/**
 	 * 找回密码
