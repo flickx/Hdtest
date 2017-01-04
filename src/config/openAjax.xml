@@ -5,9 +5,7 @@
 		<list>/web/open</list>
 		<list>/web/demo</list>
 		<list>/web/goods</list>
-		<list>/app/goods</list>
-		<list>/app/user</list>
-		<list>/app/home</list>
+		<list>/app</list>
 		<list>/api</list>
 		<list>/test</list>
 		<list>/web/manage/user</list>
