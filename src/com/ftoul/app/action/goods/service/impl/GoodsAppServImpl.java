@@ -14,6 +14,7 @@ import com.ftoul.app.vo.GoodsAppVo;
 import com.ftoul.app.vo.GoodsParamAppVo;
 import com.ftoul.app.vo.GoodsPicAppVo;
 import com.ftoul.app.vo.GoodsPropAppVo;
+import com.ftoul.app.vo.GoodsWebVo;
 import com.ftoul.app.vo.ShopVo;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
@@ -175,16 +176,17 @@ public class GoodsAppServImpl implements GoodsAppServ {
 	@Override
 	public Result getUserCollectionList(Parameter param) throws Exception {
 		Result result = userCollectionServ.getUserCollectionList(param);
-		List<UserCollection> collectionList = (List<UserCollection>)result.getObj();
-		List<CollectionAppVo> collectionVoList = new ArrayList<CollectionAppVo>();
-		for (int i = 0; i < collectionList.size(); i++) {
-			CollectionAppVo collectionAppVo = new CollectionAppVo();
-			collectionAppVo.setPrice(collectionList.get(i).getGoods().getPrice());
-			collectionAppVo.setTitle(collectionList.get(i).getGoods().getTitle());
-			collectionAppVo.setGoodsPic(collectionList.get(i).getGoods().getPicSrc());
-			collectionVoList.add(collectionAppVo);
+		List<UserCollection> list = (List<UserCollection>)result.getObj();
+		List<GoodsWebVo> goodsVoList = new ArrayList<GoodsWebVo>();
+		for (int i = 0; i < list.size(); i++) {
+			UserCollection userCollection = list.get(i);
+			GoodsWebVo goodsVo = new GoodsWebVo();
+			goodsVo.setGoodsPic(userCollection.getGoods().getPicSrc());
+			goodsVo.setTitle(userCollection.getGoods().getTitle());
+			goodsVo.setPrice(userCollection.getGoods().getPrice());
+			goodsVoList.add(goodsVo);
 		}
-		return ObjectToResult.getResult(collectionVoList);         
+		return ObjectToResult.getResult(goodsVoList);
 	}
 	
 }
