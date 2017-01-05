@@ -1,6 +1,5 @@
-package com.ftoul.web.vo;
+package com.ftoul.app.vo;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class OrderPriceVo {

@@ -19,6 +19,12 @@ public interface GoodsAppServ{
 	 * @return  返回结果（前台用Result对象）
 	 */
 	Result getGoodsDetail(Parameter parameter) throws Exception;
+	/**
+	 * 获得所有收藏商品.
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getUserCollectionList(Parameter param) throws Exception;
 	
-
 }

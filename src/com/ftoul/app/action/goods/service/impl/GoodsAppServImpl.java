@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ftoul.app.action.goods.service.GoodsAppServ;
+import com.ftoul.app.vo.CollectionAppVo;
 import com.ftoul.app.vo.GoodsAppVo;
 import com.ftoul.app.vo.GoodsParamAppVo;
 import com.ftoul.app.vo.GoodsPicAppVo;
@@ -21,6 +22,7 @@ import com.ftoul.manage.goods.vo.GoodsVo;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.GoodsProp;
 import com.ftoul.po.GoodsUploadpic;
+import com.ftoul.po.UserCollection;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.logistics.LogisticsUtil;
 import com.ftoul.util.price.PriceUtil;
@@ -30,6 +32,7 @@ import com.ftoul.web.goods.service.GoodsBrandServ;
 import com.ftoul.web.goods.service.GoodsPropTypeServ;
 import com.ftoul.web.goods.service.GoodsServ;
 import com.ftoul.web.goods.service.GoodsTypeServ;
+import com.ftoul.web.goods.service.UserCollectionServ;
 
 /**
 * 
@@ -66,6 +69,8 @@ public class GoodsAppServImpl implements GoodsAppServ {
 	@Autowired
 	private BusinessWebServ businessWebServ;
 	
+	@Autowired
+	private UserCollectionServ userCollectionServ;
 	/**
 	 * 
 	 * 得到商品详情
@@ -166,4 +171,20 @@ public class GoodsAppServImpl implements GoodsAppServ {
 		goodsAppVo.setShopVo(shopVo);
 		return ObjectToResult.getResult(goodsAppVo);
 	}
+
+	@Override
+	public Result getUserCollectionList(Parameter param) throws Exception {
+		Result result = userCollectionServ.getUserCollectionList(param);
+		List<UserCollection> collectionList = (List<UserCollection>)result.getObj();
+		List<CollectionAppVo> collectionVoList = new ArrayList<CollectionAppVo>();
+		for (int i = 0; i < collectionList.size(); i++) {
+			CollectionAppVo collectionAppVo = new CollectionAppVo();
+			collectionAppVo.setPrice(collectionList.get(i).getGoods().getPrice());
+			collectionAppVo.setTitle(collectionList.get(i).getGoods().getTitle());
+			collectionAppVo.setGoodsPic(collectionList.get(i).getGoods().getPicSrc());
+			collectionVoList.add(collectionAppVo);
+		}
+		return ObjectToResult.getResult(collectionVoList);         
+	}
+	
 }

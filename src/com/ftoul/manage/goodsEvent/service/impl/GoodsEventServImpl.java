@@ -1,5 +1,6 @@
 package com.ftoul.manage.goodsEvent.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -72,8 +73,11 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 */
 	@Override
 	public Result getLimitEventList(Parameter param) throws Exception {
-		String hql = "from GoodsEvent where state = '1' and shopId is null and typeName = '限时抢'";
-		List<Object> list = hibernateUtil.hql(hql);
+		String startTime = new DateStr().getStartTime();
+		String endTime = new DateStr().getEndTime();
+		String hql = "from GoodsEvent where state = '1' and '"+startTime+"' < eventBegen and eventBegen < '"+endTime+"' and shopId is null and typeName = '限时抢' order by eventBegen asc limit 5";
+		List<Object> list = new ArrayList<Object>(5);
+		list =	hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
 	}
 	/**
@@ -478,5 +482,8 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		EventOrderVO eventOrderVO=(EventOrderVO)JSONObject.toBean((JSONObject) param.getObj(),EventOrderVO.class);
 		Object num = hibernateUtil.execHql("update GoodsEventJoin set quantity = '"+eventOrderVO.getQuantity()+"' where goods.goodsId ='"+eventOrderVO.getGoodsId()+"' and goodsEvent.id='"+eventOrderVO.getEventId()+"'");
 		return ObjectToResult.getResult(num);
+	}
+	public static void main(String[] args) {
+		System.out.println(new DateStr().getStartTime());
 	}
 }

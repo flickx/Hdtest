@@ -78,12 +78,7 @@ public class GoodsAppAction {
 	@RequestMapping(value = "saveUserCollection")  
 	public @ResponseBody Result saveUserCollection(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		Result ret = userCollectionServ.findUserCollection(parameter);
-		if(ret.getResult()==0){
-			return userCollectionServ.saveUserCollection(parameter);
-		}else{
-			return ret;
-		}
+		return userCollectionServ.saveUserCollection(parameter);
 	}
 
 	/**
@@ -101,7 +96,7 @@ public class GoodsAppAction {
 	@RequestMapping(value = "getUserCollectionList")  
 	public @ResponseBody Result getUserCollectionList(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return userCollectionServ.getUserCollectionList(parameter);
+		return goodsAppServ.getUserCollectionList(parameter);
 	}
 	
 	/**

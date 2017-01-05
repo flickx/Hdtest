@@ -97,7 +97,8 @@ public class WebGoodsEventAction {
 			}
 			
 			AppLimitGoodsVo i  =new AppLimitGoodsVo();
-			String begen = goodsEvent.getEventBegen().toString();
+			String begen = goodsEvent.getEventBegen().toString().substring(11,16);
+			
 			String end = goodsEvent.getEventEnd().toString();
 			long last = DateUtil.stringFormatToDate(end, "yyyy/MM/dd HH:mm:ss").getTime();
 			long now = new Date().getTime();
