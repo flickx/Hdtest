@@ -132,6 +132,7 @@ public class AddressAppServImpl implements AddressAppServ {
 		userAddress.setConsignee(new String(userAddress.getConsignee().getBytes("ISO-8859-1"),"UTF-8"));
 		userAddress.setDefulat(param.getKey());
 		User user = param.getUserToken().getUser();
+		userAddress.setUser(user);
 		Object res;
 		String defaultFlag = userAddress.getDefulat();
 		if("true".equals(defaultFlag)){
@@ -145,6 +146,7 @@ public class AddressAppServImpl implements AddressAppServ {
 			res = hibernateUtil.save(userAddress);
 		}else{
 			userAddress.setModifyTime(new DateStr().toString());
+			userAddress.setState("1");
 			res = hibernateUtil.update(userAddress);
 		}
 		return ObjectToResult.getResult(res);
