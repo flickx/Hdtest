@@ -172,12 +172,13 @@ public class GoodsParamServImpl implements GoodsParamServ {
 			Result res = new Result();
 			return res;
 		}
-		String hql2 =	"SELECT t1.id,t2.title,t3.name as name1,t4.name as name2,t2.grounding,t1.price,t1.stock,t1.sale_number,t1.param_name,t1.defalut,t1.market_price,t1.batchprice,t1.costprice from goods_param t1\n" +
-						"LEFT JOIN goods t2 ON t1.goods_id = t2.id and t1.state = '1' and t2.state = '1' \n" +
+		String hql2 =	"select t1.id,t2.title,t3.name as name1,t4.name as name2,t2.grounding,t1.price,t1.stock,t1.sale_number,t1.param_name,t1.defalut,t1.market_price,t1.batchprice,t1.costprice" + 
+						" from goods_param t1 LEFT JOIN goods t2 ON t1.goods_id = t2.id and t1.state = '1' and t2.state = '1' \n" +
 						"LEFT JOIN goods_type t3 ON t3.id = t2.goods_type3 and t3.state = '1'  and t2.state = '1' \n" +
 						"LEFT JOIN goods_brand  t4 ON t4.id= t2.goods_brand_id and t4.state='1' and t2.state='1'\n" +
 						"where t1.state = '1' and t1.goods_id = '"+param.getId()+"' " ;
-		Page page = hibernateUtil.sqlPage(hql2,param.getPageNum(),param.getPageSize());
+		String countSql = "select count(*) from ("+hql2+") countS";
+		Page page = hibernateUtil.sqlPage(countSql,hql2,param.getPageNum(),param.getPageSize());
 		List<Object[]> goodsList =hibernateUtil.sql(hql2);
 		List<GoodsListVo> list = new ArrayList<GoodsListVo>();
 		for (int i = 0; i < page.getObjList().size(); i++) {
@@ -223,7 +224,7 @@ public class GoodsParamServImpl implements GoodsParamServ {
 	@Override
 	public Result getGoodsParamList(Parameter param) throws Exception {
 		String hql  = "from GoodsParam where state=1 and goods.id ='"+param.getId()+"'";
-		Page page = this.hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = this.hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 

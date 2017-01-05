@@ -157,7 +157,7 @@ public class BusinessServImpl implements BusinessServ {
 			hql = "from BusinessStoreLogin"+" where businessStore.business.state =1  order by businessStore.business.createTime desc";
 		}
 		
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize()); 
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize()); 
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -179,7 +179,7 @@ public class BusinessServImpl implements BusinessServ {
 	@Override
 	public Result getBusinessStoreRankList(Parameter param) throws Exception {
 		String hql = "from BusinessStoreRank"+" where state =1 "+ " order by createTime desc";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize()); 
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize()); 
 		return ObjectToResult.getResult(page);
 	}
 	
@@ -214,7 +214,7 @@ public class BusinessServImpl implements BusinessServ {
 		}else{
 			hql = "from BusinessStoreClassify"+" where state =1 "+ " order by createTime desc";
 		}
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize()); 
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize()); 
 		return ObjectToResult.getResult(page);
 	}
 	/**

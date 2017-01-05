@@ -37,7 +37,7 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 				+ "' "
 				+ param.getWhereStr()
 				+ param.getOrderBy();
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(),
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(),
 				param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
@@ -49,7 +49,7 @@ public class ShopFreightTemplateServImpl implements ShopFreightTemplateServ {
 				+ "' "
 				+ param.getWhereStr()
 				+ param.getOrderBy();
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(),
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(),
 				param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}

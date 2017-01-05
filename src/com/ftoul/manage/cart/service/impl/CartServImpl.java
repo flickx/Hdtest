@@ -200,7 +200,7 @@ public class CartServImpl implements CartServ {
 	@Override
 	public Result getGoodsList(Parameter param) throws Exception {
 		String hql = "from Goods where state = '1' order by createTime desc ";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), 6);
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), 6);
 		return ObjectToResult.getResult(page);
 	}
 

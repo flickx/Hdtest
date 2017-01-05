@@ -18,7 +18,12 @@ public interface GoodsEventServ {
 	 * @return 返回结果（前台用Result对象）
 	 */
 	Result getGoodsEventListPage(Parameter param) throws Exception;
-	
+	/**
+	 * 获取所有"限时抢"
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result getLimitEventList(Parameter param) throws Exception; 
 	/**
 	 * 根据活动ID获取单个活动对象
 	 * @param param Parameter对象
@@ -149,6 +154,51 @@ public interface GoodsEventServ {
 	 * @return  返回结果（前台用Result对象）
 	 */
 	Result reduceEventGoodsSum(Parameter param) throws Exception;
+	/**
+	 * 获取app所有限时抢商品列表
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	Result getTimeLimitGoods(String id) throws Exception;	
+	/**
+	 * 通过活动代码获取app端首页活动商品
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	Result getAppGoodsByEventCode(Parameter param) throws Exception;	
+	/**
+	 * 获取app首页每日上新商品
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	Result getAppNewestGoodsList(Parameter param) throws Exception;
+	/**
+	 * 活动排除品类下所有商品
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	Result saveGoodsEventJoin(Parameter param) throws Exception;
+	/**
+	 * 通过活动ID获取此活动排除的商品品类
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	Result getGoodsTypeByEventId(Parameter param) throws Exception;
+	/**
+	 * 
+	 *  查找第一级商品类别
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	Result getGoodsTypeLevel1List(Parameter param) throws Exception;
+	/**
+	 * 
+	 *  通过id查找
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	
+	Result getByPid(Parameter parameter) throws Exception;
 	/**
 	 * 活动排除品类下所有商品
 	 * @param param Parameter对象

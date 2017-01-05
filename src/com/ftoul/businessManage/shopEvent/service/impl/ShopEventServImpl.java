@@ -40,7 +40,7 @@ public class ShopEventServImpl implements ShopEventServ {
 	@Override
 	public Result getEventTypeListPage(Parameter param) throws Exception {
 		String hql = "from EventType where state = '1'" + param.getWhereStr() + param.getOrderBy() ;
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -57,7 +57,7 @@ public class ShopEventServImpl implements ShopEventServ {
 		}else{
 			hql = hql + param.getOrderBy() ;
 		}
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	
@@ -147,7 +147,7 @@ public class ShopEventServImpl implements ShopEventServ {
 	 */
 	public Result getAllGoods(Parameter param) throws Exception{
 		String hql = "from Goods where state = '1' and grounding = '1' and shopId = '"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"'";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -157,7 +157,7 @@ public class ShopEventServImpl implements ShopEventServ {
 	 */
 	public Result getGoodsByEventId(Parameter param) throws Exception{		
 		String hql = "from GoodsEventJoin where state='1' and goods.grounding = '1'  and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -167,7 +167,7 @@ public class ShopEventServImpl implements ShopEventServ {
 	 */
 	public Result getGoodsByEventCode(Parameter param) throws Exception{		
 		String hql = "from GoodsEventJoin where state='1' and goods.grounding = '1' " + param.getWhereStr() + param.getOrderBy();
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -253,7 +253,7 @@ public class ShopEventServImpl implements ShopEventServ {
 	@Override
 	public Result getNewestGoodsList(Parameter param) throws Exception{
 		String hql="from Goods where state='1' and grounding = '1' "+param.getWhereStr() + param.getOrderBy();
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -262,7 +262,7 @@ public class ShopEventServImpl implements ShopEventServ {
 	@Override
 	public Result getGoodsEventByCode(Parameter param) throws Exception {
 		String hql="from GoodsEvent where state = '1' " + param.getWhereStr() + param.getOrderBy();
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -273,7 +273,7 @@ public class ShopEventServImpl implements ShopEventServ {
 	@Override
 	public Result getFullCutRuleList(Parameter param) throws Exception{
 		String hql="from FullCutRule where state = '1' and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy();
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -327,7 +327,7 @@ public class ShopEventServImpl implements ShopEventServ {
 		}else{
 			hql = hql+" order by createTime desc";
 		}
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**

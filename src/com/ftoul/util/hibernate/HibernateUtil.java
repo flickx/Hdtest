@@ -58,7 +58,7 @@ public interface HibernateUtil
 	 * @param pageSize 多少数据一页
 	 * @return 查出的结果集
 	 */
-    public Page hqlPage(String hql, Integer pageNum, Integer pageSize);
+    public Page hqlPage(String countSql,String hql, Integer pageNum, Integer pageSize);
     
     /**
 	 * 通过SQL执行查询
@@ -74,7 +74,7 @@ public interface HibernateUtil
 	 * @param pageSize 多少数据一页
 	 * @return 查出的结果集
 	 */
-    public Page sqlPage(String hql, Integer pageNum, Integer pageSize);
+    public Page sqlPage(String countSql,String sql, Integer pageNum, Integer pageSize);
     
     /**
 	 * 通过SQL执行查询
@@ -94,5 +94,6 @@ public interface HibernateUtil
 	 * @return 执行成功条数
 	 */
     public int execHql(String hql);
+
     
 }

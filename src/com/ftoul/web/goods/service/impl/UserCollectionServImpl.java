@@ -66,7 +66,7 @@ public class UserCollectionServImpl implements UserCollectionServ {
 	@Override
 	public Result getUserCollectionList(Parameter param) throws Exception {
 		String hql = " from UserCollection where user.id='"+param.getUserToken().getUser().getId()+"' and state = '1' ";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(),
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(),
 				param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}

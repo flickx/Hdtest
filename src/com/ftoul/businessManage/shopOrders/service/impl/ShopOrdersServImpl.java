@@ -139,7 +139,7 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 		}else{
 			hql = "from OrdersPay where state = '1' and orders.shopId.id='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by createTime desc";
 		}
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<Object> list = page.getObjList();
 		List<Object> ordersPayList = new ArrayList<Object>();
 		for (int i = 0; i < list.size(); i++) {
@@ -185,7 +185,7 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 		}else{
 			hql = " from Orders where orderStatic!='0' and shopId.id='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by orderTime desc";
 		}
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<Object> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : ordersList) {
@@ -459,7 +459,7 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 	public Result getdeliveryListPage(Parameter parameter) throws Exception {
 		String whereStr = parameter.getWhereStr();
 		String hql = "from Orders where deliverStatic='0' "+whereStr;
-		Page page = hibernateUtil.hqlPage(hql, parameter.getPageNum(), parameter.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, parameter.getPageNum(), parameter.getPageSize());
 		List<Object> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : ordersList) {
@@ -645,7 +645,7 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 	public Result getSendGoodsListPage(Parameter param) throws Exception {
 		
 		String hql = " from Orders where state = '1' and orderStatic = '2'";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		
 		List<Object> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();

@@ -41,7 +41,7 @@ public class LogisticsServImpl implements LogisticsServ {
 	@Override
 	public Result getLogisticsCompanyPage(Parameter param) throws Exception {
 		String hql = " from LogisticsCompany where 1 = 1 "+param.getWhereStr();
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**

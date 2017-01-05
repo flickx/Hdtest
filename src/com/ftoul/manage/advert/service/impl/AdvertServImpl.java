@@ -32,7 +32,7 @@ public class AdvertServImpl implements AdvertServ {
 	@Override
 	public Result getIndexCarousePicList(Parameter param) throws Exception {
 		String hql = "from IndexCarouselPic where state = '1'" + param.getWhereStr() + param.getOrderBy();
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**

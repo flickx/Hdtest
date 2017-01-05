@@ -60,7 +60,7 @@ public class GoodsCanalServImpl implements GoodsCanalServ {
 	@Override
 	public Result getGoodsCanalPage(Parameter param) throws Exception {
 		String hql = "from GoodsCanal where state = '1'" + param.getWhereStr() + param.getOrderBy() ;
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 

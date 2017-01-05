@@ -5,22 +5,22 @@ import java.util.List;
 
 public class OrderPriceVo {
 	
-	private String payable;
-	private String orderPrice;
-	private double goodsTotalPrice;
-	private String benPrice;
-	private String orderNumber;
-	private String isCard;
-	private String msg;
-	private int coinNumber;
-	private int totalCoinNumber;
-	private double coinPrice;
-	private String flag;
-	private String shopName;
-	private String shopId;
-	private String eventName;
-	private int goodsNum;
-	private double freight;
+	private String payable;//原价
+	private String orderPrice;//订单价格包含运费
+	private double goodsTotalPrice;//商品总价格（不包含运费）
+	private String benPrice;//优惠金额
+	private String orderNumber;//订单号
+	private String isCard;//是否有身份证信息
+	private String msg;//存一些提示信息
+	private int coinNumber;//蜂币数量
+	private int totalCoinNumber;//总蜂币数量
+	private double coinPrice;//蜂币兑换价格
+	private String flag;//
+	private String shopName;//店铺名
+	private String shopId;//店铺ID
+	private String eventName;//参加活动名称
+	private int goodsNum;//购买商品数量
+	private double freight;//运费
 	private List<Object> voList;
 //	private List<ShopGoodsParamVo> shopGoodsParamList;
 	

@@ -70,7 +70,7 @@ public class BusinessClassifyServImpl implements BusinessClassifyServ{
 	@Override
 	public Result getBusinessClassify(Parameter param) throws Exception {
 		String hql = "from BusinessClassify where state =1 and shopId = '"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by createTime desc";
-		Page page = hibernateUtil.hqlPage(hql,param.getPageNum(),param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql,param.getPageNum(),param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 

@@ -98,13 +98,13 @@ public class OrdersServImpl implements OrdersServ {
 		List<Object> ordersList = new ArrayList<Object>();
 		Page page = new Page();
 		if(OrdersConstant.NOT_PAY.equals(key)){
-			page =  hibernateUtil.hqlPage("from Orders where orderStatic = '1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.NOT_DELIVER.equals(key)){
-			page =  hibernateUtil.hqlPage("from Orders where orderStatic in('2', '3') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in('2', '3') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.NOT_TASK_DELIVER.equals(key)){
-			page =  hibernateUtil.hqlPage("from Orders where orderStatic in ('4','5') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in ('4','5') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else{
-			page =  hibernateUtil.hqlPage("from Orders where orderStatic!='0' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic!='0' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}
 		ordersList = page.getObjList();
 		
@@ -614,6 +614,7 @@ public class OrdersServImpl implements OrdersServ {
 					}else{
 						costPrice = Double.parseDouble(goodsP.getPrice());
 					}
+					System.out.println(event.getEventName()+":"+goodsP.getGoods().getId()+":"+goodsP.getGoods().getTitle()+"的优惠价为"+costPrice+",数量为"+num+"总价为"+payable+"订单商品价为"+totalPayable);
 					System.out.println(event.getEventName()+":"+goodsP.getGoods().getId()+":"+goodsP.getGoods().getTitle()+"的优惠价为"+costPrice+",数量为"+num+"总价为"+payable+"订单商品价为"+totalPayable);
 					System.out.println(event.getEventName()+":"+goodsP.getGoods().getId()+":"+goodsP.getGoods().getTitle()+"的优惠价为"+costPrice+",数量为"+num+"总价为"+payable+"订单商品价为"+totalPayable);
 					costPayable = costPrice*num;//当前商品折后总价
