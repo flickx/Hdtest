@@ -71,6 +71,7 @@ public class AddressAppServImpl implements AddressAppServ {
 			addressVo.setName(userAddress.getName());
 			addressVo.setConsignee(userAddress.getConsignee());
 			addressVo.setTel(userAddress.getTel());
+			addressVo.setCreateTime(userAddress.getCreateTime());
 			addressList.add(addressVo);
 		}
 		return ObjectToResult.getResult(addressList);
