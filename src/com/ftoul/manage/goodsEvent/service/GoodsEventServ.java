@@ -199,32 +199,5 @@ public interface GoodsEventServ {
 	 */
 	
 	Result getByPid(Parameter parameter) throws Exception;
-	/**
-	 * 活动排除品类下所有商品
-	 * @param param Parameter对象
-	 * @return返回结果（前台用Result对象）
-	 */
-	Result saveGoodsEventJoin(Parameter param) throws Exception;
-	/**
-	 * 通过活动ID获取此活动排除的商品品类
-	 * @param param Parameter对象
-	 * @return返回结果（前台用Result对象）
-	 */
-	Result getGoodsTypeByEventId(Parameter param) throws Exception;
-	/**
-	 * 
-	 *  查找第一级商品类别
-	 * @param   param Parameter对象
-	 * @return  返回结果（前台用Result对象）
-	 */
-	Result getGoodsTypeLevel1List(Parameter param) throws Exception;
-	/**
-	 * 
-	 *  通过id查找
-	 * @param   param Parameter对象
-	 * @return  返回结果（前台用Result对象）
-	 */
-	
-	Result getByPid(Parameter parameter) throws Exception;
 }
 
