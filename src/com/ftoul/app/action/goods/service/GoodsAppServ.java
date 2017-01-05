@@ -26,13 +26,4 @@ public interface GoodsAppServ{
 	 * @throws Exception
 	 */
 	Result getUserCollectionList(Parameter param) throws Exception;
-	
-
-	/**
-	 * 获得所有收藏商品.
-	 * @param param
-	 * @return
-	 * @throws Exception
-	 */
-	Result getUserCollectionList(Parameter param) throws Exception;
 }

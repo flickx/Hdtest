@@ -270,7 +270,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 			typeName = "大牌秀";
 		}
 		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.typeName= '" + typeName+ "'";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null,hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -384,7 +384,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	@Override
 	public Result getAppNewestGoodsList(Parameter param) throws Exception{
 		String hql="from Goods where state='1' and grounding = '1' order by createTime desc";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null,hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
