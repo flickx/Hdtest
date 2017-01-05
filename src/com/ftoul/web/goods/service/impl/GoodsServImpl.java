@@ -100,7 +100,7 @@ public class GoodsServImpl implements GoodsServ {
 	@Override
 	public Result getGoodsListPage(Parameter param) throws Exception {
 		    String hql1 = "from Goods where state = '1' and grounding = '1' and id in (select gp.goods.id from GoodsParam gp where gp.state='1') and goodsType3.id='"+param.getId()+"' "+param.getOrderBy();
-			Page page = hibernateUtil.hqlPage(hql1, param.getPageNum(), param.getPageSize());
+			Page page = hibernateUtil.hqlPage(null, hql1, param.getPageNum(), param.getPageSize());
 			return ObjectToResult.getResult(page);
 			
 	}
@@ -302,7 +302,7 @@ public class GoodsServImpl implements GoodsServ {
 				"		GoodsPropType " +
 				"	WHERE" +
 				"		NAME LIKE '%"+ param.getKey()+"%' )) "+param.getOrderBy();
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 
@@ -353,7 +353,7 @@ public class GoodsServImpl implements GoodsServ {
 	@Override
 	public Result getGoodsListPageByCross(Parameter param) throws Exception {
 		String hql  ="from Goods where state ='1' and crossborder='1' "+param.getOrderBy();
-		Page page =this.hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page =this.hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 

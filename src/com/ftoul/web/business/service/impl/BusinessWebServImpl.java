@@ -36,7 +36,7 @@ public class BusinessWebServImpl implements BusinessWebServ {
 	@Override
 	public Result getStoreGoodsPage(Parameter param) throws Exception {
 		    String hql = "from Goods where state = '1' and grounding = '1' and id in (select gp.goods.id from GoodsParam gp where gp.state='1') and shopId='"+param.getId()+"' "+param.getOrderBy();
-			Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+			Page page = hibernateUtil.hqlPage(null,hql, param.getPageNum(), param.getPageSize());
 			return ObjectToResult.getResult(page);
 			
 	}
@@ -151,7 +151,7 @@ public class BusinessWebServImpl implements BusinessWebServ {
 	@Override
 	public Result getStoreGoodsPagebyStoreClassify(Parameter param) throws Exception {
 		    String hql = "from Goods where state = '1' and grounding = '1' and id in (select gp.goods.id from GoodsParam gp where gp.state='1') and shopId='"+param.getId()+"' and businessClassifyId= '"+param.getParentId()+"'"+param.getOrderBy();
-			Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+			Page page = hibernateUtil.hqlPage(null,hql, param.getPageNum(), param.getPageSize());
 			return ObjectToResult.getResult(page);
 			
 	}

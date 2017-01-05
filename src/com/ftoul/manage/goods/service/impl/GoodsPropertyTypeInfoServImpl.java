@@ -139,7 +139,7 @@ public class GoodsPropertyTypeInfoServImpl implements GoodsPropertyTypeInfoServ 
 	@Override
 	public Result getPropTypeContent(Parameter param) {
 		String hql = "from GoodsPropertyTypeInfo where state = '1' and goodsPropType.id = '" + param.getId()+"'";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		//List<Object> propList = hibernateUtil.hql(hql);
 		List<GoodsBrandInfoVo> list = new ArrayList<GoodsBrandInfoVo>();
 		for (int i = 0; i < page.getObjList().size(); i++) {

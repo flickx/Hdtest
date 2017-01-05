@@ -357,14 +357,14 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 		//String hql = "select gs.id,gs.title,gt.name,gb.name,gs.grounding,gp.price,gp.stock,gp.saleNumber,gpt.name "
 		//		+ "from Goods gs,GoodsParam gp,GoodsType gt,GoodsBrand gb, GoodsPropType gpt "
 		//		+ "where gs.id = gp.goods.id and gs.state=1 and gs.goodsType3.id = gt.id and gs.goodsBrand.id = gb.id and gs.goodsPropType= gpt.id" +parameter.getWhereStr() + " group by gs.id";
-		String sql ="SELECT  " +
-				"	gs.id,  " +
+		String countSql = " select count(*) from Goods gs where gs.state = '1' and gs.shop_id = '"+parameter.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' " +parameter.getWhereStr() ;
+		String sql = "select gs.id,  " +
 				"	gs.title,  " +
 				"	gt.NAME AS gtName,  " +
 				"	gb.NAME AS gbName,  " +
 				"	gs.grounding,  " +
 				"	gpt.NAME AS gptName,  " +
-				"	gs.subtitle  " +
+				"	gs.subtitle  " + 
 				"FROM  " +
 				"	Goods gs  " +
 				"JOIN Goods_Param gp ON gs.id = gp.goods_id  " +
@@ -407,7 +407,7 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 				sql+=" order by gs.grounding "+parameter.getSord();
 			}
 		}
-		Page page = hibernateUtil.sqlPage(sql,parameter.getPageNum(),parameter.getPageSize());
+		Page page = hibernateUtil.sqlPage(countSql,sql,parameter.getPageNum(),parameter.getPageSize());
 		List<GoodsListVo> list = new ArrayList<GoodsListVo>();
 		for (int i = 0; i < page.getObjList().size(); i++) {
 			GoodsListVo goodsListVo = new GoodsListVo();
@@ -441,9 +441,10 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 
 	@Override
 	public Result getGoodsListByEarlyWarning(Parameter param)throws Exception {
-		String hql = "select gs.id,gs.title,gt.name,gb.name,gs.grounding,gp.price,gp.stock,gp.saleNumber "
-				+ "from Goods gs,GoodsParam gp,GoodsType gt,GoodsBrand gb "
+		String select  = "gs.id,gs.title,gt.name,gb.name,gs.grounding,gp.price,gp.stock,gp.saleNumber";
+		String hql = "from Goods gs,GoodsParam gp,GoodsType gt,GoodsBrand gb "
 				+ "where gs.id = gp.goods.id  and gs.state=1 and gs.goodsType3.id = gt.id and gs.goodsBrand.id = gb.id and gp.stock<="+param.getId()+  " group by gs.id";
+		
 		//判断表格每列，并按列进行排序
 		if(param.getSidx().equals("title")){
 			hql+=" order by gs.title "+param.getSord();
@@ -466,7 +467,7 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 		if(param.getSidx().equals("saleNumber")){
 			hql+=" order by gp.saleNumber "+param.getSord();
 		}
-		Page page = hibernateUtil.hqlPage(hql,param.getPageNum(),param.getPageSize());
+		Page page = hibernateUtil.hqlPage(select,hql,param.getPageNum(),param.getPageSize());
 		List<Object> goodsList =hibernateUtil.hql(hql);
 		List<GoodsListVo> list = new ArrayList<GoodsListVo>();
 		for (int i = 0; i < page.getObjList().size(); i++) {
@@ -551,7 +552,7 @@ public class GoodsBusinessServImpl implements GoodsBusinessServ {
 	@Override
 	public Result getGoodsListPageByCross(Parameter param) throws Exception {
 		String hql  ="from Goods where state ='1' and crossborder='1' ";
-		Page page =this.hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page =this.hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 }

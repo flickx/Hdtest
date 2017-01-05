@@ -39,7 +39,7 @@ public class AdminServImpl implements AdminServ {
 	@Override
 	public Result getAdminList(Parameter param) throws Exception {
 		String hql = "from LoginUser where state = '1'" +  param.getWhereStr() + param.getOrderBy() ;
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	
@@ -101,7 +101,7 @@ public class AdminServImpl implements AdminServ {
 	@Override
 	public Result getLogList(Parameter param) throws Exception {
 		String hql = "from LoginUserLog where 1 = 1 " +  param.getWhereStr() + param.getOrderBy() ;
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 }

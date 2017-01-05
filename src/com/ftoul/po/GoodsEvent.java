@@ -50,6 +50,8 @@ public class GoodsEvent implements java.io.Serializable {
 	private String shopId;
 	private BigDecimal target;
 	private BigDecimal discountAmount;
+	private String eventType;
+	private String overlayEvent;
 	// Constructors
 
 	/** default constructor */
@@ -259,6 +261,24 @@ public class GoodsEvent implements java.io.Serializable {
 	}
 	public void setDiscountAmount(BigDecimal discountAmount) {
 		this.discountAmount = discountAmount;
+	}
+
+	@Column(name = "event_type", length = 1)
+	public String getEventType() {
+		return eventType;
+	}
+	
+	public void setEventType(String eventType) {
+		this.eventType = eventType;
+	}
+
+	@Column(name = "overlay_event", length = 32)
+	public String getOverlayEvent() {
+		return overlayEvent;
+	}
+
+	public void setOverlayEvent(String overlayEvent) {
+		this.overlayEvent = overlayEvent;
 	}
 	
 }

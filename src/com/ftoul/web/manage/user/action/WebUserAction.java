@@ -3,21 +3,18 @@
  */
 package com.ftoul.web.manage.user.action;
 
-import java.util.Enumeration;
-
-import javax.servlet.http.HttpServletRequest;
-
-import net.sf.json.JSONObject;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.web.manage.user.service.WebUserServ;
+import com.ftoul.web.vo.UsersVO;
 
 /**
  * @author 李丁

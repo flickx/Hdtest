@@ -45,7 +45,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		}else{
 			hql = " from AfterSchedule where state='1' order by createTime desc";
 		}
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<Object> afterList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : afterList) {

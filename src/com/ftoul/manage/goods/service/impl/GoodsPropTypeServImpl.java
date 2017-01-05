@@ -110,7 +110,7 @@ public class GoodsPropTypeServImpl implements GoodsPropTypeServ {
 	@Override
 	public Result getGoodsPropTypePageList(Parameter param) throws Exception {
 		String  hql = "from GoodsPropType where state = '1' "+ "order by createTime desc";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 
 	}

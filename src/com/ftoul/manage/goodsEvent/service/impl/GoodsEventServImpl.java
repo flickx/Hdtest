@@ -28,6 +28,7 @@ import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
 import com.ftoul.po.GoodsEventJoin;
 import com.ftoul.po.GoodsEventJoinVo;
+import com.ftoul.po.GoodsType;
 import com.ftoul.po.SystemSet;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.vo.GoodsEventVO;
@@ -46,7 +47,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	@Override
 	public Result getEventTypeListPage(Parameter param) throws Exception {
 		String hql = "from EventType where state = '1'" + param.getWhereStr() + param.getOrderBy() ;
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -58,12 +59,12 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	public Result getGoodsEventListPage(Parameter param) throws Exception {
 		String queryStr = param.getWhereStr();
 		String hql = "from GoodsEvent where state = '1' and shopId is null ";
-		if (queryStr != null) {			
-			hql = hql + queryStr + param.getOrderBy() ;
+		if(queryStr!=null){
+			hql = hql + queryStr + " order by createTime desc";
 		}else{
-			hql = hql + param.getOrderBy() ;
+			hql = hql+" order by createTime desc";
 		}
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -171,12 +172,11 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 * @return返回结果（前台用Result对象）
 	 */
 	public Result getAllGoods(Parameter parameter) throws Exception{
-			String sql ="SELECT  " +
-					"	gs.id,  " +
+		String countSql  = "select count(*) from Goods gs where gs.state = '1' AND gs.grounding = '1' ";
+		String sql ="select gs.id,  " +
 					"	gs.title,  " +
 					"   gs.pic_src,"+
-					"   gs.price "+
-					"FROM  " +
+					"   gs.price FROM  " +
 					"	Goods gs  " +
 					"JOIN Goods_Param gp ON gs.id = gp.goods_id  " +
 					"AND gs.state = '1'  " +
@@ -192,7 +192,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 					"AND gs.state = '1'  " +
 					"AND gs.grounding = '1'  " +
 					"GROUP BY gs.id order by rand()  ";
-			Page page = hibernateUtil.sqlPage(sql,parameter.getPageNum(),parameter.getPageSize());
+			Page page = hibernateUtil.sqlPage(countSql ,sql,parameter.getPageNum(),parameter.getPageSize());
 			List<GoodsListVo> list = new ArrayList<GoodsListVo>();
 			for (int i = 0; i < page.getObjList().size(); i++) {
 				GoodsListVo goodsListVo = new GoodsListVo();
@@ -217,7 +217,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 */
 	public Result getGoodsByEventId(Parameter param) throws Exception{		
 		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1'  and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -231,13 +231,23 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		return ObjectToResult.getResult(list);
 	}
 	/**
+	 * 通过活动ID获取此活动排除的商品品类
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	public Result getGoodsTypeByEventId(Parameter param) throws Exception{		
+		String hql = "from GoodsEventJoin where state='1' and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
+		return ObjectToResult.getResult(page);
+	}
+	/**
 	 * 通过活动代码获取所有活动商品
 	 * @param param Parameter对象
 	 * @return返回结果（前台用Result对象）
 	 */
 	public Result getGoodsByEventCode(Parameter param) throws Exception{		
 		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' " + param.getWhereStr() + param.getOrderBy();
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -307,10 +317,38 @@ public class GoodsEventServImpl implements GoodsEventServ {
 				goodsEventJoin.setGoodsEvent(goodsEvent);
 				goodsEventJoin.setState("1");
 				String quantity = (String)hibernateUtil.hqlFirst("SELECT sum(stock) from GoodsParam where state = '1' and goods.grounding = '1' and goods.id = '"+goodsId+"'");
-				goodsEventJoin.setQuantity(Integer.parseInt(quantity));
+				if (quantity!=null) {
+					goodsEventJoin.setQuantity(Integer.parseInt(quantity));
+				}
 				res=hibernateUtil.save(goodsEventJoin);
 			}
 		}
+		return ObjectToResult.getResult(res);
+	}
+	/**
+	 * 活动排除品类下所有商品
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result saveGoodsEventJoin(Parameter param) throws Exception {
+		Object res=null;
+		String eventId=param.getParentId()+"";
+		String typeId = param.getId()+"";
+			//通过活动ID和商品id查询商品活动关联表
+			String hql = "from GoodsEventJoin where goodsEvent.id = '" + eventId +"' and goodsType.id='" + typeId+"' and state=1";
+			GoodsEventJoin gej = (GoodsEventJoin) hibernateUtil.hqlFirst(hql);
+			//如果商品活动关联表已经存在该商品记录，不新增，不存在则新增
+			if (gej==null) {
+				GoodsEvent goodsEvent = (GoodsEvent) hibernateUtil.find(GoodsEvent.class, eventId.trim());
+				GoodsType goodsType = (GoodsType) hibernateUtil.find(GoodsType.class, typeId.trim());
+				GoodsEventJoin goodsEventJoin=new GoodsEventJoin();
+				goodsEventJoin.setGoodsEvent(goodsEvent);
+				goodsEventJoin.setState("1");
+				goodsEventJoin.setGoodsTypeLevel(goodsType.getLevel());
+				goodsEventJoin.setGoodsType(goodsType);
+				res=hibernateUtil.save(goodsEventJoin);
+			}
 		return ObjectToResult.getResult(res);
 	}
 	/**
@@ -357,7 +395,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	@Override
 	public Result getNewestGoodsList(Parameter param) throws Exception{
 		String hql="from Goods where state='1' and grounding = '1' "+param.getWhereStr() + param.getOrderBy();
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -366,7 +404,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	@Override
 	public Result getGoodsEventByCode(Parameter param) throws Exception {
 		String hql="from GoodsEvent where state = '1' " + param.getWhereStr() + param.getOrderBy();
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<Object> objList = new ArrayList<Object>();
 		for (int i = 0; i < page.getObjList().size(); i++) {
 		GoodsEvent goodsEvent = (GoodsEvent)page.getObjList().get(i);
@@ -390,7 +428,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	@Override
 	public Result getFullCutRuleList(Parameter param) throws Exception{
 		String hql="from FullCutRule where state = '1' and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy();
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -439,7 +477,8 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	public Result getGoodsListPage(Parameter parameter) throws Exception {		
 		String queryStr = parameter.getWhereStr();
 		String now = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
-		String sql = "select g.id,g.title,g.price,g.create_time from goods g where g.state = '1' and g.id not in(SELECT distinct t1.id from goods t1 "
+		
+		String sql = "select g.id,g.title,g.price,g.create_time from goods g where g.shop_id='1' and g.state = '1' and g.id not in(SELECT distinct t1.id from goods t1 "
 					+ "left join goods_event_join t2 on t1.state = '1' and t2.state = '1' and t2.goods_id = t1.id "
 					+ "left join goods_event t3 on t3.state = '1' and t2.state = '1' and t3.id = t2.event_id "
 					+ "where t1.state = '1' and t1.grounding = '1' and t1.shop_id ='1' and t3.event_begen<'" + now + "'< t3.event_end) ";	
@@ -448,7 +487,8 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		}else{
 			sql = sql+" order by g.create_time desc";
 		}
-		Page page = hibernateUtil.sqlPage(sql,parameter.getPageNum(),parameter.getPageSize());
+		String countSql = "select count(*) from ("+sql+") counts";
+		Page page = hibernateUtil.sqlPage(countSql,sql,parameter.getPageNum(),parameter.getPageSize());
 		List<GoodsVo> list = new ArrayList<GoodsVo>();
 		for (int i = 0; i < page.getObjList().size(); i++) {
 			GoodsVo goodsVo = new GoodsVo();
@@ -483,7 +523,32 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		Object num = hibernateUtil.execHql("update GoodsEventJoin set quantity = '"+eventOrderVO.getQuantity()+"' where goods.goodsId ='"+eventOrderVO.getGoodsId()+"' and goodsEvent.id='"+eventOrderVO.getEventId()+"'");
 		return ObjectToResult.getResult(num);
 	}
-	public static void main(String[] args) {
-		System.out.println(new DateStr().getStartTime());
+	/**
+	 * 
+	 *  查找第一级产品类别
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+
+	@Override
+	public Result getGoodsTypeLevel1List(Parameter param) throws Exception {
+		String hql = "from GoodsType where level =1 and state = 1 and id not in (select goodsType.id from GoodsEventJoin where state = '1'and goodsType.id !=null)";
+		List<Object> list = hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(list);
+	}
+	/**
+	 * 
+	 *  通过pid查找
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getByPid(Parameter param) {
+		List<Object> goodsTypeList = new ArrayList<Object>();
+		if(null!=param.getId()){
+			String hql = "from GoodsType where state=1 and pid='"+param.getId()+"'  and id not in (select goodsType.id from GoodsEventJoin where state = '1' and goodsType.id !=null)";
+			goodsTypeList = hibernateUtil.hql(hql);
+		}
+		return ObjectToResult.getResult(goodsTypeList);
 	}
 }

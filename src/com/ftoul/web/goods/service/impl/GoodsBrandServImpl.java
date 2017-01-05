@@ -75,7 +75,7 @@ public class GoodsBrandServImpl implements GoodsBrandServ {
 	@Override
 	public Result getGoodsBrandListPage(Parameter param) {
 		String hql = "from GoodsBrand where state = '1'" + param.getWhereStr() + param.getOrderBy() ;
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 

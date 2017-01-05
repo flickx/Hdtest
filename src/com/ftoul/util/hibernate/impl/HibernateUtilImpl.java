@@ -98,20 +98,27 @@ public class HibernateUtilImpl implements HibernateUtil
 	 * @return 查出的结果集
 	 */
 	@Override
-	public Page hqlPage(String hql, Integer pageNum, Integer pageSize){
+	public Page hqlPage(String countSql,String hql, Integer pageNum, Integer pageSize){
+		Integer count = 0;
 		Page page = new Page();
 		page.setPageNum(pageNum);
 		page.setPageSize(pageSize);
-		Query query = sessionFactory.getCurrentSession().createQuery(hql).setCacheable(true);
-		Integer count = 0;
-		if(query.list()!=null)
-			count = query.list().size();
+		if(countSql == null){
+			countSql = "select count(*) " + hql;
+			count = ((Number) sessionFactory.getCurrentSession().createQuery(countSql).uniqueResult()).intValue();
+		}else{
+			count = ((Number) sessionFactory.getCurrentSession().createSQLQuery(countSql).uniqueResult()).intValue();
+		}
+		
 		page.setCount(count);
-		page.setMaxPage((int)(Math.ceil(((double)count)/pageSize)));
+		Query query = sessionFactory.getCurrentSession().createQuery(hql).setCacheable(true);
 		//设置每页显示多少个，设置多大结果。  
         query.setMaxResults(pageSize);  
         //设置起点  
         query.setFirstResult((pageNum-1)*pageSize); 
+//        if(query.list()!=null)
+//			count = query.list().size();
+		page.setMaxPage((int)(Math.ceil(((double)count)/pageSize)));
         @SuppressWarnings("unchecked")
 		List<Object> objList = query.list();
         page.setObjList(objList);
@@ -136,12 +143,14 @@ public class HibernateUtilImpl implements HibernateUtil
 	 * @return 查出的结果集
 	 */
 	@Override
-    public Page sqlPage(String sql, Integer pageNum, Integer pageSize){
+    public Page sqlPage(String countSql,String sql, Integer pageNum, Integer pageSize){
 		Page page = new Page();
+		Integer count = ((Number) sessionFactory.getCurrentSession().createSQLQuery(countSql).uniqueResult()).intValue();
+		page.setCount(count);
 		page.setPageNum(pageNum);
 		page.setPageSize(pageSize);
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
-		Integer count = 0;
+//		Integer count = 0;
 		if(query.list()!=null)
 			count = query.list().size();
 		page.setCount(count);

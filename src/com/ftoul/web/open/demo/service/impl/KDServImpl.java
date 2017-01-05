@@ -55,7 +55,7 @@ public class KDServImpl implements KDServ {
 	@Override
 	public Result getKDInfoListPage(Parameter param) throws Exception {
 		String hql = "from KdniaoCode";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), 20);
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), 20);
 		return ObjectToResult.getResult(page);
 	}
 

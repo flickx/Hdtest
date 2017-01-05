@@ -59,7 +59,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		ordersUtil.autoCancelOrders(param);
 		List<Object> ordersList = new ArrayList<Object>();
 		Page page = new Page();
-		page =  hibernateUtil.hqlPage("from Orders where isHasChild='0' and orderStatic not in ('0','1','7','8') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+		page =  hibernateUtil.hqlPage(null,"from Orders where isHasChild='0' and orderStatic not in ('0','1','7','8') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		ordersList = page.getObjList();
 		List<Object> ordersDetailList = new ArrayList<Object>();
 		ManyVsOneVo vo;
@@ -80,7 +80,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	 */
 	@Override
 	public Result getAfterSchedulePage(Parameter param) throws Exception {
-		Page page = hibernateUtil.hqlPage("from AfterSchedule where state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by createTime desc",param.getPageNum(),param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null,"from AfterSchedule where state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by createTime desc",param.getPageNum(),param.getPageSize());
 		List list = page.getObjList();
 		List<AfterScheduleVo> voList = new ArrayList<AfterScheduleVo>();
 		for (int i = 0; i < list.size(); i++) {

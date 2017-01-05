@@ -41,7 +41,7 @@ public class UserServImpl implements UserServ {
 			queryStr += " and username like '%" + param.getKey() + "%'";
 		}
 		String hql = "from User where state = '1'" + queryStr;
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	
@@ -118,7 +118,7 @@ public class UserServImpl implements UserServ {
 	@Override
 	public Result getUserList(Parameter param) throws Exception {
 		String hql = "from User where state = '1'" + param.getWhereStr() + param.getOrderBy() ;
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**
@@ -129,7 +129,7 @@ public class UserServImpl implements UserServ {
 	@Override
 	public Result getUserBrowseList(Parameter param) throws Exception {
 		String hql = "from UserBrowse where state = '1' and user.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**

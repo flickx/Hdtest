@@ -3,6 +3,7 @@ package com.ftoul.util.price;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +11,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ftoul.common.DateUtil;
 import com.ftoul.common.Parameter;
 import com.ftoul.po.FullCutRule;
+import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.orders.service.OrdersServ;
@@ -135,6 +138,35 @@ public class PriceUtil {
 		}
 		
 		return group;
+	}
+	
+	/**
+	 * 查询出该商品是否参加了阶梯满减\每满减活动
+	 * @param good
+	 */
+	public MjGoodsEventVo getMjGoodsEvent(Goods goods,String typeName){
+		MjGoodsEventVo mjVo = null;
+		StringBuffer sb = new StringBuffer();
+		sb.append(goods.getGoodsType1().getId());
+		sb.append(",");
+		sb.append(goods.getGoodsType2().getId());
+		sb.append(",");
+		sb.append(goods.getGoodsType3().getId());
+		String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
+		String hql = "from GoodsEvent where typeName='"+typeName+"' and state='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"' and shopId='"+goods.getShopId()+"'";
+		List<Object> eventList = hibernateUtil.hql(hql);
+		if(eventList!=null){
+			for (Object object : eventList) {
+				GoodsEvent event = (GoodsEvent) object;
+				List<Object> joinList = hibernateUtil.hql("from GoodsEventJoin where state='1' and goodsEvent.id='"+event.getId()+"' goodsType.id in("+sb.toString()+")");
+				if(joinList!=null){
+					mjVo = new MjGoodsEventVo();
+					mjVo.setGoods(goods);
+					mjVo.setGoodsEvent(event);
+				}
+			}
+		}
+		return mjVo;
 	}
 	
 	

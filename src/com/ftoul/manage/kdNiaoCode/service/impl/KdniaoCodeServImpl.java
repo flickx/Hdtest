@@ -21,13 +21,13 @@ public class KdniaoCodeServImpl implements KdniaoCodeServ {
 	@Override
 	public Result getKdniaoCodeList(Parameter parameter) throws Exception {
 		String hql = " from KdniaoCode where 1=1 " +parameter.getWhereStr();
-		Page page = hibernateUtil.hqlPage(hql, parameter.getPageNum(), parameter.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, parameter.getPageNum(), parameter.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	@Override
 	public Result getkdniaoCodeListPage(Parameter parameter) throws Exception {
 		String hql = " from KdniaoCode where 1=1 and nam like '%" +parameter.getWhereStr() + "%'";
-		Page page = hibernateUtil.hqlPage(hql, parameter.getPageNum(), parameter.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, parameter.getPageNum(), parameter.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 

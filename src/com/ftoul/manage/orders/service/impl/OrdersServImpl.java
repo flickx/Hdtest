@@ -138,7 +138,7 @@ public class OrdersServImpl implements OrdersServ {
 		}else{
 			hql = "from OrdersPay where state = '1' order by createTime desc";
 		}
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<Object> list = page.getObjList();
 		List<Object> ordersPayList = new ArrayList<Object>();
 		for (int i = 0; i < list.size(); i++) {
@@ -185,7 +185,7 @@ public class OrdersServImpl implements OrdersServ {
 			hql = " from Orders where orderStatic!='0' order by orderTime desc";
 		}
 		
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<Object> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : ordersList) {
@@ -487,7 +487,7 @@ public class OrdersServImpl implements OrdersServ {
 	public Result getdeliveryListPage(Parameter parameter) throws Exception {
 		String whereStr = parameter.getWhereStr();
 		String hql = "from Orders where deliverStatic='0' "+whereStr;
-		Page page = hibernateUtil.hqlPage(hql, parameter.getPageNum(), parameter.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, parameter.getPageNum(), parameter.getPageSize());
 		List<Object> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : ordersList) {
@@ -589,18 +589,18 @@ public class OrdersServImpl implements OrdersServ {
 		OrdersPay pay = null;
 		for (int i = 0; i <list.size(); i++) {
 			OrdersDetail od = (OrdersDetail) list.get(i);
-			vo = new Object[26];
+			vo = new Object[28];
 			vo[0] = od.getOrders().getOrderNumber();
 			vo[1] = od.getOrders().getOrderTime();
+			vo[2] = ordersUtil.getState(od.getOrders().getOrderStatic());
 			vo[3] = od.getOrders().getUser().getUsername();
-//			vo[4] = od.getOrders().getUserAddress().getConsignee();
 			vo[4] = od.getOrders().getConsignee();
-//			vo[5] = od.getOrders().getUserAddress().getTel();
 			vo[5] = od.getOrders().getConsigneeTel();
 			
-//			vo[6] = od.getOrders().getUserAddress().getName()+" "+od.getOrders().getUserAddress().getAddress();
 			vo[6] = od.getOrders().getAddress();
-			vo[7] = "";//运费
+			if(od.getOrders().getFreight()!=null){
+				vo[7] = od.getOrders().getFreight().doubleValue();//运费
+			}
 			vo[8] = od.getGoodsParam().getGoods().getTitle();
 			vo[9] = od.getGoodsParam().getGoods().getSkuCode();
 			vo[10] = "";//商品编号
@@ -615,54 +615,41 @@ public class OrdersServImpl implements OrdersServ {
 			}else if("4".equals(od.getOrders().getPayType())){
 				vo[12] = "支付宝支付";
 			}
-			vo[13] = od.getNumber();
-			vo[14] = od.getGoodsParam().getPrice();
-			vo[15] = od.getOrders().getPayable();
+			vo[13] = od.getGoodsParam().getCostprice();
+			vo[14] = od.getNumber();
+			vo[15] = od.getPrice();
+			vo[16] = od.getTotalPrice().doubleValue();
+			vo[17] = od.getOrders().getPayable();
 			
-			vo[16] = od.getOrders().getOrderPrice();
-			vo[17] = od.getOrders().getBenefitPrice();
-			vo[18] = od.getOrders().getBeeCoins();
-			vo[19] = od.getOrders().getCoinPrice();
+			vo[18] = od.getOrders().getOrderPrice();
+			vo[19] = od.getOrders().getBenefitPrice();
+			vo[20] = od.getOrders().getBeeCoins();
+			vo[21] = od.getOrders().getCoinPrice();
 			hql = "from OrdersPay where orders.id='"+od.getOrders().getId()+"'";
 			pay = (OrdersPay) hibernateUtil.hqlFirst(hql);
 			if(pay!=null){
-				vo[20] = pay.getSerialNumber();
-			}
-			if(od.getGoodsParam().getCostprice()!=null&&!"".equals(od.getGoodsParam().getCostprice())){
-				double totalCostPrice = Double.parseDouble(od.getGoodsParam().getCostprice())*Integer.parseInt(od.getNumber());
-				vo[21] = String.valueOf(totalCostPrice);
-			}else{
-				vo[21] = "";
-			}
-			
-			if(od.getGoodsParam().getGoods().getGoodsCanal()!=null){
-				vo[22] = od.getGoodsParam().getGoods().getGoodsCanal().getName();
+				vo[22] = pay.getSerialNumber();
 			}else{
 				vo[22] = "";
 			}
-			
-			vo[23] = "";
-			vo[24] = od.getGoodsParam().getGoods().getDeductionrate();
-			vo[25] = od.getOrders().getFeedback();
-			if("0".equals(od.getOrders().getOrderStatic())){
-				vo[2] = "待提单";
-			}else if("1".equals(od.getOrders().getOrderStatic())){
-				vo[2] = "待付款";
-			}else if("2".equals(od.getOrders().getOrderStatic())){
-				vo[2] = "已付款";
-			}else if("3".equals(od.getOrders().getOrderStatic())){
-				vo[2] = "待发货";
-			}else if("4".equals(od.getOrders().getOrderStatic())){
-				vo[2] = "已发货";
-			}else if("5".equals(od.getOrders().getOrderStatic())){
-				vo[2] = "已收货";
-			}else if("6".equals(od.getOrders().getOrderStatic())){
-				vo[2] = "已完成";
-			}else if("7".equals(od.getOrders().getOrderStatic())){
-				vo[2] = "已删除";
-			}else if("8".equals(od.getOrders().getOrderStatic())){
-				vo[2] = "已取消";
+			if(od.getGoodsParam().getCostprice()!=null&&!"".equals(od.getGoodsParam().getCostprice())){
+				double totalCostPrice = Double.parseDouble(od.getGoodsParam().getCostprice())*Integer.parseInt(od.getNumber());
+				vo[23] = String.valueOf(totalCostPrice);
+			}else{
+				vo[23] = "";
 			}
+			
+			if(od.getGoodsParam().getGoods().getGoodsCanal()!=null){
+				vo[24] = od.getGoodsParam().getGoods().getGoodsCanal().getName();
+				vo[25] = od.getGoodsParam().getGoods().getGoodsCanal().getBalanceMode();
+			}else{
+				vo[24] = "";
+				vo[25] = "";
+			}
+			
+			vo[26] = od.getGoodsParam().getGoods().getDeductionrate();
+			vo[27] = od.getOrders().getFeedback();
+			
 			reportDataList.add(vo);
 		}
 		result.setObj(reportDataList);
@@ -673,7 +660,7 @@ public class OrdersServImpl implements OrdersServ {
 	public Result getSendGoodsListPage(Parameter param) throws Exception {
 		
 		String hql = " from Orders where state = '1' and orderStatic = '2'";
-		Page page = hibernateUtil.hqlPage(hql, param.getPageNum(), param.getPageSize());
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		
 		List<Object> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
