@@ -13,3 +13,22 @@ create table search_key_name
 );
 
 alter table search_key_name comment 'ËÑË÷¹Ø¼ü×Ö';
+/*==============================================================*/
+/* search_key_name    ËÑË÷¹Ø¼ü×Ö³õÊ¼»¯                          */
+/*==============================================================*/
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("1","Ïã½¶","0","0");
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("2","Æ»¹û","1","0");
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("3","éÙ×Ó","1","0");
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("4","Î÷¹Ï","0","0");
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("5","¶¬¹Ï","0","0");
+
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("6","Ïã½¶","0","1");
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("7","Æ»¹û","1","1");
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("8","éÙ×Ó","1","1");
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("9","Î÷¹Ï","0","1");
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("10","¶¬¹Ï","0","1");
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("11","ÄÏ¹Ï","0","1");
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("12","Ò¬×Ó","1","1");
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("13","ÌÒ×Ó","1","1");
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("14","Àæ×Ó","0","1");
+INSERT INTO search_key_name(id,key_name,font_color,state) VALUES("15","Àõ×Ó","0","1");
