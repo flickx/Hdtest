@@ -62,7 +62,7 @@ public class MyInterceptor {
 	private HttpServletResponse res;
 	@Autowired
 	private TokenUtil tokenUtil;
-	private static final Integer PageSize = 5 ;
+	private static final Integer PageSize = 10 ;
 	private static List<Element> nameSpaceList;
 	private static List<Element> methodNameList;
 	private Parameter parameters;
