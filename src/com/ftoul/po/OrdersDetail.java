@@ -48,6 +48,9 @@ public class OrdersDetail  implements java.io.Serializable {
      private String isAfter;
      private String shopId;
      private BigDecimal totalPrice;
+     private String goodsTitle;
+     private String paramName;
+     private String picSrc;
 
     // Constructors
 
@@ -261,9 +264,32 @@ public class OrdersDetail  implements java.io.Serializable {
 	public void setTotalPrice(BigDecimal totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-	
-	
-	
-	
+
+	@Column(name="goods_title", length=1000)
+	public String getGoodsTitle() {
+		return goodsTitle;
+	}
+
+	public void setGoodsTitle(String goodsTitle) {
+		this.goodsTitle = goodsTitle;
+	}
+
+	@Column(name="param_name", length=20)
+	public String getParamName() {
+		return paramName;
+	}
+
+	public void setParamName(String paramName) {
+		this.paramName = paramName;
+	}
+
+	@Column(name="pic_src", length=20)
+	public String getPicSrc() {
+		return picSrc;
+	}
+
+	public void setPicSrc(String picSrc) {
+		this.picSrc = picSrc;
+	}
 	
 }
