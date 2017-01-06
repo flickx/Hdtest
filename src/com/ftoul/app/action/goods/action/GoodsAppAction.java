@@ -3,15 +3,21 @@
  */
 package com.ftoul.app.action.goods.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ftoul.app.action.goods.service.GoodsAppServ;
+import com.ftoul.app.vo.GoodsTypeAppVo;
 import com.ftoul.common.Common;
+import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.po.GoodsType;
 import com.ftoul.web.business.service.BusinessWebServ;
 import com.ftoul.web.goods.service.GoodsBrandServ;
 import com.ftoul.web.goods.service.GoodsParamServ;
@@ -124,7 +130,35 @@ public class GoodsAppAction {
 		return userCollectionServ.delUserCollection(parameter);
 	}
 	
-	
-	
-	
+	/**
+	 * app商品分类页面 获取第一级商品类别
+	 * @param param 当前级别参数
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getGoodsTypeLevel1List")  
+	public @ResponseBody Result getGoodsTypeLevel1List(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		Result re =  goodsTypeServ.getGoodsTypeLevel1List(parameter);
+		List<GoodsType> goodsTypeList = (List<GoodsType>)re.getObj();
+		List<GoodsTypeAppVo> typeList = new ArrayList<GoodsTypeAppVo>();
+		for (GoodsType goodsTypeAppVo : goodsTypeList) {
+			GoodsTypeAppVo type = new GoodsTypeAppVo();
+			type.setId(goodsTypeAppVo.getId());
+			type.setName(goodsTypeAppVo.getName());
+			type.setPicSrc(goodsTypeAppVo.getPicSrc());
+			typeList.add(type);
+		}
+		return ObjectToResult.getResult(typeList);
+	}
+	/**
+	 * app商品分类页面 通过商品类别一级得到二三级商品类别
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value = "getGoodsTypeLevel23from1List")  
+	public @ResponseBody Result getGoodsTypeLevel23from1List(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return goodsTypeServ.getGoodsTypeLevel23from1List(parameter);
+	}
 }
