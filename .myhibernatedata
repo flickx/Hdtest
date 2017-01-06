@@ -1,5 +1,5 @@
 #MyEclipse Hibernate Properties
-#Mon Nov 21 16:50:48 CST 2016
+#Fri Jan 06 09:31:58 CST 2017
 genBasicCompId=true
 sessionFactoryName=
 profile=
@@ -18,5 +18,3 @@ genAnnotations=true
 reSettingsFile=/FtShop/src/config/hibernate.reveng.xml
 configFile=/FtShop/src/hibernate.cfg.xml
 createConfigFile=true
-
-

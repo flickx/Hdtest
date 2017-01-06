@@ -134,6 +134,7 @@
 		<mapping class="com.ftoul.po.AfterOpLog"/>
 		<mapping class="com.ftoul.po.AreaFreightTemplate"/>
 		<mapping class="com.ftoul.po.BusinessClassify"/>
+		<mapping class="com.ftoul.po.SearchKeyName"/>
 	</session-factory>
 
 </hibernate-configuration>
