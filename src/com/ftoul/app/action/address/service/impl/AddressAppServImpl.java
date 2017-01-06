@@ -3,14 +3,19 @@ package com.ftoul.app.action.address.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ftoul.app.action.address.service.AddressAppServ;
 import com.ftoul.app.vo.AddressAppVo;
+import com.ftoul.common.Common;
+import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.po.User;
 import com.ftoul.po.UserAddress;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.address.service.AddressServ;
@@ -66,6 +71,7 @@ public class AddressAppServImpl implements AddressAppServ {
 			addressVo.setName(userAddress.getName());
 			addressVo.setConsignee(userAddress.getConsignee());
 			addressVo.setTel(userAddress.getTel());
+			addressVo.setCreateTime(userAddress.getCreateTime());
 			addressList.add(addressVo);
 		}
 		return ObjectToResult.getResult(addressList);
@@ -121,7 +127,30 @@ public class AddressAppServImpl implements AddressAppServ {
 	 */
 	@Override
 	public Result saveUserAddress(Parameter param) throws Exception {
-		return addressServ.saveUserAddress(param);
+		UserAddress userAddress = (UserAddress) JSONObject.toBean((JSONObject) param.getObj(),UserAddress.class);
+		userAddress.setAddress(new String(userAddress.getAddress().getBytes("ISO-8859-1"),"UTF-8"));
+		userAddress.setName(new String(userAddress.getName().getBytes("ISO-8859-1"),"UTF-8"));
+		userAddress.setConsignee(new String(userAddress.getConsignee().getBytes("ISO-8859-1"),"UTF-8"));
+		userAddress.setDefulat(param.getKey());
+		User user = param.getUserToken().getUser();
+		userAddress.setUser(user);
+		Object res;
+		String defaultFlag = userAddress.getDefulat();
+		if("true".equals(defaultFlag)){
+			hibernateUtil.execSql("update user_address set defulat='false',modify_time='"+ new DateStr().toString() +"' where user_id='"+user.getId()+"' and state='1'");
+		}
+		
+		if(Common.isNull(userAddress.getId())){
+			userAddress.setUser(user);
+			userAddress.setCreateTime(new DateStr().toString());
+			userAddress.setState("1");
+			res = hibernateUtil.save(userAddress);
+		}else{
+			userAddress.setModifyTime(new DateStr().toString());
+			userAddress.setState("1");
+			res = hibernateUtil.update(userAddress);
+		}
+		return ObjectToResult.getResult(res);
 	}
 
 }

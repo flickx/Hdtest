@@ -11,6 +11,7 @@ public class AddressAppVo {
 	private String tel;//电话
 	private String address;//详细地址
 	private String defulat;//是否默认
+	private String createTime;//创建时间
 	public String getId() {
 		return id;
 	}
@@ -64,6 +65,12 @@ public class AddressAppVo {
 	}
 	public void setDefulat(String defulat) {
 		this.defulat = defulat;
+	}
+	public String getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
 	}
 	
 }

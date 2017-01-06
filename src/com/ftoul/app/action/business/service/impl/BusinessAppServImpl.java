@@ -45,6 +45,7 @@ public class BusinessAppServImpl implements BusinessAppServ {
 		for (int i = 0; i < list.size(); i++) {
 			Goods goods = list.get(i);
 			GoodsWebVo goodsVo = new GoodsWebVo();
+			goodsVo.setId(goods.getId());
 			goodsVo.setGoodsPic(goods.getPicSrc());
 			goodsVo.setTitle(goods.getTitle());
 			goodsVo.setPrice(goods.getPrice());

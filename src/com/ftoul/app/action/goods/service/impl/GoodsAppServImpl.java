@@ -181,6 +181,7 @@ public class GoodsAppServImpl implements GoodsAppServ {
 		for (int i = 0; i < list.size(); i++) {
 			UserCollection userCollection = list.get(i);
 			GoodsWebVo goodsVo = new GoodsWebVo();
+			goodsVo.setId(userCollection.getGoods().getId());
 			goodsVo.setGoodsPic(userCollection.getGoods().getPicSrc());
 			goodsVo.setTitle(userCollection.getGoods().getTitle());
 			goodsVo.setPrice(userCollection.getGoods().getPrice());
