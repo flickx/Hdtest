@@ -17,6 +17,7 @@ import com.ftoul.common.Common;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.po.Goods;
 import com.ftoul.po.IndexCarouselPic;
 import com.ftoul.web.home.service.HomeServ;
 
@@ -84,15 +85,15 @@ public class HomeAction {
 	public @ResponseBody Result getAppGoodsByGoodsType(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		Result re =  homeServ.getAppGoodsByGoodsType(parameter);
-		List<IndexGoodsAppVo> goodsAppVos = (List<IndexGoodsAppVo>)re.getObj();
+		List<Goods> goodsList = (List<Goods>)re.getObj();
 		List<IndexGoodsAppVo> goodsAppVoList = new ArrayList<IndexGoodsAppVo>();
-		for (IndexGoodsAppVo goodsAppVo : goodsAppVos) {
+		for (Goods goods : goodsList) {
 			IndexGoodsAppVo i  =new IndexGoodsAppVo();
-			i.setGoodsId(goodsAppVo.getGoodsId());
-			i.setPicSrc(goodsAppVo.getPicSrc());
-			i.setPrice(goodsAppVo.getPrice());
-			i.setTitle(goodsAppVo.getTitle());
-			goodsAppVos.add(i);
+			i.setGoodsId(goods.getId());
+			i.setPicSrc(goods.getPicSrc());
+			i.setPrice(goods.getPrice());
+			i.setTitle(goods.getTitle());
+			goodsAppVoList.add(i);
 		}
 		return ObjectToResult.getResult(goodsAppVoList);
 	}
