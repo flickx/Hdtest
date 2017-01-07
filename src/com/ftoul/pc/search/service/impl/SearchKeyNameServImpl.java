@@ -33,7 +33,9 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 	 */
 	@Override
 	public Result getGoodsBykeyName(Parameter param) throws Exception {
-		String hql=
+		String hql="";
+		if(param.getKey()!=null){
+			hql=
 				" FROM" +
 				"	Goods " +
 				"WHERE  state =1  and grounding='1' and (" +
@@ -77,6 +79,9 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 				"		GoodsPropType " +
 				"	WHERE" +
 				"		NAME LIKE '%"+ param.getKey()+"%' )) "+param.getOrderBy();
+		}else{
+			hql = "from Goods where state = '1' and grounding = '1' and id in (select gp.goods.id from GoodsParam gp where gp.state='1') "+param.getOrderBy();
+		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}

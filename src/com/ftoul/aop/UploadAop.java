@@ -43,6 +43,24 @@ public class UploadAop {
 //		System.out.println(domain.size());
 		if(domain.size() == 0)
 			res.addHeader("Access-Control-Allow-Origin", "*");
+//		if(req.getMethod().equalsIgnoreCase("post")){
+//			String param=req.getParameter("param");
+//			res.addHeader("param", java.net.URLDecoder.decode(param,"UTF-8"));
+//			req.setAttribute("param", java.net.URLDecoder.decode(param,"UTF-8"));
+//			System.out.println(java.net.URLDecoder.decode(param,"UTF-8"));
+//			req.setCharacterEncoding(java.net.URLDecoder.decode(param,"UTF-8"));
+//		}
 	}
+//	@Before("anyMethod() && args(param)")
+//	public void cos(String param) throws Exception{
+//		if(req.getMethod().equalsIgnoreCase("post")){
+//			param = java.net.URLDecoder.decode(param,"UTF-8");
+//			res.addHeader("param", param);
+////			System.out.println(java.net.URLDecoder.decode(param,"UTF-8"));
+////			req.setCharacterEncoding(java.net.URLDecoder.decode(param,"UTF-8"));
+//			System.out.println(param);
+//		}
+//	}
+	
 	
 }
