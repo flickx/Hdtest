@@ -5,9 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ftoul.app.action.orders.service.OrdersAppServ;
 import com.ftoul.app.vo.OrderAppVo;
 import com.ftoul.common.Common;
-import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.po.Orders;
@@ -24,6 +24,8 @@ public class OrdersAppAction {
 
 	@Autowired
 	private OrdersServ ordersServ;
+	@Autowired
+	private OrdersAppServ ordersAppServ;
 	/**
 	 * 保存订单信息
 	 * @param param 用户ID
@@ -33,24 +35,7 @@ public class OrdersAppAction {
 	@RequestMapping(value = "saveOrders")  
 	public @ResponseBody Result saveOrders(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		Result ret = ordersServ.getOrdersByOrdersNumber(parameter);
-		Orders orders = (Orders)ret.getObj();
-		if("1".equals(orders.getOrderStatic())){
-			Result r = new Result ();
-			r.setResult(2);
-			OrderAppVo orderAppVo = new OrderAppVo();
-			orderAppVo.setOrderNumber(orders.getId());
-			orderAppVo.setOrderStatic(orders.getOrderStatic());
-			r.setObj(orderAppVo);
-			return r;
-		}else{
-			Result result = ordersServ.saveOrders(parameter);
-			orders = (Orders)result.getObj();
-			OrderAppVo orderAppVo = new OrderAppVo();
-			orderAppVo.setOrderNumber(orders.getId());
-			orderAppVo.setOrderStatic(orders.getOrderStatic());
-			return ObjectToResult.getResult(orderAppVo);
-		}
+		return ordersAppServ.saveOrders(parameter);
 	}
 	
 	/**
@@ -74,7 +59,7 @@ public class OrdersAppAction {
 	@RequestMapping(value = "getOrdersListByUserId")  
 	public @ResponseBody Result getOrdersListByUserId(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return ordersServ.getOrdersListByUserId(parameter);
+		return ordersAppServ.getOrdersListByUserId(parameter);
 	}
 	
 	/**
@@ -122,7 +107,7 @@ public class OrdersAppAction {
 	@RequestMapping(value = "getOrdersByOrdersId")  
 	public @ResponseBody Result getOrdersByOrdersId(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return ordersServ.getOrdersByOrdersId(parameter);
+		return ordersAppServ.getOrdersByOrdersId(parameter);
 	}
 	
 	/**
