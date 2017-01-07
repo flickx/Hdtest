@@ -11,6 +11,7 @@
 		<list>/web/manage/user</list>
 		<list>/web/business</list>
 		<list>/web/afterService</list>
+		<list>/pc/search</list>
 	</nameSpace>
 	<methodName>
 		<list>login</list>
