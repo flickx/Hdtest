@@ -13,6 +13,7 @@ import com.ftoul.common.Common;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.po.User;
 import com.ftoul.po.UserToken;
 import com.ftoul.web.manage.user.service.WebUserServ;
 
@@ -114,7 +115,17 @@ public class WebUserAction {
 		if(parameter.getPageNum() == null){
 			parameter.setPageNum(1);
 		}
-		return webUserServ.getUserById(parameter);
+		Result result = webUserServ.getUserById(parameter);
+		User user = (User)result.getObj();
+		UserAppVo vo = new UserAppVo();
+		vo.setTel(user.getUsername());
+		vo.setUsername(user.getUsername());
+		vo.setNickname(user.getNickname());
+		vo.setHeadImg(user.getPic());
+		vo.setIdCard(user.getCardId());
+		vo.setBirthday(user.getBirth());
+		vo.setEmail(user.getEmail());
+		return ObjectToResult.getResult(vo);
 	}
 	
 	/**

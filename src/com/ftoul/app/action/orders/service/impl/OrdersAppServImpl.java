@@ -222,7 +222,8 @@ public class OrdersAppServImpl implements OrdersAppServ {
 		orderDetailAppVo.setPayable(order.getPayable());
 		List<Object> manyVsOneVoList = manyVsOneVo.getList();
 		List<OrderListDetailAppVo> detailList = new ArrayList<OrderListDetailAppVo>();
-		for (Object object2 : manyVsOneVoList) {
+		ManyVsOneVo vo = (ManyVsOneVo) manyVsOneVoList.get(0);
+		for (Object object2 : vo.getList()) {
 			OrdersDetail ordersDetail = (OrdersDetail) object2;
 			OrderListDetailAppVo detailAppVo = new OrderListDetailAppVo();
 			detailAppVo.setId(ordersDetail.getGoodsParam().getGoods().getId());
