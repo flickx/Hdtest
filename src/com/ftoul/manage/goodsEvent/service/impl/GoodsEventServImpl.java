@@ -58,7 +58,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	@Override
 	public Result getGoodsEventListPage(Parameter param) throws Exception {
 		String queryStr = param.getWhereStr();
-		String hql = "from GoodsEvent where state = '1' and shopId is null ";
+		String hql = "from GoodsEvent where state = '1' and shopId is null and eventType='" + param.getId() + "' ";
 		if(queryStr!=null){
 			hql = hql + queryStr + " order by createTime desc";
 		}else{

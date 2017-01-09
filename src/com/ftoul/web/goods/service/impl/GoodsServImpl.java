@@ -271,7 +271,19 @@ public class GoodsServImpl implements GoodsServ {
 		return ObjectToResult.getResult(goodsVo);
 		
 	}
-
+	/**
+	 * app首页模糊搜索
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public Result getAppGoodsListByKeyWord(Parameter param) throws Exception {
+		String key = new String(param.getKey().getBytes("ISO-8859-1"),"UTF-8");
+		String hql=" FROM Goods WHERE state =1 and grounding='1' and title LIKE '%"+ key+ "%' "+param.getOrderBy();
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
+		return ObjectToResult.getResult(page);
+	}
 	@Override
 	public Result getGoodsListByKeyWord(Parameter param) throws Exception {
 		String hql=
