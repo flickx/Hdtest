@@ -19,10 +19,12 @@ public class OrdersConstant {
 	public static final String NOT_TASK_DELIVER = "waitReceipt";
 	/**已完成 6*/
 	public static final String COMPLETE = "6";
-	/**未评价 7*/
-	public static final String NOT_EVALUATE = "7";
+	/**删除 7*/
+	public static final String DELETE = "7";
 	/**售后 10*/
 	public static final String AFTER = "10";
+	/**回收站订单*/
+	public static final String RECOVERY = "2";
 	
 	/**银联支付*/
 	public static final String CHINAPAYTEST = "0";

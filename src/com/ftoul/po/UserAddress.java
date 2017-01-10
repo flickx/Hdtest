@@ -41,7 +41,10 @@ public class UserAddress implements java.io.Serializable {
 	private String modifyTime;
 	private String modifyPerson;
 	private String state;
-
+	private String postCode;
+	private String email;
+	private String anotherName;
+	
 	// Constructors
 
 	/** default constructor */
@@ -238,6 +241,30 @@ public class UserAddress implements java.io.Serializable {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public String getPostCode() {
+		return postCode;
+	}
+
+	public void setPostCode(String postCode) {
+		this.postCode = postCode;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getAnotherName() {
+		return anotherName;
+	}
+
+	public void setAnotherName(String anotherName) {
+		this.anotherName = anotherName;
 	}
 
 }
