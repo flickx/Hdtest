@@ -1,4 +1,4 @@
-package com.ftoul.web.address.service.impl;
+package com.ftoul.pc.address.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.web.address.service.AddressServ;
+import com.ftoul.pc.address.service.AddressServ;
 import com.ftoul.web.vo.AddressVo;
 import com.ftoul.po.JPositionCity;
 import com.ftoul.po.JPositionCounty;
@@ -22,7 +22,7 @@ import com.ftoul.po.User;
 import com.ftoul.po.UserAddress;
 import com.ftoul.util.hibernate.HibernateUtil;
 
-@Service("AddressWebServImpl")
+@Service("PcAddressServImpl")
 public class AddressServImpl implements AddressServ {
 
 	@Autowired
@@ -41,15 +41,13 @@ public class AddressServImpl implements AddressServ {
 		for (int i = 0; i < list.size(); i++) {
 			userAddress = (UserAddress) list.get(i);
 			userAddress.setModifyTime(new DateStr().toString());
-			userAddress.setModifyPerson(param.getUserToken().getUser().getUsername());
-			userAddress.setDefulat("false");
+			userAddress.setDefulat("0");
 			hibernateUtil.update(userAddress);
 		}
 		
 		UserAddress defaultUserAddress = (UserAddress) hibernateUtil.find(UserAddress.class, param.getObj()+"");
-		defaultUserAddress.setDefulat("true");
+		defaultUserAddress.setDefulat("1");
 		defaultUserAddress.setModifyTime(new DateStr().toString());
-		defaultUserAddress.setModifyPerson(param.getUserToken().getUser().getUsername());
 		Object res = hibernateUtil.update(defaultUserAddress);
 		return ObjectToResult.getResult(res);
 		
@@ -73,7 +71,7 @@ public class AddressServImpl implements AddressServ {
 	 */
 	@Override
 	public Result getUserAddressListByUserId(Parameter param) throws Exception {
-		String hql = "from UserAddress where state = '1' and user.id='"+param.getUserToken().getUser().getId()+"' order by createTime desc" ;
+		String hql = "from UserAddress where state = '1' and user.id='"+param.getUserToken().getUser().getId()+"'" ;
 		List<Object> list = hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
 	}
@@ -162,12 +160,10 @@ public class AddressServImpl implements AddressServ {
 		if(Common.isNull(userAddress.getId())){
 			userAddress.setUser(user);
 			userAddress.setCreateTime(new DateStr().toString());
-			userAddress.setCreatePerson(user.getUsername());
 			userAddress.setState("1");
 			res = hibernateUtil.save(userAddress);
 		}else{
 			userAddress.setModifyTime(new DateStr().toString());
-			userAddress.setModifyPerson(user.getUsername());
 			res = hibernateUtil.update(userAddress);
 		}
 		return ObjectToResult.getResult(res);

@@ -12,13 +12,17 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ftoul.api.KdniaoTrackQueryAPI;
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.DateUtil;
+import com.ftoul.common.OrdersConstant;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.cart.service.CartServ;
 import com.ftoul.manage.coin.service.CoinSetServ;
+import com.ftoul.pc.orders.vo.PcDetailVo;
+import com.ftoul.pc.orders.vo.PcOrderVo;
 import com.ftoul.po.FullCutRule;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
@@ -79,6 +83,25 @@ public class OrdersUtil {
 	}
 	
 	/**
+	 * 获取支付类型
+	 * @param param
+	 * @return
+	 */
+	public String getPayType(String param){
+		String state = null;
+		if(OrdersConstant.CHINAPAY.equals(param)){
+			state = "银联支付";
+		}else if(OrdersConstant.ALIPAY.equals(param)){
+			state = "支付宝支付";
+		}else if(OrdersConstant.WXPAY.equals(param)){
+			state = "微信支付";
+		}else if(OrdersConstant.ALIQBPAY.equals(param)){
+			state = "支付宝钱包支付";
+		}
+		return state;
+	}
+	
+	/**
 	 * 获取订单状态
 	 * @param orderState
 	 * @return
@@ -103,6 +126,8 @@ public class OrdersUtil {
 			state = "已删除";
 		}else if("8".equals(orderState)){
 			state = "已取消";
+		}else if("9".equals(orderState)){
+			state = "已评论";
 		}
 		return state;
 	}
@@ -156,6 +181,79 @@ public class OrdersUtil {
 		ManyVsOneVo vo = new ManyVsOneVo();
 		vo.setObj(order);
 		vo.setList(ordersDetailList);
+		return vo;
+	}
+	
+	/**
+	 * 订单列表转换组装
+	 * @param order
+	 * @param ordersDetailList
+	 * @return
+	 */
+	public PcOrderVo transformOrder(Orders order,List<Object> ordersDetailList){
+		PcOrderVo vo = new PcOrderVo();
+		vo.setConsigeeName(order.getConsignee());
+		vo.setId(order.getId());
+		vo.setOrderNumber(order.getOrderNumber());
+		vo.setOrderPrice(order.getOrderPrice());
+		vo.setOrderStatic(getState(order.getOrderStatic()));
+		vo.setOrderTime(order.getOrderStatic());
+		vo.setPayType(getPayType(order.getPayType()));
+		vo.setShopName(order.getShopId().getStoreName());
+		return vo;
+	}
+	
+	/**
+	 * 订单转换组装成订单详情
+	 * @param order
+	 * @param ordersDetailList
+	 * @return
+	 * @throws Exception 
+	 */
+	public PcOrderVo transformOrderDetail(Orders order,List<Object> oneVsManyList) throws Exception{
+		PcOrderVo vo = new PcOrderVo();
+		vo.setConsigeeName(order.getConsignee());
+		vo.setTel(order.getConsigneeTel());
+		vo.setAddress(order.getAddress());
+		vo.setId(order.getId());
+		vo.setOrderNumber(order.getOrderNumber());
+		vo.setOrderPrice(order.getOrderPrice());
+		if(order.getGoodsTotalPrice()!=null){
+			vo.setGoodsTotalPrice(order.getGoodsTotalPrice().toString());
+		}
+		vo.setBenPrice(order.getBenefitPrice());
+		vo.setOrderStatic(getState(order.getOrderStatic()));
+		vo.setOrderTime(order.getOrderStatic());
+		vo.setPayType(getPayType(order.getPayType()));
+		vo.setPayTime(order.getPayTime());
+		vo.setOdd(order.getOdd());
+		vo.setLogCompany(order.getLogisticsCompany().getName());
+		List<Object> detailList = new ArrayList<Object>();
+		for (Object object : oneVsManyList) {
+			ManyVsOneVo vsVo = (ManyVsOneVo) object;
+			List<Object> orderDetailList = vsVo.getList();
+			for (Object detail : orderDetailList) {
+				OrdersDetail orderDetail = (OrdersDetail) detail;
+				PcDetailVo detailVo = new PcDetailVo();
+				detailVo.setNum(orderDetail.getNumber());
+				detailVo.setParamName(orderDetail.getParamName());
+				detailVo.setPicSrc(orderDetail.getPicSrc());
+				detailVo.setPrice(orderDetail.getPrice());
+				detailVo.setTitle(orderDetail.getGoodsTitle());
+				if(orderDetail.getTotalPrice()!=null){
+					detailVo.setTotalPrice(orderDetail.getTotalPrice().toString());
+				}
+				detailList.add(detailVo);
+			}
+		}
+		vo.setDetailVoList(detailList);
+		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
+		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(order.getLogisticsCompany().getCode(), order.getOdd());
+		if(res!=null){
+			vo.setLogistInfo(res);
+		}else{
+			vo.setLogistInfo("暂无物流信息");
+		}
 		return vo;
 	}
 	

@@ -1,4 +1,4 @@
-package com.ftoul.web.orders.service.impl;
+package com.ftoul.pc.orders.service.impl;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -39,17 +39,15 @@ import com.ftoul.po.JPositionProvice;
 import com.ftoul.po.Orders;
 import com.ftoul.po.OrdersDetail;
 import com.ftoul.po.OrdersPay;
-import com.ftoul.po.OrdersSet;
-import com.ftoul.po.SystemSet;
 import com.ftoul.po.User;
 import com.ftoul.po.UserAddress;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.logistics.LogisticsUtil;
 import com.ftoul.util.orders.OrdersUtil;
 import com.ftoul.util.price.PriceUtil;
-import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.goods.service.GoodsParamServ;
-import com.ftoul.web.orders.service.OrdersServ;
+import com.ftoul.pc.orders.service.OrdersServ;
+import com.ftoul.pc.orders.vo.PcOrderVo;
 import com.ftoul.web.vo.GoodsVo;
 import com.ftoul.web.vo.ManyVsOneVo;
 import com.ftoul.web.vo.MjGoodsEventVo;
@@ -59,9 +57,8 @@ import com.ftoul.web.vo.OrderVo;
 import com.ftoul.web.vo.OrdersLogisticsVo;
 import com.ftoul.web.vo.ShopGoodsParamVo;
 import com.ftoul.web.vo.ShopGoodsVo;
-import com.ftoul.web.webservice.UserService;
 
-@Service("OrdersWebServImpl")
+@Service("PcOrdersServImpl")
 public class OrdersServImpl implements OrdersServ {
 
 	@Autowired
@@ -86,6 +83,36 @@ public class OrdersServImpl implements OrdersServ {
 	PriceUtil priceUtil;
 	@Autowired  
 	LogisticsUtil logisticsUtil;
+	
+	/**
+	 * 获取订单所有状态数量
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getOrderAllStaticSizeByUserId(Parameter param)
+			throws Exception {
+		List<Object> ordersList1 =  hibernateUtil.hql("from Orders where orderStatic = '1' and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'");
+		List<Object> ordersList3 =  hibernateUtil.hql("from Orders where orderStatic in('2', '3') and isHasChild!='1' and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'");//待发货
+		List<Object> ordersList5 =  hibernateUtil.hql("from Orders where orderStatic in('4', '5') and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'");
+		List<Object> afterList =  hibernateUtil.hql("from AfterSchedule where scheduleStatic='1' and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'"); 
+		List<Object> ordersList7 =  hibernateUtil.hql("from AfterSchedule where orderStatic = '7' and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'"); //待评价
+		List<Object> newOrdersList1 = new ArrayList<Object>();
+		for (Object object : ordersList1) {//将有父订单的订单去除掉，只计算父订单为未付款数量
+			Orders orders = (Orders) object;
+			if(orders.getParentOrdersId()==null){
+				newOrdersList1.add(orders);
+			}
+		}
+		OrderStaticCountVo vo = new OrderStaticCountVo();
+		vo.setWaitPaymentCount(String.valueOf(newOrdersList1.size()));
+		vo.setWaitShipmentsCount(String.valueOf(ordersList3.size()));
+		vo.setWaitReceiptCount(String.valueOf(ordersList5.size()));
+		vo.setAfterCount(String.valueOf(afterList.size()));
+		vo.setWaitCommentCount(String.valueOf(ordersList7.size()));
+		return ObjectToResult.getResult(vo);
+	}
+	
 	/**
 	 * 根据用户ID获取订单列表
 	 * @param param Parameter对象
@@ -98,18 +125,21 @@ public class OrdersServImpl implements OrdersServ {
 		List<Object> ordersList = new ArrayList<Object>();
 		Page page = new Page();
 		if(OrdersConstant.NOT_PAY.equals(key)){
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.NOT_DELIVER.equals(key)){
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in('2', '3') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in('2', '3') and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.NOT_TASK_DELIVER.equals(key)){
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in ('4','5') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in ('4','5') and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+		}else if(OrdersConstant.RECOVERY.equals(key)){//查询回收站的数据
+			page =  hibernateUtil.hqlPage(null,"from Orders where state='2' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else{
 			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic!='0' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}
 		ordersList = page.getObjList();
 		
 		List<Object> childOrdersDetailList = new ArrayList<Object>();
-		ManyVsOneVo vo = new ManyVsOneVo();
+		//ManyVsOneVo vo = new ManyVsOneVo();
+		PcOrderVo vo = new PcOrderVo();
 		List<Object> list = new ArrayList<Object>();
 		if(OrdersConstant.NOT_PAY.equals(key)){
 			for (int i = 0; i < ordersList.size(); i++) {
@@ -122,12 +152,14 @@ public class OrdersServImpl implements OrdersServ {
 						childOrdersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+childOrders.getId()+"'");
 						ordersDetailList.addAll(childOrdersDetailList);
 					}
-					vo = ordersUtil.transformObject(order,ordersDetailList);
+					//vo = ordersUtil.transformObject(order,ordersDetailList);
+					vo = ordersUtil.transformOrder(order,ordersDetailList);
 					list.add(vo);
 				}else{
 					if(order.getParentOrdersId()==null){
 						List<Object> detailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
-						vo = ordersUtil.transformObject(order,detailList);
+						//vo = ordersUtil.transformObject(order,detailList);
+						vo = ordersUtil.transformOrder(order,ordersDetailList);
 						list.add(vo);
 					}
 				}
@@ -139,7 +171,8 @@ public class OrdersServImpl implements OrdersServ {
 				List<Object> ordersDetailList = new ArrayList<Object>();
 				if(!"1".equals(order.getIsHasChild())){
 					ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
-					vo = ordersUtil.transformObject(order,ordersDetailList);
+					//vo = ordersUtil.transformObject(order,ordersDetailList);
+					vo = ordersUtil.transformOrder(order,ordersDetailList);
 					list.add(vo);
 				}
 			}
@@ -150,7 +183,27 @@ public class OrdersServImpl implements OrdersServ {
 		return ObjectToResult.getResult(page);
 	}
 	
+	/**
+	 * 删除订单=进入回收站
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result recoveryOrders(Parameter param) throws Exception {
+		Integer num = hibernateUtil.execHql("update Orders set state='2' where id in ("+StrUtil.getIds(param.getId())+")");
+		return ObjectToResult.getResult(num);
+	}
 	
+	/**
+	 * 还原订单
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result restoreOrders(Parameter param) throws Exception {
+		Integer num = hibernateUtil.execHql("update Orders set state='1' where id in ("+StrUtil.getIds(param.getId())+")");
+		return ObjectToResult.getResult(num);
+	}
 	
 	/**
 	 * 删除订单
@@ -159,7 +212,7 @@ public class OrdersServImpl implements OrdersServ {
 	 */
 	@Override
 	public Result deleteOrders(Parameter param) throws Exception {
-		Integer num = hibernateUtil.execHql("update Orders set state = '0' , orderStatic = '7' where id in ("+StrUtil.getIds(param.getId())+")");
+		Integer num = hibernateUtil.execHql("update Orders set state='0' and orderStatic='7' where id in ("+StrUtil.getIds(param.getId())+")");
 		ordersUtil.updateGoodsParam(param.getId().toString(),"delete");
 		return ObjectToResult.getResult(num);
 	}
@@ -238,7 +291,7 @@ public class OrdersServImpl implements OrdersServ {
 			oneVoManyList.add(ordersUtil.transformObject(orders,ordersDetailList));
 		}
 		
-		return ObjectToResult.getResult(ordersUtil.transformObject(orders,oneVoManyList));
+		return ObjectToResult.getResult(ordersUtil.transformOrderDetail(orders,oneVoManyList));
 	}
 	
 	@Override
@@ -454,34 +507,6 @@ public class OrdersServImpl implements OrdersServ {
 		return ObjectToResult.getResult(pay);
 	}
 	
-	/**
-	 * 获取订单所有状态数量
-	 * @param param Parameter对象
-	 * @return 返回结果（前台用Result对象）
-	 */
-	@Override
-	public Result getOrderAllStaticSizeByUserId(Parameter param)
-			throws Exception {
-		
-		List<Object> ordersList1 =  hibernateUtil.hql("from Orders where orderStatic = '1' and user.id='"+param.getUserToken().getUser().getId()+"'");
-		List<Object> ordersList3 =  hibernateUtil.hql("from Orders where orderStatic in('2', '3') and isHasChild!='1' and user.id='"+param.getUserToken().getUser().getId()+"'");//待发货
-		List<Object> ordersList5 =  hibernateUtil.hql("from Orders where orderStatic in('4', '5') and user.id='"+param.getUserToken().getUser().getId()+"'");
-		List<Object> afterList =  hibernateUtil.hql("from AfterSchedule where scheduleStatic='1' and user.id='"+param.getUserToken().getUser().getId()+"'"); 
-		List<Object> newOrdersList1 = new ArrayList<Object>();
-		for (Object object : ordersList1) {//将有父订单的订单去除掉，只计算父订单为未付款数量
-			Orders orders = (Orders) object;
-			if(orders.getParentOrdersId()==null){
-				newOrdersList1.add(orders);
-			}
-		}
-		OrderStaticCountVo vo = new OrderStaticCountVo();
-		vo.setWaitPaymentCount(String.valueOf(newOrdersList1.size()));
-		vo.setWaitShipmentsCount(String.valueOf(ordersList3.size()));
-		vo.setWaitReceiptCount(String.valueOf(ordersList5.size()));
-		vo.setAfterCount(String.valueOf(afterList.size()));
-		return ObjectToResult.getResult(vo);
-	}
-
 	/**
 	 * 获取订单物流信息
 	 * @param param Parameter对象

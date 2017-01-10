@@ -92,8 +92,6 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 			ordersList =  hibernateUtil.hql("from Orders where deliverStatic = '0' and user.id="+param.getId());
 		}else if(OrdersConstant.NOT_TASK_DELIVER.equals(key)){
 			ordersList =  hibernateUtil.hql("from Orders where confirmStatic = '0' and user.id="+param.getId());
-		}else if(OrdersConstant.NOT_EVALUATE.equals(key)){
-			ordersList =  hibernateUtil.hql("from Orders where feedback is NULL and user.id="+param.getId());
 		}else{
 			ordersList =  hibernateUtil.hql("from Orders where user.id="+param.getId());
 		}
