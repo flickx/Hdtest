@@ -34,7 +34,7 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 	@Override
 	public Result getGoodsBykeyName(Parameter param) throws Exception {
 		String hql="";
-		if(param.getKey()!=null){
+		if(param.getKey()!=null&&!param.getKey().equals("{}")){
 			hql=
 				" FROM" +
 				"	Goods " +

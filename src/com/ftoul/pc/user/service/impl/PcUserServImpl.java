@@ -10,14 +10,17 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ftoul.api.sms.util.MessageUtil;
 import com.ftoul.api.sms.util.SmsCodeUtil;
 import com.ftoul.businessManage.login.action.CodeAction;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.exption.MyExption;
 import com.ftoul.pc.user.action.ImgCodeAction;
 import com.ftoul.pc.user.service.PcUserServ;
+import com.ftoul.po.MessageVerification;
 import com.ftoul.po.User;
 import com.ftoul.po.UserToken;
 import com.ftoul.util.hibernate.HibernateUtil;
@@ -95,5 +98,111 @@ public class PcUserServImpl implements PcUserServ {
 			return ObjectToResult.getResult(userToken);
 		}
 
+	}
+	/**
+	 * 发送短信验证码
+	 */
+	@Override
+	public Result sendSmsCode(Parameter param) throws Exception {
+		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),
+				UsersVO.class);
+		Object res = null;
+		if (user == null) {
+			res = "没有传相应的用户信息";
+			throw new MyExption("没有传相应的用户信息");
+		}
+		if (ImgCodeAction.userCodeMap.get("code")==null) {
+			res = "没有图形验证码";
+			throw new MyExption("没有图形验证码");
+		}
+		if (!ImgCodeAction.userCodeMap.get("code").equalsIgnoreCase(
+				user.getImgCode())) {
+			res = "图形验证码错误";
+			throw new MyExption("图形验证码错误");
+		}
+		String ip = SmsCodeUtil.getLocalIp(req);
+		System.out.println("请求接收短信的IP: " + ip);
+		
+		String smsCodeType = user.getSmscodeType();
+		int count = smsCodeUtil.getSmsCount(user.getUsername());
+		int countIP = smsCodeUtil.getSmsCountIP();
+		if (count >= 5) {
+			res = "此手机今天可接收短信已超5条上限";
+			throw new MyExption("此手机今天可接收短信已超5条上限");
+		}
+		if (countIP > 9) {
+			res = "IP今日接收短信已超上限";
+			throw new MyExption("IP今日接收短信已超上限");
+		}
+		// 生成验证码
+		int sort = smsCodeUtil.makeSmsCode(user.getUsername(), smsCodeType);
+		// 获取验证码
+		MessageVerification m = smsCodeUtil.getMaxSmsCode(user.getUsername(),
+				smsCodeType, sort);
+
+		if (m == null) {
+			res = "请先获取短信验证码";
+			throw new Exception("请先获取短信验证码");
+		} else {
+			// 发送短信验证码
+			MessageUtil.send(user.getUsername(), m.getContent());
+		}
+		return ObjectToResult.getResult(res);
+	}
+	/**
+	 * 找回密码
+	 */
+	@Override
+	public Result forgetPassword(Parameter param) throws Exception {
+		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),
+				UsersVO.class);
+		Object res = null;
+		if (ImgCodeAction.userCodeMap.get("code")==null) {
+			res = "没有图形验证码";
+			throw new MyExption("没有图形验证码");
+		}
+		if (!ImgCodeAction.userCodeMap.get("code").equalsIgnoreCase(
+				user.getImgCode())) {
+			res = "图形验证码错误";
+			throw new MyExption("图形验证码错误");
+		}
+		UserService userService = WebserviceUtil.getService();
+		boolean isExists = userService.checkUserExists(user.getUsername());
+		if (!isExists) {
+			throw new Exception("手机号未注册");
+		} else {
+			String smsCode = user.getSmsCode();
+			int count = smsCodeUtil.getSmsCount(user.getUsername());
+			if (count > 5) {
+				res = "今日接收短信已超过5条上限";
+				throw new Exception("今日接收短信已超过5条上限");
+			}
+			int maxSort = smsCodeUtil.getMaxSmsSort(user.getUsername(),
+					user.getSmscodeType());
+			MessageVerification m = smsCodeUtil.getMaxSmsCode(
+					user.getUsername(), user.getSmscodeType(), maxSort);
+			if (m == null || !smsCode.equals(m.getVerificationCode())) {
+				res = "短信验证码错误";
+				throw new Exception("短信验证码错误");
+			}
+			String hql = "from User where state = 1 and username = '"
+					+ user.getUsername() + "'";
+			User userDb = (User) hibernateUtil.hqlFirst(hql);
+			if (userDb != null) {
+				String passwordVersion = userDb.getPasswordVersion();
+				if (passwordVersion == null)
+					passwordVersion = "1";
+				else {
+					passwordVersion = (Integer.parseInt(passwordVersion) + 1)
+							+ "";
+				}
+				userDb.setPasswordVersion(passwordVersion);
+				tokenUtil.uploadSecretKey(userDb);
+				hibernateUtil.update(userDb);
+			}
+			// 通过webservice修改密码
+			userService.modifyPwd(user.getUsername(), user.getPassword());
+		}
+		return ObjectToResult.getResult(res);
 	}
 }
