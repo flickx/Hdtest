@@ -231,16 +231,6 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		return ObjectToResult.getResult(list);
 	}
 	/**
-	 * 通过活动ID获取此活动排除的商品品类
-	 * @param param Parameter对象
-	 * @return返回结果（前台用Result对象）
-	 */
-	public Result getGoodsTypeByEventId(Parameter param) throws Exception{		
-		String hql = "from GoodsEventJoin where state='1' and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
-		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
-		return ObjectToResult.getResult(page);
-	}
-	/**
 	 * 通过活动代码获取所有活动商品
 	 * 通过活动ID获取此活动排除的商品品类
 	 * @param param Parameter对象
