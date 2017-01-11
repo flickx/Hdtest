@@ -113,8 +113,7 @@ public class AfterServiceAppServImpl implements AfterServiceAppServ {
 			vo.setGoodsPic(schedule.getOrdersDetail().getGoodsParam().getGoods().getPicSrc());
 			voList.add(vo);
 		}
-		result.setObj(voList);
-		return ObjectToResult.getResult(result);
+		return ObjectToResult.getResult(voList);
 	}
 
 	/**

@@ -71,6 +71,17 @@ public class AddressAppAction {
 	}
 	
 	/**
+	 * 获取用户默认地址
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getUserDefaultAddressById")  
+	public @ResponseBody Result getUserDefaultAddressById(String param) throws Exception {
+		Parameter parameter = Common.jsonToParam(param);
+		return addressAppServ.getUserDefaultAddressById(parameter);
+	}
+	/**
 	 * 获取用户个人信息
 	 * @param param 页面传递参数对象
 	 * @return AJAX调用Result的JSON对象
@@ -79,9 +90,8 @@ public class AddressAppAction {
 	@RequestMapping(value = "getUserInfoById")  
 	public @ResponseBody Result getUserInfoById(String param) throws Exception {
 		Parameter parameter = Common.jsonToParam(param);
-		return addressAppServ.getUserDefaultAddressById(parameter);
+		return addressAppServ.getUserInfoById(parameter);
 	}
-	
 	/**
 	 * 获取用户地址
 	 * @param param 页面传递参数对象

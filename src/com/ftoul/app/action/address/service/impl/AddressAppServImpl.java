@@ -124,8 +124,6 @@ public class AddressAppServImpl implements AddressAppServ {
 			throws Exception {
 		Result result = addressServ.getUserDefaultAddressById(param);
 		UserAddress userAddress = (UserAddress)result.getObj();
-		Result res = webUserServ.getUserById(param);
-		User user = (User)res.getObj();
 		AddressAppVo appVo = new AddressAppVo();
 		if(null!=userAddress){
 			appVo.setId(userAddress.getId());
@@ -138,15 +136,6 @@ public class AddressAppServImpl implements AddressAppServ {
 			appVo.setDefulat(userAddress.getDefulat());
 			appVo.setAddress(userAddress.getAddress());
 		}
-		if(null!=user){
-			appVo.setUsername(user.getUsername());
-			appVo.setNickname(user.getNickname());
-			appVo.setHeadImg(user.getPic());
-			appVo.setIdCard(user.getCardId());
-			appVo.setBirthday(user.getBirth());
-			appVo.setEmail(user.getEmail());
-		}
-		
 		return ObjectToResult.getResult(appVo);
 	}
 	
@@ -187,6 +176,35 @@ public class AddressAppServImpl implements AddressAppServ {
 			res = hibernateUtil.update(userAddress);
 		}
 		return ObjectToResult.getResult(res);
+	}
+
+	@Override
+	public Result getUserInfoById(Parameter param) throws Exception {
+		Result result = addressServ.getUserDefaultAddressById(param);
+		UserAddress userAddress = (UserAddress)result.getObj();
+		Result res = webUserServ.getUserById(param);
+		User user = (User)res.getObj();
+		AddressAppVo appVo = new AddressAppVo();
+		if(null!=userAddress){
+			appVo.setId(userAddress.getId());
+			appVo.setName(userAddress.getName());
+			appVo.setProvince(userAddress.getProvince());
+			appVo.setCounty(userAddress.getCounty());
+			appVo.setCity(userAddress.getCity());
+			appVo.setTel(userAddress.getTel());
+			appVo.setConsignee(userAddress.getConsignee());
+			appVo.setDefulat(userAddress.getDefulat());
+			appVo.setAddress(userAddress.getAddress());
+		}
+		if(null!=user){
+			appVo.setUsername(user.getUsername());
+			appVo.setNickname(user.getNickname());
+			appVo.setHeadImg(user.getPic());
+			appVo.setIdCard(user.getCardId());
+			appVo.setBirthday(user.getBirth());
+			appVo.setEmail(user.getEmail());
+		}
+		return ObjectToResult.getResult(appVo);
 	}
 
 }
