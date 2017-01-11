@@ -200,6 +200,18 @@ public class OrdersUtil {
 		vo.setOrderTime(order.getOrderStatic());
 		vo.setPayType(getPayType(order.getPayType()));
 		vo.setShopName(order.getShopId().getStoreName());
+		List<Object> detailList = new ArrayList<Object>();
+		for (Object object : ordersDetailList) {
+			OrdersDetail orderDetail = (OrdersDetail) object;
+			PcDetailVo detailVo = new PcDetailVo();
+			detailVo.setNum(orderDetail.getNumber());
+			detailVo.setParamName(orderDetail.getParamName());
+			detailVo.setPicSrc(orderDetail.getPicSrc());
+			detailVo.setPrice(orderDetail.getPrice());
+			detailVo.setTitle(orderDetail.getGoodsTitle());
+			detailList.add(detailVo);
+		}
+		vo.setDetailVoList(detailList);
 		return vo;
 	}
 	
