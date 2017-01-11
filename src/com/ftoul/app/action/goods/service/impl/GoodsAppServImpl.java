@@ -177,14 +177,16 @@ public class GoodsAppServImpl implements GoodsAppServ {
 	public Result getUserCollectionList(Parameter param) throws Exception {
 		Result result = userCollectionServ.getUserCollectionList(param);
 		List<UserCollection> list = (List<UserCollection>)result.getObj();
-		List<GoodsWebVo> goodsVoList = new ArrayList<GoodsWebVo>();
+		List<CollectionAppVo> goodsVoList = new ArrayList<CollectionAppVo>();
 		for (int i = 0; i < list.size(); i++) {
 			UserCollection userCollection = list.get(i);
-			GoodsWebVo goodsVo = new GoodsWebVo();
-			goodsVo.setGoodsPic(userCollection.getGoods().getPicSrc());
-			goodsVo.setTitle(userCollection.getGoods().getTitle());
-			goodsVo.setPrice(userCollection.getGoods().getPrice());
-			goodsVoList.add(goodsVo);
+			CollectionAppVo collectionAppVo = new CollectionAppVo();
+			collectionAppVo.setId(userCollection.getId());
+			collectionAppVo.setGoodsId(userCollection.getGoods().getId());
+			collectionAppVo.setGoodsPic(userCollection.getGoods().getPicSrc());
+			collectionAppVo.setTitle(userCollection.getGoods().getTitle());
+			collectionAppVo.setPrice(userCollection.getGoods().getPrice());
+			goodsVoList.add(collectionAppVo);
 		}
 		return ObjectToResult.getResult(goodsVoList);
 	}

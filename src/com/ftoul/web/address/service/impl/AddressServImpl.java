@@ -13,6 +13,7 @@ import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.common.StrUtil;
 import com.ftoul.web.address.service.AddressServ;
 import com.ftoul.web.vo.AddressVo;
 import com.ftoul.po.JPositionCity;
@@ -62,7 +63,7 @@ public class AddressServImpl implements AddressServ {
 	 */
 	@Override
 	public Result delUserAddress(Parameter param) throws Exception {
-		Integer num = hibernateUtil.execHql("update UserAddress set state = '0' where id in ("+param.getId()+")");
+		Integer num = hibernateUtil.execHql("update UserAddress set state = '0' where id in ("+StrUtil.getIds(param.getId())+")");
 		return ObjectToResult.getResult(num);
 	}
 	

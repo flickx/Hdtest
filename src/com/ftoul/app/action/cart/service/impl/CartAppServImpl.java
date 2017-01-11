@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ftoul.app.action.cart.service.CartAppServ;
-import com.ftoul.app.vo.CollectionAppVo;
+import com.ftoul.app.vo.GoodsWebVo;
 import com.ftoul.app.vo.ShopCarAppVo;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.DateUtil;
@@ -134,14 +134,16 @@ public class CartAppServImpl implements CartAppServ {
 	public Result getGoodsList(Parameter param) throws Exception {
 		Result result = cartServ.getGoodsList(param);
 		List<Goods> goodsList = (List<Goods>)result.getObj();
-		List<CollectionAppVo> collectionVoList = new ArrayList<CollectionAppVo>();
+		List<GoodsWebVo> goodsWebVoList = new ArrayList<GoodsWebVo>();
 		for (int i = 0; i < goodsList.size(); i++) {
-			CollectionAppVo collectionAppVo = new CollectionAppVo();
-			collectionAppVo.setTitle(goodsList.get(i).getTitle());
-			collectionAppVo.setGoodsPic(goodsList.get(i).getPicSrc());
-			collectionVoList.add(collectionAppVo);
+			GoodsWebVo goodsWebVo = new GoodsWebVo();
+			goodsWebVo.setId(goodsList.get(i).getId());
+			goodsWebVo.setTitle(goodsList.get(i).getTitle());
+			goodsWebVo.setGoodsPic(goodsList.get(i).getPicSrc());
+			goodsWebVo.setPrice(goodsList.get(i).getPrice());
+			goodsWebVoList.add(goodsWebVo);
 		}
-		return ObjectToResult.getResult(collectionVoList);        
+		return ObjectToResult.getResult(goodsWebVoList);        
 	}
 
 	@Override

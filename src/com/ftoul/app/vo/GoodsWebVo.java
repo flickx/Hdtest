@@ -1,6 +1,7 @@
 package com.ftoul.app.vo;
 
 public class GoodsWebVo {
+	private String id;//商品ID
 	private String title;//商品标题
 	private String goodsPic;//商品图片
 	private Double price;//商品价格
@@ -21,6 +22,12 @@ public class GoodsWebVo {
 	}
 	public void setPrice(Double price) {
 		this.price = price;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	

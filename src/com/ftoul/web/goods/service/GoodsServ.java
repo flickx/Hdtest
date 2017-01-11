@@ -68,6 +68,11 @@ public interface GoodsServ{
 	 */
 	
 	Result getGoodsListPageByCross(Parameter parameter)throws Exception;
-
-
+	/**
+	 * app首页模糊搜索
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getAppGoodsListByKeyWord(Parameter param) throws Exception; 
 }

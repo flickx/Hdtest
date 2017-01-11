@@ -8,11 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ftoul.app.action.user.service.UserAppServ;
 import com.ftoul.app.vo.UserAppVo;
 import com.ftoul.common.Common;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.po.User;
 import com.ftoul.po.UserToken;
 import com.ftoul.web.manage.user.service.WebUserServ;
 
@@ -26,6 +28,8 @@ import com.ftoul.web.manage.user.service.WebUserServ;
 public class WebUserAction {
 	@Autowired
 	private WebUserServ webUserServ;
+	@Autowired
+	private UserAppServ userAppServ;
 	/**
 	 * 注册
 	 * @param param
@@ -114,7 +118,17 @@ public class WebUserAction {
 		if(parameter.getPageNum() == null){
 			parameter.setPageNum(1);
 		}
-		return webUserServ.getUserById(parameter);
+		Result result = webUserServ.getUserById(parameter);
+		User user = (User)result.getObj();
+		UserAppVo vo = new UserAppVo();
+		vo.setTel(user.getUsername());
+		vo.setUsername(user.getUsername());
+		vo.setNickname(user.getNickname());
+		vo.setHeadImg(user.getPic());
+		vo.setIdCard(user.getCardId());
+		vo.setBirthday(user.getBirth());
+		vo.setEmail(user.getEmail());
+		return ObjectToResult.getResult(vo);
 	}
 	
 	/**
@@ -138,7 +152,7 @@ public class WebUserAction {
 	@RequestMapping(value = "saveUser")  
 	public @ResponseBody Result saveUser(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return webUserServ.saveUser(parameter);
+		return userAppServ.saveUser(parameter);
 	}
 	
 	//	/**

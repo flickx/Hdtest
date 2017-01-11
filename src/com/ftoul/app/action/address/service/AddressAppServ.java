@@ -25,4 +25,6 @@ public interface AddressAppServ {
 	
 	public Result getAddress(Parameter param) throws Exception;
 	
+	Result getUserInfoById(Parameter param) throws Exception;
+	
 }
