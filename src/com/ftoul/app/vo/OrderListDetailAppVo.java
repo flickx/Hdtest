@@ -12,6 +12,7 @@ public class OrderListDetailAppVo {
 	private String paramName;//商品参数
 	private Double price;//价格
 	private String number;//数量
+	private String isAfter;//是否已申请售后;1:已申请售后 ,null未申请售后
 	
 	public String getId() {
 		return id;
@@ -49,6 +50,12 @@ public class OrderListDetailAppVo {
 	}
 	public void setNumber(String number) {
 		this.number = number;
+	}
+	public String getIsAfter() {
+		return isAfter;
+	}
+	public void setIsAfter(String isAfter) {
+		this.isAfter = isAfter;
 	}
 	
 }

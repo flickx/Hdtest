@@ -19,6 +19,7 @@ import com.ftoul.po.User;
 import com.ftoul.po.UserAddress;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.address.service.AddressServ;
+import com.ftoul.web.manage.user.service.WebUserServ;
 
 @Service("AddressAppServImpl")
 public class AddressAppServImpl implements AddressAppServ {
@@ -28,6 +29,9 @@ public class AddressAppServImpl implements AddressAppServ {
 	
 	@Autowired
 	private AddressServ addressServ;
+	
+	@Autowired
+	private WebUserServ webUserServ;
 	/**
 	 * 设置默认用户地址
 	 * @param param Parameter对象
@@ -35,7 +39,20 @@ public class AddressAppServImpl implements AddressAppServ {
 	 */
 	@Override
 	public Result saveDefaultUserAddress(Parameter param) throws Exception {
-		return addressServ.saveDefaultUserAddress(param);
+		String hql = "from UserAddress where state = '1' and user.id = '" + param.getUserToken().getUser().getId()+"'" ;
+		List<Object> list = hibernateUtil.hql(hql);
+		UserAddress userAddress = new UserAddress();
+		for (int i = 0; i < list.size(); i++) {
+			userAddress = (UserAddress) list.get(i);
+			userAddress.setModifyTime(new DateStr().toString());
+			userAddress.setDefulat("false");
+			hibernateUtil.update(userAddress);
+		}
+		UserAddress defaultUserAddress = (UserAddress) hibernateUtil.find(UserAddress.class, param.getId()+"");
+		defaultUserAddress.setDefulat("true");
+		defaultUserAddress.setModifyTime(new DateStr().toString());
+		Object res = hibernateUtil.update(defaultUserAddress);
+		return ObjectToResult.getResult(res);
 		
 	}
 	
@@ -107,16 +124,29 @@ public class AddressAppServImpl implements AddressAppServ {
 			throws Exception {
 		Result result = addressServ.getUserDefaultAddressById(param);
 		UserAddress userAddress = (UserAddress)result.getObj();
+		Result res = webUserServ.getUserById(param);
+		User user = (User)res.getObj();
 		AddressAppVo appVo = new AddressAppVo();
-		appVo.setId(userAddress.getId());
-		appVo.setName(userAddress.getName());
-		appVo.setProvince(userAddress.getProvince());
-		appVo.setCounty(userAddress.getCounty());
-		appVo.setCity(userAddress.getCity());
-		appVo.setTel(userAddress.getTel());
-		appVo.setConsignee(userAddress.getConsignee());
-		appVo.setDefulat(userAddress.getDefulat());
-		appVo.setAddress(userAddress.getAddress());
+		if(null!=userAddress){
+			appVo.setId(userAddress.getId());
+			appVo.setName(userAddress.getName());
+			appVo.setProvince(userAddress.getProvince());
+			appVo.setCounty(userAddress.getCounty());
+			appVo.setCity(userAddress.getCity());
+			appVo.setTel(userAddress.getTel());
+			appVo.setConsignee(userAddress.getConsignee());
+			appVo.setDefulat(userAddress.getDefulat());
+			appVo.setAddress(userAddress.getAddress());
+		}
+		if(null!=user){
+			appVo.setUsername(user.getUsername());
+			appVo.setNickname(user.getNickname());
+			appVo.setHeadImg(user.getPic());
+			appVo.setIdCard(user.getCardId());
+			appVo.setBirthday(user.getBirth());
+			appVo.setEmail(user.getEmail());
+		}
+		
 		return ObjectToResult.getResult(appVo);
 	}
 	
@@ -128,9 +158,15 @@ public class AddressAppServImpl implements AddressAppServ {
 	@Override
 	public Result saveUserAddress(Parameter param) throws Exception {
 		UserAddress userAddress = (UserAddress) JSONObject.toBean((JSONObject) param.getObj(),UserAddress.class);
-		userAddress.setAddress(new String(userAddress.getAddress().getBytes("ISO-8859-1"),"UTF-8"));
-		userAddress.setName(new String(userAddress.getName().getBytes("ISO-8859-1"),"UTF-8"));
-		userAddress.setConsignee(new String(userAddress.getConsignee().getBytes("ISO-8859-1"),"UTF-8"));
+		if(null!=userAddress.getAddress()){
+			userAddress.setAddress(new String(userAddress.getAddress().getBytes("ISO-8859-1"),"UTF-8"));	
+		}
+		if(null!=userAddress.getName()){
+			userAddress.setName(new String(userAddress.getName().getBytes("ISO-8859-1"),"UTF-8"));
+		}
+		if(null!=userAddress.getConsignee()){
+			userAddress.setConsignee(new String(userAddress.getConsignee().getBytes("ISO-8859-1"),"UTF-8"));
+		}
 		userAddress.setDefulat(param.getKey());
 		User user = param.getUserToken().getUser();
 		userAddress.setUser(user);

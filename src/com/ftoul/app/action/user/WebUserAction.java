@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ftoul.app.action.user.service.UserAppServ;
 import com.ftoul.app.vo.UserAppVo;
 import com.ftoul.common.Common;
 import com.ftoul.common.ObjectToResult;
@@ -27,6 +28,8 @@ import com.ftoul.web.manage.user.service.WebUserServ;
 public class WebUserAction {
 	@Autowired
 	private WebUserServ webUserServ;
+	@Autowired
+	private UserAppServ userAppServ;
 	/**
 	 * 注册
 	 * @param param
@@ -149,7 +152,7 @@ public class WebUserAction {
 	@RequestMapping(value = "saveUser")  
 	public @ResponseBody Result saveUser(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return webUserServ.saveUser(parameter);
+		return userAppServ.saveUser(parameter);
 	}
 	
 	//	/**
