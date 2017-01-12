@@ -32,6 +32,7 @@ public class GoodsComment implements java.io.Serializable {
 	private String picSrc;
 	private String star;
 	private String anonymousComment;
+	private String comeFrom;
 	private String createPerson;
 	private String createTime;
 	private String modifyPerson;
@@ -224,6 +225,15 @@ public class GoodsComment implements java.io.Serializable {
 
 	public void setModifyTime(String modifyTime) {
 		this.modifyTime = modifyTime;
+	}
+	
+	@Column(name = "come_from", length = 32)
+	public String getComeFrom() {
+		return comeFrom;
+	}
+
+	public void setComeFrom(String comeFrom) {
+		this.comeFrom = comeFrom;
 	}
 
 }

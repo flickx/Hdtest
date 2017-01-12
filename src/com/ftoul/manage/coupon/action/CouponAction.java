@@ -35,15 +35,52 @@ public class CouponAction {
 	}
 	
 	/**
-	 * 查询优惠券
+	 * 查询优惠券列表
 	 * @param param
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping(value = "queryCoupon")  
-	public @ResponseBody Result queryCoupon(String param) throws Exception{
+	@RequestMapping(value = "queryCouponPage")  
+	public @ResponseBody Result queryCouponPage(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return couponService.queryCoupon(parameter);
+		return couponService.queryCouponPage(parameter);
 	}
+	
+	/**
+	 * 查询优惠券明细
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "queryCouponDetail")  
+	public @ResponseBody Result queryCouponDetail(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return couponService.queryCouponDetail(parameter);
+	}
+	
+	/**
+	 * 优惠券统计
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "queryCouponCount")  
+	public @ResponseBody Result queryCouponCount(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return couponService.queryCouponCount(parameter);
+	}
+	
+	/**
+	 * 删除优惠券
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "deleteCoupon")  
+	public @ResponseBody Result deleteCoupon(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return couponService.deleteCoupon(parameter);
+	}
+
 
 }
