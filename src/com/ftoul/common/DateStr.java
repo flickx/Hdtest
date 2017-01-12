@@ -75,6 +75,14 @@ public class DateStr {
 		return total;
 	}
 	
+	public long compareDate(String arg1,String arg2) throws ParseException{
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = df.parse(arg1);
+		Date date=df.parse(arg2);
+		long l=now.getTime()-date.getTime();
+		return l;
+	}
+	
 	public String getStartTime(){  
 		Calendar calendar = Calendar.getInstance();
 	    calendar.setTime(new Date());
@@ -100,7 +108,7 @@ public class DateStr {
 	    String endTime = sdf.format(end);
 	    return endTime;
     }  
-	public static void main(String[] args){
-		System.out.println(new DateStr().getEndTime());
+	public static void main(String[] args) throws ParseException{
+		System.out.println(new DateStr().compare("2016-01-02 12:10:00", "2016-01-02 12:09:59"));
 	}
 }

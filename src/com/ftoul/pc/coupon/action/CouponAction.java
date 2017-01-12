@@ -1,4 +1,4 @@
-package com.ftoul.manage.coupon.action;
+package com.ftoul.pc.coupon.action;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,31 +8,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.manage.coupon.service.CouponService;
+import com.ftoul.pc.coupon.service.CouponService;
 
 /**
- * 大后台优惠券
+ * PC前台优惠券
  * @author hud
  *
  */
-@Controller("ManageCouponAction")
-@RequestMapping(value = "/manage/coupon")
+@Controller("PcCouponAction")
+@RequestMapping(value = "/pc/coupon")
 public class CouponAction {
 	
 	@Autowired
 	private CouponService couponService;
-	
-	/**
-	 * 创建优惠券
-	 * @param param
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping(value = "saveCoupon")  
-	public @ResponseBody Result saveCoupon(String param) throws Exception{
-		Parameter parameter = Common.jsonToParam(param);
-		return couponService.saveCoupon(parameter);
-	}
 	
 	/**
 	 * 查询优惠券列表
@@ -47,15 +35,27 @@ public class CouponAction {
 	}
 	
 	/**
-	 * 查询优惠券明细
+	 * 查询各种状态的优惠券列表
 	 * @param param
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping(value = "queryCouponDetail")  
-	public @ResponseBody Result queryCouponDetail(String param) throws Exception{
+	@RequestMapping(value = "queryCouponList")  
+	public @ResponseBody Result queryCouponList(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return couponService.queryCouponDetail(parameter);
+		return couponService.queryCouponList(parameter);
+	}
+	
+	/**
+	 * 优惠券领取
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getCoupon")  
+	public @ResponseBody Result getCoupon(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return couponService.getCoupon(parameter);
 	}
 	
 	/**
@@ -70,17 +70,4 @@ public class CouponAction {
 		return couponService.queryCouponCount(parameter);
 	}
 	
-	/**
-	 * 删除优惠券
-	 * @param param
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping(value = "deleteCoupon")  
-	public @ResponseBody Result deleteCoupon(String param) throws Exception{
-		Parameter parameter = Common.jsonToParam(param);
-		return couponService.deleteCoupon(parameter);
-	}
-
-
 }
