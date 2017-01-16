@@ -23,6 +23,7 @@ public class AfterScheduleVo {
 	private String state;
 	private String salePrice;
 	private List<Object> list;
+	private String createTime;
 	public String getId() {
 		return id;
 	}
@@ -124,6 +125,12 @@ public class AfterScheduleVo {
 	}
 	public void setList(List<Object> list) {
 		this.list = list;
+	}
+	public String getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
 	}
 
 }

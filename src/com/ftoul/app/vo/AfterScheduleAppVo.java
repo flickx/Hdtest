@@ -16,6 +16,7 @@ public class AfterScheduleAppVo {
 	private String goodsPic;//商品图片
 	private String orderTime;//下单时间
 	private List<AfterOpLogAppVo> logList;//进度详情
+	private String createTime;//创建时间
 	public String getId() {
 		return id;
 	}
@@ -63,6 +64,12 @@ public class AfterScheduleAppVo {
 	}
 	public void setLogList(List<AfterOpLogAppVo> logList) {
 		this.logList = logList;
+	}
+	public String getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
 	}
 	
 }

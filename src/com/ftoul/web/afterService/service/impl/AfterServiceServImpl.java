@@ -103,6 +103,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			vo.setTel(schedule.getSellerTel());
 			vo.setUserId(schedule.getUser().getId());
 			vo.setSalePrice(schedule.getOrdersDetail().getPrice());
+			vo.setCreateTime(schedule.getCreateTime());
 			voList.add(vo);
 		}
 		page.getObjList().clear();

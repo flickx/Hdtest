@@ -1,5 +1,8 @@
 package com.ftoul.util.afterService;
 
+import java.util.Date;
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -108,5 +111,14 @@ public class AfterServiceUtil {
 		}
 		return state;
 	}
-
+	/**
+	 * 重命名文件
+	 * @param fileName
+	 * @return
+	 */
+	public String reName(String fileName){
+		int i = fileName.lastIndexOf(".");
+        String str = fileName.substring(i);
+        return new Date().getTime()+""+ new Random().nextInt(99999999) +str;
+	}
 }
