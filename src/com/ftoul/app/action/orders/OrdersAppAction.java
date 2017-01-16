@@ -155,7 +155,7 @@ public class OrdersAppAction {
 	@RequestMapping(value = "orderPay")  
 	public @ResponseBody Result orderPay(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return ordersServ.orderPay(parameter);
+		return ordersAppServ.orderPay(parameter);
 	}
 	
 	/**
