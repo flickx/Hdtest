@@ -109,7 +109,7 @@ public class AfterServiceAppAction {
 	@RequestMapping(value = "getAfterLogistics")
 	public @ResponseBody Result getAfterLogistics(String param)throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return afterServiceServ.getAfterLogistics(parameter);
+		return afterServiceAppServ.getAfterLogistics(parameter);
 	}
 	
 	/**

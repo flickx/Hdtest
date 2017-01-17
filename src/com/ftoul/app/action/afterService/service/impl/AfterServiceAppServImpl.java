@@ -160,12 +160,14 @@ public class AfterServiceAppServImpl implements AfterServiceAppServ {
 		AfterScheduleVo afterScheduleVo = (AfterScheduleVo)result.getObj();
 		AfterScheduleAppVo afterScheduleAppVo = new AfterScheduleAppVo();
 		List<AfterOpLogAppVo> list = new ArrayList<AfterOpLogAppVo>();
+		afterScheduleAppVo.setId(afterScheduleVo.getId());
 		afterScheduleAppVo.setServiceCode(afterScheduleVo.getServiceCode());
 		afterScheduleAppVo.setOrderTime(afterScheduleVo.getOrderTime());
 		afterScheduleAppVo.setScheduleStatic(afterScheduleVo.getScheduleStatic());
 		for (Object object : afterScheduleVo.getList()) {
 			AfterOpLog afterOpLog = (AfterOpLog)object;
 			AfterOpLogAppVo afterOpLogAppVo = new AfterOpLogAppVo();
+			afterOpLogAppVo.setScheduleStatic(afterOpLog.getScheduleStatic());
 			afterOpLogAppVo.setMsg(afterOpLog.getMsg());
 			afterOpLogAppVo.setCreateTime(afterOpLog.getCreateTime());
 			list.add(afterOpLogAppVo);
@@ -248,7 +250,8 @@ public class AfterServiceAppServImpl implements AfterServiceAppServ {
 	public Result getAfterLogistics(Parameter param) throws Exception {
 		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
 		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
-		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(after.getBuyerLogCompany().getCode(), after.getBuyerLogOdd());
+		//String res = kdniaoTrackQueryAPI.getOrderTracesByJson(after.getBuyerLogCompany().getCode(), after.getBuyerLogOdd());
+		String res = kdniaoTrackQueryAPI.getOrderTracesByJson("YD", "1202401432095");
 		AfterLogisticsVo vo = new AfterLogisticsVo();
 		vo.setServiceCode(after.getServiceCode());
 		vo.setLogisticeCompanyName(after.getBuyerLogCompany().getName());

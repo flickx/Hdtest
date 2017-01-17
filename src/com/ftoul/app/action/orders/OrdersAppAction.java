@@ -131,7 +131,7 @@ public class OrdersAppAction {
 	@RequestMapping(value = "getOrdersLogistics")  
 	public @ResponseBody Result getOrdersLogistics(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return ordersServ.getOrdersLogistics(parameter);
+		return ordersAppServ.getOrdersLogistics(parameter);
 	}
 	
 	/**

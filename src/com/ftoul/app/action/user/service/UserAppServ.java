@@ -3,6 +3,8 @@
  */
 package com.ftoul.app.action.user.service;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.web.vo.UsersVO;
@@ -85,4 +87,13 @@ public interface UserAppServ {
 	 * @return 返回结果（前台用Result对象）
 	 */
 	Result saveUser(Parameter param) throws Exception;
+	
+	/**
+	 * 头像上传
+	 * @param param
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	Result picUpload(Parameter param,HttpServletRequest request) throws Exception;
 }

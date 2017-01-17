@@ -3,7 +3,10 @@
  */
 package com.ftoul.app.action.user.service.impl;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,10 +15,14 @@ import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.ftoul.api.sms.util.MessageUtil;
 import com.ftoul.api.sms.util.SmsCodeUtil;
 import com.ftoul.app.action.user.service.UserAppServ;
+import com.ftoul.app.vo.UserAppVo;
 import com.ftoul.businessManage.login.action.CodeAction;
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
@@ -27,6 +34,7 @@ import com.ftoul.po.AddressBook;
 import com.ftoul.po.MessageVerification;
 import com.ftoul.po.User;
 import com.ftoul.po.UserToken;
+import com.ftoul.util.afterService.AfterServiceUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.token.TokenUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
@@ -50,6 +58,8 @@ public class UserAppServImpl implements UserAppServ {
 	private TokenUtil tokenUtil;
 	@Autowired
 	private HttpServletRequest req;
+	@Autowired  
+	AfterServiceUtil afterServiceUtil;
 	@Override
 	/**
 	 * 注册 新增用户对象
@@ -498,4 +508,42 @@ public class UserAppServImpl implements UserAppServ {
 		}
 		return ObjectToResult.getResult(res);
 	}
+	@Override
+	public Result picUpload(Parameter param, HttpServletRequest request)
+			throws Exception {
+		List<MultipartFile> fileList = new ArrayList<MultipartFile>();
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		LinkedMultiValueMap<String, MultipartFile> multiValuemap = (LinkedMultiValueMap<String, MultipartFile>) multipartRequest.getMultiFileMap();
+		LinkedList<MultipartFile> multipart = (LinkedList<MultipartFile>) multiValuemap.get("file");
+		for (MultipartFile multipartFile : multipart) {
+			fileList.add(multipartFile);
+		}
+		StringBuffer srcs = new StringBuffer();
+		String path = request.getSession().getServletContext().getRealPath("/upload/img/user/");
+		String picPath = "/upload/img/user/";
+		int count = 0;
+		User user = (User) hibernateUtil.find(User.class, param.getId()+"");
+		if (fileList.size()>0) {
+			for (MultipartFile multipartFile : fileList) {
+				count++;
+				String picName = afterServiceUtil.reName(multipartFile.getOriginalFilename());
+			    String picAddress = picPath+ picName;
+			    srcs.append(picAddress);
+			    if(count!=fileList.size()){
+			    	srcs.append(";");
+			    }
+				File targetFile = new File(path, picName);  
+		        if(!targetFile.exists()){  
+		            targetFile.mkdirs();  
+		        } 
+		        multipartFile.transferTo(targetFile);
+			}
+		}
+		user.setPic(srcs.toString());
+		hibernateUtil.update(user);
+		UserAppVo userAppVo = new UserAppVo();
+		userAppVo.setHeadImg(srcs.toString());
+		return ObjectToResult.getResult(userAppVo);
+	}
+	
 }

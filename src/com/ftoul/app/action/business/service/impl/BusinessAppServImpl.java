@@ -105,7 +105,19 @@ public class BusinessAppServImpl implements BusinessAppServ {
 	@Override
 	public Result getStoreGoodsPagebyStoreClassify(Parameter param)
 			throws Exception {
-		return businessWebServ.getStoreGoodsPagebyStoreClassify(param);
+		Result result = businessWebServ.getStoreGoodsPagebyStoreClassify(param);
+		List<Goods> list = (List<Goods>)result.getObj();
+		List<GoodsWebVo> goodsVoList = new ArrayList<GoodsWebVo>();
+		for (int i = 0; i < list.size(); i++) {
+			Goods goods = list.get(i);
+			GoodsWebVo goodsVo = new GoodsWebVo();
+			goodsVo.setId(goods.getId());
+			goodsVo.setGoodsPic(goods.getPicSrc());
+			goodsVo.setTitle(goods.getTitle());
+			goodsVo.setPrice(goods.getPrice());
+			goodsVoList.add(goodsVo);
+		}
+		return ObjectToResult.getResult(goodsVoList);
 
 	}
 }
