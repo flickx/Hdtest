@@ -10,4 +10,18 @@ public interface PcUserServ {
 	 * @return 返回结果（前台用Result对象）
 	 */
 	Result login(Parameter param) throws Exception;
+	/**
+	 * 发送短信验证码
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result sendSmsCode(Parameter param)throws Exception;
+	/**
+	 * 找回密码 
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result forgetPassword(Parameter param)throws Exception;
 }
