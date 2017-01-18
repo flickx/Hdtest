@@ -125,15 +125,15 @@ public class OrdersServImpl implements OrdersServ {
 		List<Object> ordersList = new ArrayList<Object>();
 		Page page = new Page();
 		if(OrdersConstant.NOT_PAY.equals(key)){
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+param.getWhereStr()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.NOT_DELIVER.equals(key)){
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in('2', '3') and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in('2', '3') and state='1' and user.id='"+param.getUserToken().getUser().getId()+param.getWhereStr()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.NOT_TASK_DELIVER.equals(key)){
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in ('4','5') and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in ('4','5') and state='1' and user.id='"+param.getUserToken().getUser().getId()+param.getWhereStr()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.RECOVERY.equals(key)){//查询回收站的数据
-			page =  hibernateUtil.hqlPage(null,"from Orders where state='2' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where state='2' and user.id='"+param.getUserToken().getUser().getId()+param.getWhereStr()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else{
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic!='0' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic!='0' and state='1' and user.id='"+param.getUserToken().getUser().getId()+param.getWhereStr()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}
 		ordersList = page.getObjList();
 		
