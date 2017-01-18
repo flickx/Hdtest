@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.ftoul.common.DateStr;
 import com.ftoul.po.Coupon;
 import com.ftoul.po.UserCoupon;
+import com.ftoul.util.goodsparam.GoodsParamUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 
 @Component
@@ -16,6 +17,8 @@ public class CouponUtil {
 	
 	@Autowired
 	private HibernateUtil hibernateUtil;
+	@Autowired
+	private GoodsParamUtil paramUtil;
 	
 	public String getCouponType(String param){
 		String name = null;
@@ -46,6 +49,29 @@ public class CouponUtil {
 				hibernateUtil.update(userCoupon);
 			}
 		}
+	}
+	
+	/**
+	 * 获取该店铺目前所有通用优惠券
+	 * @param shopId
+	 */
+	public List<Object> getCurrencyCouponByShopId(String shopId){
+		String currentTime = new DateStr().toString();
+		List<Object> objList = hibernateUtil.hql("from Coupon where state='1' and and useType='1' and validStartTime>='"+currentTime+"' and validEndTime<='"+currentTime+"'");
+		return objList;
+	}
+	
+	public void isHasCouponByGoodsParamIdAndShopId(List<Object> param,String shopId){
+		//List<String> typeList = paramUtil.getGoodsTypeByGoodsParamId(paramId);
+	}
+	
+	/**
+	 * 查询此用户目前有效未使用的优惠券
+	 * @param param
+	 * @return
+	 */
+	public List<Object> getCouponByUserId(String param){
+		return hibernateUtil.hql("from UserCoupon where state='1' and and isUsed='1' and userId='"+param+"'");
 	}
 
 }

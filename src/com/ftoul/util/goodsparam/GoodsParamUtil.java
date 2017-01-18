@@ -1,10 +1,17 @@
 package com.ftoul.util.goodsparam;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.po.Goods;
+import com.ftoul.po.GoodsParam;
+import com.ftoul.po.GoodsType;
+import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.goods.service.GoodsParamServ;
 
 @Component
@@ -12,7 +19,8 @@ public class GoodsParamUtil {
 	
 	@Autowired
 	GoodsParamServ goodsParamServ;
-	
+	@Autowired
+	private HibernateUtil hibernateUtil;
 	
 	/**
 	 * 
@@ -27,4 +35,23 @@ public class GoodsParamUtil {
 		parameter.setKey(amount);
 		return goodsParamServ.saveStockFromOrder(parameter);
 	}
+	
+	/**
+	 * 查询该商品参数属于哪些分类
+	 */
+	public List<String> getGoodsTypeByGoodsParamId(String param){
+		List<String> list = new ArrayList<String>();
+		GoodsParam goodsParam = (GoodsParam) hibernateUtil.find(GoodsParam.class, param);
+		if(goodsParam!=null){
+			Goods goods = goodsParam.getGoods();
+			GoodsType type1 = goods.getGoodsType1();
+			GoodsType type2 = goods.getGoodsType2();
+			GoodsType type3 = goods.getGoodsType3();
+			list.add(type1.getName());
+			list.add(type2.getName());
+			list.add(type3.getName());
+		}
+		return list;
+	}
+	
 }
