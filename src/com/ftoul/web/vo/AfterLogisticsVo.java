@@ -2,13 +2,13 @@ package com.ftoul.web.vo;
 
 public class AfterLogisticsVo {
 	
-	private String serviceCode;
-	private String createTime;
-	private String odd;
-	private String logisticeCompanyName;
-	private String logisticeInfo;
+	private String serviceCode;//服务编号
+	private String createTime;//服务发起时间
+	private String odd;//运单编号
+	private String logisticeCompanyName;//承运物流
+	private String logisticeInfo;//物流进度详情
 	private String customsClearanceStatic;
-	private String logInfo;
+	private String logInfo;//物流说明
 	
 	public String getOdd() {
 		return odd;

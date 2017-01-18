@@ -21,6 +21,7 @@ public class Coupon implements java.io.Serializable {
 
 	private String id;
 	private BusinessStore businessStore;
+	private String code;
 	private String name;
 	private Integer giveoutNum;
 	private Integer receiveNum;
@@ -100,6 +101,15 @@ public class Coupon implements java.io.Serializable {
 
 	public void setBusinessStore(BusinessStore businessStore) {
 		this.businessStore = businessStore;
+	}
+	
+	@Column(name = "code", length = 32)
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	@Column(name = "name", length = 100)

@@ -88,6 +88,8 @@ public class AfterServiceUtil {
 			state = "买家已收货";
 		}else if("12".equals(afterState)){
 			state = "商家已退款并完成售后服务";
+		}else if("13".equals(afterState)){
+			state = "取消申请";
 		}
 		return state;
 	}

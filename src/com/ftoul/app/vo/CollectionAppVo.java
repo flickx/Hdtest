@@ -6,7 +6,8 @@ package com.ftoul.app.vo;
  *
  */
 public class CollectionAppVo {
-	
+	private String id;//收藏ID
+	private String goodsId;//商品Id
 	private String title;//商品标题
 	private String goodsPic;//商品图片
 	private Double price;//商品价格
@@ -28,6 +29,18 @@ public class CollectionAppVo {
 	}
 	public void setPrice(Double price) {
 		this.price = price;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getGoodsId() {
+		return goodsId;
+	}
+	public void setGoodsId(String goodsId) {
+		this.goodsId = goodsId;
 	}
 	
 	

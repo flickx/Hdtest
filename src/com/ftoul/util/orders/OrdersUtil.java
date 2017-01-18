@@ -2,8 +2,6 @@ package com.ftoul.util.orders;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +21,6 @@ import com.ftoul.manage.cart.service.CartServ;
 import com.ftoul.manage.coin.service.CoinSetServ;
 import com.ftoul.pc.orders.vo.PcDetailVo;
 import com.ftoul.pc.orders.vo.PcOrderVo;
-import com.ftoul.po.FullCutRule;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
 import com.ftoul.po.GoodsEventJoin;
@@ -200,6 +197,18 @@ public class OrdersUtil {
 		vo.setOrderTime(order.getOrderStatic());
 		vo.setPayType(getPayType(order.getPayType()));
 		vo.setShopName(order.getShopId().getStoreName());
+		List<Object> detailList = new ArrayList<Object>();
+		for (Object object : ordersDetailList) {
+			OrdersDetail orderDetail = (OrdersDetail) object;
+			PcDetailVo detailVo = new PcDetailVo();
+			detailVo.setNum(orderDetail.getNumber());
+			detailVo.setParamName(orderDetail.getParamName());
+			detailVo.setPicSrc(orderDetail.getPicSrc());
+			detailVo.setPrice(orderDetail.getPrice());
+			detailVo.setTitle(orderDetail.getGoodsTitle());
+			detailList.add(detailVo);
+		}
+		vo.setDetailVoList(detailList);
 		return vo;
 	}
 	

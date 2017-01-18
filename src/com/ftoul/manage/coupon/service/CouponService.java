@@ -7,6 +7,12 @@ public interface CouponService {
 
 	Result saveCoupon(Parameter parameter) throws Exception;
 
-	Result queryCoupon(Parameter parameter) throws Exception;
+	Result queryCouponPage(Parameter parameter) throws Exception;
+
+	Result queryCouponCount(Parameter parameter) throws Exception;
+
+	Result deleteCoupon(Parameter parameter) throws Exception;
+
+	Result queryCouponDetail(Parameter parameter) throws Exception;
 
 }
