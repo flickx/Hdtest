@@ -132,6 +132,8 @@ public class OrdersServImpl implements OrdersServ {
 			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in ('4','5') and state='1' and user.id='"+param.getUserToken().getUser().getId()+param.getWhereStr()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.RECOVERY.equals(key)){//查询回收站的数据
 			page =  hibernateUtil.hqlPage(null,"from Orders where state='2' and user.id='"+param.getUserToken().getUser().getId()+param.getWhereStr()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+		}else if(OrdersConstant.NOT_COMMENT.equals(key)){//查询待评价的数据
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '7' and state='1' and user.id='"+param.getUserToken().getUser().getId()+param.getWhereStr()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else{
 			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic!='0' and state='1' and user.id='"+param.getUserToken().getUser().getId()+param.getWhereStr()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}

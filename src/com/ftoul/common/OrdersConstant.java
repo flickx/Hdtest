@@ -21,6 +21,8 @@ public class OrdersConstant {
 	public static final String COMPLETE = "6";
 	/**删除 7*/
 	public static final String DELETE = "7";
+	/**待评价*/
+	public static final String NOT_COMMENT = "7";
 	/**售后 10*/
 	public static final String AFTER = "10";
 	/**回收站订单*/
