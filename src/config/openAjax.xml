@@ -13,6 +13,7 @@
 		<list>/web/afterService</list>
 		<list>/pc/search</list>
 		<list>/pc/user</list>
+		<list>/pc/orders</list>
 	</nameSpace>
 	<methodName>
 		<list>login</list>
