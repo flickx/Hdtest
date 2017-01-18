@@ -96,7 +96,7 @@ public class OrdersServImpl implements OrdersServ {
 		List<Object> ordersList3 =  hibernateUtil.hql("from Orders where orderStatic in('2', '3') and isHasChild!='1' and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'");//待发货
 		List<Object> ordersList5 =  hibernateUtil.hql("from Orders where orderStatic in('4', '5') and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'");
 		List<Object> afterList =  hibernateUtil.hql("from AfterSchedule where scheduleStatic='1' and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'"); 
-		List<Object> ordersList7 =  hibernateUtil.hql("from AfterSchedule where orderStatic = '7' and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'"); //待评价
+		List<Object> ordersList7 =  hibernateUtil.hql("from Orders where orderStatic = '7' and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'"); //待评价
 		List<Object> newOrdersList1 = new ArrayList<Object>();
 		for (Object object : ordersList1) {//将有父订单的订单去除掉，只计算父订单为未付款数量
 			Orders orders = (Orders) object;

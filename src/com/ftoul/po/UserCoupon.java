@@ -2,9 +2,13 @@ package com.ftoul.po;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -17,7 +21,7 @@ public class UserCoupon implements java.io.Serializable {
 	// Fields
 
 	private String id;
-	private String couponId;
+	private Coupon couponId;
 	private String userId;
 	private String isUsed;
 	private String state;
@@ -33,7 +37,7 @@ public class UserCoupon implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public UserCoupon(String couponId, String userId, String isUsed,
+	public UserCoupon(Coupon couponId, String userId, String isUsed,
 			String state, String createTime, String createPerson,
 			String modifyTime, String modifyPerson) {
 		this.couponId = couponId;
@@ -59,12 +63,13 @@ public class UserCoupon implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "coupon_id", length = 32)
-	public String getCouponId() {
+	@ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="coupon_id")
+	public Coupon getCouponId() {
 		return this.couponId;
 	}
 
-	public void setCouponId(String couponId) {
+	public void setCouponId(Coupon couponId) {
 		this.couponId = couponId;
 	}
 
