@@ -135,7 +135,7 @@ public class OrdersServImpl implements OrdersServ {
 		}else if(OrdersConstant.NOT_COMMENT.equals(key)){//查询待评价的数据
 			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '7' and state='1' and user.id='"+param.getUserToken().getUser().getId()+param.getWhereStr()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else{
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic!='0' and state='1' and user.id='"+param.getUserToken().getUser().getId()+param.getWhereStr()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic!='0' and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+param.getWhereStr()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}
 		ordersList = page.getObjList();
 		
@@ -171,12 +171,12 @@ public class OrdersServImpl implements OrdersServ {
 			for (int i = 0; i < ordersList.size(); i++) {
 				Orders order = (Orders) ordersList.get(i);
 				List<Object> ordersDetailList = new ArrayList<Object>();
-				if(!"1".equals(order.getIsHasChild())){
+				//if(!"1".equals(order.getIsHasChild())){
 					ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
 					//vo = ordersUtil.transformObject(order,ordersDetailList);
 					vo = ordersUtil.transformOrder(order,ordersDetailList);
 					list.add(vo);
-				}
+				//}
 			}
 		}
 		
