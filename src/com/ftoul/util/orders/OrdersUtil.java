@@ -236,7 +236,9 @@ public class OrdersUtil {
 		vo.setPayType(getPayType(order.getPayType()));
 		vo.setPayTime(order.getPayTime());
 		vo.setOdd(order.getOdd());
-		vo.setLogCompany(order.getLogisticsCompany().getName());
+		if(order.getLogisticsCompany()!=null){
+			vo.setLogCompany(order.getLogisticsCompany().getName());
+		}
 		List<Object> detailList = new ArrayList<Object>();
 		for (Object object : oneVsManyList) {
 			ManyVsOneVo vsVo = (ManyVsOneVo) object;
@@ -257,11 +259,13 @@ public class OrdersUtil {
 		}
 		vo.setDetailVoList(detailList);
 		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
-		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(order.getLogisticsCompany().getCode(), order.getOdd());
-		if(res!=null){
-			vo.setLogistInfo(res);
-		}else{
-			vo.setLogistInfo("暂无物流信息");
+		if(order.getLogisticsCompany()!=null){
+			String res = kdniaoTrackQueryAPI.getOrderTracesByJson(order.getLogisticsCompany().getCode(), order.getOdd());
+			if(res!=null){
+				vo.setLogistInfo(res);
+			}else{
+				vo.setLogistInfo("暂无物流信息");
+			}
 		}
 		return vo;
 	}
