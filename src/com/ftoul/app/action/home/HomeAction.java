@@ -97,4 +97,25 @@ public class HomeAction {
 		}
 		return ObjectToResult.getResult(goodsAppVoList);
 	}
+	/**
+	 * ios获取首页轮播图列表
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getIosIndexCarouselList") 
+	public @ResponseBody Result getIosIndexCarouselList(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		Result re =  homeServ.getIosIndexCarouselList(parameter);
+		List<IndexCarouselPic> index = (List<IndexCarouselPic>)re.getObj();
+		List<IndexCarouselAppVo> indexCarouselAppVoList = new ArrayList<IndexCarouselAppVo>();
+		for (IndexCarouselPic indexCarouselPic : index) {
+			IndexCarouselAppVo i  =new IndexCarouselAppVo();
+			i.setPicAddress(indexCarouselPic.getPicAddress());
+			i.setUrl(indexCarouselPic.getUrl());
+			indexCarouselAppVoList.add(i);
+		}
+		return ObjectToResult.getResult(indexCarouselAppVoList);
+	}
+
 }

@@ -18,7 +18,7 @@ public class AddressAppVo {
 	private String idCard;//身份证
 	private String birthday;//生日
 	private String email;//邮箱
-	
+	private String realName;//真实姓名
 	
 	public String getId() {
 		return id;
@@ -115,6 +115,12 @@ public class AddressAppVo {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getRealName() {
+		return realName;
+	}
+	public void setRealName(String realName) {
+		this.realName = realName;
 	}
 	
 }

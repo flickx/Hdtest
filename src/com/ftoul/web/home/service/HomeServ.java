@@ -37,4 +37,11 @@ public interface HomeServ {
 	 * @throws Exception
 	 */
 	public Result getAppGoodsByGoodsType(Parameter param) throws Exception;
+	/* ios获取首页轮播图列表
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getIosIndexCarouselList(Parameter param) throws Exception;
+
 }

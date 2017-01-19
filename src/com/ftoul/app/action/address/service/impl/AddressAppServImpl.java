@@ -203,6 +203,7 @@ public class AddressAppServImpl implements AddressAppServ {
 			appVo.setIdCard(user.getCardId());
 			appVo.setBirthday(user.getBirth());
 			appVo.setEmail(user.getEmail());
+			appVo.setRealName(user.getName());
 		}
 		return ObjectToResult.getResult(appVo);
 	}

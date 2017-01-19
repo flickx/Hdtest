@@ -80,4 +80,17 @@ public class HomeServImpl implements HomeServ {
 		Page page = hibernateUtil.hqlPage(null,hql1, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
+	/**
+	 * ios首页轮播图列表
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public Result getIosIndexCarouselList(Parameter param) throws Exception {
+		String hql = "from IndexCarouselPic where state = '1' and carouselType = '" +param.getId()+"' "+param.getOrderBy() ;
+		List<Object> indexList = hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(indexList);
+	}
+
 }
