@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.ftoul.common.DateStr;
 import com.ftoul.po.Coupon;
+import com.ftoul.po.GoodsTypeEventJoin;
 import com.ftoul.po.UserCoupon;
 import com.ftoul.util.goodsparam.GoodsParamUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
@@ -62,11 +63,34 @@ public class CouponUtil {
 		return objList;
 	}
 	
-	public void isHasCouponByGoodsParamIdAndShopId(List<ShopGoodsParamVo> objList){
+	/**
+	 * 获取该用户在该店铺目前所有的非通用优惠券
+	 * @param shopId
+	 */
+	public List<Object> getNotCurrencyCouponByShopId(String userId,String shopId){
+		String currentTime = new DateStr().toString();
+		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1' and and isUsed='1' and couponId.useType='2' and userId='"+userId+"' and couponId.businessStore.id='"+shopId+"' and couponId.validStartTime>='"+currentTime+"' and couponId.validEndTime<='"+currentTime+"'");
+		return objList;
+	}
+	
+	/**
+	 * 通过商品获取可满足使用的非通用优惠券
+	 * @param objList
+	 */
+	public void isHasCouponByGoodsParamIdAndShopId(List<ShopGoodsParamVo> objList,String userId,String shopId){
+		List<Object> userCouponList = getNotCurrencyCouponByShopId(userId,shopId);
 		for (ShopGoodsParamVo shopGoodsParamVo : objList) {
-			String shopId = shopGoodsParamVo.getShopId();
 			String paramId = shopGoodsParamVo.getGoodsParamId();
-			List<String> typeList = paramUtil.getGoodsTypeByGoodsParamId(paramId);
+			List<String> typeList = paramUtil.getGoodsTypeByGoodsParamId(paramId);//查询此商品的三级分类
+		}
+		for (Object object : userCouponList) {
+			UserCoupon userCoupon = (UserCoupon) object;
+			Coupon coupon = userCoupon.getCouponId();
+			List<Object> joinlist = hibernateUtil.hql("from GoodsTypeEventJoin where state='1' and eventId='"+coupon.getId()+"'");
+			for (Object object2 : joinlist) {
+				GoodsTypeEventJoin join = (GoodsTypeEventJoin) object2;
+			}
+			
 		}
 		
 	}

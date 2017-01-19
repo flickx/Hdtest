@@ -214,7 +214,7 @@ public class OrdersServImpl implements OrdersServ {
 	 */
 	@Override
 	public Result deleteOrders(Parameter param) throws Exception {
-		Integer num = hibernateUtil.execHql("update Orders set state='0' and orderStatic='7' where id in ("+StrUtil.getIds(param.getId())+")");
+		Integer num = hibernateUtil.execHql("update Orders set state='0', orderStatic='7' where id in ("+StrUtil.getIds(param.getId())+")");
 		ordersUtil.updateGoodsParam(param.getId().toString(),"delete");
 		return ObjectToResult.getResult(num);
 	}
