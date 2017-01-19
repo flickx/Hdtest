@@ -193,7 +193,7 @@ public class OrdersUtil {
 		vo.setId(order.getId());
 		vo.setOrderNumber(order.getOrderNumber());
 		vo.setOrderPrice(order.getOrderPrice());
-		vo.setOrderStatic(getState(order.getOrderStatic()));
+		vo.setOrderStatic(order.getOrderStatic());
 		vo.setOrderTime(order.getOrderTime());
 		vo.setPayType(getPayType(order.getPayType()));
 		vo.setShopName(order.getShopId().getStoreName());
