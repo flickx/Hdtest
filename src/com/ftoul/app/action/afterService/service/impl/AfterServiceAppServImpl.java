@@ -2,11 +2,8 @@ package com.ftoul.app.action.afterService.service.impl;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -115,7 +112,8 @@ public class AfterServiceAppServImpl implements AfterServiceAppServ {
 			vo.setCreateTime(schedule.getCreateTime());
 			voList.add(vo);
 		}
-		return ObjectToResult.getResult(voList);
+		result.setObj(voList);
+		return result;
 	}
 
 	/**
