@@ -1,7 +1,9 @@
 package com.ftoul.util.goodsparam;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,7 @@ import com.ftoul.po.GoodsParam;
 import com.ftoul.po.GoodsType;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.goods.service.GoodsParamServ;
+import com.ftoul.web.vo.ShopGoodsParamVo;
 
 @Component
 public class GoodsParamUtil {
@@ -52,6 +55,45 @@ public class GoodsParamUtil {
 			list.add(type3.getName());
 		}
 		return list;
+	}
+	
+	public Map<String, List<ShopGoodsParamVo>> getShopAndGoodsParam(String param){
+		Map<String, List<ShopGoodsParamVo>> group = new HashMap<String, List<ShopGoodsParamVo>>();
+		List<ShopGoodsParamVo> goodsParamVo = null;
+		String[] strList = param.split(":");
+		List<ShopGoodsParamVo> voList = new ArrayList<ShopGoodsParamVo>();
+		for (int i = 0; i < strList.length; i++) {
+			String[] str = strList[i].split(",");
+			ShopGoodsParamVo vo = new ShopGoodsParamVo();
+			vo.setGoodsParamId(str[0]);
+			vo.setNum(str[1]);
+			vo.setPrice(str[2]);
+			if(str.length==4){
+				vo.setShopId("1");
+			}else{
+				vo.setShopId(str[4]);
+			}
+			
+			voList.add(vo);
+		}
+		
+		for (int j = 0; j < voList.size(); j++) {
+			ShopGoodsParamVo vo = voList.get(j);
+			String shopId = vo.getShopId();
+			if(shopId!=null){
+				goodsParamVo = group.get(shopId);
+				if(goodsParamVo == null){
+					List<ShopGoodsParamVo> newVoList = new ArrayList<ShopGoodsParamVo>();
+					newVoList.add(vo);
+					group.put(shopId, newVoList);
+				}else{
+					goodsParamVo.add(vo);
+					group.put(shopId, goodsParamVo);
+				}
+			}
+		}
+		
+		return group;
 	}
 	
 }

@@ -194,7 +194,7 @@ public class OrdersUtil {
 		vo.setOrderNumber(order.getOrderNumber());
 		vo.setOrderPrice(order.getOrderPrice());
 		vo.setOrderStatic(getState(order.getOrderStatic()));
-		vo.setOrderTime(order.getOrderStatic());
+		vo.setOrderTime(order.getOrderTime());
 		vo.setPayType(getPayType(order.getPayType()));
 		vo.setShopName(order.getShopId().getStoreName());
 		List<Object> detailList = new ArrayList<Object>();
@@ -232,7 +232,7 @@ public class OrdersUtil {
 		}
 		vo.setBenPrice(order.getBenefitPrice());
 		vo.setOrderStatic(getState(order.getOrderStatic()));
-		vo.setOrderTime(order.getOrderStatic());
+		vo.setOrderTime(order.getOrderTime());
 		vo.setPayType(getPayType(order.getPayType()));
 		vo.setPayTime(order.getPayTime());
 		vo.setOdd(order.getOdd());

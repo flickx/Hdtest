@@ -11,6 +11,7 @@ import com.ftoul.po.Coupon;
 import com.ftoul.po.UserCoupon;
 import com.ftoul.util.goodsparam.GoodsParamUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
+import com.ftoul.web.vo.ShopGoodsParamVo;
 
 @Component
 public class CouponUtil {
@@ -61,8 +62,13 @@ public class CouponUtil {
 		return objList;
 	}
 	
-	public void isHasCouponByGoodsParamIdAndShopId(List<Object> param,String shopId){
-		//List<String> typeList = paramUtil.getGoodsTypeByGoodsParamId(paramId);
+	public void isHasCouponByGoodsParamIdAndShopId(List<ShopGoodsParamVo> objList){
+		for (ShopGoodsParamVo shopGoodsParamVo : objList) {
+			String shopId = shopGoodsParamVo.getShopId();
+			String paramId = shopGoodsParamVo.getGoodsParamId();
+			List<String> typeList = paramUtil.getGoodsTypeByGoodsParamId(paramId);
+		}
+		
 	}
 	
 	/**
