@@ -124,18 +124,22 @@ public class OrdersServImpl implements OrdersServ {
 		String key = param.getKey();
 		List<Object> ordersList = new ArrayList<Object>();
 		Page page = new Page();
+		String whereStr = param.getWhereStr();
+		if(whereStr==null){
+			whereStr = "";
+		}
 		if(OrdersConstant.NOT_PAY.equals(key)){
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+param.getWhereStr()+" order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.NOT_DELIVER.equals(key)){
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in('2', '3') and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+param.getWhereStr()+" order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in('2', '3') and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.NOT_TASK_DELIVER.equals(key)){
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in ('4','5') and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+param.getWhereStr()+" order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic in ('4','5') and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.RECOVERY.equals(key)){//查询回收站的数据
-			page =  hibernateUtil.hqlPage(null,"from Orders where state='2' and isHasChild!='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+param.getWhereStr()+" order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where state='2' and isHasChild!='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else if(OrdersConstant.NOT_COMMENT.equals(key)){//查询待评价的数据
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '7' and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+param.getWhereStr()+" order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '7' and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else{
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic!='0' and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+param.getWhereStr()+" order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic!='0' and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}
 		ordersList = page.getObjList();
 		
