@@ -233,12 +233,12 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(after.getBuyerLogCompany().getCode(), after.getBuyerLogOdd());
 		AfterLogisticsVo vo = new AfterLogisticsVo();
 		vo.setServiceCode(after.getServiceCode());
-		vo.setLogisticeCompanyName(after.getBuyerLogCompany().getName());
+		vo.setLogisticeCompanyName(after.getSellerLogCompany().getName());
 		vo.setLogisticeInfo(res);
 		vo.setOdd(after.getBuyerLogOdd());
 		vo.setCreateTime(after.getCreateTime());
-		if(!"null".equals(after.getBuyerLogInfo())){
-			vo.setLogInfo(after.getBuyerLogInfo());
+		if(!"null".equals(after.getSellerLogInfo())){
+			vo.setLogInfo(after.getSellerLogInfo());
 		}
 		return ObjectToResult.getResult(vo);
 	}
