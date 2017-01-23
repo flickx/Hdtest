@@ -131,7 +131,8 @@ public class WebGoodsEventAction {
 			i.setTitle(goodsAppVo.getGoods().getTitle());
 			goodsAppVoList.add(i);
 		}
-		return ObjectToResult.getResult(goodsAppVoList);
+		re.setObj(goodsAppVoList);
+		return re;
 	}
 	/**
 	 * 获取每日上新商品
