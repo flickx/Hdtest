@@ -200,10 +200,11 @@ public class AddressAppServImpl implements AddressAppServ {
 			appVo.setUsername(user.getUsername());
 			appVo.setNickname(user.getNickname());
 			appVo.setHeadImg(user.getPic());
-			appVo.setIdCard(user.getCardId());
+			appVo.setCardId(user.getCardId());
 			appVo.setBirthday(user.getBirth());
 			appVo.setEmail(user.getEmail());
 			appVo.setRealName(user.getName());
+			appVo.setSex(user.getSex());
 		}
 		return ObjectToResult.getResult(appVo);
 	}

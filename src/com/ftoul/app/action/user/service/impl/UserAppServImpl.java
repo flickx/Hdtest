@@ -491,12 +491,24 @@ public class UserAppServImpl implements UserAppServ {
 			res = hibernateUtil.save(user);
 		} else {
 			User newUser = (User) hibernateUtil.find(User.class, user.getId());
-			newUser.setCardId(user.getCardId());
-			newUser.setScore(user.getScore());
-			newUser.setXp(user.getXp());
-			newUser.setEmail(user.getEmail());
-			newUser.setName(user.getName());
-			newUser.setSex(user.getSex());
+			if(null!=user.getCardId()){
+				newUser.setCardId(user.getCardId());
+			}
+			if(null!=user.getScore()){
+				newUser.setScore(user.getScore());
+			}
+			if(null!=user.getXp()){
+				newUser.setXp(user.getXp());
+			}
+			if(null!=user.getEmail()){
+				newUser.setEmail(user.getEmail());
+			}
+			if(null!=user.getName()){
+				newUser.setName(user.getName());
+			}
+			if(null!=user.getSex()){
+				newUser.setSex(user.getSex());
+			}
 			if (user.getNickname() != null)
 				newUser.setNickname(user.getNickname());
 			if (user.getBirth() != null)

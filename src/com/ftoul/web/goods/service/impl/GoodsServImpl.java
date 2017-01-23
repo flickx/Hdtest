@@ -279,8 +279,7 @@ public class GoodsServImpl implements GoodsServ {
 	 */
 	@Override
 	public Result getAppGoodsListByKeyWord(Parameter param) throws Exception {
-		String key = new String(param.getKey().getBytes("ISO-8859-1"),"UTF-8");
-		String hql=" FROM Goods WHERE state =1 and grounding='1' and title LIKE '%"+ key+ "%' "+param.getOrderBy();
+		String hql=" FROM Goods WHERE state =1 and grounding='1' and title LIKE '%"+ param.getKey()+ "%' "+param.getOrderBy();
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
