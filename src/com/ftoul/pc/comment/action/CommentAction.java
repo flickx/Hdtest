@@ -23,13 +23,33 @@ public class CommentAction {
 	CommentService commentService;
 
 	/**
-	 * 分页查询评论
+	 * 分页查询评论pc前端
 	 * @throws Exception 
 	 */
 	@RequestMapping(value = "getCommentPage")  
 	public @ResponseBody Result getCommentPage(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return commentService.getCommentPage(parameter);
+	}
+	
+	/**
+	 * 分页查询评论pc用户后台
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getCommentBackPage")  
+	public @ResponseBody Result getCommentBackPage(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return commentService.getCommentBackPage(parameter);
+	}
+	
+	/**
+	 * 统计评论数目
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getOrderCommentStaticSizeByUserId")  
+	public @ResponseBody Result getOrderCommentStaticSizeByUserId(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return commentService.getOrderCommentStaticSizeByUserId(parameter);
 	}
 	
 	/**

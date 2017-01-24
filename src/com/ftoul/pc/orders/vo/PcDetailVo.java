@@ -8,6 +8,7 @@ public class PcDetailVo {
 	private String picSrc;
 	private String num;
 	private String totalPrice;
+	private String isComment;
 	public String getTitle() {
 		return title;
 	}
@@ -43,6 +44,12 @@ public class PcDetailVo {
 	}
 	public void setTotalPrice(String totalPrice) {
 		this.totalPrice = totalPrice;
+	}
+	public String getIsComment() {
+		return isComment;
+	}
+	public void setIsComment(String isComment) {
+		this.isComment = isComment;
 	}
 
 	

@@ -206,6 +206,7 @@ public class OrdersUtil {
 			detailVo.setPicSrc(orderDetail.getPicSrc());
 			detailVo.setPrice(orderDetail.getPrice());
 			detailVo.setTitle(orderDetail.getGoodsTitle());
+			detailVo.setIsComment(orderDetail.getIsComment());
 			detailList.add(detailVo);
 		}
 		vo.setDetailVoList(detailList);

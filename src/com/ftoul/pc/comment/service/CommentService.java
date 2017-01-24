@@ -10,4 +10,8 @@ public interface CommentService {
 	Result getCommentDetail(Parameter param) throws Exception;
 	
 	Result saveComment(Parameter param) throws Exception;
+
+	Result getCommentBackPage(Parameter parameter) throws Exception;
+
+	Result getOrderCommentStaticSizeByUserId(Parameter parameter) throws Exception;
 }
