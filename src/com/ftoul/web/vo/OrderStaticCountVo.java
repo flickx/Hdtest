@@ -7,6 +7,7 @@ public class OrderStaticCountVo {
 	private String waitReceiptCount;
 	private String afterCount;
 	private String waitCommentCount;
+	private String commentCount;
 	
 	public String getWaitPaymentCount() {
 		return waitPaymentCount;
@@ -37,6 +38,12 @@ public class OrderStaticCountVo {
 	}
 	public void setWaitCommentCount(String waitCommentCount) {
 		this.waitCommentCount = waitCommentCount;
+	}
+	public String getCommentCount() {
+		return commentCount;
+	}
+	public void setCommentCount(String commentCount) {
+		this.commentCount = commentCount;
 	}
 	
 

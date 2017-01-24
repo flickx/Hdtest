@@ -51,6 +51,7 @@ public class OrdersDetail  implements java.io.Serializable {
      private String goodsTitle;
      private String paramName;
      private String picSrc;
+     private String isComment;
 
     // Constructors
 
@@ -290,6 +291,15 @@ public class OrdersDetail  implements java.io.Serializable {
 
 	public void setPicSrc(String picSrc) {
 		this.picSrc = picSrc;
+	}
+
+	@Column(name="is_comment", length=1)
+	public String getIsComment() {
+		return isComment;
+	}
+
+	public void setIsComment(String isComment) {
+		this.isComment = isComment;
 	}
 	
 }
