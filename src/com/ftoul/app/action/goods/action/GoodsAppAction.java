@@ -189,7 +189,8 @@ public class GoodsAppAction {
 			i.setTitle(goods.getTitle());
 			goodsAppVoList.add(i);
 		}
-		return ObjectToResult.getResult(goodsAppVoList);
+		re.setObj(goodsAppVoList);
+		return re;
 	}
 	/**
 	 * app查询指定分类商品列表
