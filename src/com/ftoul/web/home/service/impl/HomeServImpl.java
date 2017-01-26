@@ -76,7 +76,7 @@ public class HomeServImpl implements HomeServ {
 		if ("jjsh".equals(typeName)) {
 			typeName = "家居生活";
 		}
-		String hql1 = "from Goods where state = '1' and grounding = '1' and id in (select gp.goods.id from GoodsParam gp where gp.state='1') and goodsType1.name='"+typeName+"'  order by rand() limit 0,10";
+		String hql1 = "from Goods where state = '1' and grounding = '1' and id in (select gp.goods.id from GoodsParam gp where gp.state='1') and goodsType1.name='"+typeName+"'  order by rand()";
 		Page page = hibernateUtil.hqlPage(null,hql1, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
