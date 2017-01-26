@@ -68,7 +68,7 @@ public class HomeServImpl implements HomeServ {
 	public Result getAppGoodsByGoodsType(Parameter param) throws Exception{
 		String typeName = param.getId().toString();
 		if ("mzgh".equals(typeName)) {
-			typeName = "美妆个护";
+			typeName = "美容个护";
 		}
 		if ("hqms".equals(typeName)) {
 			typeName = "环球美食";
