@@ -22,7 +22,7 @@ public class OrdersConstant {
 	/**删除 7*/
 	public static final String DELETE = "7";
 	/**待评价*/
-	public static final String NOT_COMMENT = "7";
+	public static final String NOT_COMMENT = "6";
 	/**已评价*/
 	public static final String YES_COMMENT = "11";
 	/**售后 10*/
