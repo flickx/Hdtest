@@ -14,4 +14,6 @@ public interface CommentService {
 	Result getCommentBackPage(Parameter parameter) throws Exception;
 
 	Result getOrderCommentStaticSizeByUserId(Parameter parameter) throws Exception;
+
+	Result getGoods(Parameter parameter) throws Exception;
 }

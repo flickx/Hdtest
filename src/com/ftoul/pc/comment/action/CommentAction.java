@@ -72,4 +72,14 @@ public class CommentAction {
 		return commentService.saveComment(parameter);
 	}
 	
+	/**
+	 * 商品评价时展示商品信息
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getGoods")  
+	public @ResponseBody Result getGoods(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return commentService.getGoods(parameter);
+	}
+	
 }

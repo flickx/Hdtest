@@ -15,8 +15,9 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.pc.comment.service.CommentService;
 import com.ftoul.pc.orders.vo.PcOrderVo;
-import com.ftoul.web.comment.vo.GoodsCommentDetailVo;
-import com.ftoul.web.comment.vo.GoodsCommentVo;
+import com.ftoul.pc.comment.vo.GoodsCommentDetailVo;
+import com.ftoul.pc.comment.vo.GoodsCommentVo;
+import com.ftoul.pc.comment.vo.GoodsVo;
 import com.ftoul.web.vo.OrderStaticCountVo;
 import com.ftoul.po.GoodsComment;
 import com.ftoul.po.Orders;
@@ -155,6 +156,22 @@ public class CommentServiceImpl implements CommentService {
 		vo.setGoodsPicSrc(comment.getOrdersDetail().getPicSrc());
 		vo.setPicSrc(comment.getPicSrc());
 		vo.setStar(comment.getStar());
+		return ObjectToResult.getResult(vo);
+	}
+
+	/**
+	 * 商品评价时展示商品信息
+	 */
+	@Override
+	public Result getGoods(Parameter param) throws Exception {
+		OrdersDetail ordersDetail = (OrdersDetail) hibernateUtil.find(OrdersDetail.class, param.getId().toString());
+		GoodsVo vo = new GoodsVo();
+		vo.setOrderNumber(ordersDetail.getOrders().getOrderNumber());
+		vo.setOrderTime(ordersDetail.getOrders().getOrderTime());
+		vo.setGoodsTitle(ordersDetail.getGoodsTitle());
+		vo.setParamName(ordersDetail.getParamName());
+		vo.setPicSrc(ordersDetail.getPicSrc());
+		vo.setPrice(ordersDetail.getPrice());
 		return ObjectToResult.getResult(vo);
 	}
 

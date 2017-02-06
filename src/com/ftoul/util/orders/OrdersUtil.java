@@ -207,6 +207,7 @@ public class OrdersUtil {
 			detailVo.setPrice(orderDetail.getPrice());
 			detailVo.setTitle(orderDetail.getGoodsTitle());
 			detailVo.setIsComment(orderDetail.getIsComment());
+			detailVo.setDetailId(orderDetail.getId());
 			detailList.add(detailVo);
 		}
 		vo.setDetailVoList(detailList);
