@@ -75,7 +75,7 @@ public class CommentServiceImpl implements CommentService {
 		String key = param.getKey();
 		Page page = new Page();
 		if(OrdersConstant.NOT_COMMENT.equals(key)){//查询待评价的数据
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '7' and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '6' and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else{//查询已经全被评论的订单
 			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic ='11' and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}
@@ -102,10 +102,10 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public Result getOrderCommentStaticSizeByUserId(Parameter param)
 			throws Exception {
-		List<Object> ordersList7 =  hibernateUtil.hql("from Orders where orderStatic = '7' and isHasChild !='1' and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'"); //待评价
+		List<Object> ordersList6 =  hibernateUtil.hql("from Orders where orderStatic = '6' and isHasChild !='1' and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'"); //待评价
 		List<Object> ordersList11 =  hibernateUtil.hql("from Orders where orderStatic = '11' and isHasChild !='1' and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'"); //已评价
 		OrderStaticCountVo vo = new OrderStaticCountVo();
-		vo.setWaitCommentCount(String.valueOf(ordersList7.size()));
+		vo.setWaitCommentCount(String.valueOf(ordersList6.size()));
 		vo.setCommentCount(String.valueOf(ordersList11.size()));
 		return ObjectToResult.getResult(vo);
 	}
