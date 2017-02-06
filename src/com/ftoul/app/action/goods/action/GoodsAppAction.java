@@ -88,8 +88,8 @@ public class GoodsAppAction {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "saveUserCollection")  
-	public @ResponseBody Result saveUserCollection(String param) throws Exception{
+	@RequestMapping(value = "saveAppUserCollection")  
+	public @ResponseBody Result saveAppUserCollection(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		Result ret = userCollectionServ.findUserCollection(parameter);
 		if(ret.getResult()==0){
@@ -98,7 +98,17 @@ public class GoodsAppAction {
 			return userCollectionServ.delUserCollection(parameter);
 		}
 	}
-
+	/**
+	 *  新增收藏
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "saveUserCollection")  
+	public @ResponseBody Result saveUserCollection(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return userCollectionServ.saveUserCollection(parameter);
+	}
 	/**
 	 *  新增收藏
 	 * @param param
