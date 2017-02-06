@@ -2,6 +2,7 @@ package com.ftoul.pc.orders.vo;
 
 public class PcDetailVo {
 	
+	private String detailId;
 	private String title;
 	private String price;
 	private String paramName;
@@ -50,6 +51,12 @@ public class PcDetailVo {
 	}
 	public void setIsComment(String isComment) {
 		this.isComment = isComment;
+	}
+	public String getDetailId() {
+		return detailId;
+	}
+	public void setDetailId(String detailId) {
+		this.detailId = detailId;
 	}
 
 	
