@@ -8,6 +8,7 @@ public class GoodsVo {
 	private String picSrc;
 	private String price;
 	private String paramName;
+	private String detailId;
 	public String getOrderNumber() {
 		return orderNumber;
 	}
@@ -43,6 +44,12 @@ public class GoodsVo {
 	}
 	public void setParamName(String paramName) {
 		this.paramName = paramName;
+	}
+	public String getDetailId() {
+		return detailId;
+	}
+	public void setDetailId(String detailId) {
+		this.detailId = detailId;
 	}
 
 	

@@ -172,6 +172,7 @@ public class CommentServiceImpl implements CommentService {
 		vo.setParamName(ordersDetail.getParamName());
 		vo.setPicSrc(ordersDetail.getPicSrc());
 		vo.setPrice(ordersDetail.getPrice());
+		vo.setDetailId(ordersDetail.getId());
 		return ObjectToResult.getResult(vo);
 	}
 
