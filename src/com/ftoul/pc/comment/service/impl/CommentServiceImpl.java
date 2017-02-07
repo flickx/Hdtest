@@ -150,7 +150,7 @@ public class CommentServiceImpl implements CommentService {
 	 */
 	@Override
 	public Result getCommentDetail(Parameter param) throws Exception {
-		GoodsComment comment = (GoodsComment) hibernateUtil.find(GoodsComment.class, param.getId().toString());
+		GoodsComment comment = (GoodsComment) hibernateUtil.hqlFirst("from GoodsComment where state='1' and ordersDetail.id='"+param.getId().toString()+"'");
 		GoodsCommentDetailVo vo = new GoodsCommentDetailVo();
 		vo.setCommentContent(comment.getCommentContent());
 		vo.setCommentTime(comment.getCommentTime());
