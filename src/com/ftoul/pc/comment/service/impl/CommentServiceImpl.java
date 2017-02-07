@@ -120,25 +120,28 @@ public class CommentServiceImpl implements CommentService {
 		OrdersDetail ordersDetail = (OrdersDetail) hibernateUtil.find(OrdersDetail.class, param.getId().toString());
 		ordersDetail.setIsComment("1");
 		hibernateUtil.update(ordersDetail);
+		comment.setOrdersDetail(ordersDetail);
+		comment.setIsShow("0");
+		comment.setState("1");
+		comment.setUserName(param.getUserToken().getUser().getUsername());
+		comment.setCommentTime(new DateStr().toString());
+		comment.setCreateTime(new DateStr().toString());
+		comment.setCreatePerson(param.getUserToken().getUser().getUsername());
+		hibernateUtil.save(comment);
 		boolean flag = true;
 		Orders orders = ordersDetail.getOrders();
 		List<Object> detailList = hibernateUtil.hql("from OrdersDetail where state='1' and orders.id='"+orders.getId()+"'");
 		for (Object object : detailList) {
 			OrdersDetail detail = (OrdersDetail) object;
-			if("0".equals(detail.getIsComment())){
+			if(detail.getIsComment()==null){
 				flag = false;
+				break;
 			}
 		}
 		if(flag==true){
 			orders.setOrderStatic("11");//此订单下所有的订单明细都已经被评论
 			hibernateUtil.update(orders);
 		}
-		comment.setIsShow("0");
-		comment.setState("1");
-		comment.setCommentTime(new DateStr().toString());
-		comment.setCreateTime(new DateStr().toString());
-		comment.setCreatePerson(param.getUserToken().getUser().getUsername());
-		hibernateUtil.save(comment);
 		return ObjectToResult.getResult(comment);
 	}
 	
