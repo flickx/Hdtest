@@ -1,6 +1,7 @@
 package com.ftoul.util.orders;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -369,7 +370,8 @@ public class OrdersUtil {
 			coinPrice = newCoinNumber*base;
 			newOrderPrice = orderPrice - coinPrice;
 			vo.setCoinNumber((int)newCoinNumber);
-			vo.setCoinPrice(coinPrice);
+			String coinPriceStr = new DecimalFormat("0.00").format(coinPrice);
+			vo.setCoinPrice(Double.parseDouble(coinPriceStr));
 		}
 	}
 	
