@@ -82,7 +82,7 @@ public class GoodsComment implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "orders_detail_id")
 	public OrdersDetail getOrdersDetail() {
 		return this.ordersDetail;
