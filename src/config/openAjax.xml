@@ -14,6 +14,7 @@
 		<list>/pc/search</list>
 		<list>/pc/user</list>
 		<list>/pc/orders</list>
+		<list>/pc/afterService</list>
 		<list>/pc/cart</list>
 	</nameSpace>
 	<methodName>
