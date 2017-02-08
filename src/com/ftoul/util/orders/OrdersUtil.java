@@ -208,6 +208,11 @@ public class OrdersUtil {
 			detailVo.setTitle(orderDetail.getGoodsTitle());
 			detailVo.setIsComment(orderDetail.getIsComment());
 			detailVo.setDetailId(orderDetail.getId());
+			if(orderDetail.getIsAfter()==null){
+				detailVo.setIsAfter("0");
+			}else{
+				detailVo.setIsAfter(orderDetail.getIsAfter());
+			}
 			detailList.add(detailVo);
 		}
 		vo.setDetailVoList(detailList);

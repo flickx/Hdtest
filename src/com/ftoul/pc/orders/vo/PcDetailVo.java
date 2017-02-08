@@ -10,6 +10,7 @@ public class PcDetailVo {
 	private String num;
 	private String totalPrice;
 	private String isComment;
+	private String isAfter;
 	public String getTitle() {
 		return title;
 	}
@@ -57,6 +58,12 @@ public class PcDetailVo {
 	}
 	public void setDetailId(String detailId) {
 		this.detailId = detailId;
+	}
+	public String getIsAfter() {
+		return isAfter;
+	}
+	public void setIsAfter(String isAfter) {
+		this.isAfter = isAfter;
 	}
 
 	
