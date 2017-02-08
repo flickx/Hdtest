@@ -24,6 +24,7 @@ import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.pc.afterService.service.AfterServiceServ;
+import com.ftoul.pc.afterService.vo.AfterScheduleVo;
 import com.ftoul.pc.afterService.vo.GoodsVo;
 import com.ftoul.pc.orders.vo.PcOrderVo;
 import com.ftoul.po.AfterOpLog;
@@ -36,8 +37,6 @@ import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.orders.OrdersUtil;
 import com.ftoul.web.vo.AfterLogisticsVo;
 import com.ftoul.web.vo.AfterScheduleLogisticsVo;
-import com.ftoul.web.vo.AfterScheduleVo;
-import com.ftoul.web.vo.ManyVsOneVo;
 
 @Service("PcAfterServiceServImpl")
 public class AfterServiceServImpl implements AfterServiceServ {
@@ -81,32 +80,32 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	@Override
 	public Result getAfterSchedulePage(Parameter param) throws Exception {
 		Page page = hibernateUtil.hqlPage(null,"from AfterSchedule where state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by createTime desc",param.getPageNum(),param.getPageSize());
-		List list = page.getObjList();
-		List<AfterScheduleVo> voList = new ArrayList<AfterScheduleVo>();
-		for (int i = 0; i < list.size(); i++) {
-			AfterScheduleVo vo = new AfterScheduleVo();
-			AfterSchedule schedule = (AfterSchedule) list.get(i);
-			vo.setId(schedule.getId());
-			vo.setGoodsName(schedule.getOrdersDetail().getGoodsParam().getGoods().getTitle());
-			if(schedule.getSellerLogCompany()!=null){
-				vo.setLogCompany(schedule.getSellerLogCompany().getName());
-			}
-			vo.setLogOdd(schedule.getSellerLogOdd());
-			vo.setOrderId(schedule.getOrdersDetail().getOrders().getId());
-			vo.setOrderStatic(schedule.getOrdersDetail().getOrders().getOrderStatic());
-			vo.setOrderTime(schedule.getOrdersDetail().getOrders().getOrderTime());
-			vo.setPic(schedule.getOrdersDetail().getPicSrc());
-			vo.setBackPrice(schedule.getBackPrice());
-			vo.setNum(schedule.getNum());
-			vo.setScheduleStatic(schedule.getScheduleStatic());
-			vo.setServiceCode(schedule.getServiceCode());
-			vo.setTel(schedule.getSellerTel());
-			vo.setUserId(schedule.getUser().getId());
-			vo.setSalePrice(schedule.getOrdersDetail().getPrice());
-			voList.add(vo);
-		}
-		page.getObjList().clear();
-		page.getObjList().addAll(voList);
+//		List list = page.getObjList();
+//		List<AfterScheduleVo> voList = new ArrayList<AfterScheduleVo>();
+//		for (int i = 0; i < list.size(); i++) {
+//			AfterScheduleVo vo = new AfterScheduleVo();
+//			AfterSchedule schedule = (AfterSchedule) list.get(i);
+//			vo.setId(schedule.getId());
+//			vo.setGoodsTitle(schedule.getOrdersDetail().getGoodsParam().getGoods().getTitle());
+//			if(schedule.getSellerLogCompany()!=null){
+//				vo.setLogCompany(schedule.getSellerLogCompany().getName());
+//			}
+//			vo.setLogOdd(schedule.getSellerLogOdd());
+//			vo.setOrderId(schedule.getOrdersDetail().getOrders().getId());
+//			vo.setOrderStatic(schedule.getOrdersDetail().getOrders().getOrderStatic());
+//			vo.setOrderTime(schedule.getOrdersDetail().getOrders().getOrderTime());
+//			vo.setPic(schedule.getOrdersDetail().getPicSrc());
+//			vo.setBackPrice(schedule.getBackPrice());
+//			vo.setNum(schedule.getNum());
+//			vo.setScheduleStatic(schedule.getScheduleStatic());
+//			vo.setServiceCode(schedule.getServiceCode());
+//			vo.setTel(schedule.getSellerTel());
+//			vo.setUserId(schedule.getUser().getId());
+//			vo.setSalePrice(schedule.getOrdersDetail().getPrice());
+//			voList.add(vo);
+//		}
+//		page.getObjList().clear();
+//		page.getObjList().addAll(voList);
 		return ObjectToResult.getResult(page);
 	}
 
@@ -148,15 +147,32 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	 */
 	@Override
 	public Result getAfterSchedule(Parameter param) throws Exception {
-		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
+		OrdersDetail detail = (OrdersDetail) hibernateUtil.find(OrdersDetail.class, param.getId().toString());
+		AfterSchedule after = (AfterSchedule) hibernateUtil.hqlFirst("from AfterSchedule where state='1' and ordersDetail.id='"+detail.getId()+"'");
 		AfterScheduleVo vo = new AfterScheduleVo();
 		if(after!=null){
-			List<Object> list = hibernateUtil.hql("from AfterOpLog where state='1' and afterSchedule.id = '"+after.getId()+"' order by createTime desc");
-			vo.setList(list);
-			vo.setId(after.getId());
+			vo.setBackPrice(after.getBackPrice());
+			vo.setCoinsigee(after.getBuyerConsigee());
+			if(detail.getTotalPrice()!=null){
+				vo.setGoodsPrice(detail.getTotalPrice().toString());
+			}
+			vo.setGoodsTitle(detail.getGoodsTitle());
+			vo.setLogCompany(after.getBuyerLogCompany().getName());
+			vo.setLogOdd(after.getBuyerLogOdd());
+			vo.setNum(detail.getNumber());
+			vo.setOrderNumber(detail.getOrders().getOrderNumber());
 			vo.setOrderTime(after.getOrdersDetail().getOrders().getOrderTime());
-			vo.setServiceCode(after.getServiceCode());
+			vo.setPicSrc(detail.getPicSrc());
+			vo.setReason(after.getReason());
 			vo.setScheduleStatic(after.getScheduleStatic());
+			vo.setServiceCode(after.getServiceCode());
+			vo.setServicePicSrc(after.getPicSrcs());
+			vo.setServiceType(after.getType());
+			BusinessStore store = (BusinessStore) hibernateUtil.find(BusinessStore.class, detail.getShopId());
+			if(store!=null){
+				vo.setShopName(store.getStoreName());
+			}
+			vo.setTel(after.getBuyerTel());
 		}
 		return ObjectToResult.getResult(vo);
 	}
