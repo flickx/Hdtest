@@ -19,7 +19,6 @@ import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.po.Goods;
-import com.ftoul.po.GoodsEventJoin;
 import com.ftoul.po.GoodsType;
 import com.ftoul.web.business.service.BusinessWebServ;
 import com.ftoul.web.goods.service.GoodsBrandServ;
@@ -189,7 +188,8 @@ public class GoodsAppAction {
 			i.setTitle(goods.getTitle());
 			goodsAppVoList.add(i);
 		}
-		return ObjectToResult.getResult(goodsAppVoList);
+		re.setObj(goodsAppVoList);
+		return re;
 	}
 	/**
 	 * app查询指定分类商品列表
@@ -211,6 +211,7 @@ public class GoodsAppAction {
 			i.setTitle(goods.getTitle());
 			goodsAppVoList.add(i);
 		}
-		return ObjectToResult.getResult(goodsAppVoList);
+		re.setObj(goodsAppVoList);
+		return re;
 	}
 }

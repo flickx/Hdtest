@@ -30,6 +30,19 @@ public class HomeServImpl implements HomeServ {
 	@Autowired
 	private HibernateUtil hibernateUtil;
 	/**
+	 * pc获取广告列表
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public Result getPcAdvertList(Parameter param) throws Exception {
+		IndexCarouselPic index = (IndexCarouselPic)JSONObject.toBean((JSONObject)param.getObj(),IndexCarouselPic.class);
+		String hql = "from IndexCarouselPic where state = '1' and carouselType = '" +index.getCarouselType()+"' "+param.getOrderBy() ;
+		List<Object> indexList = hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(indexList);
+	}
+	/**
 	 * 获取首页轮播图列表
 	 * @param param
 	 * @return
@@ -39,6 +52,18 @@ public class HomeServImpl implements HomeServ {
 	public Result getIndexCarouselList(Parameter param) throws Exception {
 		IndexCarouselPic index = (IndexCarouselPic)JSONObject.toBean((JSONObject)param.getObj(),IndexCarouselPic.class);
 		String hql = "from IndexCarouselPic where state = '1' and carouselType = '" +index.getCarouselType()+"' "+param.getOrderBy() ;
+		List<Object> indexList = hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(indexList);
+	}
+	/**
+	 * ios首页轮播图列表
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public Result getIosIndexCarouselList(Parameter param) throws Exception {
+		String hql = "from IndexCarouselPic where state = '1' and carouselType = '" +param.getId()+"' "+param.getOrderBy() ;
 		List<Object> indexList = hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(indexList);
 	}
@@ -68,7 +93,7 @@ public class HomeServImpl implements HomeServ {
 	public Result getAppGoodsByGoodsType(Parameter param) throws Exception{
 		String typeName = param.getId().toString();
 		if ("mzgh".equals(typeName)) {
-			typeName = "美妆个护";
+			typeName = "美容个护";
 		}
 		if ("hqms".equals(typeName)) {
 			typeName = "环球美食";
@@ -76,7 +101,7 @@ public class HomeServImpl implements HomeServ {
 		if ("jjsh".equals(typeName)) {
 			typeName = "家居生活";
 		}
-		String hql1 = "from Goods where state = '1' and grounding = '1' and id in (select gp.goods.id from GoodsParam gp where gp.state='1') and goodsType1.name='"+typeName+"' "+param.getOrderBy();
+		String hql1 = "from Goods where state = '1' and grounding = '1' and id in (select gp.goods.id from GoodsParam gp where gp.state='1') and goodsType1.name='"+typeName+"' order by rand()";
 		Page page = hibernateUtil.hqlPage(null,hql1, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}

@@ -19,6 +19,7 @@ import com.ftoul.common.DateUtil;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.manage.goods.vo.GoodsListVo;
 import com.ftoul.manage.goodsEvent.service.GoodsEventServ;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
@@ -131,7 +132,8 @@ public class WebGoodsEventAction {
 			i.setTitle(goodsAppVo.getGoods().getTitle());
 			goodsAppVoList.add(i);
 		}
-		return ObjectToResult.getResult(goodsAppVoList);
+		re.setObj(goodsAppVoList);
+		return re;
 	}
 	/**
 	 * 获取每日上新商品
@@ -164,16 +166,18 @@ public class WebGoodsEventAction {
 	public @ResponseBody Result getCommendGoodsList(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		Result re =  goodsEventServ.getAllGoods(parameter);
-		List<IndexGoodsAppVo> goodsAppVos = (List<IndexGoodsAppVo>)re.getObj();
+		List<Object> goodsAppVos = (List<Object>)re.getObj();
 		List<IndexGoodsAppVo> goodsAppVoList = new ArrayList<IndexGoodsAppVo>();
-		for (IndexGoodsAppVo goodsAppVo : goodsAppVos) {
+		for (Object o : goodsAppVos) {
+			Object[] index = (Object[])o;
 			IndexGoodsAppVo i  =new IndexGoodsAppVo();
-			i.setGoodsId(goodsAppVo.getGoodsId());
-			i.setPicSrc(goodsAppVo.getPicSrc());
-			i.setPrice(goodsAppVo.getPrice());
-			i.setTitle(goodsAppVo.getTitle());
-			goodsAppVos.add(i);
+			i.setGoodsId(index[0].toString());
+			i.setTitle(index[1].toString());
+			i.setPicSrc(index[2].toString());
+			i.setPrice(new Double(index[3].toString()));  
+			goodsAppVoList.add(i);
 		}
-		return ObjectToResult.getResult(goodsAppVoList);
+		re.setObj(goodsAppVoList);
+		return re;
 	}
 }

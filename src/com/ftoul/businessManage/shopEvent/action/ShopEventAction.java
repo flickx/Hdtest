@@ -244,4 +244,46 @@ public class ShopEventAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return shopEventServ.getGoodsListPage(parameter);
 	}
+	/**
+	 * 通过活动ID获取此活动排除的商品品类
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value = "getGoodsTypeByEventId")  
+	public @ResponseBody Result getGoodsTypeByEventId(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return shopEventServ.getGoodsTypeByEventId(parameter);
+	}
+	/**
+	 * 通过PID得到商品类别
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getByPid")  
+	public @ResponseBody Result getByPid(String param) throws Exception{	
+		Parameter parameter = Common.jsonToParam(param);
+		return shopEventServ.getByPid(parameter);
+	}
+	/**
+	 * 获取第一级商品类别
+	 * @param param 当前级别参数
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getGoodsTypeLevel1List")  
+	public @ResponseBody Result getGoodsTypeLevel1List(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return shopEventServ.getGoodsTypeLevel1List(parameter);
+	}
+	/**
+	 * 活动排除品类下所有商品
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value = "saveGoodsEventJoin")  
+	public @ResponseBody Result saveGoodsEventJoin(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return shopEventServ.saveGoodsEventJoin(parameter);
+	}
 }
