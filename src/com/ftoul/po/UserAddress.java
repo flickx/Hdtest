@@ -242,7 +242,8 @@ public class UserAddress implements java.io.Serializable {
 	public void setState(String state) {
 		this.state = state;
 	}
-
+	
+	@Column(name = "post_code", length = 32)
 	public String getPostCode() {
 		return postCode;
 	}
@@ -251,6 +252,7 @@ public class UserAddress implements java.io.Serializable {
 		this.postCode = postCode;
 	}
 
+	@Column(name = "email", length = 32)
 	public String getEmail() {
 		return email;
 	}
@@ -258,7 +260,8 @@ public class UserAddress implements java.io.Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
+	
+	@Column(name = "another_name", length = 32)
 	public String getAnotherName() {
 		return anotherName;
 	}
