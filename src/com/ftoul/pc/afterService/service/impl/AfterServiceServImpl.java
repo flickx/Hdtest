@@ -24,9 +24,11 @@ import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.pc.afterService.service.AfterServiceServ;
+import com.ftoul.pc.afterService.vo.GoodsVo;
 import com.ftoul.pc.orders.vo.PcOrderVo;
 import com.ftoul.po.AfterOpLog;
 import com.ftoul.po.AfterSchedule;
+import com.ftoul.po.BusinessStore;
 import com.ftoul.po.Orders;
 import com.ftoul.po.OrdersDetail;
 import com.ftoul.util.afterService.AfterServiceUtil;
@@ -254,6 +256,28 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			}
 		}
 		return ObjectToResult.getResult(after);
+	}
+
+	/**
+	 * 进入售后页面获取商品信息
+	 */
+	@Override
+	public Result getAfterGoods(Parameter param) throws Exception {
+		OrdersDetail ordersDetail = (OrdersDetail) hibernateUtil.find(OrdersDetail.class, param.getId().toString());
+		GoodsVo vo = new GoodsVo();
+		vo.setConsigee(ordersDetail.getOrders().getConsignee());
+		vo.setDetailId(ordersDetail.getId());
+		vo.setGoodsTitle(ordersDetail.getGoodsTitle());
+		vo.setNum(ordersDetail.getNumber());
+		vo.setOrderNumber(ordersDetail.getOrders().getOrderNumber());
+		vo.setOrderTime(ordersDetail.getOrders().getOrderTime());
+		vo.setPicSrc(ordersDetail.getPicSrc());
+		vo.setPrice(ordersDetail.getPrice());
+		BusinessStore store = (BusinessStore) hibernateUtil.find(BusinessStore.class, ordersDetail.getShopId());
+		if(store!=null){
+			vo.setShopName(store.getStoreName());
+		}
+		return ObjectToResult.getResult(vo);
 	}
 	
 	

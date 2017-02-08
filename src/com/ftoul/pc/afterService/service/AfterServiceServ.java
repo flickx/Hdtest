@@ -28,5 +28,7 @@ public interface AfterServiceServ {
 	public Result getAfterLogistics(Parameter parameter) throws Exception;
 
 	public Result updateAfterScheduleStatic(Parameter parameter) throws Exception;
+
+	public Result getAfterGoods(Parameter parameter) throws Exception;
 	
 }

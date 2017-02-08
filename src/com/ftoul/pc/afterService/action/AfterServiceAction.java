@@ -120,4 +120,17 @@ public class AfterServiceAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return afterServiceServ.updateAfterScheduleStatic(parameter);
 	}
+	
+	/**
+	 * 进入售后页面获取商品信息
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getAfterGoods")
+	public @ResponseBody Result getAfterGoods(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return afterServiceServ.getAfterGoods(parameter);
+	}
+	
 }
