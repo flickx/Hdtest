@@ -120,6 +120,18 @@ public class OrdersAction {
 	}
 	
 	/**
+	 * 回收站订单查询
+	 * @param param 用户ID
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getRecoveryOrdersPage")  
+	public @ResponseBody Result getRecoveryOrdersPage(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return ordersServ.getRecoveryOrdersPage(parameter);
+	}
+	
+	/**
 	 * 还原订单
 	 * @param param 用户ID
 	 * @return

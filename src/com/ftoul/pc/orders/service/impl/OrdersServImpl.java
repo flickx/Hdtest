@@ -1128,4 +1128,29 @@ public class OrdersServImpl implements OrdersServ {
 		System.out.println(a.divide(b,2,BigDecimal.ROUND_UP ).doubleValue());
 		System.out.println(a.divide(b,2,BigDecimal.ROUND_UP ).toString());
 	}
+
+	/**
+	 * 查询回收站订单列表
+	 */
+	@Override
+	public Result getRecoveryOrdersPage(Parameter param) throws Exception {
+		String whereStr = param.getWhereStr();
+		if(whereStr==null){
+			whereStr = "";
+		}
+		Page page =  hibernateUtil.hqlPage(null,"from Orders where isHasChild!='1' and state='2' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
+		List<Object> ordersList = page.getObjList();
+		PcOrderVo vo = new PcOrderVo();
+		List<Object> list = new ArrayList<Object>();
+		for (int i = 0; i < ordersList.size(); i++) {
+			Orders order = (Orders) ordersList.get(i);
+			List<Object> ordersDetailList = new ArrayList<Object>();
+			ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
+			vo = ordersUtil.transformOrder(order,ordersDetailList);
+			list.add(vo);
+		}
+		page.setObjList(null);
+		page.setObjList(list);
+		return ObjectToResult.getResult(page);
+	}
 }

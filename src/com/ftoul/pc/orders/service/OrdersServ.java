@@ -55,4 +55,6 @@ public interface OrdersServ {
 	Result recoveryOrders(Parameter param) throws Exception;
 	
 	Result restoreOrders(Parameter param) throws Exception;
+
+	Result getRecoveryOrdersPage(Parameter parameter) throws Exception;
 }
