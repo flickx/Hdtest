@@ -80,7 +80,7 @@ public class AddressAppServImpl implements AddressAppServ {
 			UserAddress userAddress = list.get(i);
 			AddressAppVo addressVo = new AddressAppVo();
 			addressVo.setId(userAddress.getId());
-			addressVo.setProvince(userAddress.getCounty());
+			addressVo.setProvince(userAddress.getProvince());
 			addressVo.setCity(userAddress.getCity());
 			addressVo.setCounty(userAddress.getCounty());
 			addressVo.setAddress(userAddress.getAddress());
