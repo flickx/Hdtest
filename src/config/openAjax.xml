@@ -15,6 +15,7 @@
 		<list>/pc/user</list>
 		<list>/pc/orders</list>
 		<list>/pc/afterService</list>
+		<list>/pc/address</list>
 		<list>/pc/cart</list>
 	</nameSpace>
 	<methodName>
