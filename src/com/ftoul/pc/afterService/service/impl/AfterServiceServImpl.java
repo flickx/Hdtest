@@ -157,7 +157,9 @@ public class AfterServiceServImpl implements AfterServiceServ {
 				vo.setGoodsPrice(detail.getTotalPrice().toString());
 			}
 			vo.setGoodsTitle(detail.getGoodsTitle());
-			vo.setLogCompany(after.getBuyerLogCompany().getName());
+			if(after.getBuyerLogCompany()!=null){
+				vo.setLogCompany(after.getBuyerLogCompany().getName());
+			}
 			vo.setLogOdd(after.getBuyerLogOdd());
 			vo.setNum(detail.getNumber());
 			vo.setOrderNumber(detail.getOrders().getOrderNumber());
@@ -248,7 +250,9 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(after.getBuyerLogCompany().getCode(), after.getBuyerLogOdd());
 		AfterLogisticsVo vo = new AfterLogisticsVo();
 		vo.setServiceCode(after.getServiceCode());
-		vo.setLogisticeCompanyName(after.getBuyerLogCompany().getName());
+		if(after.getBuyerLogCompany()!=null){
+			vo.setLogisticeCompanyName(after.getBuyerLogCompany().getName());
+		}
 		vo.setLogisticeInfo(res);
 		vo.setOdd(after.getBuyerLogOdd());
 		vo.setCreateTime(after.getCreateTime());
