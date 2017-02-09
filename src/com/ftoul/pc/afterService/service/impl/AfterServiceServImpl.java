@@ -152,7 +152,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		AfterScheduleVo vo = new AfterScheduleVo();
 		if(after!=null){
 			vo.setBackPrice(after.getBackPrice());
-			vo.setCoinsigee(after.getBuyerConsigee());
+			vo.setCoinsigee(detail.getOrders().getConsignee());
 			if(detail.getTotalPrice()!=null){
 				vo.setGoodsPrice(detail.getTotalPrice().toString());
 			}
@@ -166,11 +166,12 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			vo.setOrderTime(after.getOrdersDetail().getOrders().getOrderTime());
 			vo.setPicSrc(detail.getPicSrc());
 			vo.setReason(after.getReason());
-			vo.setScheduleStatic(after.getScheduleStatic());
+			vo.setScheduleStatic(afterServiceUtil.getAfterState(after.getScheduleStatic()));
 			vo.setServiceCode(after.getServiceCode());
 			vo.setServicePicSrc(after.getPicSrcs());
-			vo.setServiceType(after.getType());
+			vo.setServiceType(afterServiceUtil.getAfterType(after.getType()));
 			vo.setServiceNum(after.getNum());
+			vo.setServiceId(after.getId());
 			BusinessStore store = (BusinessStore) hibernateUtil.find(BusinessStore.class, detail.getShopId());
 			if(store!=null){
 				vo.setShopName(store.getStoreName());
