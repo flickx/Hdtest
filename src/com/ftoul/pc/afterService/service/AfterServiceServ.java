@@ -30,5 +30,7 @@ public interface AfterServiceServ {
 	public Result updateAfterScheduleStatic(Parameter parameter) throws Exception;
 
 	public Result getAfterGoods(Parameter parameter) throws Exception;
+
+	public Result cancelAfter(Parameter parameter) throws Exception;
 	
 }
