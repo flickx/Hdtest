@@ -147,4 +147,16 @@ public class AfterServiceAction {
 		return logisticsUtil.getLogisticsCompany(parameter);
 	}
 	
+	/**
+	 * 取消售后申请
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "cancelAfter")
+	public @ResponseBody Result cancelAfter(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return afterServiceServ.cancelAfter(parameter);
+	}
+	
 }

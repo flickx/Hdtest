@@ -40,7 +40,7 @@ public class GoodsParamUtil {
 	}
 	
 	/**
-	 * 查询该商品参数属于哪些分类
+	 * 查询该商品参数的三级分类
 	 */
 	public List<String> getGoodsTypeByGoodsParamId(String param){
 		List<String> list = new ArrayList<String>();

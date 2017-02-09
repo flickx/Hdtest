@@ -301,6 +301,22 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		}
 		return ObjectToResult.getResult(vo);
 	}
+
+	/**
+	 * 取消售后申请
+	 */
+	@Override
+	public Result cancelAfter(Parameter param) throws Exception {
+		OrdersDetail detail = (OrdersDetail) hibernateUtil.find(OrdersDetail.class, param.getId().toString());
+		AfterSchedule after = (AfterSchedule) hibernateUtil.hqlFirst("from AfterSchedule where state='1' and ordersDetail.id='"+detail.getId()+"'");
+		detail.setIsAfter("3");//取消申请
+		after.setScheduleStatic("13");//取消申请
+		hibernateUtil.update(detail);
+		hibernateUtil.update(after);
+		param.setId(after.getId());
+		afterServiceUtil.saveWebAfterOpLog(param, "【买家】取消售后申请");
+		return ObjectToResult.getResult(after);
+	}
 	
 	
 }
