@@ -11,6 +11,7 @@ import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.pc.afterService.service.AfterServiceServ;
+import com.ftoul.util.logistics.LogisticsUtil;
 
 /**
  * 申请售后单管理
@@ -23,7 +24,8 @@ public class AfterServiceAction {
 
 	@Autowired
 	private AfterServiceServ afterServiceServ;
-	
+	@Autowired
+	private LogisticsUtil logisticsUtil; 
 	/**
 	 * 获取需要申请售后列表
 	 * @param param 用户ID
@@ -131,6 +133,18 @@ public class AfterServiceAction {
 	public @ResponseBody Result getAfterGoods(String param)throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return afterServiceServ.getAfterGoods(parameter);
+	}
+	
+	/**
+	 * 获取物流列表
+	 * @param param 用户ID
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getLogisticsCompany")  
+	public @ResponseBody Result getLogisticsCompany(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return logisticsUtil.getLogisticsCompany(parameter);
 	}
 	
 }
