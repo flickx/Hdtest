@@ -24,5 +24,11 @@ public interface AddressServ {
 	public Result getUserDefaultAddressById(Parameter parameter) throws Exception;
 	
 	public Result getAddress(Parameter param) throws Exception;
+
+	public Result getJPositionProviceList(Parameter parameter) throws Exception;
+
+	public Result getJPositionCityListByProviceId(Parameter parameter) throws Exception;
+
+	public Result getJPositionCountyListByCityId(Parameter parameter) throws Exception;
 	
 }
