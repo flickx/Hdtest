@@ -248,8 +248,8 @@ public class AfterServiceAppServImpl implements AfterServiceAppServ {
 	public Result getAfterLogistics(Parameter param) throws Exception {
 		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
 		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
-		//String res = kdniaoTrackQueryAPI.getOrderTracesByJson(after.getBuyerLogCompany().getCode(), after.getBuyerLogOdd());
-		String res = kdniaoTrackQueryAPI.getOrderTracesByJson("YD", "1202401432095");
+		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(after.getBuyerLogCompany().getCode(), after.getBuyerLogOdd());
+		//String res = kdniaoTrackQueryAPI.getOrderTracesByJson("YD", "1202401432095");
 		AfterLogisticsVo vo = new AfterLogisticsVo();
 		vo.setServiceCode(after.getServiceCode());
 		vo.setLogisticeCompanyName(after.getSellerLogCompany().getName());

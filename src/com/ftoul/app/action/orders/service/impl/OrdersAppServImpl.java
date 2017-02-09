@@ -341,8 +341,8 @@ public class OrdersAppServImpl implements OrdersAppServ {
 	public Result getOrdersLogistics(Parameter param) throws Exception {
 		Orders orders = (Orders) hibernateUtil.find(Orders.class, param.getId()+"");
 		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
-		//String res = kdniaoTrackQueryAPI.getOrderTracesByJson(orders.getLogisticsCompany().getCode(), orders.getOdd());
-		String res = kdniaoTrackQueryAPI.getOrderTracesByJson("YD", "1202401432095");
+		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(orders.getLogisticsCompany().getCode(), orders.getOdd());
+//		String res = kdniaoTrackQueryAPI.getOrderTracesByJson("YD", "1202401432095");
 		OrdersLogisticsVo vo = new OrdersLogisticsVo();
 		vo.setOrderNumber(orders.getOrderNumber());
 		vo.setLogisticeCompanyName(orders.getLogisticsCompany().getName());
