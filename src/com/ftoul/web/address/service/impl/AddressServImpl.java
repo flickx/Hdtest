@@ -122,6 +122,18 @@ public class AddressServImpl implements AddressServ {
 	}
 	
 	/**
+	 * 获取省列表
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getJPositionProviceList(Parameter param) throws Exception {
+		String hql = "from JPositionProvice";
+		List<Object> proviceList = hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(proviceList);
+	}
+	
+	/**
 	 * 通过主键获取地址
 	 * @param param Parameter对象
 	 * @return 返回结果（前台用Result对象）
@@ -172,6 +184,28 @@ public class AddressServImpl implements AddressServ {
 			res = hibernateUtil.update(userAddress);
 		}
 		return ObjectToResult.getResult(res);
+	}
+
+	/**
+	 * 通过省获取市列表
+	 */
+	@Override
+	public Result getJPositionCityListByProviceId(Parameter param)
+			throws Exception {
+		String hql = "from JPositionCity where provinceId ='"+param.getId().toString()+"'";
+		List<Object> cityList = hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(cityList);
+	}
+
+	/**
+	 * 通过市获取区列表
+	 */
+	@Override
+	public Result getJPositionCountyListByCityId(Parameter param)
+			throws Exception {
+		String hql = "from JPositionCounty where cityId ='"+param.getId().toString()+"'";
+		List<Object> countryList = hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(countryList);
 	}
 
 }

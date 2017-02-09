@@ -106,6 +106,41 @@ public class AddressAction {
 		return addressServ.getAddress(parameter);
 	}
 	
+	/**
+	 * 获取省列表
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getJPositionProviceList")  
+	public @ResponseBody Result getJPositionProviceList(String param) throws Exception {
+		Parameter parameter = Common.jsonToParam(param);
+		return addressServ.getJPositionProviceList(parameter);
+	}
+	
+	/**
+	 * 通过省获取市列表
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getJPositionCityListByProviceId")  
+	public @ResponseBody Result getJPositionCityListByProviceId(String param) throws Exception {
+		Parameter parameter = Common.jsonToParam(param);
+		return addressServ.getJPositionCityListByProviceId(parameter);
+	}
+	
+	/**
+	 * 通过市获取区列表
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getJPositionCountyListByCityId")  
+	public @ResponseBody Result getJPositionCountyListByCityId(String param) throws Exception {
+		Parameter parameter = Common.jsonToParam(param);
+		return addressServ.getJPositionCountyListByCityId(parameter);
+	}
 	
 	
 }
