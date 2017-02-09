@@ -263,7 +263,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 			OrderAppVo orderAppVo = new OrderAppVo();
 			orderAppVo.setOrderNumber(orders.getOrderNumber());
 			orderAppVo.setOrderStatic(orders.getOrderStatic());
-			orderAppVo.setPrice(orders.getPayable());
+			orderAppVo.setPrice(orders.getOrderPrice());
 			r.setObj(orderAppVo);
 			return r;
 		}else{
@@ -272,7 +272,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 			OrderAppVo orderAppVo = new OrderAppVo();
 			orderAppVo.setOrderNumber(orders.getOrderNumber());
 			orderAppVo.setOrderStatic(orders.getOrderStatic());
-			orderAppVo.setPrice(orders.getPayable());
+			orderAppVo.setPrice(orders.getOrderPrice());
 			return ObjectToResult.getResult(orderAppVo);
 		}
 	}
