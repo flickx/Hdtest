@@ -234,7 +234,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			throws Exception {
 		Object obj = param.getObj();
 		AfterScheduleLogisticsVo logisticsVo = (AfterScheduleLogisticsVo) Common.jsonToBean(obj.toString(), AfterScheduleLogisticsVo.class);
-		String hql = "update AfterSchedule set sellerLogCompany.id = '"+logisticsVo.getLogisticsCompanyID()+"', sellerLogOdd = '"+logisticsVo.getOdd()+"', sellerLogInfo = '"+logisticsVo.getLogInfo()+"', sellerAddress = '"+logisticsVo.getAddress()+"', sellerTel = '"+logisticsVo.getTel()+"',scheduleStatic='8' where id = '"+logisticsVo.getId()+"'";
+		String hql = "update AfterSchedule set buyerLogCompany.id = '"+logisticsVo.getLogisticsCompanyID()+"', buyerLogOdd = '"+logisticsVo.getOdd()+"', buyerLogInfo = '"+logisticsVo.getLogInfo()+"', buyerAddress = '"+logisticsVo.getAddress()+"', buyerTel = '"+logisticsVo.getTel()+"',scheduleStatic='8' where id = '"+logisticsVo.getId()+"'";
 		int result = hibernateUtil.execHql(hql);
 		afterServiceUtil.saveWebAfterOpLog(param, "【买家】已发货");
 		return ObjectToResult.getResult(result);
