@@ -19,7 +19,6 @@ import com.ftoul.common.DateUtil;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.manage.goods.vo.GoodsListVo;
 import com.ftoul.manage.goodsEvent.service.GoodsEventServ;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
@@ -174,7 +173,7 @@ public class WebGoodsEventAction {
 			i.setGoodsId(index[0].toString());
 			i.setTitle(index[1].toString());
 			i.setPicSrc(index[2].toString());
-			i.setPrice(new Double(index[3].toString()));  
+			i.setPrice(new Double(index[3].toString()));
 			goodsAppVoList.add(i);
 		}
 		re.setObj(goodsAppVoList);

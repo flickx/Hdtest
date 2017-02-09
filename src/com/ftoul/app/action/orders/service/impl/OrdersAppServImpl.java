@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.ftoul.api.KdniaoTrackQueryAPI;
 import com.ftoul.api.aliPay.util.AliPayUtil;
 import com.ftoul.api.chinaPay.util.ChinaPayUtil;
+import com.ftoul.api.weiXinPay.util.WeiXinAppPayUtil;
 import com.ftoul.api.weiXinPay.util.WeiXinPayUtil;
 import com.ftoul.app.action.orders.service.OrdersAppServ;
 import com.ftoul.app.vo.OrderAppVo;
@@ -72,6 +73,8 @@ public class OrdersAppServImpl implements OrdersAppServ {
 	AliPayUtil aliPayUtil;
 	@Autowired
 	WeiXinPayUtil weiXinPayUtil;
+	@Autowired
+	WeiXinAppPayUtil weiXinAppPayUtil;
 	@Autowired
 	CartServ cartServ;
 	@Autowired
@@ -256,16 +259,18 @@ public class OrdersAppServImpl implements OrdersAppServ {
 			Result r = new Result ();
 			r.setResult(2);
 			OrderAppVo orderAppVo = new OrderAppVo();
-			orderAppVo.setOrderNumber(orders.getId());
+			orderAppVo.setOrderNumber(orders.getOrderNumber());
 			orderAppVo.setOrderStatic(orders.getOrderStatic());
+			orderAppVo.setPrice(orders.getOrderPrice());
 			r.setObj(orderAppVo);
 			return r;
 		}else{
 			Result result = ordersServ.saveOrders(param);
 			orders = (Orders)result.getObj();
 			OrderAppVo orderAppVo = new OrderAppVo();
-			orderAppVo.setOrderNumber(orders.getId());
+			orderAppVo.setOrderNumber(orders.getOrderNumber());
 			orderAppVo.setOrderStatic(orders.getOrderStatic());
+			orderAppVo.setPrice(orders.getOrderPrice());
 			return ObjectToResult.getResult(orderAppVo);
 		}
 	}
@@ -334,7 +339,8 @@ public class OrdersAppServImpl implements OrdersAppServ {
 	public Result getOrdersLogistics(Parameter param) throws Exception {
 		Orders orders = (Orders) hibernateUtil.find(Orders.class, param.getId()+"");
 		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
-		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(orders.getLogisticsCompany().getCode(), orders.getOdd());
+		//String res = kdniaoTrackQueryAPI.getOrderTracesByJson(orders.getLogisticsCompany().getCode(), orders.getOdd());
+		String res = kdniaoTrackQueryAPI.getOrderTracesByJson("YD", "1202401432095");
 		OrdersLogisticsVo vo = new OrdersLogisticsVo();
 		vo.setOrderNumber(orders.getOrderNumber());
 		vo.setLogisticeCompanyName(orders.getLogisticsCompany().getName());
@@ -597,7 +603,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 		}else if(OrdersConstant.ALIPAY.equals(payType)){
 			result = aliPayUtil.payByOrders(order);
 		}else if(OrdersConstant.WXPAY.equals(payType)){
-			String mobilWxPayVo = weiXinPayUtil.payByOrders(order,req.getRemoteAddr());
+			Map<String,Object> mobilWxPayVo = weiXinAppPayUtil.payByOrders(order,req.getRemoteAddr());
 			Result mobilWxPay = ObjectToResult.getResult(mobilWxPayVo);
 			return mobilWxPay;
 		}else if(OrdersConstant.ALIQBPAY.equals(payType)){

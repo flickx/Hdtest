@@ -19,6 +19,7 @@ import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.po.Goods;
+import com.ftoul.po.GoodsEventJoin;
 import com.ftoul.po.GoodsType;
 import com.ftoul.web.business.service.BusinessWebServ;
 import com.ftoul.web.goods.service.GoodsBrandServ;
@@ -87,12 +88,27 @@ public class GoodsAppAction {
 	 * @return
 	 * @throws Exception
 	 */
+	@RequestMapping(value = "saveAppUserCollection")  
+	public @ResponseBody Result saveAppUserCollection(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		Result ret = userCollectionServ.findUserCollection(parameter);
+		if(ret.getResult()==0){
+			return userCollectionServ.saveUserCollection(parameter);
+		}else{
+			return userCollectionServ.delUserCollection(parameter);
+		}
+	}
+	/**
+	 *  新增收藏
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "saveUserCollection")  
 	public @ResponseBody Result saveUserCollection(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return userCollectionServ.saveUserCollection(parameter);
 	}
-
 	/**
 	 *  新增收藏
 	 * @param param
