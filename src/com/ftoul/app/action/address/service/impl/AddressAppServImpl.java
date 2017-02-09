@@ -80,7 +80,7 @@ public class AddressAppServImpl implements AddressAppServ {
 			UserAddress userAddress = list.get(i);
 			AddressAppVo addressVo = new AddressAppVo();
 			addressVo.setId(userAddress.getId());
-			addressVo.setProvince(userAddress.getCounty());
+			addressVo.setProvince(userAddress.getProvince());
 			addressVo.setCity(userAddress.getCity());
 			addressVo.setCounty(userAddress.getCounty());
 			addressVo.setAddress(userAddress.getAddress());
@@ -148,13 +148,13 @@ public class AddressAppServImpl implements AddressAppServ {
 	public Result saveUserAddress(Parameter param) throws Exception {
 		UserAddress userAddress = (UserAddress) JSONObject.toBean((JSONObject) param.getObj(),UserAddress.class);
 		if(null!=userAddress.getAddress()){
-			userAddress.setAddress(new String(userAddress.getAddress().getBytes("ISO-8859-1"),"UTF-8"));	
+			userAddress.setAddress(userAddress.getAddress());	
 		}
 		if(null!=userAddress.getName()){
-			userAddress.setName(new String(userAddress.getName().getBytes("ISO-8859-1"),"UTF-8"));
+			userAddress.setName(userAddress.getName());
 		}
 		if(null!=userAddress.getConsignee()){
-			userAddress.setConsignee(new String(userAddress.getConsignee().getBytes("ISO-8859-1"),"UTF-8"));
+			userAddress.setConsignee(userAddress.getConsignee());
 		}
 		userAddress.setDefulat(param.getKey());
 		User user = param.getUserToken().getUser();
@@ -200,9 +200,11 @@ public class AddressAppServImpl implements AddressAppServ {
 			appVo.setUsername(user.getUsername());
 			appVo.setNickname(user.getNickname());
 			appVo.setHeadImg(user.getPic());
-			appVo.setIdCard(user.getCardId());
+			appVo.setCardId(user.getCardId());
 			appVo.setBirthday(user.getBirth());
 			appVo.setEmail(user.getEmail());
+			appVo.setRealName(user.getName());
+			appVo.setSex(user.getSex());
 		}
 		return ObjectToResult.getResult(appVo);
 	}

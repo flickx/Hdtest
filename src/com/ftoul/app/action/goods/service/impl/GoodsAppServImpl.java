@@ -157,7 +157,9 @@ public class GoodsAppServImpl implements GoodsAppServ {
 			GoodsPropAppVo propAppVo = new GoodsPropAppVo();
 			GoodsProp goodsProp = goodsVo.getGoodsPropList().get(i);
 			propAppVo.setContent(goodsProp.getContent());
-			propAppVo.setName(goodsProp.getGoodsPropertyTypeInfo().getName());
+			if(null!=goodsProp.getGoodsPropertyTypeInfo()){
+				propAppVo.setName(goodsProp.getGoodsPropertyTypeInfo().getName());
+			}
 			propAppList.add(propAppVo);
 		}
 		goodsAppVo.setGoodsPropList(propAppList);

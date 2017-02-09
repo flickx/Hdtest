@@ -3,6 +3,8 @@
  */
 package com.ftoul.app.action.user;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -154,7 +156,18 @@ public class WebUserAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return userAppServ.saveUser(parameter);
 	}
-	
+	/**
+	 * 头像上传
+	 * @param param
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "picUpload")
+	public @ResponseBody Result picUpload(String param, HttpServletRequest request)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return userAppServ.picUpload(parameter, request);
+	}
 	//	/**
 //	 * 找回密码:下一步，进入重置密码页面
 //	 * @param param

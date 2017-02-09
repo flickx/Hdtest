@@ -60,7 +60,7 @@ public class AfterServiceAppAction {
 	@RequestMapping(value = "saveAfter")  
 	public @ResponseBody Result saveAfter(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return afterServiceServ.saveAfter(parameter);
+		return afterServiceAppServ.saveAfter(parameter);
 	}
 	
 
@@ -85,7 +85,7 @@ public class AfterServiceAppAction {
 	@RequestMapping(value = "afterServicePicUpload")
 	public @ResponseBody Result afterServicePicUpload(String param, HttpServletRequest request)throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return afterServiceServ.afterServicePicUpload(parameter, request);
+		return afterServiceAppServ.afterServicePicUpload(parameter, request);
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public class AfterServiceAppAction {
 	@RequestMapping(value = "getAfterLogistics")
 	public @ResponseBody Result getAfterLogistics(String param)throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return afterServiceServ.getAfterLogistics(parameter);
+		return afterServiceAppServ.getAfterLogistics(parameter);
 	}
 	
 	/**

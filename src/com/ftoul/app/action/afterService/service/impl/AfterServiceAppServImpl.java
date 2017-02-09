@@ -2,17 +2,14 @@ package com.ftoul.app.action.afterService.service.impl;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -85,6 +82,7 @@ public class AfterServiceAppServImpl implements AfterServiceAppServ {
 				detailAppVo.setNumber(ordersDetail.getNumber());
 				detailAppVo.setPrice(ordersDetail.getGoodsParam().getGoods().getPrice());
 				detailAppVo.setIsAfter(ordersDetail.getIsAfter());
+				detailAppVo.setOrderDetailId(ordersDetail.getId());
 				detailList.add(detailAppVo);
 			}
 			ordersListVo.setDetailList(detailList);
@@ -104,16 +102,18 @@ public class AfterServiceAppServImpl implements AfterServiceAppServ {
 		List<AfterScheduleAppVo> voList = new ArrayList<AfterScheduleAppVo>();
 		for (int i = 0; i < list.size(); i++) {
 			AfterScheduleAppVo vo = new AfterScheduleAppVo();
-			AfterSchedule schedule = (AfterSchedule) list.get(i);
+			AfterScheduleVo schedule = (AfterScheduleVo) list.get(i);
 			vo.setId(schedule.getId());
-			vo.setGoodsName(schedule.getOrdersDetail().getGoodsParam().getGoods().getTitle());
+			vo.setGoodsName(schedule.getGoodsName());
 			vo.setScheduleStatic(schedule.getScheduleStatic());
 			vo.setServiceCode(schedule.getServiceCode());
-			vo.setSalePrice(schedule.getOrdersDetail().getPrice());
-			vo.setGoodsPic(schedule.getOrdersDetail().getGoodsParam().getGoods().getPicSrc());
+			vo.setSalePrice(schedule.getSalePrice());
+			vo.setGoodsPic(schedule.getPic());
+			vo.setCreateTime(schedule.getCreateTime());
 			voList.add(vo);
 		}
-		return ObjectToResult.getResult(voList);
+		result.setObj(voList);
+		return result;
 	}
 
 	/**
@@ -158,12 +158,14 @@ public class AfterServiceAppServImpl implements AfterServiceAppServ {
 		AfterScheduleVo afterScheduleVo = (AfterScheduleVo)result.getObj();
 		AfterScheduleAppVo afterScheduleAppVo = new AfterScheduleAppVo();
 		List<AfterOpLogAppVo> list = new ArrayList<AfterOpLogAppVo>();
+		afterScheduleAppVo.setId(afterScheduleVo.getId());
 		afterScheduleAppVo.setServiceCode(afterScheduleVo.getServiceCode());
 		afterScheduleAppVo.setOrderTime(afterScheduleVo.getOrderTime());
 		afterScheduleAppVo.setScheduleStatic(afterScheduleVo.getScheduleStatic());
 		for (Object object : afterScheduleVo.getList()) {
 			AfterOpLog afterOpLog = (AfterOpLog)object;
 			AfterOpLogAppVo afterOpLogAppVo = new AfterOpLogAppVo();
+			afterOpLogAppVo.setScheduleStatic(afterOpLog.getScheduleStatic());
 			afterOpLogAppVo.setMsg(afterOpLog.getMsg());
 			afterOpLogAppVo.setCreateTime(afterOpLog.getCreateTime());
 			list.add(afterOpLogAppVo);
@@ -179,14 +181,19 @@ public class AfterServiceAppServImpl implements AfterServiceAppServ {
 		System.out.println("contenxtType类型："+request.getContentType());
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		
-		Map<String, MultipartFile> multiValuemap = multipartRequest.getFileMap();
-		Set set = multiValuemap.entrySet();
+//		Map<String, MultipartFile> multiValuemap = multipartRequest.getFileMap();
+		LinkedMultiValueMap<String, MultipartFile> multiValuemap = (LinkedMultiValueMap<String, MultipartFile>) multipartRequest.getMultiFileMap();
+		LinkedList<MultipartFile> multipart = (LinkedList<MultipartFile>) multiValuemap.get("file");
+		for (MultipartFile multipartFile : multipart) {
+			fileList.add(multipartFile);
+		}
+		/*Set set = multiValuemap.entrySet();
 		Iterator it = set.iterator();
 		while(it.hasNext()){
 			Entry entry = (Entry) it.next();
 			entry.getValue();
 			fileList.add((MultipartFile) entry.getValue());
-		}
+		}*/
 		String scheduleId = request.getParameter("scheduleId");
 		AfterSchedule afterSchedule = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, scheduleId+"");
 		StringBuffer srcs = new StringBuffer();
@@ -197,7 +204,9 @@ public class AfterServiceAppServImpl implements AfterServiceAppServ {
 		if (fileList.size()>0) {
 			for (MultipartFile multipartFile : fileList) {
 				count++;
-				String picName = UUID.randomUUID()+"."+multipartFile.getOriginalFilename().split("\\.")[1];
+//				String picName = UUID.randomUUID()+"."+multipartFile.getOriginalFilename().split("\\.")[1];
+				System.out.println(multipartFile.getOriginalFilename());
+				String picName = afterServiceUtil.reName(multipartFile.getOriginalFilename());
 			    String picAddress = picPath+ picName;
 			    srcs.append(picAddress);
 			    if(count!=fileList.size()){
@@ -214,7 +223,6 @@ public class AfterServiceAppServImpl implements AfterServiceAppServ {
 		hibernateUtil.update(afterSchedule);
 		return ObjectToResult.getResult(afterSchedule);
 	}
-	
 	/**
 	 * 用户发货
 	 * @param param Parameter对象
@@ -240,15 +248,16 @@ public class AfterServiceAppServImpl implements AfterServiceAppServ {
 	public Result getAfterLogistics(Parameter param) throws Exception {
 		AfterSchedule after = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, param.getId()+"");
 		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
-		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(after.getBuyerLogCompany().getCode(), after.getBuyerLogOdd());
+		//String res = kdniaoTrackQueryAPI.getOrderTracesByJson(after.getBuyerLogCompany().getCode(), after.getBuyerLogOdd());
+		String res = kdniaoTrackQueryAPI.getOrderTracesByJson("YD", "1202401432095");
 		AfterLogisticsVo vo = new AfterLogisticsVo();
 		vo.setServiceCode(after.getServiceCode());
-		vo.setLogisticeCompanyName(after.getBuyerLogCompany().getName());
+		vo.setLogisticeCompanyName(after.getSellerLogCompany().getName());
 		vo.setLogisticeInfo(res);
 		vo.setOdd(after.getBuyerLogOdd());
 		vo.setCreateTime(after.getCreateTime());
-		if(!"null".equals(after.getBuyerLogInfo())){
-			vo.setLogInfo(after.getBuyerLogInfo());
+		if(!"null".equals(after.getSellerLogInfo())){
+			vo.setLogInfo(after.getSellerLogInfo());
 		}
 		return ObjectToResult.getResult(vo);
 	}
@@ -264,6 +273,4 @@ public class AfterServiceAppServImpl implements AfterServiceAppServ {
 		}
 		return ObjectToResult.getResult(after);
 	}
-	
-	
 }
