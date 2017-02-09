@@ -171,6 +171,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			vo.setServicePicSrc(after.getPicSrcs());
 			vo.setServiceType(afterServiceUtil.getAfterType(after.getType()));
 			vo.setServiceNum(after.getNum());
+			vo.setServiceId(after.getId());
 			BusinessStore store = (BusinessStore) hibernateUtil.find(BusinessStore.class, detail.getShopId());
 			if(store!=null){
 				vo.setShopName(store.getStoreName());

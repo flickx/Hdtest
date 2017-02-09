@@ -3,6 +3,7 @@ package com.ftoul.pc.afterService.vo;
 
 public class AfterScheduleVo {
 	
+	private String serviceId;
 	private String orderNumber;
 	private String goodsTitle;
 	private String num;
@@ -128,6 +129,12 @@ public class AfterScheduleVo {
 	}
 	public void setTel(String tel) {
 		this.tel = tel;
+	}
+	public String getServiceId() {
+		return serviceId;
+	}
+	public void setServiceId(String serviceId) {
+		this.serviceId = serviceId;
 	}
 	
 	
