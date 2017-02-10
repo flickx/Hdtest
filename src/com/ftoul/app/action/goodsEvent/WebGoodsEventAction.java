@@ -100,10 +100,9 @@ public class WebGoodsEventAction {
 			AppLimitGoodsVo i  =new AppLimitGoodsVo();
 			String begin = goodsEvent.getEventBegen().toString().substring(11,16);
 			String end = goodsEvent.getEventEnd().toString();
-			long beginTime = DateUtil.stringFormatToDate(begin, "yyyy/MM/dd HH:mm:ss").getTime();
+			long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
 			long endTime = DateUtil.stringFormatToDate(end, "yyyy/MM/dd HH:mm:ss").getTime();
 			long now = new Date().getTime();
-			//如果抢购还未开始
 			if (now > beginTime) {
 				i.setEndTime((endTime- now)/1000);
 			}else{
