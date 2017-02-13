@@ -105,8 +105,10 @@ public class WebGoodsEventAction {
 			long now = new Date().getTime();
 			if (now > beginTime) {
 				i.setEndTime((endTime- now)/1000);
+				i.setHasBegin("1");
 			}else{
 				i.setEndTime((beginTime - now)/1000);
+				i.setHasBegin("0");
 			}
 			i.setStartTime(begin);
 			
