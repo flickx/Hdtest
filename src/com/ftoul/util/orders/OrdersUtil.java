@@ -263,6 +263,7 @@ public class OrdersUtil {
 				}else{
 					goodsParam.setStock("0");
 				}
+				
 				goodsParam.setSaleNumber(goodsParam.getSaleNumber()+num);
 				goods.setSaleSum(goods.getSaleSum()+num);
 			}else if("cancel".equals(flag)){
