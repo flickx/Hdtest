@@ -98,15 +98,18 @@ public class WebGoodsEventAction {
 			}
 			
 			AppLimitGoodsVo i  =new AppLimitGoodsVo();
-			String begen = goodsEvent.getEventBegen().toString().substring(11,16);
-			
+			String begin = goodsEvent.getEventBegen().toString().substring(11,16);
 			String end = goodsEvent.getEventEnd().toString();
-			long last = DateUtil.stringFormatToDate(end, "yyyy/MM/dd HH:mm:ss").getTime();
+			long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+			long endTime = DateUtil.stringFormatToDate(end, "yyyy/MM/dd HH:mm:ss").getTime();
 			long now = new Date().getTime();
-			long distance = last - now;
-			long endTime = distance/1000;
-			i.setStartTime(begen);
-			i.setEndTime(endTime);
+			if (now > beginTime) {
+				i.setEndTime((endTime- now)/1000);
+			}else{
+				i.setEndTime((beginTime - now)/1000);
+			}
+			i.setStartTime(begin);
+			
 			i.setAppLimitGoodsList(goodsList);
 			goodsAppVoList.add(i);
 		}
