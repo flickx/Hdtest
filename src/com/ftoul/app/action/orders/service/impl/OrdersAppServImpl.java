@@ -111,7 +111,9 @@ public class OrdersAppServImpl implements OrdersAppServ {
 			ordersListVo.setOrderPrice(order.getOrderPrice());
 			ordersListVo.setOrderTime(order.getOrderTime());
 			ordersListVo.setOrderStatic(order.getOrderStatic());
-			ordersListVo.setStoreName(order.getShopId().getStoreName());
+			if(null!=order.getShopId()){
+				ordersListVo.setStoreName(order.getShopId().getStoreName());	
+			}
 			List<Object> manyVsOneVoList = manyVsOneVo.getList();
 			List<OrderListDetailAppVo> detailList = new ArrayList<OrderListDetailAppVo>();
 			for (Object object2 : manyVsOneVoList) {

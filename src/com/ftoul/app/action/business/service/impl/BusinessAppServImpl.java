@@ -76,7 +76,7 @@ public class BusinessAppServImpl implements BusinessAppServ {
 		shopVo.setGoodsMonthNum(businessVo.getGoodsMonthNum());
 		shopVo.setGoodsNum(businessVo.getGoodsNum());
 		shopVo.setGoodsSaleNum(businessVo.getGoodsSaleNum());
-		shopVo.setVerifyTime(businessVo.getVerifyTime());
+		shopVo.setVerifyTime(businessVo.getCreateTime());
 		shopVo.setSummary(businessVo.getSummary());
 		return ObjectToResult.getResult(shopVo);
 	}
