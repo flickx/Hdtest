@@ -118,7 +118,8 @@ public class BusinessAppServImpl implements BusinessAppServ {
 			goodsVo.setPrice(goods.getPrice());
 			goodsVoList.add(goodsVo);
 		}
-		return ObjectToResult.getResult(goodsVoList);
+		result.setObj(goodsVoList);
+		return result;
 
 	}
 }
