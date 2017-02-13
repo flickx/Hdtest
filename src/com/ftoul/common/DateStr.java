@@ -99,8 +99,16 @@ public class DateStr {
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	    String endTime = sdf.format(end);
 	    return endTime;
-    }  
+    } 
+	public String getNowTime(){  
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.setTime(new Date());
+	    Date end = calendar.getTime();
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	    String endTime = sdf.format(end);
+	    return endTime;
+    }
 	public static void main(String[] args){
-		System.out.println(new DateStr().getEndTime());
+		System.out.println(new DateStr().getNowTime());
 	}
 }
