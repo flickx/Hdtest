@@ -258,13 +258,26 @@ public class OrdersUtil {
 			GoodsParam goodsParam = ordersDetail.getGoodsParam();
 			Goods goods = goodsParam.getGoods();
 			if("add".equals(flag)){
-				goodsParam.setStock(String.valueOf(Integer.parseInt(goodsParam.getStock())-num));
+				if(Integer.parseInt(goodsParam.getStock())-num>=0){
+					goodsParam.setStock(String.valueOf(Integer.parseInt(goodsParam.getStock())-num));
+				}else{
+					goodsParam.setStock("0");
+				}
 				goodsParam.setSaleNumber(goodsParam.getSaleNumber()+num);
 				goods.setSaleSum(goods.getSaleSum()+num);
 			}else if("cancel".equals(flag)){
 				goodsParam.setStock(String.valueOf(Integer.parseInt(goodsParam.getStock())+num));
-				goodsParam.setSaleNumber(goodsParam.getSaleNumber()-num);
-				goods.setSaleSum(goods.getSaleSum()-num);
+				if(goodsParam.getSaleNumber()-num>=0){
+					goodsParam.setSaleNumber(goodsParam.getSaleNumber()-num);
+				}else{
+					goodsParam.setSaleNumber(0);
+				}
+				if(goods.getSaleSum()-num>=0){
+					goods.setSaleSum(goods.getSaleSum()-num);
+				}else{
+					goods.setSaleSum(0);
+				}
+				
 			}
 			hibernateUtil.update(goodsParam);
 			//判断商品是否还有库存
