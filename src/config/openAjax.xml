@@ -17,6 +17,7 @@
 		<list>/pc/afterService</list>
 		<list>/pc/address</list>
 		<list>/pc/cart</list>
+		<list>/pc/store</list>
 	</nameSpace>
 	<methodName>
 		<list>login</list>
