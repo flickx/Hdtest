@@ -78,8 +78,8 @@ public class CouponUtil {
 	 * @param objList
 	 */
 	public void isHasCouponByGoodsParamIdAndShopId(List<ShopGoodsParamVo> objList,String userId,String shopId){
-		List<Object> userCouponList = getNotCurrencyCouponByShopId(userId,shopId);
-		for (ShopGoodsParamVo shopGoodsParamVo : objList) {
+		List<Object> userCouponList = getNotCurrencyCouponByShopId(userId,shopId);//获取该用户在该店铺目前所有的非通用优惠券
+		for (ShopGoodsParamVo shopGoodsParamVo : objList) {//查询每个商品的三级分类
 			String paramId = shopGoodsParamVo.getGoodsParamId();
 			List<String> typeList = paramUtil.getGoodsTypeByGoodsParamId(paramId);//查询此商品的三级分类
 		}

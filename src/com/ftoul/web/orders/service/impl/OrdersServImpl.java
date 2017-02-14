@@ -569,6 +569,11 @@ public class OrdersServImpl implements OrdersServ {
 			}
 			int num= Integer.parseInt(shopGoodsParamVo.getNum());
 			goodsNum+=num;
+			int stock = Integer.parseInt(goodsP.getStock());
+			if(stock<num){
+				vo.setMsg("你挑选的商品["+good.getTitle()+"]库存不足，请重新挑选");
+				return vo;
+			}
 			GoodsVo goodsVo = new GoodsVo();
 			goodsVo.setId(shopGoodsParamVo.getGoodsParamId());
 			goodsVo.setNum(shopGoodsParamVo.getNum());
