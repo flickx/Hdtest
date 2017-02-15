@@ -18,7 +18,6 @@ import com.ftoul.po.LoginUser;
 import com.ftoul.po.User;
 import com.ftoul.po.UserToken;
 import com.ftoul.util.hibernate.HibernateUtil;
-import com.ftoul.web.vo.UsersVO;
 
 /**
  * Token操作相关类
@@ -28,7 +27,7 @@ import com.ftoul.web.vo.UsersVO;
 @Component
 public class TokenUtil {
 	private final static String mobilKey = "foul*123";
-//	private final static String pcKey = "foul*456";
+	private final static String pcKey = "foul*456";
 	private final static String manageKey = "foul*789";
 	private final static Integer tokenTime = 30;
 	private final static Integer manageTokenTime = 30;
@@ -204,12 +203,43 @@ public class TokenUtil {
 	}
 	
 	
-	
-	
-	public UserToken toPcToken(UsersVO usersVo){
+	/**
+	 * 获取PC端token(登陆时调用)
+	 * @param user
+	 * @return
+	 */
+	public UserToken toPcToken(User user){
+		String userId = user.getId();
+		String passwordVersion = user.getPasswordVersion();
+		//根据用户ID，密码版本号生成密匙（不修改密码的前提下密匙不会改变）
+		String secretKey = generaSecretKey(userId, passwordVersion, pcKey);
 		
-		
-		return null;
+		String uuid = user.getDriveId();
+		if(uuid == null){
+			uuid = "";
+		}
+		//根据相关信息、时间轴及随机数生成动态的token
+		String token = generaToken(userId, secretKey, pcKey,uuid);
+		//更新到数据库
+		UserToken userTokenDb = new UserToken();
+		Object userTokenObj = hibernateUtil.hqlFirst(" from UserToken where user.state = 1 and user.id = '" + userId +"'");
+		if(userTokenObj != null){
+			userTokenDb = (UserToken) userTokenObj;
+			userTokenDb.setSecretKey(secretKey);
+			userTokenDb.setPcToken(token);
+			userTokenDb.setUploadTime(new DateStr().toString());
+			hibernateUtil.update(userTokenDb);
+		}else{
+			userTokenDb = new UserToken();
+			userTokenDb.setSecretKey(secretKey);
+			userTokenDb.setPcToken(token);
+			userTokenDb.setUploadTime(new DateStr().toString());
+			userTokenDb.setUser(user);
+			hibernateUtil.save(userTokenDb);
+		}
+		//更新内存总token的值
+		userTokenMap.put(userId, userTokenDb);
+		return userTokenDb;
 	}
 	/**
 	 * 生成管理后台token
@@ -232,6 +262,96 @@ public class TokenUtil {
 		return manageTokenVo;
 	}
 	
+	/**
+	 * 验证后台token(移动端AOP验证时调用)
+	 * @param manageTokenVo
+	 * @return
+	 */
+	public Result checkPcToken(UserToken userToken){
+		Result result = new Result();
+		if(userToken == null){
+			result.setResult(-1);
+			result.setMessage("用户未登陆");
+		}else{
+			String tokenId = userToken.getId();
+			String userId = userToken.getUser().getId();
+			String pcToken = userToken.getPcToken();
+			String secretKey = userToken.getSecretKey();
+			String uuid = userToken.getDriveId();
+			if(uuid == null){
+				uuid = "";
+			}
+			UserToken userTokenFMap = userTokenMap.get(userId);
+			String newToken = generaToken(userId, secretKey, pcKey,uuid);
+			if(userTokenFMap != null){
+				if(userTokenFMap.getSecretKey().equals(userToken.getSecretKey())){
+					String userMapTokenTime = userTokenFMap.getUploadTime();
+					Date userMapTokenTimeToDate = DateUtil.stringFormatToDate(userMapTokenTime, "yyyy-MM-dd HH:mm:ss");
+//					if((float)(new Date().getTime()-userMapTokenTimeToDate.getTime())/(1000*60) <= tokenTime){
+						if(userTokenFMap.getPcToken().equals(pcToken)){
+							result.setResult(1);
+							result.setMessage("验证通过");
+							userTokenFMap.setUploadTime(new DateStr().toString());
+							userTokenMap.put(userId, userTokenFMap);
+						}else{
+							System.out.println("time:"+userMapTokenTimeToDate.getTime());
+							System.out.println("pcToken:"+userTokenFMap.getPcToken());
+							System.out.println("userToken:"+pcToken);
+							result.setResult(3);
+							result.setMessage("验证失败，请重新登录(103)");
+						}
+//					}else{
+//						if(userTokenFMap.getMobilToken().equals(mobilToken)){
+//							result.setResult(2);
+//							result.setMessage("token超时，更新token(102)");
+//							UserToken userTokenDb = (UserToken) hibernateUtil.find(UserToken.class, tokenId);
+//	//						String hql = "from UserToken where id = '"+tokenId+"'";
+//	//						Object o = hibernateUtil.hqlFirst(hql);
+//	//						UserToken userTokenDb = (UserToken) o;
+//							userTokenDb.setMobilToken(newToken);
+//							userTokenDb.setUploadTime(new DateStr().toString());
+//							hibernateUtil.update(userTokenDb);
+//							result.setObj(userTokenDb);
+//							userTokenMap.put(userId, userTokenDb);
+//							
+//						}else{
+//							result.setResult(3);
+//							result.setMessage("验证失败，请重新登录(203)");
+//						}
+//					}
+				}else{
+					result.setResult(4);
+					result.setMessage("密码已修改，请重新登录(304)");
+				}
+			}else{
+				UserToken userTokenDb = (UserToken) hibernateUtil.find(UserToken.class, tokenId);
+				if(userTokenDb == null){
+					result.setResult(4);
+					result.setMessage("token超时,请重新登录");
+				}else if(userTokenDb.getSecretKey().equals(userToken.getSecretKey())){
+					if(userTokenDb.getPcToken().equals(pcToken)){
+						userTokenDb.setPcToken(newToken);
+						userTokenDb.setUploadTime(new DateStr().toString());
+						hibernateUtil.update(userTokenDb);
+						result.setResult(1);
+						result.setMessage("token超时,更新token(402)");
+					}else{
+//						userTokenDb.setMobilToken(newToken);
+//						userTokenDb.setUploadTime(new DateStr().toString());
+//						hibernateUtil.update(userTokenDb);
+						result.setResult(3);
+						result.setMessage("token验证失败,请重新登陆(403)");
+					}
+				}else{
+					result.setResult(4);
+					result.setMessage("密码已修改，请重新登录(404)");
+				}
+				result.setObj(userTokenDb);
+				userTokenMap.put(userId, userTokenDb);
+			}
+		}
+		return result;
+	}
 	/**
 	 * 生成商家管理后台token
 	 * @param BusinessStoreLogin
