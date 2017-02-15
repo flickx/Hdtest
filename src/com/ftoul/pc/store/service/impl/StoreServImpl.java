@@ -18,7 +18,12 @@ import com.ftoul.util.hibernate.HibernateUtil;
 public class StoreServImpl implements StoreServ {
 	@Autowired
 	private HibernateUtil hibernateUtil;
-
+	/**
+	 * 
+	 * 得到店铺商铺列表
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
 	@Override
 	public Result getStoreGoodsPage(Parameter param) throws Exception {
 		String hql = "from BusinessClassify where state =1 and shopId = '"+param.getId()+"'";
@@ -35,6 +40,28 @@ public class StoreServImpl implements StoreServ {
 			storeVoList.add(storeVo);
 		}
 		return ObjectToResult.getResult(storeVoList);
+	}
+	/**
+	 * 
+	 * 根据商铺分类得到店铺商铺列表
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getStoreGoodsPageByBusinessClassify(Parameter param)
+			throws Exception {
+		BusinessClassify businessClassify=(BusinessClassify) hibernateUtil.find(BusinessClassify.class, param.getParentId().toString());
+		StoreVo storeVo=new StoreVo();
+		storeVo.setId(businessClassify.getId());
+		storeVo.setName(businessClassify.getName());
+		String goodsHql = "from Goods where state = '1' and grounding = '1' and id in (select gp.goods.id from GoodsParam gp where gp.state='1') and shopId='"+param.getId()+"' "+" and businessClassifyId='"+businessClassify.getId()+"'";
+		Page page = hibernateUtil.hqlPage(null,goodsHql,param.getPageNum(),param.getPageSize());
+		storeVo.setCount(page.getCount());
+		storeVo.setPageNum(page.getPageNum());
+		storeVo.setMaxPage(page.getMaxPage());
+		storeVo.setPageSize(page.getPageSize());
+		storeVo.setObjList(page.getObjList());
+		return ObjectToResult.getResult(storeVo);
 	}
 
 }

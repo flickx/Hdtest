@@ -11,4 +11,12 @@ public interface StoreServ {
 	 * @throws Exception
 	 */
 	Result getStoreGoodsPage(Parameter param) throws Exception;
+	/**
+	 * 
+	 * 根据商铺分类得到店铺商铺列表
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getStoreGoodsPageByBusinessClassify(Parameter param) throws Exception;
 }

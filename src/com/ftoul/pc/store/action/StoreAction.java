@@ -29,7 +29,7 @@ public class StoreAction {
 		return storeServ.getStoreGoodsPage(parameter);
 	}
 	/**
-	 * 根据店铺Id查询
+	 * 根据店铺Id查询店铺分类
 	 * @param param
 	 * @return
 	 * @throws Exception
@@ -38,5 +38,16 @@ public class StoreAction {
 	public @ResponseBody Result getBusinessClassifyByShopId(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return businessClassifyServ.getBusinessClassifyByShopId(parameter);
+	}
+	/**
+	 * 
+	 * 根据商铺分类得到店铺商铺列表
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value="getStoreGoodsPageByBusinessClassify")
+	public @ResponseBody Result getStoreGoodsPageByBusinessClassify(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return storeServ.getStoreGoodsPageByBusinessClassify(parameter);
 	}
 }
