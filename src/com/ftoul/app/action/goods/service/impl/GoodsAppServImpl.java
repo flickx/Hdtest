@@ -165,7 +165,7 @@ public class GoodsAppServImpl implements GoodsAppServ {
 		goodsAppVo.setGoodsPropList(propAppList);
 		//店铺信息
 		ShopVo shopVo = new ShopVo();
-		shopVo.setStoreId(goodsVo.getShopId());
+		shopVo.setStoreId(businessVo.getStoreId());
 		shopVo.setStoreName(businessVo.getStoreName());
 		shopVo.setStorePic(businessVo.getPic());
 		shopVo.setGoodsSaleNum(businessVo.getGoodsSaleNum());
