@@ -218,7 +218,9 @@ public class OrdersAppServImpl implements OrdersAppServ {
 		orderDetailAppVo.setConsignee(order.getConsignee());
 		orderDetailAppVo.setConsigneeTel(order.getConsigneeTel());
 		orderDetailAppVo.setAddress(order.getAddress());
-		orderDetailAppVo.setStoreName(order.getShopId().getStoreName());
+		if(null!=order.getShopId()){
+			orderDetailAppVo.setStoreName(order.getShopId().getStoreName());
+		}
 		orderDetailAppVo.setFeedback(order.getFeedback());
 		orderDetailAppVo.setFreight(order.getFreight());
 		orderDetailAppVo.setBeeCoins(order.getBeeCoins());
