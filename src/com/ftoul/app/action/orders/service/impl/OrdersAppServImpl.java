@@ -229,17 +229,19 @@ public class OrdersAppServImpl implements OrdersAppServ {
 		orderDetailAppVo.setPayable(order.getPayable());
 		List<Object> manyVsOneVoList = manyVsOneVo.getList();
 		List<OrderListDetailAppVo> detailList = new ArrayList<OrderListDetailAppVo>();
-		ManyVsOneVo vo = (ManyVsOneVo) manyVsOneVoList.get(0);
-		for (Object object2 : vo.getList()) {
-			OrdersDetail ordersDetail = (OrdersDetail) object2;
-			OrderListDetailAppVo detailAppVo = new OrderListDetailAppVo();
-			detailAppVo.setId(ordersDetail.getGoodsParam().getGoods().getId());
-			detailAppVo.setTitle(ordersDetail.getGoodsParam().getGoods().getTitle());
-			detailAppVo.setParamName(ordersDetail.getGoodsParam().getParamName());
-			detailAppVo.setPicSrc(ordersDetail.getGoodsParam().getGoods().getPicSrc());
-			detailAppVo.setNumber(ordersDetail.getNumber());
-			detailAppVo.setPrice(ordersDetail.getGoodsParam().getGoods().getPrice());
-			detailList.add(detailAppVo);
+		for (Object object : manyVsOneVoList) {
+			ManyVsOneVo vo = (ManyVsOneVo) object;
+			for (Object object2 : vo.getList()) {
+				OrdersDetail ordersDetail = (OrdersDetail) object2;
+				OrderListDetailAppVo detailAppVo = new OrderListDetailAppVo();
+				detailAppVo.setId(ordersDetail.getGoodsParam().getGoods().getId());
+				detailAppVo.setTitle(ordersDetail.getGoodsParam().getGoods().getTitle());
+				detailAppVo.setParamName(ordersDetail.getGoodsParam().getParamName());
+				detailAppVo.setPicSrc(ordersDetail.getGoodsParam().getGoods().getPicSrc());
+				detailAppVo.setNumber(ordersDetail.getNumber());
+				detailAppVo.setPrice(ordersDetail.getGoodsParam().getGoods().getPrice());
+				detailList.add(detailAppVo);
+			}
 		}
 		orderDetailAppVo.setDetailList(detailList);
 		return ObjectToResult.getResult(orderDetailAppVo);
