@@ -82,7 +82,7 @@
 		<mapping class="com.ftoul.po.JPositionTown" />
 		<mapping class="com.ftoul.po.BaseRoleAuthor" />
 		<mapping class="com.ftoul.po.UserOperation" />
-		<mapping class="com.ftoul.po.IndexCarouselPic" />
+		<mapping class="com.ftoul.po.Advert" />
 		<mapping class="com.ftoul.po.ShopCoupon" />
 		<mapping class="com.ftoul.po.IndexLinks" />
 		<mapping class="com.ftoul.po.GoodsPurchase" />
@@ -136,6 +136,7 @@
 		<mapping class="com.ftoul.po.BusinessClassify"/>
 		<mapping class="com.ftoul.po.SearchKeyName"/>
 		<mapping class="com.ftoul.po.GoodsComment"/>
+		<mapping class="com.ftoul.po.ArticleClassify"/>
 	</session-factory>
 
 </hibernate-configuration>
