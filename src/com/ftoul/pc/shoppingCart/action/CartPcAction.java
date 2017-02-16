@@ -72,6 +72,17 @@ public class CartPcAction {
 		return cartAppServ.clearShopCart(parameter);
 	}
 	/**
+	 * 清除无货商品
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "clearNoStock")  
+	public @ResponseBody Result clearNoStock(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return cartAppServ.clearNoStock(parameter);
+	}
+	/**
 	 * 推荐商品
 	 * @param param
 	 * @return
