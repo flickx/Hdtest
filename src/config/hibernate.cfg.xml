@@ -136,6 +136,7 @@
 		<mapping class="com.ftoul.po.BusinessClassify"/>
 		<mapping class="com.ftoul.po.SearchKeyName"/>
 		<mapping class="com.ftoul.po.GoodsComment"/>
+		<mapping class="com.ftoul.po.ArticleClassify"/>
 		<mapping class="com.ftoul.po.UserGrade"/>
 	</session-factory>
 
