@@ -1,7 +1,11 @@
 package com.ftoul.util.coupon;
 
-import java.text.ParseException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,6 +25,8 @@ public class CouponUtil {
 	private HibernateUtil hibernateUtil;
 	@Autowired
 	private GoodsParamUtil paramUtil;
+	
+	DecimalFormat df =new DecimalFormat("#.00"); 
 	
 	public String getCouponType(String param){
 		String name = null;
@@ -77,22 +83,44 @@ public class CouponUtil {
 	 * 通过商品获取可满足使用的非通用优惠券
 	 * @param objList
 	 */
-	public void isHasCouponByGoodsParamIdAndShopId(List<ShopGoodsParamVo> objList,String userId,String shopId){
+	public List<Coupon> getCouponsByGoodsParamIdAndShopId(List<ShopGoodsParamVo> objList,String userId,String shopId){
+		List<Coupon> couponList = new ArrayList<Coupon>();
 		List<Object> userCouponList = getNotCurrencyCouponByShopId(userId,shopId);//获取该用户在该店铺目前所有的非通用优惠券
-		for (ShopGoodsParamVo shopGoodsParamVo : objList) {//查询每个商品的三级分类
+		List<Map<String, ShopGoodsParamVo>> typesList = new ArrayList<Map<String, ShopGoodsParamVo>>();
+		for (ShopGoodsParamVo shopGoodsParamVo : objList) {//查询每个商品的第三级分类
 			String paramId = shopGoodsParamVo.getGoodsParamId();
-			List<String> typeList = paramUtil.getGoodsTypeByGoodsParamId(paramId);//查询此商品的三级分类
+			String type = paramUtil.getGoodsTypeByGoodsParamId(paramId);//查询此商品的第三级分类
+			Map<String, ShopGoodsParamVo> map = new HashMap<String, ShopGoodsParamVo>(); 
+			map.put(type, shopGoodsParamVo);
+			typesList.add(map);
 		}
-		for (Object object : userCouponList) {
+		for (Object object : userCouponList) {//查询每张优惠券对应的商品分类
+			double totalPrice = 0.00;
+			List<String> couponGoodsTypeList = new ArrayList<String>();
 			UserCoupon userCoupon = (UserCoupon) object;
 			Coupon coupon = userCoupon.getCouponId();
 			List<Object> joinlist = hibernateUtil.hql("from GoodsTypeEventJoin where state='1' and eventId='"+coupon.getId()+"'");
 			for (Object object2 : joinlist) {
 				GoodsTypeEventJoin join = (GoodsTypeEventJoin) object2;
+				couponGoodsTypeList.addAll(paramUtil.getThirdType(join.getGoodsType1(), join.getLevel()));
+			}
+			for (String couponGoodsType : couponGoodsTypeList) {//获取这张优惠券涉及的分类，将购买的商品中含有涉及的分类分组出来
+				for (Map<String, ShopGoodsParamVo> type : typesList) {
+					ShopGoodsParamVo vo = (ShopGoodsParamVo) type.get(couponGoodsType);
+					if(vo!=null){
+						BigDecimal price = new BigDecimal(vo.getPrice());
+						BigDecimal num = new BigDecimal(vo.getNum());
+						totalPrice += price.multiply(num).doubleValue();
+						break;
+					}
+				}
+			}
+			if(totalPrice>=coupon.getTargetValue()){//如果购买的商品总价大于等于优惠券指定的价值，则此优惠券就能使用
+				couponList.add(coupon);
 			}
 			
 		}
-		
+		return couponList;
 	}
 	
 	/**
