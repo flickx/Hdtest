@@ -94,7 +94,7 @@ public class PcUserServImpl implements PcUserServ {
 					throw new Exception("用户已被禁用");
 				}
 			}
-			UserToken userToken = tokenUtil.toMobilToken(u);//暂时用手机端token,需要换pc端Token
+			UserToken userToken = tokenUtil.toPcToken(u);
 			return ObjectToResult.getResult(userToken);
 		}
 
