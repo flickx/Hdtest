@@ -138,6 +138,7 @@
 		<mapping class="com.ftoul.po.GoodsComment"/>
 		<mapping class="com.ftoul.po.ArticleClassify"/>
 		<mapping class="com.ftoul.po.UserGrade"/>
+		<mapping class="com.ftoul.po.UserGrowth"/>
 	</session-factory>
 
 </hibernate-configuration>
