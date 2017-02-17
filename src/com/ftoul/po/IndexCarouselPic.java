@@ -27,8 +27,8 @@ public class IndexCarouselPic  implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = -2676793466704670685L;
 	private String id;
+	private String name;
      private String carouselType;
-     private Integer sort;
      private String createTime;
      private String createPerson;
      private String modifyTime;
@@ -38,6 +38,10 @@ public class IndexCarouselPic  implements java.io.Serializable {
      private String picAddress;
      private String thumbnailSrc;
      private String url;
+     private String terminal;
+     private String active;
+     private String beginTime;
+     private String endTime;
     // Constructors
 
     /** default constructor */
@@ -46,9 +50,8 @@ public class IndexCarouselPic  implements java.io.Serializable {
 
     
     /** full constructor */
-    public IndexCarouselPic(String carouselType, Integer sort, String createTime, String createPerson, String modifyTime, String modifyPerson, String state) {
+    public IndexCarouselPic(String carouselType, String createTime, String createPerson, String modifyTime, String modifyPerson, String state) {
         this.carouselType = carouselType;
-        this.sort = sort;
         this.createTime = createTime;
         this.createPerson = createPerson;
         this.modifyTime = modifyTime;
@@ -76,15 +79,6 @@ public class IndexCarouselPic  implements java.io.Serializable {
     
     public void setCarouselType(String carouselType) {
         this.carouselType = carouselType;
-    }
-    
-    @Column(name="sort", length=32)
-    public Integer getSort() {
-        return this.sort;
-    }
-    
-    public void setSort(Integer sort) {
-        this.sort = sort;
     }
     
     @Column(name="create_time", length=32)
@@ -168,5 +162,49 @@ public class IndexCarouselPic  implements java.io.Serializable {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	
+	@Column(name="terminal", length=32)
+	public String getTerminal() {
+		return terminal;
+	}
 
+	public void setTerminal(String terminal) {
+		this.terminal = terminal;
+	}
+	
+	@Column(name="active", length=10)
+	public String getActive() {
+		return active;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
+	}
+	
+	@Column(name="begin_time", length=32)
+	public String getBeginTime() {
+		return beginTime;
+	}
+
+	public void setBeginTime(String beginTime) {
+		this.beginTime = beginTime;
+	}
+	
+	@Column(name="end_time", length=32)
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	@Column(name="name", length=255)
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 }

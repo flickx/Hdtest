@@ -81,6 +81,35 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		return ObjectToResult.getResult(list);
 	}
 	/**
+	 * 获取pc端首页正在限时抢活动
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@Override
+	public Result getPcLimitEvent(Parameter param) throws Exception {
+		String now = new DateStr().getNowTime();
+		String hql = "from GoodsEvent where state = '1' and '"+now+"' > eventBegen and eventEnd > '"+now+"' and shopId is null and typeName = '限时抢' order by eventBegen asc limit 1";
+		List<Object> list = new ArrayList<Object>();
+		list =	hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(list);
+	}
+	/**
+	 * 获取pc端限时抢页面限时抢活动商品列表
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@Override
+	public Result getPcLimitEventList(Parameter param) throws Exception {
+		String startTime = new DateStr().getStartTime();
+		String endTime = new DateStr().getEndTime();
+		String hql = "from GoodsEvent where state = '1' and '"+startTime+"' < eventBegen and eventBegen < '"+endTime+"' and shopId is null and typeName = '限时抢' order by eventBegen asc limit 5";
+		List<Object> list = new ArrayList<Object>(5);
+		list =	hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(list);
+	}
+	/**
 	 * 根据活动ID获取单个活动对象
 	 * @param param Parameter对象
 	 * @return 返回结果（前台用Result对象）
@@ -319,6 +348,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 				String quantity = (String)hibernateUtil.hqlFirst("SELECT sum(stock) from GoodsParam where state = '1' and goods.grounding = '1' and goods.id = '"+goodsId+"'");
 				if (quantity!=null) {
 					goodsEventJoin.setQuantity(Integer.parseInt(quantity));
+					goodsEventJoin.setDefaultQuantity(Integer.parseInt(quantity));
 				}
 				res=hibernateUtil.save(goodsEventJoin);
 			}

@@ -44,4 +44,5 @@ public interface AdvertServ {
 	 * @return 返回结果（前台用Result对象）
 	 */
 	Result deleteIndexPic(Parameter parameter) throws Exception ;
+	
 }
