@@ -70,7 +70,7 @@ public class WeiXinAppPayUtil {
 	    resMap.put("partnerid", ConfigUtil.MCH_ID);
 	    resMap.put("prepayid", prepayId);
 	    resMap.put("timestamp", timestamp);
-	    resMap.put("sign", sign);
+	    resMap.put("sign", newSign);
 	    
 //	    StringBuffer json = new StringBuffer();
 //	    json.append("{\"appid\":\"");
