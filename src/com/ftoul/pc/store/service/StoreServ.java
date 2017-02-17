@@ -19,4 +19,12 @@ public interface StoreServ {
 	 * @throws Exception
 	 */
 	Result getStoreGoodsPageByBusinessClassify(Parameter param) throws Exception;
+	
+	/**
+	 * 根据店铺id获取店铺简介，营业执照
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getStoreSummary(Parameter param) throws Exception;
 }

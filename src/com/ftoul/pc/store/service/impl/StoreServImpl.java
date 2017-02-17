@@ -11,8 +11,11 @@ import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.pc.store.service.StoreServ;
+import com.ftoul.pc.store.vo.BusinessPcVo;
 import com.ftoul.pc.store.vo.StoreVo;
 import com.ftoul.po.BusinessClassify;
+import com.ftoul.po.BusinessStore;
+import com.ftoul.po.BusinessStoreSummary;
 import com.ftoul.util.hibernate.HibernateUtil;
 @Service("StoreServImpl")
 public class StoreServImpl implements StoreServ {
@@ -62,6 +65,16 @@ public class StoreServImpl implements StoreServ {
 		storeVo.setPageSize(page.getPageSize());
 		storeVo.setObjList(page.getObjList());
 		return ObjectToResult.getResult(storeVo);
+	}
+	@Override
+	public Result getStoreSummary(Parameter param) throws Exception {
+		BusinessStore businessStore = (BusinessStore) hibernateUtil.find(BusinessStore.class, param.getId().toString());
+		BusinessPcVo businessPcVo = new BusinessPcVo();
+		businessPcVo.setBusinessLicenceImg(businessStore.getBusiness().getBusinessManage().getBusinessLicenceImg());
+		String hql = "from BusinessStoreSummary where state = 1 and storeId = '"+param.getId()+"'";
+		BusinessStoreSummary businessStoreSummary  = (BusinessStoreSummary)hibernateUtil.hqlFirst(hql);
+		businessPcVo.setSummary(businessStoreSummary.getSummary());
+		return ObjectToResult.getResult(businessPcVo);
 	}
 
 }
