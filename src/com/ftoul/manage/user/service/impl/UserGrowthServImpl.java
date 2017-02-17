@@ -7,6 +7,7 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
@@ -26,8 +27,10 @@ public class UserGrowthServImpl implements UserGrowthServ {
 		List<Object> list = hibernateUtil.hql(hql);
 		Object res;
 		if(list.size()<=0){
+			userGrowth.setCreateTime(new DateStr().toString());
 			res = hibernateUtil.save(userGrowth);
 		}else{
+			userGrowth.setModifyTime(new DateStr().toString());
 			res = hibernateUtil.update(userGrowth);
 		}
 		return ObjectToResult.getResult(res);
