@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -23,6 +24,10 @@ public class UserGrowth implements java.io.Serializable {
 	private String manualLogin;
 	private String birthAble;
 	private String birth;
+	private String orderFinishAble;
+	private String orderFinish;
+	private String commentAble;
+	private String comment;
 	private String createTime;
 	private String createPerson;
 	private String modifyTime;
@@ -37,7 +42,8 @@ public class UserGrowth implements java.io.Serializable {
 	/** full constructor */
 	public UserGrowth(String firstLoginAble, String firstLogin,
 			String manualLoginAble, String manualLogin, String birthAble,
-			String birth, String createTime, String createPerson,
+			String birth, String orderFinishAble,String orderFinish,String commentAble,String comment,
+			String createTime, String createPerson,
 			String modifyTime, String modifyPerson) {
 		this.firstLoginAble = firstLoginAble;
 		this.firstLogin = firstLogin;
@@ -45,6 +51,10 @@ public class UserGrowth implements java.io.Serializable {
 		this.manualLogin = manualLogin;
 		this.birthAble = birthAble;
 		this.birth = birth;
+		this.orderFinishAble = orderFinishAble;
+		this.orderFinish = orderFinish;
+		this.commentAble = commentAble;
+		this.comment = comment;
 		this.createTime = createTime;
 		this.createPerson = createPerson;
 		this.modifyTime = modifyTime;
@@ -100,7 +110,7 @@ public class UserGrowth implements java.io.Serializable {
 		this.manualLogin = manualLogin;
 	}
 
-	@Column(name = "birth_able", length = 32)
+	@Column(name = "birth_able", length = 1)
 	public String getBirthAble() {
 		return this.birthAble;
 	}
@@ -116,6 +126,38 @@ public class UserGrowth implements java.io.Serializable {
 
 	public void setBirth(String birth) {
 		this.birth = birth;
+	}
+	@Column(name = "order_finish_able", length = 1)
+	public String getOrderFinishAble() {
+		return orderFinishAble;
+	}
+
+	public void setOrderFinishAble(String orderFinishAble) {
+		this.orderFinishAble = orderFinishAble;
+	}
+	@Column(name = "order_finish", length =32)
+	public String getOrderFinish() {
+		return orderFinish;
+	}
+
+	public void setOrderFinish(String orderFinish) {
+		this.orderFinish = orderFinish;
+	}
+	@Column(name = "comment_able", length = 1)
+	public String getCommentAble() {
+		return commentAble;
+	}
+	
+	public void setCommentAble(String commentAble) {
+		this.commentAble = commentAble;
+	}
+	@Column(name = "comment", length = 32)
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	@Column(name = "create_time", length = 32)
