@@ -1,6 +1,7 @@
 package com.ftoul.manage.coupon.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,17 +46,15 @@ public class CouponServiceImpl implements CouponService {
 		List<Object> list = param.getObjList();
 		if(list!=null&&list.size()>0){//如果有分类就关联分类
 			for (Object object : list) {
-				GoodsTypeVo vo = (GoodsTypeVo) object;
+				HashMap map = (HashMap) object;
 				GoodsTypeEventJoin join = new GoodsTypeEventJoin();
 				join.setBusinessStore(store);
-				join.setCreatePerson(param.getUserToken().getUser().getUsername());
+				join.setCreatePerson(param.getManageToken().getLoginUser().getLoginName());
 				join.setCreateTime(new DateStr().toString());
 				join.setState("1");
 				join.setEventId(coupon.getId());
-				join.setGoodsType1(vo.getType1());
-				join.setGoodsType2(vo.getType2());
-				join.setGoodsType3(vo.getType3());
-				join.setLevel(vo.getLevel());
+				join.setGoodsType((String)map.get("id"));
+				join.setLevel((String)map.get("level"));
 				hibernateUtil.save(join);
 			}
 		}
@@ -150,13 +149,22 @@ public class CouponServiceImpl implements CouponService {
 			for (Object object : typeList) {
 				GoodsTypeEventJoin join = (GoodsTypeEventJoin) object;
 				GoodsTypeVo typeVo = new GoodsTypeVo();
-				typeVo.setType1(join.getGoodsType1());
 				typeVo.setLevel(join.getLevel());
 				typeVoList.add(typeVo);
 			}
 			vo.setTypeList(typeVoList);
 		}
 		return ObjectToResult.getResult(vo);
+	}
+
+	/**
+	 * 检测此商品分类是否已有有效优惠券
+	 */
+	@Override
+	public Result isHasCouponByGoodsTypeId(Parameter param)
+			throws Exception {
+		
+		return null;
 	}
 
 }

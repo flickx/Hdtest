@@ -294,31 +294,33 @@ public class AliPayServImpl implements AliPayServ{
 		}
 		
 		if(AlipayNotifyRSA.verify(resultMap)){
-			orders.setModifyTime(new DateStr().toString());
-			orders.setOrderStatic("2");
-			orders.setPayStatic("1");
-			orders.setPayTime(new DateStr().toString());
-			if("1".equals(orders.getIsHasChild())){//如果有子订单，将子订单的付款信息也填充满
-				List<Object> childList = hibernateUtil.hql("from Orders where state='1' and parentOrdersId='"+orders.getId()+"'");
-				for (Object object : childList) {
-					Orders child = (Orders) object;
-					child.setModifyTime(new DateStr().toString());
-					child.setOrderStatic("2");
-					child.setPayStatic("1");
-					child.setPayType("2");
-					child.setPayTime(new DateStr().toString());
-					hibernateUtil.update(child);
+			if("1".equals(orders.getOrderStatic())){
+				orders.setModifyTime(new DateStr().toString());
+				orders.setOrderStatic("2");
+				orders.setPayStatic("1");
+				orders.setPayTime(new DateStr().toString());
+				if("1".equals(orders.getIsHasChild())){//如果有子订单，将子订单的付款信息也填充满
+					List<Object> childList = hibernateUtil.hql("from Orders where state='1' and parentOrdersId='"+orders.getId()+"'");
+					for (Object object : childList) {
+						Orders child = (Orders) object;
+						child.setModifyTime(new DateStr().toString());
+						child.setOrderStatic("2");
+						child.setPayStatic("1");
+						child.setPayType("2");
+						child.setPayTime(new DateStr().toString());
+						hibernateUtil.update(child);
+					}
 				}
+				
+				ordersPay.setOrders(orders);
+				ordersPay.setCreateTime(new DateStr().toString());
+				ordersPay.setPayPrice(orders.getOrderPrice());
+				ordersPay.setPayStatic("1");
+				ordersPay.setPayType("2");
+				ordersPay.setState("1");
+				ordersPay.setSerialNumber(resultMap.get("trade_no"));
+				ordersPay.setPayCard(resultMap.get("buyer_logon_id"));//买家支付宝账号
 			}
-			
-			ordersPay.setOrders(orders);
-			ordersPay.setCreateTime(new DateStr().toString());
-			ordersPay.setPayPrice(orders.getOrderPrice());
-			ordersPay.setPayStatic("1");
-			ordersPay.setPayType("2");
-			ordersPay.setState("1");
-			ordersPay.setSerialNumber(resultMap.get("trade_no"));
-			ordersPay.setPayCard(resultMap.get("buyer_logon_id"));//买家支付宝账号
 			resObj = "success";
 		}else{
 			orders.setPayTime(new DateStr().toString());

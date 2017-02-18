@@ -81,6 +81,20 @@ public class CouponAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return couponService.deleteCoupon(parameter);
 	}
+	
+	/**
+	 * 检测此商品分类是否已有有效优惠券
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "isHasCouponByGoodsTypeId")  
+	public @ResponseBody Result isHasCouponByGoodsTypeId(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return couponService.isHasCouponByGoodsTypeId(parameter);
+	}
+	
+	
 
 
 }

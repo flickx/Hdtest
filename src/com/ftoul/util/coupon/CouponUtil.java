@@ -102,7 +102,7 @@ public class CouponUtil {
 			List<Object> joinlist = hibernateUtil.hql("from GoodsTypeEventJoin where state='1' and eventId='"+coupon.getId()+"'");
 			for (Object object2 : joinlist) {
 				GoodsTypeEventJoin join = (GoodsTypeEventJoin) object2;
-				couponGoodsTypeList.addAll(paramUtil.getThirdType(join.getGoodsType1(), join.getLevel()));
+				couponGoodsTypeList.addAll(paramUtil.getThirdType(join.getGoodsType(), join.getLevel()));
 			}
 			for (String couponGoodsType : couponGoodsTypeList) {//获取这张优惠券涉及的分类，将购买的商品中含有涉及的分类分组出来
 				for (Map<String, ShopGoodsParamVo> type : typesList) {
