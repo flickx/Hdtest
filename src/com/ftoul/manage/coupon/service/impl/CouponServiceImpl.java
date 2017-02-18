@@ -16,6 +16,7 @@ import com.ftoul.manage.coupon.service.CouponService;
 import com.ftoul.manage.coupon.vo.CouponCount;
 import com.ftoul.manage.coupon.vo.CouponVo;
 import com.ftoul.manage.coupon.vo.GoodsTypeVo;
+import com.ftoul.po.BusinessStore;
 import com.ftoul.po.Coupon;
 import com.ftoul.po.GoodsTypeEventJoin;
 import com.ftoul.util.coupon.CouponUtil;
@@ -35,9 +36,10 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	public Result saveCoupon(Parameter param) throws Exception {
 		Coupon coupon = (Coupon) Common.jsonToBean(param.getObj().toString(), Coupon.class);
-		coupon.setBusinessStore(param.getManageToken().getBusinessStoreLogin().getBusinessStore());
+		BusinessStore store = (BusinessStore) hibernateUtil.find(BusinessStore.class, "1");
+		coupon.setBusinessStore(store);
 		coupon.setState("1");
-		coupon.setCreatePerson(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
+		coupon.setCreatePerson(param.getManageToken().getLoginUser().getLoginName());
 		coupon.setCreateTime(new DateStr().toString());
 		Object obj = hibernateUtil.save(coupon);
 		List<Object> list = param.getObjList();
@@ -45,8 +47,8 @@ public class CouponServiceImpl implements CouponService {
 			for (Object object : list) {
 				GoodsTypeVo vo = (GoodsTypeVo) object;
 				GoodsTypeEventJoin join = new GoodsTypeEventJoin();
-				join.setBusinessStore(param.getManageToken().getBusinessStoreLogin().getBusinessStore());
-				join.setCreatePerson(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
+				join.setBusinessStore(store);
+				join.setCreatePerson(param.getUserToken().getUser().getUsername());
 				join.setCreateTime(new DateStr().toString());
 				join.setState("1");
 				join.setEventId(coupon.getId());
