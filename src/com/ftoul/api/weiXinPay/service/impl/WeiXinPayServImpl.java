@@ -82,36 +82,39 @@ public class WeiXinPayServImpl implements WeiXinPayServ{
 	public void payReturn(Map<Object, Object> resultMap) throws Exception {
 		String merOrderNo = (String) resultMap.get("out_trade_no");
 		Orders orders = (Orders) hibernateUtil.hqlFirst("from Orders where orderNumber = '" + merOrderNo + "'");
-		orders.setPayType("3");
-		orders.setModifyTime(new DateStr().toString());
-		orders.setOrderStatic("2");
-		orders.setPayStatic("1");
-		orders.setPayTime(new DateStr().toString());
-		if("1".equals(orders.getIsHasChild())){//如果有子订单，将子订单的付款信息也填充满
-			List<Object> childList = hibernateUtil.hql("from Orders where state='1' and parentOrdersId='"+orders.getId()+"'");
-			for (Object object : childList) {
-				Orders child = (Orders) object;
-				child.setModifyTime(new DateStr().toString());
-				child.setOrderStatic("2");
-				child.setPayStatic("1");
-				child.setPayType("3");
-				child.setPayTime(new DateStr().toString());
-				hibernateUtil.update(child);
+		if("1".equals(orders.getOrderStatic())){
+			orders.setPayType("3");
+			orders.setModifyTime(new DateStr().toString());
+			orders.setOrderStatic("2");
+			orders.setPayStatic("1");
+			orders.setPayTime(new DateStr().toString());
+			if("1".equals(orders.getIsHasChild())){//如果有子订单，将子订单的付款信息也填充满
+				List<Object> childList = hibernateUtil.hql("from Orders where state='1' and parentOrdersId='"+orders.getId()+"'");
+				for (Object object : childList) {
+					Orders child = (Orders) object;
+					child.setModifyTime(new DateStr().toString());
+					child.setOrderStatic("2");
+					child.setPayStatic("1");
+					child.setPayType("3");
+					child.setPayTime(new DateStr().toString());
+					hibernateUtil.update(child);
+				}
 			}
+			
+			OrdersPay ordersPay = new OrdersPay();
+			ordersPay.setOrders(orders);
+			ordersPay.setCreateTime(new DateStr().toString());
+			ordersPay.setPayPrice(orders.getOrderPrice());
+			ordersPay.setPayStatic("1");
+			ordersPay.setPayType("3");
+			ordersPay.setSerialNumber((String)resultMap.get("transaction_id"));
+			//ordersPay.setPayCard(resultMap.get("BankInstNo"));
+			ordersPay.setState("1");
+			
+			hibernateUtil.update(orders);
+			hibernateUtil.save(ordersPay);
 		}
 		
-		OrdersPay ordersPay = new OrdersPay();
-		ordersPay.setOrders(orders);
-		ordersPay.setCreateTime(new DateStr().toString());
-		ordersPay.setPayPrice(orders.getOrderPrice());
-		ordersPay.setPayStatic("1");
-		ordersPay.setPayType("3");
-		ordersPay.setSerialNumber((String)resultMap.get("transaction_id"));
-		//ordersPay.setPayCard(resultMap.get("BankInstNo"));
-		ordersPay.setState("1");
-		
-		hibernateUtil.update(orders);
-		hibernateUtil.save(ordersPay);
 	}
 
 }
