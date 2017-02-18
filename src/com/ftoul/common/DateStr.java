@@ -95,7 +95,7 @@ public class DateStr {
 	    String startTime = sdf.format(start);
 	    return startTime;
     }  
-      
+	
 	public String getEndTime(){  
 	    Calendar calendar = Calendar.getInstance();
 	    calendar.setTime(new Date());
@@ -121,6 +121,6 @@ public class DateStr {
 	public static void main(String[] args) throws ParseException{
 		NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
         format.setMinimumFractionDigits(2);// 设置小数位
-		System.out.println(15*1.0/21);
+		System.out.println(Math.round(15.8));
 	}
 }
