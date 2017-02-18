@@ -1048,6 +1048,8 @@ public class OrdersServImpl implements OrdersServ {
 			ordersUtil.getCoinInfo(param,vo);//获取蜂币
 			ordersUtil.getDeductionCoinInfo(param,vo,orders);
 			ordersUtil.getDoubleCoinData(param,vo);//参与蜂币翻倍活动
+		}else{
+			vo.setMsg(msgVo.getMsg());
 		}
 		
 		return ObjectToResult.getResult(vo);
