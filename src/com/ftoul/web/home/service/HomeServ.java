@@ -24,6 +24,13 @@ public interface HomeServ {
 	 */
 	Result getIndexCarouselList(Parameter param) throws Exception;
 	/**
+	 * app获取首页轮播图列表
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getAppIndexCarouselList(Parameter param) throws Exception; 
+	/**
 	 * 插入用户短信记录
 	 * @param param
 	 * @return

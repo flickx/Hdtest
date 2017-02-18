@@ -111,7 +111,6 @@ public class WebGoodsEventAction {
 				i.setHasBegin("0");
 			}
 			i.setStartTime(begin);
-			
 			i.setAppLimitGoodsList(goodsList);
 			goodsAppVoList.add(i);
 		}

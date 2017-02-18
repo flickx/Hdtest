@@ -37,8 +37,20 @@ public class HomeServImpl implements HomeServ {
 	 */
 	@Override
 	public Result getIndexCarouselList(Parameter param) throws Exception {
-//		IndexCarouselPic index = (IndexCarouselPic)JSONObject.toBean((JSONObject)param.getObj(),IndexCarouselPic.class);
-		String hql = "from IndexCarouselPic where state = '1' and carouselType = '1' "+param.getOrderBy() ;
+		String hql = "from IndexCarouselPic where state = '1' "+param.getWhereStr() ;
+		List<Object> indexList = hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(indexList);
+	}
+	/**
+	 * app获取首页轮播图列表
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public Result getAppIndexCarouselList(Parameter param) throws Exception {
+		IndexCarouselPic index = (IndexCarouselPic)JSONObject.toBean((JSONObject)param.getObj(),IndexCarouselPic.class);
+		String hql = "from IndexCarouselPic where state = '1' and carouselType = '"+index.getCarouselType()+"' "+param.getOrderBy() ;
 		List<Object> indexList = hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(indexList);
 	}
