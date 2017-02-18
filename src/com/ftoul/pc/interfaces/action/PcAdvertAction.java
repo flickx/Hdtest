@@ -16,7 +16,7 @@ import com.ftoul.pc.interfaces.service.PcAdvertService;
  * 2017-02-16
  */
 @Controller
-@RequestMapping(value = "/pcInterface/advert/")
+@RequestMapping(value = "/pcInterface/pto/")
 public class PcAdvertAction {
 
 	@Autowired
@@ -28,8 +28,8 @@ public class PcAdvertAction {
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping(value = "getAdvert")  
-	public @ResponseBody Result getAdvert(String param) throws Exception{
+	@RequestMapping(value = "getPhoto")  
+	public @ResponseBody Result getPhoto(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return advertServ.getAdvert(parameter);
 	}
