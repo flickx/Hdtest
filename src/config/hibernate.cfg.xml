@@ -140,6 +140,7 @@
 		<mapping class="com.ftoul.po.UserGrade"/>
 		<mapping class="com.ftoul.po.UserGrowth"/>
 		<mapping class="com.ftoul.po.Lecoin"/>
+		<mapping class="com.ftoul.po.Coupon"/>
 	</session-factory>
 
 </hibernate-configuration>
