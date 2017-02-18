@@ -258,11 +258,11 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 */
 	public Result getAppGoodsByEventCode(Parameter param) throws Exception{		
 		String typeName = param.getId().toString();
-		String price = param.getKey().toString();
-		String query ="";
+//		String price = param.getKey().toString();
+//		String query ="";
 		if ("sqp".equals(typeName)) {
 			typeName = "省钱趴";
-			query = " and goods.price = '"+price+"'";
+//			query = " and goods.price = '"+price+"'";
 		}
 		if ("csh".equals(typeName)) {
 			typeName = "超实惠";
@@ -273,7 +273,9 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		if ("dpx".equals(typeName)) {
 			typeName = "大牌秀";
 		}
-		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.typeName= '" + typeName+ "'"+ query;
+//		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.typeName= '" + typeName+ "'"+ query;
+		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.typeName= '" + typeName+ "'";
+
 		Page page = hibernateUtil.hqlPage(null,hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
