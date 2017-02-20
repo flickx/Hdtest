@@ -21,6 +21,7 @@ import com.ftoul.po.BusinessStore;
 import com.ftoul.po.Coupon;
 import com.ftoul.po.GoodsTypeEventJoin;
 import com.ftoul.util.coupon.CouponUtil;
+import com.ftoul.util.goodsparam.GoodsParamUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 
 @Service("ManageCouponServiceImpl")
@@ -30,7 +31,8 @@ public class CouponServiceImpl implements CouponService {
 	private HibernateUtil hibernateUtil;
 	@Autowired
 	private CouponUtil couponUtil;
-
+	@Autowired
+	private GoodsParamUtil paramUtil;
 	/**
 	 * 创建优惠券
 	 */
@@ -163,8 +165,28 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	public Result isHasCouponByGoodsTypeId(Parameter param)
 			throws Exception {
-		
-		return null;
+		Object vo = new Object();
+		vo = "3";
+		List<String> types = paramUtil.getThirdType(param.getId().toString(), param.getKey());//查询此分类下所有的第三级
+		List<String> upperTypes = paramUtil.getUpperType(param.getId().toString(), param.getKey());
+		List<Object> typeList = new ArrayList<Object>();
+		types.add(param.getId().toString());
+		upperTypes.add(param.getId().toString());
+		for (String str : types) {
+			typeList = hibernateUtil.hql("from GoodsTypeEventJoin where state='1' and goodsType='"+str+"'");
+			if(typeList.size()>0){
+				vo = "1";
+				break;
+			}
+		}
+		for (String str : upperTypes) {
+			typeList = hibernateUtil.hql("from GoodsTypeEventJoin where state='1' and goodsType='"+str+"'");
+			if(typeList.size()>0){
+				vo = "2";
+				break;
+			}
+		}
+		return ObjectToResult.getResult(vo);
 	}
 
 }

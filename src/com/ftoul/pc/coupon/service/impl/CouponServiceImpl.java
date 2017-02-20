@@ -34,6 +34,9 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	public Result queryCouponPage(Parameter param) throws Exception {
 		String whereStr = param.getWhereStr();
+		if(whereStr==null){
+			whereStr = "";
+		}
 		String hql = "from Coupon where state='1' "+whereStr+"' order by creatTime desc";
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<Object> objList = page.getObjList();
