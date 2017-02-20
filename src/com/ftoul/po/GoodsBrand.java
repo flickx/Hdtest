@@ -1,15 +1,11 @@
 package com.ftoul.po;
 
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -35,7 +31,6 @@ public class GoodsBrand implements java.io.Serializable {
 	private String logo;
 	private String auditState;
 	private String qualification;
-	private Set<Goods> goodses = new HashSet<Goods>(0);
 
 	// Constructors
 
@@ -47,8 +42,8 @@ public class GoodsBrand implements java.io.Serializable {
 	public GoodsBrand(String name, String goodsTypeId, String createTime,
 			String createPerson, String modifyTime, String modifyPerson,
 			String state, String enName, String startTime, String endTime,
-			String logo, String auditState, String qualification,
-			Set<Goods> goodses) {
+			String logo, String auditState, String qualification
+			) {
 		this.name = name;
 		this.goodsTypeId = goodsTypeId;
 		this.createTime = createTime;
@@ -62,7 +57,6 @@ public class GoodsBrand implements java.io.Serializable {
 		this.logo = logo;
 		this.auditState = auditState;
 		this.qualification = qualification;
-		this.goodses = goodses;
 	}
 
 	// Property accessors
@@ -194,14 +188,4 @@ public class GoodsBrand implements java.io.Serializable {
 	public void setQualification(String qualification) {
 		this.qualification = qualification;
 	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "goodsBrand")
-	public Set<Goods> getGoodses() {
-		return this.goodses;
-	}
-
-	public void setGoodses(Set<Goods> goodses) {
-		this.goodses = goodses;
-	}
-
 }
