@@ -15,6 +15,7 @@ import com.ftoul.common.Result;
 import com.ftoul.manage.coupon.vo.CouponCount;
 import com.ftoul.pc.coupon.service.CouponService;
 import com.ftoul.pc.coupon.vo.CouponVo;
+import com.ftoul.po.BusinessStore;
 import com.ftoul.po.Coupon;
 import com.ftoul.po.UserCoupon;
 import com.ftoul.util.coupon.CouponUtil;
@@ -49,7 +50,13 @@ public class CouponServiceImpl implements CouponService {
 			vo.setName(coupon.getName());
 			vo.setType(couponUtil.getCouponType(coupon.getCouponType()));
 			vo.setValidEndTime(coupon.getValidEndTime());
-			vo.setTargetValue(coupon.getTargetValue().toString());
+			BusinessStore store = coupon.getBusinessStore();
+			if(store!=null){
+				vo.setShopName(store.getStoreName());
+			}
+			if(coupon.getTargetValue()!=null){
+				vo.setTargetValue(coupon.getTargetValue().toString());
+			}
 			UserCoupon obj = (UserCoupon) hibernateUtil.hqlFirst("from UserCoupon where couponId='"+coupon.getId()+"' and userId='"+param.getUserToken().getUser().getId()+"' and state='1'");
 			if(obj!=null){
 				vo.setIsUsed("1");//已领取

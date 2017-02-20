@@ -10,6 +10,7 @@ public class CouponVo {
 	private String targetValue;
 	private String validEndTime;
 	private String isUsed;
+	private String shopName;
 	public String getId() {
 		return id;
 	}
@@ -51,6 +52,12 @@ public class CouponVo {
 	}
 	public void setIsUsed(String isUsed) {
 		this.isUsed = isUsed;
+	}
+	public String getShopName() {
+		return shopName;
+	}
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
 	}
 	
 }
