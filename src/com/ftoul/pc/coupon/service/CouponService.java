@@ -14,4 +14,6 @@ public interface CouponService {
 
 	Result getCoupon(Parameter parameter) throws Exception;
 
+	Result queryCouponStateCount(Parameter parameter) throws Exception;
+
 }

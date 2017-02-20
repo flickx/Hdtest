@@ -59,7 +59,7 @@ public class CouponAction {
 	}
 	
 	/**
-	 * 优惠券统计
+	 * 优惠券分类统计
 	 * @param param
 	 * @return
 	 * @throws Exception 
@@ -68,6 +68,18 @@ public class CouponAction {
 	public @ResponseBody Result queryCouponCount(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return couponService.queryCouponCount(parameter);
+	}
+	
+	/**
+	 * 优惠券状态统计
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "queryCouponStateCount")  
+	public @ResponseBody Result queryCouponStateCount(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return couponService.queryCouponStateCount(parameter);
 	}
 	
 }
