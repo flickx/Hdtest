@@ -37,7 +37,7 @@ public class CouponServiceImpl implements CouponService {
 		if(whereStr==null){
 			whereStr = "";
 		}
-		String hql = "from Coupon where state='1' "+whereStr+"' order by creatTime desc";
+		String hql = "from Coupon where state='1' "+whereStr+" order by creatTime desc";
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<Object> objList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
