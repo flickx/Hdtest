@@ -132,8 +132,8 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	public Result queryCouponStateCount(Parameter param) throws Exception {
 		List<Object> list1 = hibernateUtil.hql("from UserCoupon where state='1' and isUsed='1' and userId='"+param.getUserToken().getUser().getId()+"'");
-		List<Object> list2 = hibernateUtil.hql("from Coupon where state='1' and isUsed='2' and userId='"+param.getUserToken().getUser().getId()+"'");
-		List<Object> list3 = hibernateUtil.hql("from Coupon where state='1' and isUsed='3' and userId='"+param.getUserToken().getUser().getId()+"'");
+		List<Object> list2 = hibernateUtil.hql("from UserCoupon where state='1' and isUsed='2' and userId='"+param.getUserToken().getUser().getId()+"'");
+		List<Object> list3 = hibernateUtil.hql("from UserCoupon where state='1' and isUsed='3' and userId='"+param.getUserToken().getUser().getId()+"'");
 		CouponCount count = new CouponCount();
 		count.setCount1(list1.size());
 		count.setCount2(list2.size());
