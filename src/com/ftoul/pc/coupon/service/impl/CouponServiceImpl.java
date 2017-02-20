@@ -93,7 +93,7 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	public Result queryCouponList(Parameter param) throws Exception {
 		couponUtil.autoSetCouponState();//设置过期的优惠券
-		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1' and user_id='"+param.getUserToken().getUser().getId()+"' and isUsed='"+param.getKey()+"'");
+		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1' and userId='"+param.getUserToken().getUser().getId()+"' and isUsed='"+param.getKey()+"'");
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : objList) {
 			UserCoupon userCoupon = (UserCoupon) object;
