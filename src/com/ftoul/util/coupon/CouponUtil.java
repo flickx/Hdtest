@@ -45,10 +45,10 @@ public class CouponUtil {
 	 */
 	public void autoSetCouponState() throws Exception{
 		String currentTime = new DateStr().toString();
-		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1'");
+		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1' and isUsed!='3'");
 		for (Object object : objList) {
 			UserCoupon userCoupon = (UserCoupon) object;
-			Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, userCoupon.getCouponId());
+			Coupon coupon = userCoupon.getCouponId();
 			if(new DateStr().compareDate(currentTime, coupon.getValidEndTime())>0){
 				userCoupon.setIsUsed("3");
 				userCoupon.setState("0");
