@@ -97,14 +97,16 @@ public class CouponServiceImpl implements CouponService {
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : objList) {
 			UserCoupon userCoupon = (UserCoupon) object;
-			Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, userCoupon.getCouponId());
+			Coupon coupon = userCoupon.getCouponId();
 			CouponVo vo = new CouponVo();
 			vo.setId(coupon.getId());
 			vo.setFaceValue(coupon.getFaceValue().toString());
 			vo.setName(coupon.getName());
 			vo.setType(couponUtil.getCouponType(coupon.getCouponType()));
 			vo.setValidEndTime(coupon.getValidEndTime());
-			vo.setTargetValue(coupon.getTargetValue().toString());
+			if(coupon.getTargetValue()!=null){
+				vo.setTargetValue(coupon.getTargetValue().toString());
+			}
 			vo.setIsUsed(userCoupon.getIsUsed());
 			voList.add(vo);
 		}
