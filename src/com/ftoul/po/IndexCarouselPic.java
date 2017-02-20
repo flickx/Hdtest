@@ -72,7 +72,7 @@ public class IndexCarouselPic  implements java.io.Serializable {
         this.id = id;
     }
     
-    @Column(name="carousel_type", length=1)
+    @Column(name="carousel_type", length=2)
     public String getCarouselType() {
         return this.carouselType;
     }

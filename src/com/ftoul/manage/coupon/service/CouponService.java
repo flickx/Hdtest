@@ -15,4 +15,6 @@ public interface CouponService {
 
 	Result queryCouponDetail(Parameter parameter) throws Exception;
 
+	Result isHasCouponByGoodsTypeId(Parameter parameter) throws Exception;
+
 }

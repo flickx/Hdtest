@@ -10,6 +10,7 @@ public class PcLimitGoods {
 	private double originalPrice;
 	private String imgUrl;
 	private String num;//抢购商品剩余百分比
+	private Integer qunatity;//抢购商品剩余量
 	/**
 	 * @return the goodsId
 	 */
@@ -93,6 +94,18 @@ public class PcLimitGoods {
 	 */
 	public void setNum(String num) {
 		this.num = num;
+	}
+	/**
+	 * @return the qunatity
+	 */
+	public Integer getQunatity() {
+		return qunatity;
+	}
+	/**
+	 * @param qunatity the qunatity to set
+	 */
+	public void setQunatity(Integer qunatity) {
+		this.qunatity = qunatity;
 	}
 	
 	

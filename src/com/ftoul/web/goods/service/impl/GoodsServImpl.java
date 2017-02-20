@@ -386,7 +386,36 @@ public class GoodsServImpl implements GoodsServ {
 	    }
 	    return ip.equals("0:0:0:0:0:0:0:1")?"127.0.0.1":ip;
 	}
-
-
-	
+	/**
+	 * pc首页“每日上新”接口
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public Result getPcNewGoods(Parameter param) throws Exception{
+		String startTime = new DateStr().getStartTime();
+		startTime = startTime.replace("/","-");
+		String endTime = new DateStr().getEndTime();
+		endTime = endTime.replace("/","-");
+		String hql = "select g.id,g.title,gp.paramName,g.price,gp.marketPrice,g.picSrc from Goods g,GoodsParam gp where g.id = gp.goods.id and  g.state = '1' and '"+startTime+"' <= g.createTime and g.createTime <= '"+endTime+"' and g.shopId = '1' order by rand() asc limit 4";
+		List<Object> list = new ArrayList<Object>(4);
+		list =	hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(list);
+	}
+	/**
+	 * pc“每日上新”详情页面接口
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public Result getPcNewGoodsList(String typeId) throws Exception{
+		String startTime = new DateStr().getStartTime();
+		startTime = startTime.replace("/","-");
+		String endTime = new DateStr().getEndTime();
+		endTime = endTime.replace("/","-");
+		String hql = "select g.id,g.title,gp.paramName,g.price,gp.marketPrice,g.picSrc from Goods g,GoodsParam gp where g.id = gp.goods.id and  g.state = '1' and '"+startTime+"' <= g.createTime and g.createTime <= '"+endTime+"' and g.shopId = '1' and g.goodsType1 ='"+typeId+"'  order by rand() asc";
+		List<Object> list = new ArrayList<Object>();
+		list =	hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(list);
+	}
 }

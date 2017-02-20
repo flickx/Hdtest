@@ -105,6 +105,7 @@ public class LimitGoodsAction {
 		        NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
 		        format.setMinimumFractionDigits(2);// 设置小数位
 				PcLimitGoods.setNum(format.format(goodsEventJoin.getQuantity()*1.0/goodsEventJoin.getDefaultQuantity()));
+				PcLimitGoods.setQunatity(goodsEventJoin.getQuantity());
 				PcLimitGoods.setOriginalPrice(goodsEventJoin.getGoods().getPrice());
 				PcLimitGoods.setPresentPrice(goodsEventJoin.getEventPrice());
 				goodsList.add(PcLimitGoods);

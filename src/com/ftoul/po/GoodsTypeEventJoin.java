@@ -22,9 +22,7 @@ public class GoodsTypeEventJoin implements java.io.Serializable {
 	private String id;
 	private BusinessStore businessStore;
 	private String eventId;
-	private String goodsType1;
-	private String goodsType2;
-	private String goodsType3;
+	private String goodsType;
 	private String level;
 	private String state;
 	private String createPerson;
@@ -40,14 +38,12 @@ public class GoodsTypeEventJoin implements java.io.Serializable {
 
 	/** full constructor */
 	public GoodsTypeEventJoin(BusinessStore businessStore, String eventId,
-			String goodsType1, String goodsType2, String goodsType3,
+			String goodsType,
 			String state, String createPerson, String createTime,
 			String modifyPerson, String modifyTime) {
 		this.businessStore = businessStore;
 		this.eventId = eventId;
-		this.goodsType1 = goodsType1;
-		this.goodsType2 = goodsType2;
-		this.goodsType3 = goodsType3;
+		this.goodsType = goodsType;
 		this.state = state;
 		this.createPerson = createPerson;
 		this.createTime = createTime;
@@ -87,33 +83,15 @@ public class GoodsTypeEventJoin implements java.io.Serializable {
 		this.eventId = eventId;
 	}
 
-	@Column(name = "goods_type1", length = 32)
-	public String getGoodsType1() {
-		return this.goodsType1;
+	@Column(name = "goods_type", length = 32)
+	public String getGoodsType() {
+		return this.goodsType;
 	}
 
-	public void setGoodsType1(String goodsType1) {
-		this.goodsType1 = goodsType1;
+	public void setGoodsType(String goodsType) {
+		this.goodsType = goodsType;
 	}
 
-	@Column(name = "goods_type2", length = 32)
-	public String getGoodsType2() {
-		return this.goodsType2;
-	}
-
-	public void setGoodsType2(String goodsType2) {
-		this.goodsType2 = goodsType2;
-	}
-
-	@Column(name = "goods_type3", length = 32)
-	public String getGoodsType3() {
-		return this.goodsType3;
-	}
-
-	public void setGoodsType3(String goodsType3) {
-		this.goodsType3 = goodsType3;
-	}
-	
 	@Column(name = "level", length = 1)
 	public String getLevel() {
 		return level;
