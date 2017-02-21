@@ -42,8 +42,6 @@ public class GoodsBrandServImpl implements GoodsBrandServ {
 	 */
 	@Override
 	public Result saveGoodsBrand(Parameter param) throws Exception {
-		System.out.println("ceshi111111");
-		System.out.println("ceshi22221");
 		GoodsBrand goodsBrand = (GoodsBrand) JSONObject.toBean((JSONObject) param.getObj(),GoodsBrand.class);
 		Object res;
 		if(Common.isNull(goodsBrand.getId())){
@@ -63,9 +61,12 @@ public class GoodsBrandServImpl implements GoodsBrandServ {
 			if(list.size()>0){
 				throw new Exception("品牌名称已存在，保存失败");
 			}else{
-				brand.setId(brand.getId());
 				brand.setState("1");
 				brand.setName(goodsBrand.getName());
+				brand.setEnName(goodsBrand.getEnName());
+				brand.setStartTime(goodsBrand.getStartTime());
+				brand.setEndTime(goodsBrand.getEndTime());
+				brand.setLogo(goodsBrand.getLogo());
 				brand.setModifyTime(new DateStr().toString());
 				res = hibernateUtil.update(brand);
 			}
