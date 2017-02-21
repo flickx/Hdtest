@@ -81,4 +81,11 @@ public interface GoodsBrandServ{
 
 	Result getGoodsBrand(Parameter parameter)throws Exception;
 	
+	/**
+	 * 删除品牌logo
+	 * @param parameter
+	 * @return
+	 * @throws Exception
+	 */
+	Result delGoodsBrandLogo(Parameter parameter)throws Exception;
 }

@@ -106,5 +106,15 @@ public class GoodsBrandAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return goodsBrandServ.getGoodsBrandById(parameter);
 	}
-	
+	/**
+	 * 删除品牌logo
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "delGoodsBrandLogo")  
+	public @ResponseBody Result delGoodsBrandLogo(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return goodsBrandServ.delGoodsBrandLogo(parameter);
+	}
 }

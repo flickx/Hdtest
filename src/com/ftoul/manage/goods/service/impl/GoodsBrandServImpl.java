@@ -121,18 +121,6 @@ public class GoodsBrandServImpl implements GoodsBrandServ {
 
 	@Override
 	public Result getAllGoodsBrandList(Parameter parameter) {
-/*		String hql ="select gb.id,gb.name,gt.name from GoodsBrand gb,GoodsType gt where gb.goodsTypeId = gt.id and gb.state=1 order by gb.createTime desc";
-		Page page = hibernateUtil.hqlPage(hql,parameter.getPageNum(),parameter.getPageSize());
-		List<GoodsBrandVo> list = new ArrayList<GoodsBrandVo>();
-		for (int i = 0; i < page.getObjList().size(); i++) {
-			GoodsBrandVo goodsBrandVo = new GoodsBrandVo();
-			Object[] obj = (Object[])page.getObjList().get(i);
-			goodsBrandVo.setId(obj[0].toString());
-			goodsBrandVo.setBname(obj[1].toString());
-			goodsBrandVo.setTname(obj[2].toString());
-			list.add(goodsBrandVo);
-		}
-		page.setVoList(list);*/
 		String hql = "from GoodsBrand where state =1 order by createTime desc";
 		Page page = hibernateUtil.hqlPage(null, hql,parameter.getPageNum(),parameter.getPageSize());
 		return ObjectToResult.getResult(page);
@@ -145,6 +133,11 @@ public class GoodsBrandServImpl implements GoodsBrandServ {
 		String hql ="from GoodsBrand where state =1";
 		List<Object> goodsBrandList = this.hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(goodsBrandList);
+	}
+	@Override
+	public Result delGoodsBrandLogo(Parameter parameter) throws Exception {
+		Integer num = hibernateUtil.execHql("update GoodsBrand set logo='' where id ='"+parameter.getId()+"'");
+		return ObjectToResult.getResult(num);
 	}
 
 }
