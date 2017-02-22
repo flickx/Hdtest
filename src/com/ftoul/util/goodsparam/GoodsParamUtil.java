@@ -79,6 +79,29 @@ public class GoodsParamUtil {
 		return types;
 	}
 	
+	/**
+	 * 通过分类及分类级别查询此级别上层的所有分类
+	 * @param type
+	 * @param level
+	 */
+	public List<String> getUpperType(String type,String level){
+		List<String> types = new ArrayList<String>();
+		GoodsType goodsType = (GoodsType) hibernateUtil.find(GoodsType.class, type);
+		if("3".equals(level)){
+			String secondType = goodsType.getPid();
+			GoodsType secondGoodsType = (GoodsType) hibernateUtil.find(GoodsType.class, secondType);//获取二级分类
+			List<Object> objs = hibernateUtil.hql("from GoodsType where state='1' and pid='"+secondGoodsType.getPid()+"' and level='2'");//获取所有的二级分类
+			for (Object object : objs) {
+				GoodsType secondGoodstype = (GoodsType) object;
+				types.add(secondGoodstype.getId());//放入二级分类
+			}
+			types.add(secondGoodsType.getPid());//放入一级分类
+		}else if("2".equals(level)){
+			types.add(goodsType.getPid());//放入一级分类
+		}
+		return types;
+	}
+	
 	public Map<String, List<ShopGoodsParamVo>> getShopAndGoodsParam(String param){
 		Map<String, List<ShopGoodsParamVo>> group = new HashMap<String, List<ShopGoodsParamVo>>();
 		List<ShopGoodsParamVo> goodsParamVo = null;

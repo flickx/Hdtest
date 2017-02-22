@@ -93,7 +93,7 @@ public class Coupon implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "shop_id")
 	public BusinessStore getBusinessStore() {
 		return this.businessStore;

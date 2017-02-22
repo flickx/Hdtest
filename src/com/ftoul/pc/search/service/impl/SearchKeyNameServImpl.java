@@ -94,7 +94,7 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 	@Override
 	public Result getLikeGoodsList(Parameter param) throws Exception {
 		String hql = "from Goods where state = '1' order by createTime desc ";
-		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), 5);
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
 	/**

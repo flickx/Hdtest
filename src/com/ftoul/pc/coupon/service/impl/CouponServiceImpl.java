@@ -15,6 +15,7 @@ import com.ftoul.common.Result;
 import com.ftoul.manage.coupon.vo.CouponCount;
 import com.ftoul.pc.coupon.service.CouponService;
 import com.ftoul.pc.coupon.vo.CouponVo;
+import com.ftoul.po.BusinessStore;
 import com.ftoul.po.Coupon;
 import com.ftoul.po.UserCoupon;
 import com.ftoul.util.coupon.CouponUtil;
@@ -34,7 +35,10 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	public Result queryCouponPage(Parameter param) throws Exception {
 		String whereStr = param.getWhereStr();
-		String hql = "from Coupon where state='1' "+whereStr+"' order by creatTime desc";
+		if(whereStr==null){
+			whereStr = "";
+		}
+		String hql = "from Coupon where state='1' "+whereStr+" order by createTime desc";
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<Object> objList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
@@ -46,7 +50,13 @@ public class CouponServiceImpl implements CouponService {
 			vo.setName(coupon.getName());
 			vo.setType(couponUtil.getCouponType(coupon.getCouponType()));
 			vo.setValidEndTime(coupon.getValidEndTime());
-			vo.setTargetValue(coupon.getTargetValue().toString());
+			BusinessStore store = coupon.getBusinessStore();
+			if(store!=null){
+				vo.setShopName(store.getStoreName());
+			}
+			if(coupon.getTargetValue()!=null){
+				vo.setTargetValue(coupon.getTargetValue().toString());
+			}
 			UserCoupon obj = (UserCoupon) hibernateUtil.hqlFirst("from UserCoupon where couponId='"+coupon.getId()+"' and userId='"+param.getUserToken().getUser().getId()+"' and state='1'");
 			if(obj!=null){
 				vo.setIsUsed("1");//已领取
@@ -61,7 +71,7 @@ public class CouponServiceImpl implements CouponService {
 	}
 
 	/**
-	 * 优惠券统计
+	 * 优惠券分类统计
 	 */
 	@Override
 	public Result queryCouponCount(Parameter param) throws Exception {
@@ -83,18 +93,20 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	public Result queryCouponList(Parameter param) throws Exception {
 		couponUtil.autoSetCouponState();//设置过期的优惠券
-		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1' and user_id='"+param.getUserToken().getUser().getId()+"' and isUsed='"+param.getKey()+"'");
+		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1' and userId='"+param.getUserToken().getUser().getId()+"' and isUsed='"+param.getKey()+"'");
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : objList) {
 			UserCoupon userCoupon = (UserCoupon) object;
-			Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, userCoupon.getCouponId());
+			Coupon coupon = userCoupon.getCouponId();
 			CouponVo vo = new CouponVo();
 			vo.setId(coupon.getId());
 			vo.setFaceValue(coupon.getFaceValue().toString());
 			vo.setName(coupon.getName());
 			vo.setType(couponUtil.getCouponType(coupon.getCouponType()));
 			vo.setValidEndTime(coupon.getValidEndTime());
-			vo.setTargetValue(coupon.getTargetValue().toString());
+			if(coupon.getTargetValue()!=null){
+				vo.setTargetValue(coupon.getTargetValue().toString());
+			}
 			vo.setIsUsed(userCoupon.getIsUsed());
 			voList.add(vo);
 		}
@@ -114,6 +126,21 @@ public class CouponServiceImpl implements CouponService {
 		userCoupon.setCreateTime(new DateStr().toString());
 		hibernateUtil.save(userCoupon);
 		return ObjectToResult.getResult(userCoupon);
+	}
+
+	/**
+	 * 优惠券状态统计
+	 */
+	@Override
+	public Result queryCouponStateCount(Parameter param) throws Exception {
+		List<Object> list1 = hibernateUtil.hql("from UserCoupon where state='1' and isUsed='1' and userId='"+param.getUserToken().getUser().getId()+"'");
+		List<Object> list2 = hibernateUtil.hql("from UserCoupon where state='1' and isUsed='2' and userId='"+param.getUserToken().getUser().getId()+"'");
+		List<Object> list3 = hibernateUtil.hql("from UserCoupon where state='1' and isUsed='3' and userId='"+param.getUserToken().getUser().getId()+"'");
+		CouponCount count = new CouponCount();
+		count.setCount1(list1.size());
+		count.setCount2(list2.size());
+		count.setCount3(list3.size());
+		return ObjectToResult.getResult(count);
 	}
 
 }

@@ -292,9 +292,11 @@ public class AliPayServImpl implements AliPayServ{
 		if(ordersPay == null){
 			ordersPay = new OrdersPay();
 		}
-		
+		System.out.println("订单号："+ orders.getOrderNumber() + "；订单原始状态：" + orders.getOrderStatic());
 		if(AlipayNotifyRSA.verify(resultMap)){
+			System.out.println("订单号："+ orders.getOrderNumber() + "；订单支付校验成功；订单原始状态：" + orders.getOrderStatic());
 			if("1".equals(orders.getOrderStatic())){
+				System.out.println("订单号："+ orders.getOrderNumber() + "；订单开始更改状态");
 				orders.setModifyTime(new DateStr().toString());
 				orders.setOrderStatic("2");
 				orders.setPayStatic("1");
@@ -311,7 +313,7 @@ public class AliPayServImpl implements AliPayServ{
 						hibernateUtil.update(child);
 					}
 				}
-				
+				System.out.println("订单号："+ orders.getOrderNumber() + "；订单更改后的状态：" + orders.getOrderStatic());
 				ordersPay.setOrders(orders);
 				ordersPay.setCreateTime(new DateStr().toString());
 				ordersPay.setPayPrice(orders.getOrderPrice());
@@ -323,6 +325,7 @@ public class AliPayServImpl implements AliPayServ{
 			}
 			resObj = "success";
 		}else{
+			System.out.println("订单号："+ orders.getOrderNumber() + "；订单支付校验失败；订单原始状态：" + orders.getOrderStatic());
 			orders.setPayTime(new DateStr().toString());
 			ordersPay.setOrders(orders);
 			ordersPay.setCreateTime(new DateStr().toString());

@@ -42,8 +42,6 @@ public class GoodsBrandServImpl implements GoodsBrandServ {
 	 */
 	@Override
 	public Result saveGoodsBrand(Parameter param) throws Exception {
-		System.out.println("ceshi111111");
-		System.out.println("ceshi22221");
 		GoodsBrand goodsBrand = (GoodsBrand) JSONObject.toBean((JSONObject) param.getObj(),GoodsBrand.class);
 		Object res;
 		if(Common.isNull(goodsBrand.getId())){
@@ -63,9 +61,12 @@ public class GoodsBrandServImpl implements GoodsBrandServ {
 			if(list.size()>0){
 				throw new Exception("品牌名称已存在，保存失败");
 			}else{
-				brand.setId(brand.getId());
 				brand.setState("1");
 				brand.setName(goodsBrand.getName());
+				brand.setEnName(goodsBrand.getEnName());
+				brand.setStartTime(goodsBrand.getStartTime());
+				brand.setEndTime(goodsBrand.getEndTime());
+				brand.setLogo(goodsBrand.getLogo());
 				brand.setModifyTime(new DateStr().toString());
 				res = hibernateUtil.update(brand);
 			}
@@ -120,18 +121,6 @@ public class GoodsBrandServImpl implements GoodsBrandServ {
 
 	@Override
 	public Result getAllGoodsBrandList(Parameter parameter) {
-/*		String hql ="select gb.id,gb.name,gt.name from GoodsBrand gb,GoodsType gt where gb.goodsTypeId = gt.id and gb.state=1 order by gb.createTime desc";
-		Page page = hibernateUtil.hqlPage(hql,parameter.getPageNum(),parameter.getPageSize());
-		List<GoodsBrandVo> list = new ArrayList<GoodsBrandVo>();
-		for (int i = 0; i < page.getObjList().size(); i++) {
-			GoodsBrandVo goodsBrandVo = new GoodsBrandVo();
-			Object[] obj = (Object[])page.getObjList().get(i);
-			goodsBrandVo.setId(obj[0].toString());
-			goodsBrandVo.setBname(obj[1].toString());
-			goodsBrandVo.setTname(obj[2].toString());
-			list.add(goodsBrandVo);
-		}
-		page.setVoList(list);*/
 		String hql = "from GoodsBrand where state =1 order by createTime desc";
 		Page page = hibernateUtil.hqlPage(null, hql,parameter.getPageNum(),parameter.getPageSize());
 		return ObjectToResult.getResult(page);
@@ -144,6 +133,11 @@ public class GoodsBrandServImpl implements GoodsBrandServ {
 		String hql ="from GoodsBrand where state =1";
 		List<Object> goodsBrandList = this.hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(goodsBrandList);
+	}
+	@Override
+	public Result delGoodsBrandLogo(Parameter parameter) throws Exception {
+		Integer num = hibernateUtil.execHql("update GoodsBrand set logo='' where id ='"+parameter.getId()+"'");
+		return ObjectToResult.getResult(num);
 	}
 
 }
