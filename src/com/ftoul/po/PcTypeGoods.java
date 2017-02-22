@@ -1,28 +1,13 @@
-package com.ftoul.app.vo;
+package com.ftoul.po;
 
 
-public class PcNewGoods {
-	private String goodsId;
-	private String title;
-	private String subTitle;
-	private String model;
-	private double price;
-	private double marketPrice;
-	private String picSrc;
-	private String num;//折扣
-	
-	/**
-	 * @return the subTitle
-	 */
-	public String getSubTitle() {
-		return subTitle;
-	}
-	/**
-	 * @param subTitle the subTitle to set
-	 */
-	public void setSubTitle(String subTitle) {
-		this.subTitle = subTitle;
-	}
+public class PcTypeGoods {
+	private String goodsId;//商品id
+	private String title;//主标题
+	private String subTitle;//副标题
+	private double price;//现价
+	private double marketPrice;//市场价格
+	private String picSrc;//商品主图片
 	/**
 	 * @return the goodsId
 	 */
@@ -47,17 +32,18 @@ public class PcNewGoods {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	
 	/**
-	 * @return the model
+	 * @return the subTitle
 	 */
-	public String getModel() {
-		return model;
+	public String getSubTitle() {
+		return subTitle;
 	}
 	/**
-	 * @param model the model to set
+	 * @param subTitle the subTitle to set
 	 */
-	public void setModel(String model) {
-		this.model = model;
+	public void setSubTitle(String subTitle) {
+		this.subTitle = subTitle;
 	}
 	/**
 	 * @return the price
@@ -95,17 +81,4 @@ public class PcNewGoods {
 	public void setPicSrc(String picSrc) {
 		this.picSrc = picSrc;
 	}
-	/**
-	 * @return the num
-	 */
-	public String getNum() {
-		return num;
-	}
-	/**
-	 * @param num the num to set
-	 */
-	public void setNum(String num) {
-		this.num = num;
-	}
-	
 }

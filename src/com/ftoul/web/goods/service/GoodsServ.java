@@ -88,5 +88,12 @@ public interface GoodsServ{
 	 * @return
 	 * @throws Exception
 	 */
-	Result getPcNewGoodsList(String typeId) throws Exception; 
+	Result getPcNewGoodsList(String typeId) throws Exception;
+	/**
+	 * pc首页“查询分类商品”接口
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getGoodsByType(Parameter param) throws Exception;
 }

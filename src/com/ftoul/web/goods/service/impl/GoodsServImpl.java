@@ -397,7 +397,7 @@ public class GoodsServImpl implements GoodsServ {
 		startTime = startTime.replace("/","-");
 		String endTime = new DateStr().getEndTime();
 		endTime = endTime.replace("/","-");
-		String hql = "select g.id,g.title,gp.paramName,g.price,gp.marketPrice,g.picSrc from Goods g,GoodsParam gp where g.id = gp.goods.id and  g.state = '1' and '"+startTime+"' <= g.createTime and g.createTime <= '"+endTime+"' and g.shopId = '1' order by rand() asc limit 4";
+		String hql = "select g.id,g.title,g.subtitle,gp.paramName,g.price,gp.marketPrice,g.picSrc from Goods g,GoodsParam gp where g.id = gp.goods.id and  g.state = '1' and '"+startTime+"' <= g.createTime and g.createTime <= '"+endTime+"' and g.shopId = '1' order by rand() asc limit 4";
 		List<Object> list = new ArrayList<Object>(4);
 		list =	hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
@@ -413,8 +413,29 @@ public class GoodsServImpl implements GoodsServ {
 		startTime = startTime.replace("/","-");
 		String endTime = new DateStr().getEndTime();
 		endTime = endTime.replace("/","-");
-		String hql = "select g.id,g.title,gp.paramName,g.price,gp.marketPrice,g.picSrc from Goods g,GoodsParam gp where g.id = gp.goods.id and  g.state = '1' and '"+startTime+"' <= g.createTime and g.createTime <= '"+endTime+"' and g.shopId = '1' and g.goodsType1 ='"+typeId+"'  order by rand() asc";
+		String hql = "select g.id,g.title,g.subtitle,gp.paramName,g.price,gp.marketPrice,g.picSrc from Goods g,GoodsParam gp where g.id = gp.goods.id and  g.state = '1' and '"+startTime+"' <= g.createTime and g.createTime <= '"+endTime+"' and g.shopId = '1' and g.goodsType1 ='"+typeId+"'  order by rand() asc";
 		List<Object> list = new ArrayList<Object>();
+		list =	hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(list);
+	}
+	/**
+	 * pc首页“查询分类商品”接口
+	 * @param param id:分类id，key：分类级别，sidx：排序字段
+	 * @return
+	 * @throws Exception
+	 */
+	public Result getGoodsByType(Parameter param) throws Exception{
+		String id = param.getId().toString();//分类id
+		String level = param.getKey();//分类级别，1：一级分类，2：二级分类
+		String sidx = param.getSidx();//排序字段，"rand()":随机，"saleNum":销量
+		String hql = "";
+		if ("1".equals(level)) {
+			hql = "select g.id,g.title,g.subtitle,g.price,gp.marketPrice,g.picSrc from Goods g,GoodsParam gp,GoodsType gt where g.id = gp.goods.id and g.state = '1' and g.shopId = '1' and g.goodsType1.id='" + id + " order by " + sidx + " desc limit 6";			
+		}
+		if ("2".equals(level)) {
+			hql = "select g.id,g.title,g.subtitle,g.price,gp.marketPrice,g.picSrc from Goods g,GoodsParam gp,GoodsType gt where g.id = gp.goods.id and g.state = '1' and g.shopId = '1' and g.goodsType2.id='" + id + " order by " + sidx + " desc limit 6";			
+		}
+		List<Object> list = new ArrayList<Object>(6);
 		list =	hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
 	}

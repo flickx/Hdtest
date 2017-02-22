@@ -51,16 +51,17 @@ public class LimitGoodsAction {
 			List<GoodsEventJoin> goodsEventJoinList = (List<GoodsEventJoin>)re.getObj();
 			List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
 			for (GoodsEventJoin goodsEventJoin : goodsEventJoinList) {
-				PcLimitGoods PcLimitGoods = new PcLimitGoods();
-				PcLimitGoods.setGoodsId(goodsEventJoin.getGoods().getId());
-				PcLimitGoods.setImgUrl(goodsEventJoin.getGoods().getPicSrc());
-				PcLimitGoods.setName(goodsEventJoin.getGoods().getTitle());
+				PcLimitGoods pcLimitGoods = new PcLimitGoods();
+				pcLimitGoods.setGoodsId(goodsEventJoin.getGoods().getId());
+				pcLimitGoods.setImgUrl(goodsEventJoin.getGoods().getPicSrc());
+				pcLimitGoods.setName(goodsEventJoin.getGoods().getTitle());
+				pcLimitGoods.setSubName(goodsEventJoin.getGoods().getSubtitle());
 		        NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
 		        format.setMinimumFractionDigits(0);// 设置小数位
-				PcLimitGoods.setNum(format.format(goodsEventJoin.getQuantity()*1.0/goodsEventJoin.getDefaultQuantity()));
-				PcLimitGoods.setOriginalPrice(goodsEventJoin.getGoods().getPrice());
-				PcLimitGoods.setPresentPrice(goodsEventJoin.getEventPrice());
-				goodsList.add(PcLimitGoods);
+		        pcLimitGoods.setNum(format.format(goodsEventJoin.getQuantity()*1.0/goodsEventJoin.getDefaultQuantity()));
+		        pcLimitGoods.setOriginalPrice(goodsEventJoin.getGoods().getPrice());
+		        pcLimitGoods.setPresentPrice(goodsEventJoin.getEventPrice());
+				goodsList.add(pcLimitGoods);
 			}
 			
 			PcLimitGoodsVo i  =new PcLimitGoodsVo();
@@ -98,17 +99,18 @@ public class LimitGoodsAction {
 			List<GoodsEventJoin> goodsEventJoinList = (List<GoodsEventJoin>)re.getObj();
 			List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
 			for (GoodsEventJoin goodsEventJoin : goodsEventJoinList) {
-				PcLimitGoods PcLimitGoods = new PcLimitGoods();
-				PcLimitGoods.setGoodsId(goodsEventJoin.getGoods().getId());
-				PcLimitGoods.setImgUrl(goodsEventJoin.getGoods().getPicSrc());
-				PcLimitGoods.setName(goodsEventJoin.getGoods().getTitle());
+				PcLimitGoods pcLimitGoods = new PcLimitGoods();
+				pcLimitGoods.setGoodsId(goodsEventJoin.getGoods().getId());
+				pcLimitGoods.setImgUrl(goodsEventJoin.getGoods().getPicSrc());
+				pcLimitGoods.setName(goodsEventJoin.getGoods().getTitle());
+				pcLimitGoods.setSubName(goodsEventJoin.getGoods().getSubtitle());
 		        NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
 		        format.setMinimumFractionDigits(2);// 设置小数位
-				PcLimitGoods.setNum(format.format(goodsEventJoin.getQuantity()*1.0/goodsEventJoin.getDefaultQuantity()));
-				PcLimitGoods.setQunatity(goodsEventJoin.getQuantity());
-				PcLimitGoods.setOriginalPrice(goodsEventJoin.getGoods().getPrice());
-				PcLimitGoods.setPresentPrice(goodsEventJoin.getEventPrice());
-				goodsList.add(PcLimitGoods);
+		        pcLimitGoods.setNum(format.format(goodsEventJoin.getQuantity()*1.0/goodsEventJoin.getDefaultQuantity()));
+		        pcLimitGoods.setQunatity(goodsEventJoin.getQuantity());
+		        pcLimitGoods.setOriginalPrice(goodsEventJoin.getGoods().getPrice());
+		        pcLimitGoods.setPresentPrice(goodsEventJoin.getEventPrice());
+				goodsList.add(pcLimitGoods);
 			}
 			
 			PcLimitGoodsVo i  =new PcLimitGoodsVo();
