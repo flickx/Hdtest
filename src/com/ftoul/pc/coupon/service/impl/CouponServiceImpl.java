@@ -104,6 +104,7 @@ public class CouponServiceImpl implements CouponService {
 			vo.setName(coupon.getName());
 			vo.setType(couponUtil.getCouponType(coupon.getCouponType()));
 			vo.setValidEndTime(coupon.getValidEndTime());
+			vo.setShopName(coupon.getBusinessStore().getStoreName());
 			if(coupon.getTargetValue()!=null){
 				vo.setTargetValue(coupon.getTargetValue().toString());
 			}

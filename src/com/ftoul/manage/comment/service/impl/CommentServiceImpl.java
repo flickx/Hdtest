@@ -10,13 +10,13 @@ import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.manage.comment.service.CommentService;
+import com.ftoul.manage.comment.service.CommentServ;
 import com.ftoul.manage.comment.vo.GoodsCommentVo;
 import com.ftoul.po.GoodsComment;
 import com.ftoul.util.hibernate.HibernateUtil;
 
 @Service("CommentServiceImpl")
-public class CommentServiceImpl implements CommentService {
+public class CommentServiceImpl implements CommentServ {
 
 	@Autowired
 	private HibernateUtil hibernateUtil;
