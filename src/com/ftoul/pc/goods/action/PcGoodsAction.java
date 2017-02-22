@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.ftoul.pc.goods;
+package com.ftoul.pc.goods.action;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +90,12 @@ public class PcGoodsAction {
 	@RequestMapping(value = "saveUserCollection")  
 	public @ResponseBody Result saveUserCollection(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return userCollectionServ.saveUserCollection(parameter);
+		Result ret = userCollectionServ.findUserCollection(parameter);
+		if(ret.getResult()==0){
+			return userCollectionServ.saveUserCollection(parameter);
+		}else{
+			return userCollectionServ.delUserCollection(parameter);
+		}
 	}
 
 	/**

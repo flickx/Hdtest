@@ -155,7 +155,6 @@ public class GoodsServImpl implements GoodsServ {
 	public Result saveGoodsFisrtStep(Parameter param) {
 		Goods goods = new Goods();
 		goods.setStep("1");
-		goods.setCreatePerson(new DateStr().toString());
 		goods.setState("0");
 		Object res ;
 		res = this.hibernateUtil.save(goods);
@@ -283,7 +282,6 @@ public class GoodsServImpl implements GoodsServ {
 		}
 		goods.setState("0");
 		goods.setStep("2");
-		goods.setCreateTime(new DateStr().toString());
 		//更新goods
 		goods.setCreateTime(new DateStr().toString());
 		Object obj = hibernateUtil.update(goods);

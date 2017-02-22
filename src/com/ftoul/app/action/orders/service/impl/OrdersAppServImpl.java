@@ -191,8 +191,6 @@ public class OrdersAppServImpl implements OrdersAppServ {
 			ordersList =  hibernateUtil.hql("from Orders where deliverStatic = '0' and user.id='"+param.getUserToken().getUser().getId()+"'");
 		}else if(OrdersConstant.NOT_TASK_DELIVER.equals(key)){
 			ordersList =  hibernateUtil.hql("from Orders where confirmStatic = '0' and user.id='"+param.getUserToken().getUser().getId()+"'");
-		}else if(OrdersConstant.NOT_EVALUATE.equals(key)){
-			ordersList =  hibernateUtil.hql("from Orders where feedback is NULL and user.id='"+param.getUserToken().getUser().getId()+"'");
 		}else{
 			ordersList =  hibernateUtil.hql("from Orders where user.id='"+param.getUserToken().getUser().getId()+"'");
 		}

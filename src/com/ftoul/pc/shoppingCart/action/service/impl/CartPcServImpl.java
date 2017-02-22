@@ -1,4 +1,4 @@
-package com.ftoul.manage.cart.service.impl;
+package com.ftoul.pc.shoppingCart.action.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +16,8 @@ import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
-import com.ftoul.manage.cart.service.CartServ;
+import com.ftoul.manage.goods.service.GoodsParamServ;
+import com.ftoul.pc.shoppingCart.action.service.CartPcServ;
 import com.ftoul.po.BusinessStore;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.ShopCar;
@@ -24,21 +25,17 @@ import com.ftoul.po.User;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.vo.ShopCarVO;
 
-@Service("CartServImpl")
-public class CartServImpl implements CartServ {
+@Service("CartPcServImpl")
+public class CartPcServImpl implements CartPcServ {
 	
 	@Autowired
 	private HibernateUtil hibernateUtil;
 	
+	@Autowired
+	private GoodsParamServ goodsParamServ;
+	
 	@Override
 	public Result getShopCartByUserId(Parameter param) throws Exception {
-		/*String sql = "select sc.id,sc.number,gs.pic_src,gs.title,gp.param_name,sc.goods_param_id,gs.id as goodsId,ge.id as geId,gej.event_price as gejPrice,ge.event_price as gePrice,\n" +
-		"					ge.discount,gp.price,ge.event_begen,ge.event_end,ge.state as geState,gp.stock,gej.quantity,ge.type_name\n" +
-		"					from shop_car sc left join goods_param gp on sc.goods_param_id = gp.id and gp.state =1 \n" +
-		"					left join goods gs on gp.goods_id=gs.id and gs.state = 1 and sc.state = 1\n" +
-		"					left join goods_event_join gej on gs.id = gej.goods_id and gej.state = 1  and sc.state = 1\n" +
-		"					left join goods_event ge  on ge.id=gej.event_id and ge.state = 1 and sc.state = 1 and ge.type_name !='满减'\n" +
-		"					where sc.user_id='" + param.getUserToken().getUser().getId() +"' and sc.state = '1' and gs.state = 1 order by sc.create_time desc";*/
 		String goodsSql = "select sc.id,sc.number,gs.pic_src,gs.title,gp.param_name,sc.goods_param_id,gs.id as goodsId,gp.stock,gp.price,gs.shop_id"
 					+" from shop_car sc  join goods_param gp on sc.goods_param_id = gp.id and gp.state =1 and sc.state = 1 "
 					+" join goods gs on gp.goods_id=gs.id and gs.state = 1 and sc.state = 1"
@@ -90,41 +87,6 @@ public class CartServImpl implements CartServ {
 				}
 			}
 			voList.add(shopCarVO);
-			/*if(null!= shopCarList.get(i)[7]){
-				Date begin = DateUtil.stringFormatToDate(shopCarList.get(i)[12].toString(),
-						"yyyy/MM/dd HH:mm:ss");
-				Date end = DateUtil.stringFormatToDate(shopCarList.get(i)[13].toString(),
-						"yyyy/MM/dd HH:mm:ss");
-				if (currentTime.after(begin) && currentTime.before(end)
-						&& "1".equals(shopCarList.get(i)[14].toString())){
-					if(null!=shopCarList.get(i)[8]){
-						shopCarVO.setEventPrice(Float.parseFloat(shopCarList.get(i)[8].toString()));
-					}else{
-						if(null!=shopCarList.get(i)[9]){
-							shopCarVO.setEventPrice(Float.parseFloat(shopCarList.get(i)[9].toString()));
-						}else{
-							if(null!=shopCarList.get(i)[10] && null!=shopCarList.get(i)[11] &&!"1".equals(shopCarList.get(i)[10])){
-								Float f = Float.parseFloat(shopCarList.get(i)[10].toString())*Float.parseFloat(shopCarList.get(i)[11].toString());
-								shopCarVO.setEventPrice((float)Math.round(f*100)/100);
-								shopCarVO.setDiscount(shopCarList.get(i)[10].toString());
-							}
-						}
-					}
-					shopCarVO.setTypeName(shopCarList.get(i)[17].toString());
-				}
-				shopCarVO.setTypeName(shopCarList.get(i)[17].toString());
-			}
-			if(null!=shopCarList.get(i)[16]){
-				shopCarVO.setStock(shopCarList.get(i)[16].toString());
-			}else{
-				if(null!=shopCarList.get(i)[15]){
-					shopCarVO.setStock(shopCarList.get(i)[15].toString());
-				}else{
-					shopCarVO.setStock("");
-				}
-			}
-			shopCarVO.setPrice(shopCarList.get(i)[11].toString());
-			voList.add(shopCarVO);*/
 		}
 		return ObjectToResult.getResult(voList);
 	}
@@ -144,9 +106,7 @@ public class CartServImpl implements CartServ {
 				+" and sc.user_id = '" +param.getUserToken().getUser().getId()+"'"
 				+" and ge.type_name = '秒杀'";
 		List<Object[]> shopCarList = hibernateUtil.sql(sql);
-		Date currentTime = DateUtil.stringFormatToDate(
-				DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss"),
-				"yyyy/MM/dd HH:mm:ss");
+		Date currentTime = DateUtil.stringFormatToDate(DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss"),"yyyy/MM/dd HH:mm:ss");
 		Result result = new Result();
 		if(shopCarList.size()>0){
 			Date begin = DateUtil.stringFormatToDate(shopCarList.get(0)[0].toString(),
@@ -161,17 +121,15 @@ public class CartServImpl implements CartServ {
 		}
 		Object o = hibernateUtil.hqlFirst("from ShopCar sc where state = '1' and sc.user.id='" +param.getUserToken().getUser().getId()+"'"+" and sc.goodsParam.id ='"+shopCarVO.getGoodsParamId()+"'");
 		Object res;
+		GoodsParam goodsParam = (GoodsParam) this.hibernateUtil.find(GoodsParam.class, shopCarVO.getGoodsParamId()+"");
+		User user = (User) this.hibernateUtil.find(User.class, param.getUserToken().getUser().getId()+"");
 		if(o == null){
-			User user = new User();
-			user.setId(param.getUserToken().getUser().getId());
 			ShopCar shopCar = new ShopCar();
-			shopCar.setCreateTime(new DateStr().toString());
 			shopCar.setNumber(shopCarVO.getNumber());
 			shopCar.setState("1");
 			shopCar.setUser(user);
-			GoodsParam goodsParam = new GoodsParam();
-			goodsParam.setId(shopCarVO.getGoodsParamId());
 			shopCar.setGoodsParam(goodsParam);
+			shopCar.setCreateTime(new DateStr().toString());
 			res = hibernateUtil.save(shopCar);
 		}else{
 			ShopCar car = (ShopCar) o;
