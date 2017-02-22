@@ -23,6 +23,7 @@ public class GoodsUploadpic implements java.io.Serializable {
 	private String picSrc;
 	private String thumbnailSrc;
 	private String picType;
+	private String advertType;
 	private String createTime;
 	private String createPerson;
 	private String modifyTime;
@@ -151,5 +152,13 @@ public class GoodsUploadpic implements java.io.Serializable {
 	public String getPicType() {
 		return picType;
 	}
+
+	/**
+	 * @param picType the picType to set
+	 */
+	public void setPicType(String picType) {
+		this.picType = picType;
+	}
+
 	
 }
