@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ftoul.app.vo.AppLimitGoodsVo;
 import com.ftoul.app.vo.PcLimitGoods;
 import com.ftoul.app.vo.PcLimitGoodsVo;
 import com.ftoul.common.Common;
@@ -114,15 +115,19 @@ public class LimitGoodsAction {
 			}
 			
 			PcLimitGoodsVo i  =new PcLimitGoodsVo();
-			String begen = goodsEvent.getEventBegen().toString().substring(11,16);
-			
+			String begin = goodsEvent.getEventBegen().toString().substring(11,16);
 			String end = goodsEvent.getEventEnd().toString();
-			long last = DateUtil.stringFormatToDate(end, "yyyy/MM/dd HH:mm:ss").getTime();
+			long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+			long endTime = DateUtil.stringFormatToDate(end, "yyyy/MM/dd HH:mm:ss").getTime();
 			long now = new Date().getTime();
-			long distance = last - now;
-			long endTime = distance/1000;
-			i.setStartTime(begen);
-			i.setEndTime(endTime);
+			if (now > beginTime) {
+				i.setEndTime((endTime- now)/1000);
+				i.setHasBegin("1");
+			}else{
+				i.setEndTime((beginTime - now)/1000);
+				i.setHasBegin("0");
+			}
+			i.setStartTime(begin);
 			i.setPcLimitGoodsList(goodsList);
 			goodsPcVoList.add(i);
 		}

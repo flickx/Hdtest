@@ -20,11 +20,9 @@ public class GoodsUploadpic implements java.io.Serializable {
 	private static final long serialVersionUID = -5588754152218498485L;
 	private String id;
 	private Goods goods;
-	private String advertId;
 	private String picSrc;
 	private String thumbnailSrc;
 	private String picType;
-	private String advertType;
 	private String createTime;
 	private String createPerson;
 	private String modifyTime;
@@ -152,37 +150,6 @@ public class GoodsUploadpic implements java.io.Serializable {
 	@Column(name = "pic_type", length = 32)
 	public String getPicType() {
 		return picType;
-	}
-
-	/**
-	 * @param picType the picType to set
-	 */
-	public void setPicType(String picType) {
-		this.picType = picType;
-	}
-
-	@Column(name = "advert_id", length = 32)
-	public String getAdvertId() {
-		return advertId;
-	}
-
-	/**
-	 * @param advertId the advertId to set
-	 */
-	public void setAdvertId(String advertId) {
-		this.advertId = advertId;
-	}
-
-	@Column(name = "advert_type", length = 32)
-	public String getAdvertType() {
-		return advertType;
-	}
-
-	/**
-	 * @param advertType the advertType to set
-	 */
-	public void setAdvertType(String advertType) {
-		this.advertType = advertType;
 	}
 	
 }
