@@ -19,7 +19,7 @@ import com.ftoul.web.goods.service.GoodsServ;
 import com.ftoul.web.goods.service.GoodsTypeServ;
 
 /**
- * pc限时抢接口
+ * pc每日上新接口
  * @author LiDing
  * 2017-02-17
  */
@@ -40,17 +40,19 @@ public class NewGoodsAction {
 	@RequestMapping(value = "getPcNewGoods")  
 	public @ResponseBody Result getPcNewGoods(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		List<Object[]> goodsList = (List<Object[]>)goodsServ.getPcNewGoods(parameter).getObj();
+		Result re = goodsServ.getPcNewGoods(parameter);
+		List<Object[]> goodsList = (List<Object[]>)re.getObj();
 		List<PcNewGoods> newGoodsList = new ArrayList<PcNewGoods>();
 		for (Object[] goods : goodsList) {
 			PcNewGoods newGoods = new PcNewGoods();
 			newGoods.setGoodsId(goods[0].toString());
 			newGoods.setTitle(goods[1].toString());
-			newGoods.setModel(goods[2].toString());
-			newGoods.setPrice((double)goods[3]);
-			newGoods.setMarketPrice(Double.parseDouble(goods[4].toString()));
-			newGoods.setPicSrc(goods[5].toString());
-			newGoods.setNum(Double.toString(Math.round((double)goods[3]*1.0/Double.parseDouble(goods[4].toString())*10)));
+			newGoods.setSubTitle(goods[2].toString());
+			newGoods.setModel(goods[3].toString());
+			newGoods.setPrice((double)goods[4]);
+			newGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
+			newGoods.setPicSrc(goods[6].toString());
+			newGoods.setNum(Double.toString(Math.round((double)goods[4]*1.0/Double.parseDouble(goods[5].toString())*10)));
 			newGoodsList.add(newGoods);
 		}
 		return ObjectToResult.getResult(newGoodsList);
@@ -76,11 +78,12 @@ public class NewGoodsAction {
 				PcNewGoods newGoods = new PcNewGoods();
 				newGoods.setGoodsId(goods[0].toString());
 				newGoods.setTitle(goods[1].toString());
-				newGoods.setModel(goods[2].toString()); 
-				newGoods.setPrice((double)goods[3]);
-				newGoods.setMarketPrice(Double.parseDouble(goods[4].toString()));
-				newGoods.setPicSrc(goods[5].toString());
-				newGoods.setNum(Double.toString(Math.round((double)goods[3]*1.0/Double.parseDouble(goods[4].toString())*10)));
+				newGoods.setSubTitle(goods[2].toString());
+				newGoods.setModel(goods[3].toString());
+				newGoods.setPrice((double)goods[4]);
+				newGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
+				newGoods.setPicSrc(goods[6].toString());
+				newGoods.setNum(Double.toString(Math.round((double)goods[4]*1.0/Double.parseDouble(goods[5].toString())*10)));
 				newGoodsList.add(newGoods);  
 			}
 			vo.setTotal(goodsList.size());

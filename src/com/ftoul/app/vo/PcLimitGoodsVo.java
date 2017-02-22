@@ -11,6 +11,7 @@ public class PcLimitGoodsVo {
 	
 	private String startTime;
 	private long endTime;
+	private String hasBegin;
 	private List<PcLimitGoods> pcLimitGoodsList;
 	
 	public String getStartTime() {
@@ -30,6 +31,18 @@ public class PcLimitGoodsVo {
 	}
 	public void setPcLimitGoodsList(List<PcLimitGoods> pcLimitGoodsList) {
 		this.pcLimitGoodsList = pcLimitGoodsList;
+	}
+	/**
+	 * @return the hasBegin
+	 */
+	public String getHasBegin() {
+		return hasBegin;
+	}
+	/**
+	 * @param hasBegin the hasBegin to set
+	 */
+	public void setHasBegin(String hasBegin) {
+		this.hasBegin = hasBegin;
 	}
 	
 }

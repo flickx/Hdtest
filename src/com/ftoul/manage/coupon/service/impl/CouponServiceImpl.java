@@ -1,11 +1,18 @@
 package com.ftoul.manage.coupon.service.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
@@ -13,19 +20,21 @@ import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.manage.coupon.service.CouponService;
+import com.ftoul.manage.coupon.service.CouponServ;
 import com.ftoul.manage.coupon.vo.CouponCount;
 import com.ftoul.manage.coupon.vo.CouponVo;
 import com.ftoul.manage.coupon.vo.GoodsTypeVo;
 import com.ftoul.po.BusinessStore;
 import com.ftoul.po.Coupon;
+import com.ftoul.po.GoodsType;
 import com.ftoul.po.GoodsTypeEventJoin;
+import com.ftoul.po.UserCoupon;
 import com.ftoul.util.coupon.CouponUtil;
 import com.ftoul.util.goodsparam.GoodsParamUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 
 @Service("ManageCouponServiceImpl")
-public class CouponServiceImpl implements CouponService {
+public class CouponServiceImpl implements CouponServ {
 	
 	@Autowired
 	private HibernateUtil hibernateUtil;
@@ -60,6 +69,9 @@ public class CouponServiceImpl implements CouponService {
 				hibernateUtil.save(join);
 			}
 		}
+		if("2".equals(coupon.getSpreadType())){//系统自动发放优惠券给用户
+			couponUtil.autoSendCouponToUser(coupon.getId());
+		}
 		return ObjectToResult.getResult(obj);
 	}
 
@@ -69,7 +81,10 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	public Result queryCouponPage(Parameter param) throws Exception {
 		String whereStr = param.getWhereStr();
-		String hql = "from Coupon where state='1' "+whereStr+" and businessStore.id = '"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by creatTime desc";
+		if(whereStr==null){
+			whereStr="";
+		}
+		String hql = "from Coupon where state='1' "+whereStr+" and businessStore.id = '1' order by createTime desc";
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<Object> objList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
@@ -81,7 +96,11 @@ public class CouponServiceImpl implements CouponService {
 			vo.setFaceValue(coupon.getFaceValue().toString());
 			vo.setGiveNumber(coupon.getGiveoutNum().toString());
 			vo.setName(coupon.getName());
-			vo.setReceiveNumber(coupon.getReceiveNum().toString());
+			if(coupon.getReceiveNum()!=null){
+				vo.setReceiveNumber(coupon.getReceiveNum().toString());
+			}else{
+				vo.setReceiveNumber("0");
+			}
 			vo.setType(couponUtil.getCouponType(coupon.getCouponType()));
 			vo.setValidEndTime(coupon.getValidEndTime());
 			vo.setValidStartTime(coupon.getValidStartTime());
@@ -93,7 +112,7 @@ public class CouponServiceImpl implements CouponService {
 	}
 
 	/**
-	 * 优惠券统计
+	 * 有效直降券和满减券统计
 	 */
 	@Override
 	public Result queryCouponCount(Parameter param) throws Exception {
@@ -114,18 +133,26 @@ public class CouponServiceImpl implements CouponService {
 		Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, param.getId().toString());
 		if(coupon!=null){
 			coupon.setState("0");
-			coupon.setModifyPerson(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
+			coupon.setModifyPerson(param.getManageToken().getLoginUser().getLoginName());
 			coupon.setModifyTime(new DateStr().toString());
 			List<Object> typeList = hibernateUtil.hql("from GoodsTypeEventJoin where state='1' and eventId='"+coupon.getId()+"'");
-			for (Object object : typeList) {
+			for (Object object : typeList) {//先删除关联的商品分类
 				GoodsTypeEventJoin join = (GoodsTypeEventJoin) object;
 				join.setState("0");
-				join.setModifyPerson(param.getManageToken().getBusinessStoreLogin().getStoreAccount());
+				join.setModifyPerson(param.getManageToken().getLoginUser().getLoginName());
 				join.setModifyTime(new DateStr().toString());
 				hibernateUtil.update(join);
 			}
+			List<Object> userCouponList = hibernateUtil.hql("from UserCoupon where state='1' and couponId.id='"+coupon.getId()+"'");
+			for (Object object : userCouponList) {//删除关联的用户
+				UserCoupon userCoupon = (UserCoupon) object;
+				userCoupon.setState("0");
+				userCoupon.setModifyPerson(param.getManageToken().getLoginUser().getLoginName());
+				userCoupon.setModifyTime(new DateStr().toString());
+				hibernateUtil.update(userCoupon);
+			}
 		}
-		hibernateUtil.update(coupon);
+		hibernateUtil.update(coupon);//删除优惠券
 		return ObjectToResult.getResult(coupon);
 	}
 
@@ -137,6 +164,7 @@ public class CouponServiceImpl implements CouponService {
 		Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, param.getId().toString());
 		CouponVo vo = new CouponVo();
 		if(coupon!=null){
+			vo.setId(coupon.getId());
 			vo.setCreateTime(coupon.getCreateTime());
 			vo.setFaceValue(coupon.getFaceValue().toString());
 			vo.setCode(coupon.getCode());
@@ -145,13 +173,18 @@ public class CouponServiceImpl implements CouponService {
 			vo.setGiveNumber(coupon.getGiveoutNum().toString());
 			vo.setValidStartTime(coupon.getValidStartTime());
 			vo.setValidEndTime(coupon.getValidEndTime());
-			vo.setTargetValue(coupon.getTargetValue().toString());
+			if(coupon.getTargetValue()!=null){
+				vo.setTargetValue(coupon.getTargetValue().toString());
+			}
+			vo.setUseType(couponUtil.getCouponUseType(coupon.getUseType()));
 			List<Object> typeList = hibernateUtil.hql("from GoodsTypeEventJoin where state='1' and eventId='"+coupon.getId()+"'");
 			List<Object> typeVoList = new ArrayList<Object>();
 			for (Object object : typeList) {
 				GoodsTypeEventJoin join = (GoodsTypeEventJoin) object;
 				GoodsTypeVo typeVo = new GoodsTypeVo();
 				typeVo.setLevel(join.getLevel());
+				GoodsType type = (GoodsType) hibernateUtil.find(GoodsType.class, join.getGoodsType());
+				typeVo.setName(type.getName());
 				typeVoList.add(typeVo);
 			}
 			vo.setTypeList(typeVoList);
@@ -160,7 +193,7 @@ public class CouponServiceImpl implements CouponService {
 	}
 
 	/**
-	 * 检测此商品分类是否已有有效优惠券
+	 * 检测此商品分类在数据库中是否已有有效优惠券
 	 */
 	@Override
 	public Result isHasCouponByGoodsTypeId(Parameter param)
@@ -175,18 +208,83 @@ public class CouponServiceImpl implements CouponService {
 		for (String str : types) {
 			typeList = hibernateUtil.hql("from GoodsTypeEventJoin where state='1' and goodsType='"+str+"'");
 			if(typeList.size()>0){
-				vo = "1";
+				vo = "1";//此分类下已经有优惠券了
 				break;
 			}
 		}
 		for (String str : upperTypes) {
 			typeList = hibernateUtil.hql("from GoodsTypeEventJoin where state='1' and goodsType='"+str+"'");
 			if(typeList.size()>0){
-				vo = "2";
+				vo = "2";//此分类上已经有优惠券了
 				break;
 			}
 		}
 		return ObjectToResult.getResult(vo);
+	}
+	
+	/**
+	 * 检测此商品分类在数据库中是否已有有效优惠券
+	 */
+	@Override
+	public Result isHasCouponInArrsByGoodsTypeId(Parameter param)
+			throws Exception {
+		Object vo = new Object();
+		vo = "3";
+		List<String> types = paramUtil.getThirdType(param.getId().toString(), param.getKey());//查询此分类下所有的第三级
+		List<String> upperTypes = paramUtil.getUpperType(param.getId().toString(), param.getKey());
+		List<Object> typeList = new ArrayList<Object>();
+		types.add(param.getId().toString());
+		upperTypes.add(param.getId().toString());
+		List<Object> list = param.getObjList();
+		for (String str : types) {
+			for (Object object : list) {
+				HashMap map = (HashMap) object;
+				String id = (String)map.get("id");
+				if(str.equals(id)){
+					vo = "1";//此分类下已经有设置优惠券了
+					break;
+				}
+			}
+			
+		}
+		for (String str : upperTypes) {
+			for (Object object : list) {
+				HashMap map = (HashMap) object;
+				String id = (String)map.get("id");
+				if(str.equals(id)){
+					vo = "2";//此分类上已经有设置优惠券了
+					break;
+				}
+			}
+		}
+		return ObjectToResult.getResult(vo);
+	}
+	
+	@Override
+	public Result fileUpload(Parameter parameter, HttpServletRequest request) throws Exception {
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request; 
+		List<MultipartFile> fileList = multipartRequest.getFiles("file_data");
+		//图片文件夹名称
+		String folderName = request.getParameter("folderName");
+		String path = request.getSession().getServletContext().getRealPath("upload/img/"+folderName+"/");
+		String picPath = "/upload/img/" + folderName + "/";
+		Map<String ,Object> map = new HashMap<String ,Object>();
+		if (fileList.size()>0) {
+			for (MultipartFile multipartFile : fileList) {
+				String picName = UUID.randomUUID()+"."+multipartFile.getOriginalFilename().split("\\.")[1];
+			    String picAddress = picPath+ picName;
+				File targetFile = new File(path, picName);  
+			        if(!targetFile.exists()){  
+			            targetFile.mkdirs();  
+			        } 
+			        multipartFile.transferTo(targetFile);
+					map.put("folderName", folderName);
+					map.put("picAddress", picAddress );
+					map.put("picName", picName );
+					map.put("hasUpload", true );
+			}
+		}
+		return ObjectToResult.getResult(map);
 	}
 
 }

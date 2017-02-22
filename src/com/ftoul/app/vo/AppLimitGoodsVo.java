@@ -13,8 +13,15 @@ public class AppLimitGoodsVo {
 	
 	private String startTime;
 	private long endTime;
+	private String hasBegin;
 	private List<AppLimitGoods> appLimitGoodsList;
 	
+	public String getHasBegin() {
+		return hasBegin;
+	}
+	public void setHasBegin(String hasBegin) {
+		this.hasBegin = hasBegin;
+	}
 	public String getStartTime() {
 		return startTime;
 	}

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.ftoul.common.DateStr;
 import com.ftoul.po.Coupon;
 import com.ftoul.po.GoodsTypeEventJoin;
+import com.ftoul.po.User;
 import com.ftoul.po.UserCoupon;
 import com.ftoul.util.goodsparam.GoodsParamUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
@@ -34,6 +35,16 @@ public class CouponUtil {
 			name = "直降券";
 		}else if("2".equals(param)){
 			name = "满减券";
+		}
+		return name;
+	}
+	
+	public String getCouponUseType(String param){
+		String name = null;
+		if("1".equals(param)){
+			name = "全场";
+		}else if("2".equals(param)){
+			name = "品类";
 		}
 		return name;
 	}
@@ -129,6 +140,28 @@ public class CouponUtil {
 	 * @return
 	 */
 	public List<Object> getCouponByUserId(String param){
+		return hibernateUtil.hql("from UserCoupon where state='1' and and isUsed='1' and userId='"+param+"'");
+	}
+	
+	/**
+	 * 系统自动发放优惠券给有效用户
+	 * @param param
+	 * @return
+	 */
+	public List<Object> autoSendCouponToUser(String param){
+		List<Object> objList = hibernateUtil.hql("from User where state='1'");
+		for (Object object : objList) {
+			User user = (User) object;
+			UserCoupon userCoupon = new UserCoupon();
+			Coupon coupn = (Coupon) hibernateUtil.find(Coupon.class, param);
+			userCoupon.setCouponId(coupn);
+			userCoupon.setCreatePerson("System");
+			userCoupon.setCreateTime(new DateStr().toString());
+			userCoupon.setIsUsed("1");
+			userCoupon.setUserId(user.getId());
+			userCoupon.setState("1");
+			hibernateUtil.save(userCoupon);
+		}
 		return hibernateUtil.hql("from UserCoupon where state='1' and and isUsed='1' and userId='"+param+"'");
 	}
 

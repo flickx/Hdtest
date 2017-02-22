@@ -1,5 +1,7 @@
 package com.ftoul.manage.coupon.action;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.manage.coupon.service.CouponService;
+import com.ftoul.manage.coupon.service.CouponServ;
 
 /**
  * 大后台优惠券
@@ -20,7 +22,7 @@ import com.ftoul.manage.coupon.service.CouponService;
 public class CouponAction {
 	
 	@Autowired
-	private CouponService couponService;
+	private CouponServ couponService;
 	
 	/**
 	 * 创建优惠券
@@ -83,7 +85,7 @@ public class CouponAction {
 	}
 	
 	/**
-	 * 检测此商品分类是否已有有效优惠券
+	 * 检测此商品分类在数据库中是否已有有效优惠券
 	 * @param param
 	 * @return
 	 * @throws Exception 
@@ -95,6 +97,28 @@ public class CouponAction {
 	}
 	
 	
-
-
+	/**
+	 * 检测此商品分类在所选的数组中是否已有有效优惠券
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "isHasCouponInArrsByGoodsTypeId")  
+	public @ResponseBody Result isHasCouponInArrsByGoodsTypeId(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return couponService.isHasCouponInArrsByGoodsTypeId(parameter);
+	}
+	
+	/**
+	 * 检测此商品分类在所选的数组中是否已有有效优惠券
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "fileUpload")  
+	public @ResponseBody Result fileUpload(String param, HttpServletRequest request) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return couponService.fileUpload(parameter,request);
+	}
+	
 }

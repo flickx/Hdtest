@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ftoul.app.vo.AppLimitGoodsVo;
 import com.ftoul.app.vo.PcLimitGoods;
 import com.ftoul.app.vo.PcLimitGoodsVo;
 import com.ftoul.common.Common;
@@ -51,16 +52,17 @@ public class LimitGoodsAction {
 			List<GoodsEventJoin> goodsEventJoinList = (List<GoodsEventJoin>)re.getObj();
 			List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
 			for (GoodsEventJoin goodsEventJoin : goodsEventJoinList) {
-				PcLimitGoods PcLimitGoods = new PcLimitGoods();
-				PcLimitGoods.setGoodsId(goodsEventJoin.getGoods().getId());
-				PcLimitGoods.setImgUrl(goodsEventJoin.getGoods().getPicSrc());
-				PcLimitGoods.setName(goodsEventJoin.getGoods().getTitle());
+				PcLimitGoods pcLimitGoods = new PcLimitGoods();
+				pcLimitGoods.setGoodsId(goodsEventJoin.getGoods().getId());
+				pcLimitGoods.setImgUrl(goodsEventJoin.getGoods().getPicSrc());
+				pcLimitGoods.setName(goodsEventJoin.getGoods().getTitle());
+				pcLimitGoods.setSubName(goodsEventJoin.getGoods().getSubtitle());
 		        NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
 		        format.setMinimumFractionDigits(0);// 设置小数位
-				PcLimitGoods.setNum(format.format(goodsEventJoin.getQuantity()*1.0/goodsEventJoin.getDefaultQuantity()));
-				PcLimitGoods.setOriginalPrice(goodsEventJoin.getGoods().getPrice());
-				PcLimitGoods.setPresentPrice(goodsEventJoin.getEventPrice());
-				goodsList.add(PcLimitGoods);
+		        pcLimitGoods.setNum(format.format(goodsEventJoin.getQuantity()*1.0/goodsEventJoin.getDefaultQuantity()));
+		        pcLimitGoods.setOriginalPrice(goodsEventJoin.getGoods().getPrice());
+		        pcLimitGoods.setPresentPrice(goodsEventJoin.getEventPrice());
+				goodsList.add(pcLimitGoods);
 			}
 			
 			PcLimitGoodsVo i  =new PcLimitGoodsVo();
@@ -98,29 +100,34 @@ public class LimitGoodsAction {
 			List<GoodsEventJoin> goodsEventJoinList = (List<GoodsEventJoin>)re.getObj();
 			List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
 			for (GoodsEventJoin goodsEventJoin : goodsEventJoinList) {
-				PcLimitGoods PcLimitGoods = new PcLimitGoods();
-				PcLimitGoods.setGoodsId(goodsEventJoin.getGoods().getId());
-				PcLimitGoods.setImgUrl(goodsEventJoin.getGoods().getPicSrc());
-				PcLimitGoods.setName(goodsEventJoin.getGoods().getTitle());
+				PcLimitGoods pcLimitGoods = new PcLimitGoods();
+				pcLimitGoods.setGoodsId(goodsEventJoin.getGoods().getId());
+				pcLimitGoods.setImgUrl(goodsEventJoin.getGoods().getPicSrc());
+				pcLimitGoods.setName(goodsEventJoin.getGoods().getTitle());
+				pcLimitGoods.setSubName(goodsEventJoin.getGoods().getSubtitle());
 		        NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
 		        format.setMinimumFractionDigits(2);// 设置小数位
-				PcLimitGoods.setNum(format.format(goodsEventJoin.getQuantity()*1.0/goodsEventJoin.getDefaultQuantity()));
-				PcLimitGoods.setQunatity(goodsEventJoin.getQuantity());
-				PcLimitGoods.setOriginalPrice(goodsEventJoin.getGoods().getPrice());
-				PcLimitGoods.setPresentPrice(goodsEventJoin.getEventPrice());
-				goodsList.add(PcLimitGoods);
+		        pcLimitGoods.setNum(format.format(goodsEventJoin.getQuantity()*1.0/goodsEventJoin.getDefaultQuantity()));
+		        pcLimitGoods.setQunatity(goodsEventJoin.getQuantity());
+		        pcLimitGoods.setOriginalPrice(goodsEventJoin.getGoods().getPrice());
+		        pcLimitGoods.setPresentPrice(goodsEventJoin.getEventPrice());
+				goodsList.add(pcLimitGoods);
 			}
 			
 			PcLimitGoodsVo i  =new PcLimitGoodsVo();
-			String begen = goodsEvent.getEventBegen().toString().substring(11,16);
-			
+			String begin = goodsEvent.getEventBegen().toString().substring(11,16);
 			String end = goodsEvent.getEventEnd().toString();
-			long last = DateUtil.stringFormatToDate(end, "yyyy/MM/dd HH:mm:ss").getTime();
+			long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+			long endTime = DateUtil.stringFormatToDate(end, "yyyy/MM/dd HH:mm:ss").getTime();
 			long now = new Date().getTime();
-			long distance = last - now;
-			long endTime = distance/1000;
-			i.setStartTime(begen);
-			i.setEndTime(endTime);
+			if (now > beginTime) {
+				i.setEndTime((endTime- now)/1000);
+				i.setHasBegin("1");
+			}else{
+				i.setEndTime((beginTime - now)/1000);
+				i.setHasBegin("0");
+			}
+			i.setStartTime(begin);
 			i.setPcLimitGoodsList(goodsList);
 			goodsPcVoList.add(i);
 		}

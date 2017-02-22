@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public class PcLimitGoods {
 	private String goodsId;
 	private String name;
+	private String subName;
 	private String model;
 	private BigDecimal presentPrice;
 	private double originalPrice;
@@ -106,6 +107,18 @@ public class PcLimitGoods {
 	 */
 	public void setQunatity(Integer qunatity) {
 		this.qunatity = qunatity;
+	}
+	/**
+	 * @return the subName
+	 */
+	public String getSubName() {
+		return subName;
+	}
+	/**
+	 * @param subName the subName to set
+	 */
+	public void setSubName(String subName) {
+		this.subName = subName;
 	}
 	
 	

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.manage.comment.service.CommentService;
+import com.ftoul.manage.comment.service.CommentServ;
 
 /**
  * 评论管理
@@ -20,7 +20,7 @@ import com.ftoul.manage.comment.service.CommentService;
 public class CommentAction {
 	
 	@Autowired
-	CommentService commentService;
+	CommentServ commentService;
 
 	/**
 	 * 查询评论

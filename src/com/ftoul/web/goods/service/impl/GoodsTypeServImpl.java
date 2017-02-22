@@ -69,7 +69,7 @@ public class GoodsTypeServImpl implements GoodsTypeServ {
 		if("3".equals(goodsType.getLevel())){
 			throw new Exception("没有下一级商品类别");
 		}
-		String hql = "from GoodsType where state =1 pid = "+"'"+param.getId().toString()+"'";
+		String hql = "from GoodsType where state =1 and pid = "+"'"+param.getId().toString()+"'";
 		List<Object> list = hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
 	}
