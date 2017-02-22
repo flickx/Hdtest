@@ -111,7 +111,9 @@ public class OrdersAppServImpl implements OrdersAppServ {
 			ordersListVo.setOrderPrice(order.getOrderPrice());
 			ordersListVo.setOrderTime(order.getOrderTime());
 			ordersListVo.setOrderStatic(order.getOrderStatic());
-			ordersListVo.setStoreName(order.getShopId().getStoreName());
+			if(null!=order.getShopId()){
+				ordersListVo.setStoreName(order.getShopId().getStoreName());	
+			}
 			List<Object> manyVsOneVoList = manyVsOneVo.getList();
 			List<OrderListDetailAppVo> detailList = new ArrayList<OrderListDetailAppVo>();
 			for (Object object2 : manyVsOneVoList) {
@@ -189,6 +191,8 @@ public class OrdersAppServImpl implements OrdersAppServ {
 			ordersList =  hibernateUtil.hql("from Orders where deliverStatic = '0' and user.id='"+param.getUserToken().getUser().getId()+"'");
 		}else if(OrdersConstant.NOT_TASK_DELIVER.equals(key)){
 			ordersList =  hibernateUtil.hql("from Orders where confirmStatic = '0' and user.id='"+param.getUserToken().getUser().getId()+"'");
+		}else if(OrdersConstant.NOT_EVALUATE.equals(key)){
+			ordersList =  hibernateUtil.hql("from Orders where feedback is NULL and user.id='"+param.getUserToken().getUser().getId()+"'");
 		}else{
 			ordersList =  hibernateUtil.hql("from Orders where user.id='"+param.getUserToken().getUser().getId()+"'");
 		}
@@ -214,7 +218,9 @@ public class OrdersAppServImpl implements OrdersAppServ {
 		orderDetailAppVo.setConsignee(order.getConsignee());
 		orderDetailAppVo.setConsigneeTel(order.getConsigneeTel());
 		orderDetailAppVo.setAddress(order.getAddress());
-		orderDetailAppVo.setStoreName(order.getShopId().getStoreName());
+		if(null!=order.getShopId()){
+			orderDetailAppVo.setStoreName(order.getShopId().getStoreName());
+		}
 		orderDetailAppVo.setFeedback(order.getFeedback());
 		orderDetailAppVo.setFreight(order.getFreight());
 		orderDetailAppVo.setBeeCoins(order.getBeeCoins());
@@ -223,17 +229,19 @@ public class OrdersAppServImpl implements OrdersAppServ {
 		orderDetailAppVo.setPayable(order.getPayable());
 		List<Object> manyVsOneVoList = manyVsOneVo.getList();
 		List<OrderListDetailAppVo> detailList = new ArrayList<OrderListDetailAppVo>();
-		ManyVsOneVo vo = (ManyVsOneVo) manyVsOneVoList.get(0);
-		for (Object object2 : vo.getList()) {
-			OrdersDetail ordersDetail = (OrdersDetail) object2;
-			OrderListDetailAppVo detailAppVo = new OrderListDetailAppVo();
-			detailAppVo.setId(ordersDetail.getGoodsParam().getGoods().getId());
-			detailAppVo.setTitle(ordersDetail.getGoodsParam().getGoods().getTitle());
-			detailAppVo.setParamName(ordersDetail.getGoodsParam().getParamName());
-			detailAppVo.setPicSrc(ordersDetail.getGoodsParam().getGoods().getPicSrc());
-			detailAppVo.setNumber(ordersDetail.getNumber());
-			detailAppVo.setPrice(ordersDetail.getGoodsParam().getGoods().getPrice());
-			detailList.add(detailAppVo);
+		for (Object object : manyVsOneVoList) {
+			ManyVsOneVo vo = (ManyVsOneVo) object;
+			for (Object object2 : vo.getList()) {
+				OrdersDetail ordersDetail = (OrdersDetail) object2;
+				OrderListDetailAppVo detailAppVo = new OrderListDetailAppVo();
+				detailAppVo.setId(ordersDetail.getGoodsParam().getGoods().getId());
+				detailAppVo.setTitle(ordersDetail.getGoodsParam().getGoods().getTitle());
+				detailAppVo.setParamName(ordersDetail.getGoodsParam().getParamName());
+				detailAppVo.setPicSrc(ordersDetail.getGoodsParam().getGoods().getPicSrc());
+				detailAppVo.setNumber(ordersDetail.getNumber());
+				detailAppVo.setPrice(ordersDetail.getGoodsParam().getGoods().getPrice());
+				detailList.add(detailAppVo);
+			}
 		}
 		orderDetailAppVo.setDetailList(detailList);
 		return ObjectToResult.getResult(orderDetailAppVo);
@@ -339,8 +347,8 @@ public class OrdersAppServImpl implements OrdersAppServ {
 	public Result getOrdersLogistics(Parameter param) throws Exception {
 		Orders orders = (Orders) hibernateUtil.find(Orders.class, param.getId()+"");
 		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
-		//String res = kdniaoTrackQueryAPI.getOrderTracesByJson(orders.getLogisticsCompany().getCode(), orders.getOdd());
-		String res = kdniaoTrackQueryAPI.getOrderTracesByJson("YD", "1202401432095");
+		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(orders.getLogisticsCompany().getCode(), orders.getOdd());
+//		String res = kdniaoTrackQueryAPI.getOrderTracesByJson("YD", "1202401432095");
 		OrdersLogisticsVo vo = new OrdersLogisticsVo();
 		vo.setOrderNumber(orders.getOrderNumber());
 		vo.setLogisticeCompanyName(orders.getLogisticsCompany().getName());
