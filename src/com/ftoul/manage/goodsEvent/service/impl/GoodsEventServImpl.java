@@ -104,7 +104,8 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	public Result getPcLimitEventList(Parameter param) throws Exception {
 		String startTime = new DateStr().getStartTime();
 		String endTime = new DateStr().getEndTime();
-		String hql = "from GoodsEvent where state = '1' and '"+startTime+"' < eventBegen and eventBegen < '"+endTime+"' and shopId is null and typeName = '限时抢' order by eventBegen asc limit 5";
+		String now = new DateStr().getNowTime();
+		String hql = "from GoodsEvent where state = '1' and eventEnd > '"+now+"' and '"+startTime+"' < eventBegen and eventBegen < '"+endTime+"' and shopId is null and typeName = '限时抢' order by eventBegen asc limit 5";
 		List<Object> list = new ArrayList<Object>(5);
 		list =	hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);

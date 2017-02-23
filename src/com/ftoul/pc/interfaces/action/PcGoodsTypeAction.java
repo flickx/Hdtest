@@ -8,13 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ftoul.app.vo.PcNewGoods;
-import com.ftoul.app.vo.PcNewGoodsVo;
 import com.ftoul.common.Common;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.po.GoodsType;
 import com.ftoul.po.PcTypeGoods;
 import com.ftoul.web.goods.service.GoodsServ;
 import com.ftoul.web.goods.service.GoodsTypeServ;
