@@ -5,6 +5,7 @@ public class PcTypeGoods {
 	private String goodsId;//商品id
 	private String title;//主标题
 	private String subTitle;//副标题
+	private String goodsParam;//商品参数
 	private double price;//现价
 	private double marketPrice;//市场价格
 	private String picSrc;//商品主图片
@@ -81,4 +82,17 @@ public class PcTypeGoods {
 	public void setPicSrc(String picSrc) {
 		this.picSrc = picSrc;
 	}
+	/**
+	 * @return the goodsParam
+	 */
+	public String getGoodsParam() {
+		return goodsParam;
+	}
+	/**
+	 * @param goodsParam the goodsParam to set
+	 */
+	public void setGoodsParam(String goodsParam) {
+		this.goodsParam = goodsParam;
+	}
+	
 }

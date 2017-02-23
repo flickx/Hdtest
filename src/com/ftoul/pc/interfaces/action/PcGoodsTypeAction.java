@@ -38,8 +38,7 @@ public class PcGoodsTypeAction {
 	@RequestMapping(value = "getSubTypesByPid")  
 	public @ResponseBody Result getSubTypesByPid(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		List<Object> typeList = (List<Object>)goodsTypeServ.getNextGoodsTypes(parameter).getObj();
-		return ObjectToResult.getResult(typeList);
+		return goodsTypeServ.getNextGoodsTypes(parameter);
 	}
 	/**
 	 * pc端接口：随机查询一级分类下的商品，显示6个
@@ -50,18 +49,6 @@ public class PcGoodsTypeAction {
 	@RequestMapping(value = "getGoodsByType")  
 	public @ResponseBody Result getGoodsByType(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		List<Object[]> goodsList = (List<Object[]>)goodsServ.getGoodsByType(parameter).getObj();
-		List<PcTypeGoods> typeGoodsList = new ArrayList<PcTypeGoods>();
-		for (Object[] goods : goodsList) {
-			PcTypeGoods typeGoods = new PcTypeGoods();
-			typeGoods.setGoodsId(goods[0].toString());
-			typeGoods.setTitle(goods[1].toString());
-			typeGoods.setSubTitle(goods[2].toString());
-			typeGoods.setPrice((double)goods[3]);
-			typeGoods.setMarketPrice(Double.parseDouble(goods[4].toString()));
-			typeGoods.setPicSrc(goods[5].toString());
-			typeGoodsList.add(typeGoods);
-		}
-		return ObjectToResult.getResult(typeGoodsList);
+		return goodsServ.getGoodsByType(parameter);
 	}
 }

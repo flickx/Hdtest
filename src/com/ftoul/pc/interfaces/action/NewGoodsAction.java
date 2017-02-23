@@ -40,24 +40,9 @@ public class NewGoodsAction {
 	@RequestMapping(value = "getPcNewGoods")  
 	public @ResponseBody Result getPcNewGoods(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		Result re = goodsServ.getPcNewGoods(parameter);
-		List<Object[]> goodsList = (List<Object[]>)re.getObj();
-		List<PcNewGoods> newGoodsList = new ArrayList<PcNewGoods>();
-		for (Object[] goods : goodsList) {
-			PcNewGoods newGoods = new PcNewGoods();
-			newGoods.setGoodsId(goods[0].toString());
-			newGoods.setTitle(goods[1].toString());
-			newGoods.setSubTitle(goods[2].toString());
-			newGoods.setModel(goods[3].toString());
-			newGoods.setPrice((double)goods[4]);
-			newGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
-			newGoods.setPicSrc(goods[6].toString());
-			newGoods.setNum(Double.toString(Math.round((double)goods[4]*1.0/Double.parseDouble(goods[5].toString())*10)));
-			newGoodsList.add(newGoods);
-		}
-		return ObjectToResult.getResult(newGoodsList);
+		return goodsServ.getPcNewGoods(parameter);
 	}
-	/**
+	/** 
 	 * 获取pc端每日上新详情页面商品列表
 	 * @param param 页面传递参数对象
 	 * @return AJAX调用Result的JSON对象
@@ -66,31 +51,6 @@ public class NewGoodsAction {
 	@RequestMapping(value = "getPcNewGoodsList")  
 	public @ResponseBody Result getPcNewGoodsList(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		//获取全部一级分类
-		List<GoodsType> typeList = (List<GoodsType>)goodsTypeServ.getGoodsTypeLevel1List(parameter).getObj();
-		List<PcNewGoodsVo> pcNewGoodsList = new ArrayList<PcNewGoodsVo>();
-		//查询一级分类下每日上新商品
-		for (GoodsType type : typeList) {
-			PcNewGoodsVo vo = new PcNewGoodsVo();
-			List<Object[]> goodsList = (List<Object[]>)goodsServ.getPcNewGoodsList(type.getId()).getObj();
-			List<PcNewGoods> newGoodsList = new ArrayList<PcNewGoods>();
-			for (Object[] goods : goodsList) {
-				PcNewGoods newGoods = new PcNewGoods();
-				newGoods.setGoodsId(goods[0].toString());
-				newGoods.setTitle(goods[1].toString());
-				newGoods.setSubTitle(goods[2].toString());
-				newGoods.setModel(goods[3].toString());
-				newGoods.setPrice((double)goods[4]);
-				newGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
-				newGoods.setPicSrc(goods[6].toString());
-				newGoods.setNum(Double.toString(Math.round((double)goods[4]*1.0/Double.parseDouble(goods[5].toString())*10)));
-				newGoodsList.add(newGoods);  
-			}
-			vo.setTotal(goodsList.size());
-			vo.setGoodsType1Name(type.getName());
-			vo.setPcNewGoodsList(newGoodsList);
-			pcNewGoodsList.add(vo);
-		}
-		return ObjectToResult.getResult(pcNewGoodsList);
+		return goodsServ.getPcNewGoodsList(parameter);
 	}
 }
