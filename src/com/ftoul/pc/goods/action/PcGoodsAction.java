@@ -18,6 +18,7 @@ import com.ftoul.common.Common;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.pc.goods.service.GoodsPcServ;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsType;
 import com.ftoul.web.business.service.BusinessWebServ;
@@ -68,6 +69,9 @@ public class PcGoodsAction {
 	@Autowired
 	private GoodsServ goodsServ;
 	
+	@Autowired
+	private GoodsPcServ goodsPcServ;
+	
 	/**
 	 * 商品列表
 	 * @param param 页面传递参数对象
@@ -77,7 +81,7 @@ public class PcGoodsAction {
 	@RequestMapping(value = "getGoodsDetail")  
 	public @ResponseBody Result getGoodsDetail(String param) throws Exception{	
 		Parameter parameter = Common.jsonToParam(param);
-		return goodsAppServ.getGoodsDetail(parameter);
+		return goodsPcServ.getGoodsDetail(parameter);
 	}
 	
 	

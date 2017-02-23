@@ -236,8 +236,17 @@ public class GoodsServImpl implements GoodsServ {
 			goodsVo.setGoodsPicInfoList(goodsPicInfoList);
 		}
 		goodsVo.setId(goods.getId());
+		if(goods.getGoodsType1()!=null){
+			goodsVo.setGoodsType1(goods.getGoodsType1().getId());
+			goodsVo.setGoodsTypeNameOne(goods.getGoodsType1().getName());
+		}
+		if(goods.getGoodsType2()!=null){
+			goodsVo.setGoodsType2(goods.getGoodsType2().getId());
+			goodsVo.setGoodsTypeNameTwo(goods.getGoodsType2().getName());
+		}
 		if(goods.getGoodsType3()!=null){
 			goodsVo.setGoodsType3(goods.getGoodsType3().getId());
+			goodsVo.setGoodsTypeNameThree(goods.getGoodsType3().getName());
 		}
 		if(goods.getGoodsPropType()!=null){
 			goodsVo.setGoodsPropTypeId(goods.getGoodsPropType().getId());
@@ -267,6 +276,24 @@ public class GoodsServImpl implements GoodsServ {
 		}
 		if(goods.getGoodsLabel()!=null){
 			goodsVo.setGoodsLabel(goods.getGoodsLabel());
+		}
+		if(goods.getWeight()!=null){
+			goodsVo.setWeight(goods.getWeight());
+		}
+		if(goods.getPackingLength()!=null){
+			goodsVo.setPackingLength(goods.getPackingLength());
+		}
+		if(goods.getPackingWidth()!=null){
+			goodsVo.setPackingWidth(goods.getPackingWidth());
+		}
+		if(goods.getPackingHeight()!=null){
+			goodsVo.setPackingHeight(goods.getPackingHeight());
+		}
+		if(goods.getPackingList()!=null){
+			goodsVo.setPackingList(goods.getPackingList());
+		}
+		if(goods.getAfterService()!=null){
+			goodsVo.setAfterService(goods.getAfterService());
 		}
 		return ObjectToResult.getResult(goodsVo);
 		

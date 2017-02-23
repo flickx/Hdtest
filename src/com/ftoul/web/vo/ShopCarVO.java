@@ -16,14 +16,14 @@ public class ShopCarVO {
 	private String modifyTime;
 	private String modifyPerson;
 	private String state;
-	private String picSrc;
-	private String title;
-	private String price;
-	private String paramName;
-	private String goodsId;
-	private String discount;
+	private String picSrc;//商品图片
+	private String title;//商品名称
+	private String price;//商品价格
+	private String paramName;//商品参数名
+	private String goodsId;//商品id
+	private String discount;//商品折扣
 	private Float eventPrice;//活动价
-	private String stock;
+	private String stock;//商品库存（如果参加活动取活动数量，否则取商品库存）
 	private String typeName;//活动类型
 	private String shopId;//店铺Id
 	private String shopName;//店铺名称
@@ -149,5 +149,4 @@ public class ShopCarVO {
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
 	}
-
 }

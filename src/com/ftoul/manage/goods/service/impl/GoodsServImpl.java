@@ -182,6 +182,27 @@ public class GoodsServImpl implements GoodsServ {
 			GoodsType goodsType1 =	(GoodsType) this.hibernateUtil.find(GoodsType.class, goodsVo.getGoodsType1());
 			goods.setGoodsType1(goodsType1);
 		}
+		if(goodsVo.getPlace()!=null){
+			goods.setPlace(goodsVo.getPlace());
+		}
+		if(goodsVo.getWeight()!=null){
+			goods.setWeight(goodsVo.getWeight());
+		}
+		if(goodsVo.getPackingLength()!=null){
+			goods.setPackingLength(goodsVo.getPackingLength());
+		}
+		if(goodsVo.getPackingWidth()!=null){
+			goods.setPackingWidth(goodsVo.getPackingWidth());
+		}
+		if(goodsVo.getPackingHeight()!=null){
+			goods.setPackingHeight(goodsVo.getPackingHeight());
+		}
+		if(goodsVo.getPackingList()!=null){
+			goods.setPackingList(goodsVo.getPackingList());
+		}
+		if(goodsVo.getAfterService()!=null){
+			goods.setAfterService(goodsVo.getAfterService());
+		}
 		if(goodsVo.getSubtitle()!=null)
 			goods.setSubtitle(goodsVo.getSubtitle());
 		if(goodsVo.getGoodsType2()!=null){

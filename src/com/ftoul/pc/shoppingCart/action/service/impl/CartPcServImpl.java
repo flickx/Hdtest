@@ -16,7 +16,6 @@ import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
-import com.ftoul.manage.goods.service.GoodsParamServ;
 import com.ftoul.pc.shoppingCart.action.service.CartPcServ;
 import com.ftoul.po.BusinessStore;
 import com.ftoul.po.GoodsParam;
@@ -30,9 +29,6 @@ public class CartPcServImpl implements CartPcServ {
 	
 	@Autowired
 	private HibernateUtil hibernateUtil;
-	
-	@Autowired
-	private GoodsParamServ goodsParamServ;
 	
 	@Override
 	public Result getShopCartByUserId(Parameter param) throws Exception {
@@ -78,12 +74,13 @@ public class CartPcServImpl implements CartPcServ {
 						}
 					}
 				}
+				shopCarVO.setStock(eventList.get(0)[4].toString());
 				shopCarVO.setTypeName(eventList.get(0)[5].toString());
 			}else{
 				if(null!=shopCarList.get(i)[7]){
 					shopCarVO.setStock(shopCarList.get(i)[7].toString());
 				}else{
-					shopCarVO.setStock("");
+					shopCarVO.setStock("0");
 				}
 			}
 			voList.add(shopCarVO);
@@ -165,6 +162,21 @@ public class CartPcServImpl implements CartPcServ {
 	@Override
 	public Result clearShopCart(Parameter param) throws Exception {
 		Integer num = hibernateUtil.execHql("update ShopCar set state = '0' where user.id='" +param.getUserToken().getUser().getId()+"'");
+		return ObjectToResult.getResult(num);
+	}
+
+	@Override
+	public Result clearNoStock(Parameter param) throws Exception {
+		Result ret = this.getShopCartByUserId(param);
+		List<ShopCarVO> shopCarList = (List<ShopCarVO>)ret.getObj();
+		Integer num = 0 ;
+		for (int i = 0; i < shopCarList.size(); i++) {
+			ShopCarVO shopCarVO = shopCarList.get(i);
+			if("0".equals(shopCarVO.getStock())){
+				num = hibernateUtil.execHql("update ShopCar set state = '0' where id='" +shopCarVO.getId()+"'");
+				num++;
+			}
+		}
 		return ObjectToResult.getResult(num);
 	}
 	

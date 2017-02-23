@@ -71,6 +71,11 @@ public class Goods implements java.io.Serializable {
 	private String step;
 	private String businessClassifyId;
 	private String goodsLabel;
+	private String packingList;
+	private String afterService;
+	private String packingLength;
+	private String packingWidth;
+	private String packingHeight;
 	// Constructors
 
 	/** default constructor */
@@ -541,6 +546,46 @@ public class Goods implements java.io.Serializable {
 
 	public void setHasstock(String hasstock) {
 		this.hasstock = hasstock;
+	}
+	@Column(name = "packing_list", length = 1000)
+	public String getPackingList() {
+		return packingList;
+	}
+
+	public void setPackingList(String packingList) {
+		this.packingList = packingList;
+	}
+	@Column(name = "after_service", length = 1000)
+	public String getAfterService() {
+		return afterService;
+	}
+	
+	public void setAfterService(String afterService) {
+		this.afterService = afterService;
+	}
+	@Column(name = "packing_length", length = 32)
+	public String getPackingLength() {
+		return packingLength;
+	}
+
+	public void setPackingLength(String packingLength) {
+		this.packingLength = packingLength;
+	}
+	@Column(name = "packing_width", length = 32)
+	public String getPackingWidth() {
+		return packingWidth;
+	}
+
+	public void setPackingWidth(String packingWidth) {
+		this.packingWidth = packingWidth;
+	}
+	@Column(name = "packing_height", length = 32)
+	public String getPackingHeight() {
+		return packingHeight;
+	}
+
+	public void setPackingHeight(String packingHeight) {
+		this.packingHeight = packingHeight;
 	}
 	
 }

@@ -52,4 +52,11 @@ public interface CartPcServ {
 	 * @throws Exception
 	 */
 	Result clearShopCart(Parameter param)throws Exception;
+	/**
+	 * 清除无货商品
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result clearNoStock(Parameter param)throws Exception;
 }
