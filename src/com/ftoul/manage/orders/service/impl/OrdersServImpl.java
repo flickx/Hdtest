@@ -445,6 +445,9 @@ public class OrdersServImpl implements OrdersServ {
 		BigDecimal payableDec = new BigDecimal(orders.getPayable());
 		BigDecimal benDec = new BigDecimal(key[0]);
 		String orderPrice = payableDec.subtract(benDec).toString();
+		if(payableDec.subtract(benDec).doubleValue()<0){
+			throw new Exception("优惠金额已经大于原价了");
+		}
 		String hql;
 		if(key[1]==null){
 			hql = "update Orders set benefitPrice ='"+key[0]+"',orderPrice='"+orderPrice+"' where id='"+parameter.getId()+"'";
