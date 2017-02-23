@@ -95,6 +95,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		String hql = "from GoodsEvent where state = '1' and '"+now+"' > eventBegen and eventEnd > '"+now+"' and shopId is null and typeName = '限时抢' order by eventBegen asc";
 		GoodsEvent goodsEvent = (GoodsEvent)hibernateUtil.hqlFirst(hql);
 		List<PcLimitGoodsVo> goodsPcVoList = new ArrayList<PcLimitGoodsVo>();
+		if(goodsEvent!=null){
 		String eventId = goodsEvent.getId();
 		String hql2 = "from GoodsEventJoin where state='1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
 		List<Object> list = (List<Object>)hibernateUtil.hql(hql2);
@@ -130,6 +131,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		i.setEndTime(distance/1000);
 		i.setPcLimitGoodsList(goodsList);
 		goodsPcVoList.add(i);
+		}
 		return ObjectToResult.getResult(goodsPcVoList);
 	}
 	/**
@@ -146,44 +148,46 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		String hql = "from GoodsEvent where state = '1' and eventEnd > '"+now+"' and '"+start+"' < eventBegen and eventBegen < '"+end+"' and shopId is null and typeName = '限时抢' order by eventBegen asc";
 		List<Object> goodsEventList = (List<Object>)hibernateUtil.hql(hql);
 		List<PcLimitGoodsVo> goodsPcVoList = new ArrayList<PcLimitGoodsVo>();
-		for (Object o : goodsEventList) {
-			GoodsEvent	goodsEvent = (GoodsEvent)o;
-			String eventId = goodsEvent.getId();
-			String hql2 = "from GoodsEventJoin where state='1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
-			List<Object> list = (List<Object>)hibernateUtil.hql(hql2);
-			List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
-			for (Object goodsEventJoin : list) {
-				GoodsEventJoin g = (GoodsEventJoin)goodsEventJoin;
-				PcLimitGoods pcLimitGoods = new PcLimitGoods();
-				pcLimitGoods.setGoodsId(g.getGoods().getId());
-				pcLimitGoods.setImgUrl(g.getGoods().getPicSrc());
-				pcLimitGoods.setName(g.getGoods().getTitle());
-				pcLimitGoods.setSubName(g.getGoods().getSubtitle());
-		        NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
-		        format.setMinimumFractionDigits(2);// 设置小数位
-		        pcLimitGoods.setNum(format.format(g.getQuantity()*1.0/g.getDefaultQuantity()));
-		        pcLimitGoods.setQunatity(g.getQuantity());
-		        pcLimitGoods.setOriginalPrice(g.getGoods().getPrice());
-		        pcLimitGoods.setPresentPrice(g.getEventPrice());
-				goodsList.add(pcLimitGoods);
+		if (goodsEventList!=null && goodsEventList.size()>0) {
+			for (Object o : goodsEventList) {
+				GoodsEvent	goodsEvent = (GoodsEvent)o;
+				String eventId = goodsEvent.getId();
+				String hql2 = "from GoodsEventJoin where state='1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
+				List<Object> list = (List<Object>)hibernateUtil.hql(hql2);
+				List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
+				for (Object goodsEventJoin : list) {
+					GoodsEventJoin g = (GoodsEventJoin)goodsEventJoin;
+					PcLimitGoods pcLimitGoods = new PcLimitGoods();
+					pcLimitGoods.setGoodsId(g.getGoods().getId());
+					pcLimitGoods.setImgUrl(g.getGoods().getPicSrc());
+					pcLimitGoods.setName(g.getGoods().getTitle());
+					pcLimitGoods.setSubName(g.getGoods().getSubtitle());
+			        NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
+			        format.setMinimumFractionDigits(2);// 设置小数位
+			        pcLimitGoods.setNum(format.format(g.getQuantity()*1.0/g.getDefaultQuantity()));
+			        pcLimitGoods.setQunatity(g.getQuantity());
+			        pcLimitGoods.setOriginalPrice(g.getGoods().getPrice());
+			        pcLimitGoods.setPresentPrice(g.getEventPrice());
+					goodsList.add(pcLimitGoods);
+				}
+				
+				PcLimitGoodsVo i  =new PcLimitGoodsVo();
+				long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+				long endTime = DateUtil.stringFormatToDate(goodsEvent.getEventEnd().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+				long nowTime = new Date().getTime();
+				long distance = endTime - nowTime;
+				if (nowTime > beginTime) {
+					i.setEndTime((endTime - nowTime)/1000);
+					i.setHasBegin("1");
+				}else{
+					i.setEndTime((beginTime - nowTime)/1000);
+					i.setHasBegin("0");
+				}
+				i.setStartTime(goodsEvent.getEventBegen().toString().substring(11,16));
+				i.setEndTime(distance/1000);
+				i.setPcLimitGoodsList(goodsList);
+				goodsPcVoList.add(i);
 			}
-			
-			PcLimitGoodsVo i  =new PcLimitGoodsVo();
-			long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
-			long endTime = DateUtil.stringFormatToDate(goodsEvent.getEventEnd().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
-			long nowTime = new Date().getTime();
-			long distance = endTime - nowTime;
-			if (nowTime > beginTime) {
-				i.setEndTime((endTime - nowTime)/1000);
-				i.setHasBegin("1");
-			}else{
-				i.setEndTime((beginTime - nowTime)/1000);
-				i.setHasBegin("0");
-			}
-			i.setStartTime(goodsEvent.getEventBegen().toString().substring(11,16));
-			i.setEndTime(distance/1000);
-			i.setPcLimitGoodsList(goodsList);
-			goodsPcVoList.add(i);
 		}
 		return ObjectToResult.getResult(goodsPcVoList);
 	}
