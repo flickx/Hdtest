@@ -82,7 +82,7 @@ public class UserCoupon implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "is_used", length = 1)
+	@Column(name = "is_used", length = 10)
 	public String getIsUsed() {
 		return this.isUsed;
 	}

@@ -23,4 +23,8 @@ public interface CouponServ {
 
 	Result fileUpload(Parameter parameter,HttpServletRequest request) throws Exception;
 
+	Result sendCouponToAppointUser(Parameter parameter) throws Exception;
+
+	Result queryUserCouponPageByCouponId(Parameter parameter) throws Exception;
+
 }

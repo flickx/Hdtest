@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -13,9 +14,16 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.Region;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ftoul.common.Common;
 
+@Component
 public class ExcelTools {
 	/**
 	 * 生成excel文件
@@ -137,5 +145,34 @@ public class ExcelTools {
 		}
 		return is;
 
+	}
+	
+	public List<String> readXlsx(MultipartFile file) {
+		List<String> list = new ArrayList<String>();
+		InputStream input = null;
+		XSSFWorkbook wb = null;
+		try {
+			input = file.getInputStream();
+			wb = new XSSFWorkbook(input);
+			XSSFSheet sheet = wb.getSheetAt(0);
+			int totalRows = sheet.getLastRowNum();
+			for (int i = 1; i <= totalRows; i++) {
+				XSSFRow row = sheet.getRow(i);
+				if (row != null) {
+					XSSFCell cell = row.getCell(0);
+					list.add(cell.getStringCellValue());
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				input.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return list;
 	}
 }

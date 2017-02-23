@@ -1,6 +1,8 @@
 package com.ftoul.manage.coupon.service.impl;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,13 +11,23 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import jxl.Sheet;
+import jxl.Workbook;
+
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
+import com.ftoul.common.ExcelTools;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
@@ -24,10 +36,12 @@ import com.ftoul.manage.coupon.service.CouponServ;
 import com.ftoul.manage.coupon.vo.CouponCount;
 import com.ftoul.manage.coupon.vo.CouponVo;
 import com.ftoul.manage.coupon.vo.GoodsTypeVo;
+import com.ftoul.manage.coupon.vo.UserCouponVo;
 import com.ftoul.po.BusinessStore;
 import com.ftoul.po.Coupon;
 import com.ftoul.po.GoodsType;
 import com.ftoul.po.GoodsTypeEventJoin;
+import com.ftoul.po.User;
 import com.ftoul.po.UserCoupon;
 import com.ftoul.util.coupon.CouponUtil;
 import com.ftoul.util.goodsparam.GoodsParamUtil;
@@ -42,6 +56,8 @@ public class CouponServiceImpl implements CouponServ {
 	private CouponUtil couponUtil;
 	@Autowired
 	private GoodsParamUtil paramUtil;
+	@Autowired
+	private ExcelTools excelTools;
 	/**
 	 * 创建优惠券
 	 */
@@ -104,6 +120,7 @@ public class CouponServiceImpl implements CouponServ {
 			vo.setType(couponUtil.getCouponType(coupon.getCouponType()));
 			vo.setValidEndTime(coupon.getValidEndTime());
 			vo.setValidStartTime(coupon.getValidStartTime());
+			vo.setGiveoutType(coupon.getGiveoutType());
 			voList.add(vo);
 		}
 		page.setObjList(null);
@@ -260,31 +277,70 @@ public class CouponServiceImpl implements CouponServ {
 		return ObjectToResult.getResult(vo);
 	}
 	
+	/**
+	 * 上传用户附件
+	 */
 	@Override
 	public Result fileUpload(Parameter parameter, HttpServletRequest request) throws Exception {
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request; 
 		List<MultipartFile> fileList = multipartRequest.getFiles("file_data");
 		//图片文件夹名称
-		String folderName = request.getParameter("folderName");
-		String path = request.getSession().getServletContext().getRealPath("upload/img/"+folderName+"/");
-		String picPath = "/upload/img/" + folderName + "/";
+		List list = null;
 		Map<String ,Object> map = new HashMap<String ,Object>();
 		if (fileList.size()>0) {
 			for (MultipartFile multipartFile : fileList) {
-				String picName = UUID.randomUUID()+"."+multipartFile.getOriginalFilename().split("\\.")[1];
-			    String picAddress = picPath+ picName;
-				File targetFile = new File(path, picName);  
-			        if(!targetFile.exists()){  
-			            targetFile.mkdirs();  
-			        } 
-			        multipartFile.transferTo(targetFile);
-					map.put("folderName", folderName);
-					map.put("picAddress", picAddress );
-					map.put("picName", picName );
-					map.put("hasUpload", true );
+				list = excelTools.readXlsx(multipartFile);
 			}
 		}
-		return ObjectToResult.getResult(map);
+		return ObjectToResult.getResult(list);
 	}
 
+	/**
+	 * 发送优惠券给指定用户
+	 */
+	@Override
+	public Result sendCouponToAppointUser(Parameter param) throws Exception {
+		Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, param.getId().toString());
+		List<Object> list = param.getObjList();
+		List<String> str = (List<String>) list.get(0);
+		for (String string : str) {
+			User user = (User) hibernateUtil.hqlFirst("from User where state='1' and static='1' and username='"+string+"'" );
+			UserCoupon userCoupon = new UserCoupon();
+			userCoupon.setCouponId(coupon);
+			userCoupon.setIsUsed("1");
+			userCoupon.setUserId(user.getId());
+			userCoupon.setCreatePerson(param.getManageToken().getLoginUser().getLoginName());
+			userCoupon.setCreateTime(new DateStr().toString());
+			hibernateUtil.save(userCoupon);
+		}
+		return ObjectToResult.getResult(coupon);
+	}
+	
+	/**
+	 * 查询优惠券下的所有用户
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@Override
+	public Result queryUserCouponPageByCouponId(Parameter param)
+			throws Exception {
+		Page page = hibernateUtil.hqlPage(null, "from UserCoupon where state='1' and couponId.id='"+param.getId().toString()+"'", param.getPageNum(), param.getPageSize());
+		List<Object> objList = page.getObjList();
+		List<Object> voList = new ArrayList<Object>();
+		for (Object object : objList) {
+			UserCoupon userCoupon = (UserCoupon) object;
+			User user = (User) hibernateUtil.find(User.class, userCoupon.getUserId());
+			UserCouponVo vo = new UserCouponVo();
+			vo.setId(userCoupon.getId());
+			vo.setTime(userCoupon.getCreateTime());
+			vo.setUserName(user.getUsername());
+			vo.setUseState(couponUtil.getCouponUseState(userCoupon.getIsUsed()));
+			voList.add(vo);
+		}
+		page.setObjList(null);
+		page.setObjList(voList);
+		return ObjectToResult.getResult(page);
+	}
+	
 }
