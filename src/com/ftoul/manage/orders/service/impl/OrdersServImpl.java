@@ -442,15 +442,14 @@ public class OrdersServImpl implements OrdersServ {
 		String keys = parameter.getKey();
 		String[] key = keys.split(";");
 		Orders orders = (Orders) hibernateUtil.find(Orders.class, parameter.getId()+"");
-		double orderPrice = Double.parseDouble(orders.getOrderPrice());
-		double payable = Double.parseDouble(orders.getPayable());
-		double benPrice = Double.parseDouble(key[0]);
-		orderPrice = payable - benPrice;
+		BigDecimal payableDec = new BigDecimal(orders.getPayable());
+		BigDecimal benDec = new BigDecimal(key[0]);
+		String orderPrice = payableDec.subtract(benDec).toString();
 		String hql;
 		if(key[1]==null){
-			hql = "update Orders set benefitPrice ='"+key[0]+"',orderPrice='"+String.valueOf(orderPrice)+"' where id='"+parameter.getId()+"'";
+			hql = "update Orders set benefitPrice ='"+key[0]+"',orderPrice='"+orderPrice+"' where id='"+parameter.getId()+"'";
 		}else{
-			hql = "update Orders set benefitPrice ='"+key[0]+"',benefitReason ='"+key[1]+"',orderPrice='"+String.valueOf(orderPrice)+"' where id='"+parameter.getId()+"'";
+			hql = "update Orders set benefitPrice ='"+key[0]+"',benefitReason ='"+key[1]+"',orderPrice='"+orderPrice+"' where id='"+parameter.getId()+"'";
 		}
 		int result = hibernateUtil.execHql(hql);
 		UserOpLog log = new UserOpLog();
