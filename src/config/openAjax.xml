@@ -11,6 +11,7 @@
 		<list>/web/manage/user</list>
 		<list>/web/business</list>
 		<list>/web/afterService</list>
+		<list>/pc/goods</list>
 		<list>/pc/search</list>
 		<list>/pc/user</list>
 		<list>/pc/orders</list>
