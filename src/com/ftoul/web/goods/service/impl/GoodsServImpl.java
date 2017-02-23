@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ftoul.app.vo.PcNewGoods;
+import com.ftoul.app.vo.PcNewGoodsVo;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.DateUtil;
 import com.ftoul.common.ObjectToResult;
@@ -23,6 +25,7 @@ import com.ftoul.po.GoodsParam;
 import com.ftoul.po.GoodsProp;
 import com.ftoul.po.GoodsType;
 import com.ftoul.po.GoodsUploadpic;
+import com.ftoul.po.PcTypeGoods;
 import com.ftoul.po.User;
 import com.ftoul.po.UserBrowse;
 import com.ftoul.util.hibernate.HibernateUtil;
@@ -424,10 +427,22 @@ public class GoodsServImpl implements GoodsServ {
 		startTime = startTime.replace("/","-");
 		String endTime = new DateStr().getEndTime();
 		endTime = endTime.replace("/","-");
-		String hql = "select g.id,g.title,g.subtitle,gp.paramName,g.price,gp.marketPrice,g.picSrc from Goods g,GoodsParam gp where g.id = gp.goods.id and  g.state = '1' and '"+startTime+"' <= g.createTime and g.createTime <= '"+endTime+"' and g.shopId = '1' order by rand() asc limit 4";
-		List<Object> list = new ArrayList<Object>(4);
-		list =	hibernateUtil.hql(hql);
-		return ObjectToResult.getResult(list);
+		String sql = "select g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and '"+startTime+"' <= g.create_time and g.create_time <= '"+endTime+"' and g.shop_id = '1' order by rand() asc limit 0,4";
+		List<Object[]> list =	hibernateUtil.sql(sql);
+		List<PcNewGoods> newGoodsList = new ArrayList<PcNewGoods>();
+		for (Object[] goods : list) {
+			PcNewGoods newGoods = new PcNewGoods();
+			newGoods.setGoodsId(goods[0].toString());
+			newGoods.setTitle(goods[1].toString());
+			newGoods.setSubTitle(goods[2].toString());
+			newGoods.setModel(goods[3].toString());
+			newGoods.setPrice((double)goods[4]);
+			newGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
+			newGoods.setPicSrc(goods[6].toString());
+			newGoods.setNum(Double.toString(Math.round((double)goods[4]*1.0/Double.parseDouble(goods[5].toString())*10)));
+			newGoodsList.add(newGoods);
+		}
+		return ObjectToResult.getResult(newGoodsList);
 	}
 	/**
 	 * pc“每日上新”详情页面接口
@@ -435,16 +450,41 @@ public class GoodsServImpl implements GoodsServ {
 	 * @return
 	 * @throws Exception
 	 */
-	public Result getPcNewGoodsList(String typeId) throws Exception{
-		String startTime = new DateStr().getStartTime();
-		startTime = startTime.replace("/","-");
-		String endTime = new DateStr().getEndTime();
-		endTime = endTime.replace("/","-");
-		String hql = "select g.id,g.title,g.subtitle,gp.paramName,g.price,gp.marketPrice,g.picSrc from Goods g,GoodsParam gp where g.id = gp.goods.id and  g.state = '1' and '"+startTime+"' <= g.createTime and g.createTime <= '"+endTime+"' and g.shopId = '1' and g.goodsType1 ='"+typeId+"'  order by rand() asc";
-		List<Object> list = new ArrayList<Object>();
-		list =	hibernateUtil.hql(hql);
-		return ObjectToResult.getResult(list);
+	public Result getPcNewGoodsList(Parameter param) throws Exception{
+		//获取全部一级分类
+		List<GoodsType> typeList = (List<GoodsType>)goodsTypeServ.getGoodsTypeLevel1List(param).getObj();
+		List<PcNewGoodsVo> pcNewGoodsList = new ArrayList<PcNewGoodsVo>();
+		//查询一级分类下每日上新商品
+		for (GoodsType type : typeList) {
+			String typeId = type.getId();
+			PcNewGoodsVo vo = new PcNewGoodsVo();
+			String startTime = new DateStr().getStartTime();
+			startTime = startTime.replace("/","-");
+			String endTime = new DateStr().getEndTime();
+			endTime = endTime.replace("/","-");
+			String sql = "select g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and '"+startTime+"' <= g.create_time and g.create_time <= '"+endTime+"' and g.shop_id = '1' and g.goods_type1 ='"+typeId+"'  order by rand() asc";
+			List<Object[]> goodsList = hibernateUtil.sql(sql);
+			List<PcNewGoods> newGoodsList = new ArrayList<PcNewGoods>();
+			for (Object[] goods : goodsList) {
+				PcNewGoods newGoods = new PcNewGoods();
+				newGoods.setGoodsId(goods[0].toString());
+				newGoods.setTitle(goods[1].toString());
+				newGoods.setSubTitle(goods[2].toString());
+				newGoods.setModel(goods[3].toString());
+				newGoods.setPrice((double)goods[4]);
+				newGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
+				newGoods.setPicSrc(goods[6].toString());
+				newGoods.setNum(Double.toString(Math.round((double)goods[4]*1.0/Double.parseDouble(goods[5].toString())*10)));
+				newGoodsList.add(newGoods);  
+			}
+			vo.setTotal(goodsList.size());
+			vo.setGoodsType1Name(type.getName());
+			vo.setPcNewGoodsList(newGoodsList);
+			pcNewGoodsList.add(vo);
+		}
+		return ObjectToResult.getResult(pcNewGoodsList);
 	}
+	
 	/**
 	 * pc首页“查询分类商品”接口
 	 * @param param id:分类id，key：分类级别，sidx：排序字段
@@ -454,16 +494,42 @@ public class GoodsServImpl implements GoodsServ {
 	public Result getGoodsByType(Parameter param) throws Exception{
 		String id = param.getId().toString();//分类id
 		String level = param.getKey();//分类级别，1：一级分类，2：二级分类
-		String sidx = param.getSidx();//排序字段，"rand()":随机，"saleNum":销量
-		String hql = "";
+		String sidx = param.getSidx();//排序字段，1：随机，2：销量
+		String sql = "select g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and g.shop_id = '1'";
 		if ("1".equals(level)) {
-			hql = "select g.id,g.title,g.subtitle,g.price,gp.marketPrice,g.picSrc from Goods g,GoodsParam gp,GoodsType gt where g.id = gp.goods.id and g.state = '1' and g.shopId = '1' and g.goodsType1.id='" + id + " order by " + sidx + " desc limit 6";			
+			sql = sql + " and g.goods_type1 ='" + id ;
+			if ("1".equals(sidx)) {
+				 sql = sql + "' order by rand() desc limit 6";			
+			}else{
+				 sql = sql + "' order by g.sale_sum desc limit 6";		
+			}
 		}
-		if ("2".equals(level)) {
-			hql = "select g.id,g.title,g.subtitle,g.price,gp.marketPrice,g.picSrc from Goods g,GoodsParam gp,GoodsType gt where g.id = gp.goods.id and g.state = '1' and g.shopId = '1' and g.goodsType2.id='" + id + " order by " + sidx + " desc limit 6";			
+		
+		else if ("2".equals(level)) {
+			sql = sql + " and g.goods_type2 ='" + id ;
+			if ("1".equals(sidx)) {
+				 sql = sql + "' order by rand() desc limit 6";			
+			}else{
+				 sql = sql + "' order by g.sale_sum desc limit 6";		
+			}
 		}
-		List<Object> list = new ArrayList<Object>(6);
-		list =	hibernateUtil.hql(hql);
-		return ObjectToResult.getResult(list);
+		List<Object[]> list = hibernateUtil.sql(sql);
+		List<PcTypeGoods> typeGoodsList = new ArrayList<PcTypeGoods>();
+		for (Object[] goods : list) {
+			PcTypeGoods typeGoods = new PcTypeGoods();
+			typeGoods.setGoodsId(goods[0].toString());
+			typeGoods.setTitle(goods[1].toString());
+			if (goods[2]==null) {
+				typeGoods.setSubTitle("");
+			}else{
+				typeGoods.setSubTitle(goods[2].toString());
+			}
+			typeGoods.setGoodsParam(goods[3].toString());
+			typeGoods.setPrice(Double.parseDouble(goods[4].toString()));
+			typeGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
+			typeGoods.setPicSrc(goods[6].toString());
+			typeGoodsList.add(typeGoods);
+		}
+		return ObjectToResult.getResult(typeGoodsList);
 	}
 }
