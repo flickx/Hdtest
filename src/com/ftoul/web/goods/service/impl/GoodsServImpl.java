@@ -397,9 +397,8 @@ public class GoodsServImpl implements GoodsServ {
 		startTime = startTime.replace("/","-");
 		String endTime = new DateStr().getEndTime();
 		endTime = endTime.replace("/","-");
-		String hql = "select g.id,g.title,g.subtitle,gp.paramName,g.price,gp.marketPrice,g.picSrc from Goods g,GoodsParam gp where g.id = gp.goods.id and  g.state = '1' and '"+startTime+"' <= g.createTime and g.createTime <= '"+endTime+"' and g.shopId = '1' order by rand() asc limit 4";
-		List<Object> list = new ArrayList<Object>(4);
-		list =	hibernateUtil.hql(hql);
+		String sql = "select g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and '"+startTime+"' <= g.create_time and g.create_time <= '"+endTime+"' and g.shop_id = '1' order by rand() asc limit 0,4";
+		List<Object[]> list =	hibernateUtil.sql(sql);
 		return ObjectToResult.getResult(list);
 	}
 	/**
