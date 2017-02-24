@@ -121,4 +121,31 @@ public class CouponAction {
 		return couponService.fileUpload(parameter,request);
 	}
 	
+	/**
+	 * 发送优惠券给指定用户
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "sendCouponToAppointUser")  
+	public @ResponseBody Result sendCouponToAppointUser(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return couponService.sendCouponToAppointUser(parameter);
+	}
+	
+	/**
+	 * 查询优惠券下的所有用户
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "queryUserCouponPageByCouponId")  
+	public @ResponseBody Result queryUserCouponPageByCouponId(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return couponService.queryUserCouponPageByCouponId(parameter);
+	}
+	
+	
+	
+	
 }

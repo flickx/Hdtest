@@ -49,6 +49,18 @@ public class CouponUtil {
 		return name;
 	}
 	
+	public String getCouponUseState(String param){
+		String name = null;
+		if("1".equals(param)){
+			name = "未使用";
+		}else if("2".equals(param)){
+			name = "已使用";
+		}else if("3".equals(param)){
+			name = "已过期";
+		}
+		return name;
+	}
+	
 	/**
 	 * 自动设置优惠券是否已过期
 	 * @param param

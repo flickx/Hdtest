@@ -157,6 +157,8 @@ public class GoodsPcServImpl implements GoodsPcServ {
 		if(null!=goodsVo.getGoodsTypeNameThree()){
 			goodsPcVo.setGoodsTypeNameThree(goodsVo.getGoodsTypeNameThree());
 		}
+		//是否参加满减
+		goodsPcVo.setFullCutName(goodsVo.getFullCutName());
 		return ObjectToResult.getResult(goodsPcVo);
 	}
 	private String getRemoteHost(){

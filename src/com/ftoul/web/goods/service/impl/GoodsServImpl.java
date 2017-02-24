@@ -165,7 +165,7 @@ public class GoodsServImpl implements GoodsServ {
 		}
 		//获取商品价格 1.优先取商品活动价格2.取活动促销价格.3 折扣价
 		String hql2 = "select ge.eventName,gej.eventPrice,ge.eventPrice,ge.discount,gej.quantity,ge.eventBegen,ge.eventEnd,gs.picSrc,ge.state,gej.state,ge.typeName,ge.homeChannel,gs.subtitle from Goods gs,"
-				+ "GoodsEventJoin gej,GoodsEvent ge where gs.id = gej.goods.id and ge.id = gej.goodsEvent.id and gej.state = '1' and ge.state = '1' and gs.id ='"+param.getId()+"'";
+				+ "GoodsEventJoin gej,GoodsEvent ge where gs.id = gej.goods.id and ge.id = gej.goodsEvent.id and gej.state = '1' and ge.state = '1' and ge.typeName!='满减' and gs.id ='"+param.getId()+"'";
 		List<Object> eventList = this.hibernateUtil.hql(hql2);
 		Date currentTime = DateUtil.stringFormatToDate(
 				DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss"),
@@ -214,6 +214,15 @@ public class GoodsServImpl implements GoodsServ {
 				//倍蜂币开始页面判断标识
 				goodsVo.setHomeChannel("1");
 			}
+		}
+		
+		//是否参加满减活动
+		String hql3 = "select ge.eventName,ge.typeName from Goods gs,"
+				+ "GoodsEventJoin gej,GoodsEvent ge where gs.id = gej.goods.id and ge.id = gej.goodsEvent.id and gej.state = '1' and ge.state = '1' and ge.typeName='满减' and gs.id ='"+param.getId()+"'";
+		List<Object> fullCutList = this.hibernateUtil.hql(hql3);
+		if(fullCutList.size()>0){
+			Object[] obj = (Object[])fullCutList.get(0);
+			goodsVo.setFullCutName(obj[0].toString());
 		}
 		goodsVo.setPicSrc(goods.getPicSrc());
 		DecimalFormat df = new DecimalFormat("0.00");

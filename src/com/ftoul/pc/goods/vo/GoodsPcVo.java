@@ -42,6 +42,7 @@ public class GoodsPcVo {
 	private String goodsTypeNameOne;//一级分类名称
 	private String goodsTypeNameTwo;//二级分类名称
 	private String goodsTypeNameThree;//三级分类名称
+	private String fullCutName;//满减名称
 	public String getId() {
 		return id;
 	}
@@ -313,6 +314,13 @@ public class GoodsPcVo {
 
 	public void setGoodsTypeNameThree(String goodsTypeNameThree) {
 		this.goodsTypeNameThree = goodsTypeNameThree;
+	}
+	public String getFullCutName() {
+		return fullCutName;
+	}
+
+	public void setFullCutName(String fullCutName) {
+		this.fullCutName = fullCutName;
 	}
 
 
