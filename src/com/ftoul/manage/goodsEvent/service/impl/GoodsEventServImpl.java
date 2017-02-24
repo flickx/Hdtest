@@ -1,6 +1,5 @@
 package com.ftoul.manage.goodsEvent.service.impl;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,8 +9,6 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ftoul.app.vo.PcLimitGoods;
-import com.ftoul.app.vo.PcLimitGoodsVo;
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.DateUtil;
@@ -83,114 +80,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		list =	hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
 	}
-	/**
-	 * 获取pc端首页正在限时抢活动
-	 * @param param 页面传递参数对象
-	 * @return AJAX调用Result的JSON对象
-	 * @throws Exception 
-	 */
-	@Override
-	public Result getPcLimitEvent(Parameter param) throws Exception {
-		String now = new DateStr().getNowTime();
-		String hql = "from GoodsEvent where state = '1' and '"+now+"' > eventBegen and eventEnd > '"+now+"' and shopId is null and typeName = '限时抢' order by eventBegen asc";
-		GoodsEvent goodsEvent = (GoodsEvent)hibernateUtil.hqlFirst(hql);
-		List<PcLimitGoodsVo> goodsPcVoList = new ArrayList<PcLimitGoodsVo>();
-		if(goodsEvent!=null){
-		String eventId = goodsEvent.getId();
-		String hql2 = "from GoodsEventJoin where state='1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
-		List<Object> list = (List<Object>)hibernateUtil.hql(hql2);
-		List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
-		for (Object goodsEventJoin : list) {
-			GoodsEventJoin g = (GoodsEventJoin)goodsEventJoin;
-			PcLimitGoods pcLimitGoods = new PcLimitGoods();
-			pcLimitGoods.setGoodsId(g.getGoods().getId());
-			pcLimitGoods.setImgUrl(g.getGoods().getPicSrc());
-			pcLimitGoods.setName(g.getGoods().getTitle());
-			pcLimitGoods.setSubName(g.getGoods().getSubtitle());
-	        NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
-	        format.setMinimumFractionDigits(0);// 设置小数位
-	        pcLimitGoods.setNum(format.format(g.getQuantity()*1.0/g.getDefaultQuantity()));
-	        pcLimitGoods.setOriginalPrice(g.getGoods().getPrice());
-	        pcLimitGoods.setPresentPrice(g.getEventPrice());
-			goodsList.add(pcLimitGoods);
-		}
-		
-		PcLimitGoodsVo i  =new PcLimitGoodsVo();
-		long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
-		long endTime = DateUtil.stringFormatToDate(goodsEvent.getEventEnd().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
-		long nowTime = new Date().getTime();
-		long distance = endTime - nowTime;
-		if (nowTime > beginTime) {
-			i.setEndTime((endTime - nowTime)/1000);
-			i.setHasBegin("1");
-		}else{
-			i.setEndTime((beginTime - nowTime)/1000);
-			i.setHasBegin("0");
-		}
-		i.setStartTime(goodsEvent.getEventBegen().toString().substring(11,16));
-		i.setEndTime(distance/1000);
-		i.setPcLimitGoodsList(goodsList);
-		goodsPcVoList.add(i);
-		}
-		return ObjectToResult.getResult(goodsPcVoList);
-	}
-	/**
-	 * 获取pc端限时抢页面限时抢活动商品列表
-	 * @param param 页面传递参数对象
-	 * @return AJAX调用Result的JSON对象
-	 * @throws Exception 
-	 */
-	@Override
-	public Result getPcLimitEventList(Parameter param) throws Exception {
-		String start = new DateStr().getStartTime();
-		String end = new DateStr().getEndTime();
-		String now = new DateStr().getNowTime();
-		String hql = "from GoodsEvent where state = '1' and eventEnd > '"+now+"' and '"+start+"' < eventBegen and eventBegen < '"+end+"' and shopId is null and typeName = '限时抢' order by eventBegen asc";
-		List<Object> goodsEventList = (List<Object>)hibernateUtil.hql(hql);
-		List<PcLimitGoodsVo> goodsPcVoList = new ArrayList<PcLimitGoodsVo>();
-		if (goodsEventList!=null && goodsEventList.size()>0) {
-			for (Object o : goodsEventList) {
-				GoodsEvent	goodsEvent = (GoodsEvent)o;
-				String eventId = goodsEvent.getId();
-				String hql2 = "from GoodsEventJoin where state='1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
-				List<Object> list = (List<Object>)hibernateUtil.hql(hql2);
-				List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
-				for (Object goodsEventJoin : list) {
-					GoodsEventJoin g = (GoodsEventJoin)goodsEventJoin;
-					PcLimitGoods pcLimitGoods = new PcLimitGoods();
-					pcLimitGoods.setGoodsId(g.getGoods().getId());
-					pcLimitGoods.setImgUrl(g.getGoods().getPicSrc());
-					pcLimitGoods.setName(g.getGoods().getTitle());
-					pcLimitGoods.setSubName(g.getGoods().getSubtitle());
-			        NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
-			        format.setMinimumFractionDigits(2);// 设置小数位
-			        pcLimitGoods.setNum(format.format(g.getQuantity()*1.0/g.getDefaultQuantity()));
-			        pcLimitGoods.setQunatity(g.getQuantity());
-			        pcLimitGoods.setOriginalPrice(g.getGoods().getPrice());
-			        pcLimitGoods.setPresentPrice(g.getEventPrice());
-					goodsList.add(pcLimitGoods);
-				}
-				
-				PcLimitGoodsVo i  =new PcLimitGoodsVo();
-				long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
-				long endTime = DateUtil.stringFormatToDate(goodsEvent.getEventEnd().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
-				long nowTime = new Date().getTime();
-				long distance = endTime - nowTime;
-				if (nowTime > beginTime) {
-					i.setEndTime((endTime - nowTime)/1000);
-					i.setHasBegin("1");
-				}else{
-					i.setEndTime((beginTime - nowTime)/1000);
-					i.setHasBegin("0");
-				}
-				i.setStartTime(goodsEvent.getEventBegen().toString().substring(11,16));
-				i.setEndTime(distance/1000);
-				i.setPcLimitGoodsList(goodsList);
-				goodsPcVoList.add(i);
-			}
-		}
-		return ObjectToResult.getResult(goodsPcVoList);
-	}
+	
 	/**
 	 * 根据活动ID获取单个活动对象
 	 * @param param Parameter对象
