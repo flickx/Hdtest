@@ -341,7 +341,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 				String quantity = (String)hibernateUtil.hqlFirst("SELECT sum(stock) from GoodsParam where state = '1' and goods.grounding = '1' and goods.id = '"+goodsId+"'");
 				if (quantity!=null) {
 					goodsEventJoin.setQuantity(Integer.parseInt(quantity));
-					goodsEventJoin.setDefaultQuantity(Integer.parseInt(quantity));
+					//goodsEventJoin.setDefaultQuantity(Integer.parseInt(quantity));
 				}
 				res=hibernateUtil.save(goodsEventJoin);
 			}
