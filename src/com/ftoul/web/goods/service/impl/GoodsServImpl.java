@@ -525,9 +525,15 @@ public class GoodsServImpl implements GoodsServ {
 				typeGoods.setSubTitle(goods[2].toString());
 			}
 			typeGoods.setGoodsParam(goods[3].toString());
-			typeGoods.setPrice(Double.parseDouble(goods[4].toString()));
-			typeGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
-			typeGoods.setPicSrc(goods[6].toString());
+			if(goods[4]!=null){
+				typeGoods.setPrice(Double.parseDouble(goods[4].toString()));
+			}
+			if(goods[5]!=null){
+				typeGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
+			}
+			if(goods[6]!=null){
+				typeGoods.setPicSrc(goods[6].toString());
+			}
 			typeGoodsList.add(typeGoods);
 		}
 		return ObjectToResult.getResult(typeGoodsList);
