@@ -141,6 +141,7 @@ public class GoodsPcServImpl implements GoodsPcServ {
 		goodsPcVo.setGoodsPropList(propAppList);
 		//店铺信息
 		ShopVo shopVo = new ShopVo();
+		shopVo.setBusinessStoreId(businessVo.getBusinessStoreId());
 		shopVo.setStoreId(businessVo.getStoreId());
 		shopVo.setStoreName(businessVo.getStoreName());
 		shopVo.setStorePic(businessVo.getPic());
