@@ -1,6 +1,6 @@
 package com.ftoul.manage.goodsEvent.service.impl;
 
-import java.text.SimpleDateFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +10,8 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ftoul.app.vo.PcLimitGoods;
+import com.ftoul.app.vo.PcLimitGoodsVo;
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.DateUtil;
@@ -58,7 +60,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	@Override
 	public Result getGoodsEventListPage(Parameter param) throws Exception {
 		String queryStr = param.getWhereStr();
-		String hql = "from GoodsEvent where state = '1' and shopId is null and eventType='" + param.getId() + "' ";
+		String hql = "from GoodsEvent where state = '1' and shopId is null and eventType='"+param.getId()+"' ";
 		if(queryStr!=null){
 			hql = hql + queryStr + " order by createTime desc";
 		}else{
@@ -76,11 +78,118 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	public Result getLimitEventList(Parameter param) throws Exception {
 		String startTime = new DateStr().getStartTime();
 		String endTime = new DateStr().getEndTime();
-		String nowTime = new DateStr().getNowTime();
-		String hql = "from GoodsEvent where state = '1' and eventEnd > '"+ nowTime +"' and '"+startTime+"' < eventBegen and eventBegen < '"+endTime+"' and shopId is null and typeName = '限时抢' order by eventBegen asc limit 5";
+		String hql = "from GoodsEvent where state = '1' and '"+startTime+"' < eventBegen and eventBegen < '"+endTime+"' and shopId is null and typeName = '限时抢' order by eventBegen asc limit 5";
 		List<Object> list = new ArrayList<Object>(5);
 		list =	hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
+	}
+	/**
+	 * 获取pc端首页正在限时抢活动
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@Override
+	public Result getPcLimitEvent(Parameter param) throws Exception {
+		String now = new DateStr().getNowTime();
+		String hql = "from GoodsEvent where state = '1' and '"+now+"' > eventBegen and eventEnd > '"+now+"' and shopId is null and typeName = '限时抢' order by eventBegen asc";
+		GoodsEvent goodsEvent = (GoodsEvent)hibernateUtil.hqlFirst(hql);
+		List<PcLimitGoodsVo> goodsPcVoList = new ArrayList<PcLimitGoodsVo>();
+		if(goodsEvent!=null){
+		String eventId = goodsEvent.getId();
+		String hql2 = "from GoodsEventJoin where state='1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
+		List<Object> list = (List<Object>)hibernateUtil.hql(hql2);
+		List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
+		for (Object goodsEventJoin : list) {
+			GoodsEventJoin g = (GoodsEventJoin)goodsEventJoin;
+			PcLimitGoods pcLimitGoods = new PcLimitGoods();
+			pcLimitGoods.setGoodsId(g.getGoods().getId());
+			pcLimitGoods.setImgUrl(g.getGoods().getPicSrc());
+			pcLimitGoods.setName(g.getGoods().getTitle());
+			pcLimitGoods.setSubName(g.getGoods().getSubtitle());
+	        NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
+	        format.setMinimumFractionDigits(0);// 设置小数位
+	        pcLimitGoods.setNum(format.format(g.getQuantity()*1.0/g.getDefaultQuantity()));
+	        pcLimitGoods.setOriginalPrice(g.getGoods().getPrice());
+	        pcLimitGoods.setPresentPrice(g.getEventPrice());
+			goodsList.add(pcLimitGoods);
+		}
+		
+		PcLimitGoodsVo i  =new PcLimitGoodsVo();
+		long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+		long endTime = DateUtil.stringFormatToDate(goodsEvent.getEventEnd().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+		long nowTime = new Date().getTime();
+		long distance = endTime - nowTime;
+		if (nowTime > beginTime) {
+			i.setEndTime((endTime - nowTime)/1000);
+			i.setHasBegin("1");
+		}else{
+			i.setEndTime((beginTime - nowTime)/1000);
+			i.setHasBegin("0");
+		}
+		i.setStartTime(goodsEvent.getEventBegen().toString().substring(11,16));
+		i.setEndTime(distance/1000);
+		i.setPcLimitGoodsList(goodsList);
+		goodsPcVoList.add(i);
+		}
+		return ObjectToResult.getResult(goodsPcVoList);
+	}
+	/**
+	 * 获取pc端限时抢页面限时抢活动商品列表
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@Override
+	public Result getPcLimitEventList(Parameter param) throws Exception {
+		String start = new DateStr().getStartTime();
+		String end = new DateStr().getEndTime();
+		String now = new DateStr().getNowTime();
+		String hql = "from GoodsEvent where state = '1' and eventEnd > '"+now+"' and '"+start+"' < eventBegen and eventBegen < '"+end+"' and shopId is null and typeName = '限时抢' order by eventBegen asc";
+		List<Object> goodsEventList = (List<Object>)hibernateUtil.hql(hql);
+		List<PcLimitGoodsVo> goodsPcVoList = new ArrayList<PcLimitGoodsVo>();
+		if (goodsEventList!=null && goodsEventList.size()>0) {
+			for (Object o : goodsEventList) {
+				GoodsEvent	goodsEvent = (GoodsEvent)o;
+				String eventId = goodsEvent.getId();
+				String hql2 = "from GoodsEventJoin where state='1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
+				List<Object> list = (List<Object>)hibernateUtil.hql(hql2);
+				List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
+				for (Object goodsEventJoin : list) {
+					GoodsEventJoin g = (GoodsEventJoin)goodsEventJoin;
+					PcLimitGoods pcLimitGoods = new PcLimitGoods();
+					pcLimitGoods.setGoodsId(g.getGoods().getId());
+					pcLimitGoods.setImgUrl(g.getGoods().getPicSrc());
+					pcLimitGoods.setName(g.getGoods().getTitle());
+					pcLimitGoods.setSubName(g.getGoods().getSubtitle());
+			        NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
+			        format.setMinimumFractionDigits(2);// 设置小数位
+			        pcLimitGoods.setNum(format.format(g.getQuantity()*1.0/g.getDefaultQuantity()));
+			        pcLimitGoods.setQunatity(g.getQuantity());
+			        pcLimitGoods.setOriginalPrice(g.getGoods().getPrice());
+			        pcLimitGoods.setPresentPrice(g.getEventPrice());
+					goodsList.add(pcLimitGoods);
+				}
+				
+				PcLimitGoodsVo i  =new PcLimitGoodsVo();
+				long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+				long endTime = DateUtil.stringFormatToDate(goodsEvent.getEventEnd().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+				long nowTime = new Date().getTime();
+				long distance = endTime - nowTime;
+				if (nowTime > beginTime) {
+					i.setEndTime((endTime - nowTime)/1000);
+					i.setHasBegin("1");
+				}else{
+					i.setEndTime((beginTime - nowTime)/1000);
+					i.setHasBegin("0");
+				}
+				i.setStartTime(goodsEvent.getEventBegen().toString().substring(11,16));
+				i.setEndTime(distance/1000);
+				i.setPcLimitGoodsList(goodsList);
+				goodsPcVoList.add(i);
+			}
+		}
+		return ObjectToResult.getResult(goodsPcVoList);
 	}
 	/**
 	 * 根据活动ID获取单个活动对象
@@ -232,6 +341,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		return ObjectToResult.getResult(list);
 	}
 	/**
+	 * 通过活动代码获取所有活动商品
 	 * 通过活动ID获取此活动排除的商品品类
 	 * @param param Parameter对象
 	 * @return返回结果（前台用Result对象）
@@ -258,11 +368,14 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 */
 	public Result getAppGoodsByEventCode(Parameter param) throws Exception{		
 		String typeName = param.getId().toString();
-//		String price = param.getKey().toString();
-//		String query ="";
+		String price = "9.9";
+		if (param.getKey()!=null) {
+			price = param.getKey().toString();
+		}
+		String query ="";
 		if ("sqp".equals(typeName)) {
 			typeName = "省钱趴";
-//			query = " and goods.price = '"+price+"'";
+			query = " and eventPrice = '"+price+"'";
 		}
 		if ("csh".equals(typeName)) {
 			typeName = "超实惠";
@@ -273,11 +386,24 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		if ("dpx".equals(typeName)) {
 			typeName = "大牌秀";
 		}
-//		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.typeName= '" + typeName+ "'"+ query;
-		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.typeName= '" + typeName+ "'";
-
+		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.typeName= '" + typeName+ "'" + query+" order by eventPrice DESC";
 		Page page = hibernateUtil.hqlPage(null,hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
+	}
+	/**
+	 * 获取省钱趴配置价格
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getSqpPrice(Parameter param) throws Exception{		
+		String typeName = param.getId().toString();
+		if ("sqp".equals(typeName)) {
+			typeName = "省钱趴";
+		}
+		String sql = "select DISTINCT truncate(gej.event_price,1) from goods_event_join gej,goods_event ge where gej.event_id = ge.id and gej.state='1' and gej.event_price is not null and ge.type_name= '" + typeName+ "' order by gej.event_price asc";
+		List<Object[]> priceList = hibernateUtil.sql(sql);
+		return ObjectToResult.getResult(priceList);
 	}
 	/**
 	 * 根据类型ID获取活动类型
@@ -325,6 +451,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 				String quantity = (String)hibernateUtil.hqlFirst("SELECT sum(stock) from GoodsParam where state = '1' and goods.grounding = '1' and goods.id = '"+goodsId+"'");
 				if (quantity!=null) {
 					goodsEventJoin.setQuantity(Integer.parseInt(quantity));
+					goodsEventJoin.setDefaultQuantity(Integer.parseInt(quantity));
 				}
 				res=hibernateUtil.save(goodsEventJoin);
 			}
