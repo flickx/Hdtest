@@ -71,7 +71,7 @@ public class StoreServImpl implements StoreServ {
 		BusinessStore businessStore = (BusinessStore) hibernateUtil.find(BusinessStore.class, param.getId().toString());
 		BusinessPcVo businessPcVo = new BusinessPcVo();
 		businessPcVo.setBusinessLicenceImg(businessStore.getBusiness().getBusinessManage().getBusinessLicenceImg());
-		String hql = "from BusinessStoreSummary where state = 1 and storeId = '"+param.getId()+"'";
+		String hql = "from BusinessStoreSummary where state = 1 and businessStore.id = '"+param.getId()+"'";
 		BusinessStoreSummary businessStoreSummary  = (BusinessStoreSummary)hibernateUtil.hqlFirst(hql);
 		businessPcVo.setSummary(businessStoreSummary.getSummary());
 		return ObjectToResult.getResult(businessPcVo);
