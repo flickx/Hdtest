@@ -95,10 +95,12 @@ public class PcGoodsAction {
 	public @ResponseBody Result saveUserCollection(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		Result ret = userCollectionServ.findUserCollection(parameter);
+		Result result = new Result();
 		if(ret.getResult()==0){
 			return userCollectionServ.saveUserCollection(parameter);
 		}else{
-			return userCollectionServ.delUserCollection(parameter);
+			result.setResult(0);
+			return result;
 		}
 	}
 
