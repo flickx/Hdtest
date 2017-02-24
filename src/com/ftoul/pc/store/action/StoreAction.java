@@ -9,7 +9,6 @@ import com.ftoul.businessManage.goods.service.BusinessClassifyServ;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.manage.business.service.BusinessServ;
 import com.ftoul.pc.store.service.StoreServ;
 import com.ftoul.web.business.service.BusinessWebServ;
 @Controller
@@ -65,5 +64,16 @@ public class StoreAction {
 	public @ResponseBody Result getStoreGoodsPageByBusinessClassify(String param)throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return storeServ.getStoreGoodsPageByBusinessClassify(parameter);
+	}
+	/**
+	 * 
+	 * 根据店铺id获取店铺简介，营业执照
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value="getStoreSummary")
+	public @ResponseBody Result getStoreSummary(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return storeServ.getStoreSummary(parameter);
 	}
 }
