@@ -99,6 +99,7 @@ public class PcGoodsAction {
 		if(ret.getResult()==0){
 			return userCollectionServ.saveUserCollection(parameter);
 		}else{
+			result.setMessage("已经收藏，请勿重复收藏");
 			result.setResult(0);
 			return result;
 		}
