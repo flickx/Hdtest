@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,6 +31,7 @@ import com.ftoul.common.StrUtil;
 import com.ftoul.manage.cart.service.CartServ;
 import com.ftoul.manage.coin.service.CoinSetServ;
 import com.ftoul.po.BusinessStore;
+import com.ftoul.po.Coupon;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
 import com.ftoul.po.GoodsEventJoin;
@@ -48,6 +50,7 @@ import com.ftoul.util.price.PriceUtil;
 import com.ftoul.web.goods.service.GoodsParamServ;
 import com.ftoul.pc.orders.service.OrdersServ;
 import com.ftoul.pc.orders.vo.PcOrderVo;
+import com.ftoul.pc.orders.vo.UseCoponOrderPriceVo;
 import com.ftoul.web.vo.GoodsVo;
 import com.ftoul.web.vo.ManyVsOneVo;
 import com.ftoul.web.vo.MjGoodsEventVo;
@@ -1009,7 +1012,7 @@ public class OrdersServImpl implements OrdersServ {
 		if(msgVo.getMsg()==null){
 			Object obj = saveOrdersFirst(param);
 			Orders orders = (Orders) hibernateUtil.find(Orders.class, obj.toString());
-			Map<String, List<ShopGoodsParamVo>> map = ordersUtil.getShopAndGoodsParam(param.getKey());
+			Map<String, List<ShopGoodsParamVo>> map = ordersUtil.getNewShopAndGoodsParam(param.getKey());
 			if(map.size()>1){//存在多个店铺，需要拆分订单
 				orders.setIsHasChild("1");
 				Object[] key = map.keySet().toArray();
@@ -1152,5 +1155,32 @@ public class OrdersServImpl implements OrdersServ {
 		page.setObjList(null);
 		page.setObjList(list);
 		return ObjectToResult.getResult(page);
+	}
+
+	/**
+	 * 在结算页面中使用优惠券后该订单小计金额和总计金额
+	 */
+	@Override
+	public Result useCoupon(Parameter param) throws Exception {
+		UseCoponOrderPriceVo vo = new UseCoponOrderPriceVo();
+		Coupon coupon = new Coupon();
+		Object object = param.getObj();//优惠券及带的商品信息
+		Map<String,List<ShopGoodsParamVo>> map = (Map) object;
+		Set<String> key = map.keySet();
+		for (String couponId : key) {
+			coupon = (Coupon) hibernateUtil.find(Coupon.class, couponId);
+		}
+		BigDecimal facevalue = new BigDecimal(String.valueOf(coupon.getFaceValue()));
+		
+		String subOrderId = param.getKey();//子订单ID
+		Orders subOrder = (Orders) hibernateUtil.find(Orders.class, subOrderId);
+		BigDecimal subOrderPrice = new BigDecimal(subOrder.getOrderPrice());
+		vo.setSubOrderPrice(subOrderPrice.multiply(facevalue));
+		
+		String parentOrderId = param.getParentId().toString();//父订单ID
+		Orders parentOrder = (Orders) hibernateUtil.find(Orders.class, parentOrderId);
+		BigDecimal parentOrderPrice = new BigDecimal(parentOrder.getOrderPrice());
+		vo.setParentOrderPrice(parentOrderPrice.multiply(facevalue));
+		return ObjectToResult.getResult(vo);
 	}
 }

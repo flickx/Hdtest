@@ -57,4 +57,6 @@ public interface OrdersServ {
 	Result restoreOrders(Parameter param) throws Exception;
 
 	Result getRecoveryOrdersPage(Parameter parameter) throws Exception;
+
+	Result useCoupon(Parameter parameter) throws Exception;
 }

@@ -322,6 +322,51 @@ public class OrdersUtil {
 	}
 	
 	/**
+	 * 将购买的商品按店铺分组
+	 * @param param
+	 * @return
+	 */
+	public Map<String, List<ShopGoodsParamVo>> getNewShopAndGoodsParam(String param){
+		Map<String, List<ShopGoodsParamVo>> group = new HashMap<String, List<ShopGoodsParamVo>>();
+		List<ShopGoodsParamVo> goodsParamVo = null;
+		String[] strList = param.split(":");
+		List<ShopGoodsParamVo> voList = new ArrayList<ShopGoodsParamVo>();
+		for (int i = 0; i < strList.length; i++) {
+			String[] str = strList[i].split(",");
+			ShopGoodsParamVo vo = new ShopGoodsParamVo();
+			vo.setGoodsParamId(str[0]);
+			vo.setNum(str[1]);
+			//vo.setPrice(str[2]);
+			vo.setShopId(str[2]);
+//			if(str.length==4){
+//				vo.setShopId("1");
+//			}else{
+//				vo.setShopId(str[4]);
+//			}
+			
+			voList.add(vo);
+		}
+		
+		for (int j = 0; j < voList.size(); j++) {
+			ShopGoodsParamVo vo = voList.get(j);
+			String shopId = vo.getShopId();
+			if(shopId!=null){
+				goodsParamVo = group.get(shopId);
+				if(goodsParamVo == null){
+					List<ShopGoodsParamVo> newVoList = new ArrayList<ShopGoodsParamVo>();
+					newVoList.add(vo);
+					group.put(shopId, newVoList);
+				}else{
+					goodsParamVo.add(vo);
+					group.put(shopId, goodsParamVo);
+				}
+			}
+		}
+		
+		return group;
+	}
+	
+	/**
 	 * 删除购物车的内容
 	 * @param param
 	 * @throws Exception

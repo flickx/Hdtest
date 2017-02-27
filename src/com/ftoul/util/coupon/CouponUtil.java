@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ftoul.common.DateStr;
+import com.ftoul.pc.coupon.vo.CouponGoodsVo;
 import com.ftoul.po.Coupon;
 import com.ftoul.po.GoodsTypeEventJoin;
 import com.ftoul.po.User;
@@ -106,10 +107,11 @@ public class CouponUtil {
 	 * 通过商品获取可满足使用的非通用优惠券
 	 * @param objList
 	 */
-	public List<Coupon> getCouponsByGoodsParamIdAndShopId(List<ShopGoodsParamVo> objList,String userId,String shopId){
-		List<Coupon> couponList = new ArrayList<Coupon>();
+	public List<Object> getCouponsByGoodsParamIdAndShopId(List<ShopGoodsParamVo> objList,String userId,String shopId){
+		List<Object> couponList = new ArrayList<Object>();
 		List<Object> userCouponList = getNotCurrencyCouponByShopId(userId,shopId);//获取该用户在该店铺目前所有的非通用优惠券
 		List<Map<String, ShopGoodsParamVo>> typesList = new ArrayList<Map<String, ShopGoodsParamVo>>();
+		Map<String,List<Object>> couponGoodsMap = new HashMap<>();
 		for (ShopGoodsParamVo shopGoodsParamVo : objList) {//查询每个商品的第三级分类
 			String paramId = shopGoodsParamVo.getGoodsParamId();
 			String type = paramUtil.getGoodsTypeByGoodsParamId(paramId);//查询此商品的第三级分类
@@ -125,7 +127,7 @@ public class CouponUtil {
 			List<Object> joinlist = hibernateUtil.hql("from GoodsTypeEventJoin where state='1' and eventId='"+coupon.getId()+"'");
 			for (Object object2 : joinlist) {
 				GoodsTypeEventJoin join = (GoodsTypeEventJoin) object2;
-				couponGoodsTypeList.addAll(paramUtil.getThirdType(join.getGoodsType(), join.getLevel()));
+				couponGoodsTypeList.addAll(paramUtil.getThirdType(join.getGoodsType(), join.getLevel()));//查询此优惠券下的所有三级分类
 			}
 			for (String couponGoodsType : couponGoodsTypeList) {//获取这张优惠券涉及的分类，将购买的商品中含有涉及的分类分组出来
 				for (Map<String, ShopGoodsParamVo> type : typesList) {
@@ -134,12 +136,19 @@ public class CouponUtil {
 						BigDecimal price = new BigDecimal(vo.getPrice());
 						BigDecimal num = new BigDecimal(vo.getNum());
 						totalPrice += price.multiply(num).doubleValue();
-						break;
+						if(totalPrice>=coupon.getTargetValue()){//如果购买的商品总价大于等于优惠券指定的价值，则此优惠券就能使用
+							if(couponGoodsMap.get(coupon.getId())!=null){
+								List<Object> ShopGoodsParamVoList = couponGoodsMap.get(coupon.getId());
+								ShopGoodsParamVoList.add(vo);
+							}else{
+								List<Object> ShopGoodsParamVoList = new ArrayList<>();
+								ShopGoodsParamVoList.add(vo);
+								couponGoodsMap.put(coupon.getId(), ShopGoodsParamVoList);
+								couponList.add(couponGoodsMap);
+							}
+						}
 					}
 				}
-			}
-			if(totalPrice>=coupon.getTargetValue()){//如果购买的商品总价大于等于优惠券指定的价值，则此优惠券就能使用
-				couponList.add(coupon);
 			}
 			
 		}
@@ -176,5 +185,5 @@ public class CouponUtil {
 		}
 		return hibernateUtil.hql("from UserCoupon where state='1' and and isUsed='1' and userId='"+param+"'");
 	}
-
+	
 }
