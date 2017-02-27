@@ -73,10 +73,11 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 */
 	@Override
 	public Result getLimitEventList(Parameter param) throws Exception {
+		String now = new DateStr().getNowTime();
 		String startTime = new DateStr().getStartTime();
 		String endTime = new DateStr().getEndTime();
-		String hql = "from GoodsEvent where state = '1' and '"+startTime+"' < eventBegen and eventBegen < '"+endTime+"' and shopId is null and typeName = '限时抢' order by eventBegen asc limit 5";
-		List<Object> list = new ArrayList<Object>(5);
+		String hql = "from GoodsEvent where state = '1' and '"+startTime+"' < eventBegen and eventBegen < '"+endTime+"' and eventEnd > '"+now+"' and shopId is null and typeName = '限时抢' order by eventBegen";
+		List<Object> list = new ArrayList<Object>();
 		list =	hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
 	}
