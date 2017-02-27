@@ -54,9 +54,16 @@ public class SqpAction {
 			i.setTitle(goodsAppVo.getGoods().getTitle());
 			i.setSubTitle(goodsAppVo.getGoods().getSubtitle());
 			i.setMarketPrice(goodsParam.getMarketPrice());
-			i.setPrice(goodsAppVo.getGoods().getPrice());
-			i.setQunatity(goodsAppVo.getQuantity().toString());
-			i.setSaleSum(goodsParam.getSaleNumber());
+			if (null != goodsAppVo.getEventPrice()) {
+				i.setEventPrice(goodsAppVo.getEventPrice().toString());
+			}
+			if (null != goodsAppVo.getGoods().getPrice()) {
+				i.setPrice(goodsAppVo.getGoods().getPrice().toString());
+			}
+			if (null != goodsAppVo.getQuantity()) {
+				i.setQunatity(goodsAppVo.getQuantity().toString());
+			}
+			i.setSaleSum(Integer.toString(goodsParam.getSaleNumber()));
 			sqpList.add(i);
 		}  
 		re.setObj(sqpList);

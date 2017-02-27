@@ -6,11 +6,25 @@ public class PcSqpGoods {
 	private String title;
 	private String subTitle;
 	private String model;
-	private double price;
+	private String price;
+	private String eventPrice;
 	private String marketPrice;
 	private String picSrc;
 	private String qunatity;//折扣
-	private Integer saleSum;
+	private String saleSum;
+	
+	/**
+	 * @return the eventPrice
+	 */
+	public String getEventPrice() {
+		return eventPrice;
+	}
+	/**
+	 * @param eventPrice the eventPrice to set
+	 */
+	public void setEventPrice(String eventPrice) {
+		this.eventPrice = eventPrice;
+	}
 	/**
 	 * @return the subTitle
 	 */
@@ -62,13 +76,13 @@ public class PcSqpGoods {
 	/**
 	 * @return the price
 	 */
-	public double getPrice() {
+	public String getPrice() {
 		return price;
 	}
 	/**
 	 * @param price the price to set
 	 */
-	public void setPrice(double price) {
+	public void setPrice(String price) {
 		this.price = price;
 	}
 	
@@ -112,13 +126,13 @@ public class PcSqpGoods {
 	/**
 	 * @return the saleSum
 	 */
-	public Integer getSaleSum() {
+	public String getSaleSum() {
 		return saleSum;
 	}
 	/**
 	 * @param saleSum the saleSum to set
 	 */
-	public void setSaleSum(Integer saleSum) {
+	public void setSaleSum(String saleSum) {
 		this.saleSum = saleSum;
 	}
 	
