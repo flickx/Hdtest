@@ -53,13 +53,11 @@ public class SqpAction {
 			i.setPicSrc(goodsAppVo.getGoods().getPicSrc());
 			i.setTitle(goodsAppVo.getGoods().getTitle());
 			i.setSubTitle(goodsAppVo.getGoods().getSubtitle());
-			if (null != goodsAppVo.getEventPrice()) {
-				i.setEventPrice(goodsAppVo.getEventPrice().doubleValue());
-			}
+			i.setMarketPrice(goodsParam.getMarketPrice());
 			i.setPrice(goodsAppVo.getGoods().getPrice());
 			i.setSaleSum(goodsParam.getSaleNumber());
 			sqpList.add(i);
-		}
+		}  
 		re.setObj(sqpList);
 		return re;
 	}

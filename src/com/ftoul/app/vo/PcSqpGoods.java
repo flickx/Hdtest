@@ -7,7 +7,7 @@ public class PcSqpGoods {
 	private String subTitle;
 	private String model;
 	private double price;
-	private double eventPrice;
+	private String marketPrice;
 	private String picSrc;
 	private String qunatity;//折扣
 	private Integer saleSum;
@@ -72,17 +72,18 @@ public class PcSqpGoods {
 		this.price = price;
 	}
 	
+	
 	/**
-	 * @return the eventPrice
+	 * @return the marketPrice
 	 */
-	public double getEventPrice() {
-		return eventPrice;
+	public String getMarketPrice() {
+		return marketPrice;
 	}
 	/**
-	 * @param eventPrice the eventPrice to set
+	 * @param marketPrice the marketPrice to set
 	 */
-	public void setEventPrice(double eventPrice) {
-		this.eventPrice = eventPrice;
+	public void setMarketPrice(String marketPrice) {
+		this.marketPrice = marketPrice;
 	}
 	/**
 	 * @return the picSrc
