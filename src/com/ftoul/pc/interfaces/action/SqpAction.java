@@ -55,6 +55,7 @@ public class SqpAction {
 			i.setSubTitle(goodsAppVo.getGoods().getSubtitle());
 			i.setMarketPrice(goodsParam.getMarketPrice());
 			i.setPrice(goodsAppVo.getGoods().getPrice());
+			i.setQunatity(goodsAppVo.getQuantity().toString());
 			i.setSaleSum(goodsParam.getSaleNumber());
 			sqpList.add(i);
 		}  
