@@ -57,7 +57,6 @@ public class GoodsTypeServImpl implements GoodsTypeServ {
 
 	
 	/**
-	 * 
 	 *  查找下一级产品类别
 	 * @param   param Parameter对象
 	 * @return  返回结果（前台用Result对象）
@@ -76,7 +75,6 @@ public class GoodsTypeServImpl implements GoodsTypeServ {
 
 	
 	/**
-	 * 
 	 * 删除商品类别对象
 	 * @param   param Parameter对象
 	 * @return  返回结果（前台用Result对象）

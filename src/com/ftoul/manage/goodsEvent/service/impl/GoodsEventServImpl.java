@@ -368,8 +368,14 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 */
 	public Result getAppGoodsByEventCode(Parameter param) throws Exception{		
 		String typeName = param.getId().toString();
+		String price = "9.9";
+		if (param.getKey()!=null) {
+			price = param.getKey().toString();
+		}
+		String query ="";
 		if ("sqp".equals(typeName)) {
 			typeName = "省钱趴";
+			query = " and eventPrice = '"+price+"'";
 		}
 		if ("csh".equals(typeName)) {
 			typeName = "超实惠";
@@ -380,9 +386,24 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		if ("dpx".equals(typeName)) {
 			typeName = "大牌秀";
 		}
-		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.typeName= '" + typeName+ "'";
+		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.typeName= '" + typeName+ "'" + query+" order by eventPrice DESC";
 		Page page = hibernateUtil.hqlPage(null,hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
+	}
+	/**
+	 * 获取省钱趴配置价格
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getSqpPrice(Parameter param) throws Exception{		
+		String typeName = param.getId().toString();
+		if ("sqp".equals(typeName)) {
+			typeName = "省钱趴";
+		}
+		String sql = "select DISTINCT truncate(gej.event_price,1) from goods_event_join gej,goods_event ge where gej.event_id = ge.id and gej.state='1' and gej.event_price is not null and ge.type_name= '" + typeName+ "' order by gej.event_price asc";
+		List<Object[]> priceList = hibernateUtil.sql(sql);
+		return ObjectToResult.getResult(priceList);
 	}
 	/**
 	 * 根据类型ID获取活动类型
@@ -662,5 +683,20 @@ public class GoodsEventServImpl implements GoodsEventServ {
 			goodsTypeList = hibernateUtil.hql(hql);
 		}
 		return ObjectToResult.getResult(goodsTypeList);
+	}
+	/**
+	 * 
+	 *  查询商品销量
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getSaleSumByGoodsId(String goodsId) {
+		Object o = null;
+		if(null != goodsId){
+			String hql = "from GoodsParam where state=1 and goods.id='"+goodsId+"'";
+			o = hibernateUtil.hqlFirst(hql);
+		}
+		return ObjectToResult.getResult(o);
 	}
 }

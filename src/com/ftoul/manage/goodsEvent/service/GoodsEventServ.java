@@ -213,5 +213,14 @@ public interface GoodsEventServ {
 	 * @throws Exception 
 	 */
 	Result getPcLimitEventList(Parameter param) throws Exception;
+	/**
+	 * 获取省钱趴价格
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getSqpPrice(Parameter param) throws Exception;
+	
+	Result getSaleSumByGoodsId(String goodsId) throws Exception;
 }
 

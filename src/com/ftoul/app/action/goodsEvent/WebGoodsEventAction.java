@@ -116,6 +116,16 @@ public class WebGoodsEventAction {
 		}
 		return ObjectToResult.getResult(goodsAppVoList);
 	}
+	
+	/**
+	 *获取省钱趴后台配置价格 
+	 */
+	@RequestMapping(value = "getSqpPrice")  
+	public @ResponseBody Result getSqpPrice(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return  goodsEventServ.getSqpPrice(parameter);
+	}
+	
 	/**
 	 * 通过活动代码获取所有活动商品
 	 * @param param Parameter对象
@@ -132,6 +142,7 @@ public class WebGoodsEventAction {
 			i.setGoodsId(goodsAppVo.getGoods().getId());
 			i.setPicSrc(goodsAppVo.getGoods().getPicSrc());
 			i.setPrice(goodsAppVo.getGoods().getPrice());
+			i.setEventPrice(goodsAppVo.getEventPrice());
 			i.setTitle(goodsAppVo.getGoods().getTitle());
 			goodsAppVoList.add(i);
 		}
