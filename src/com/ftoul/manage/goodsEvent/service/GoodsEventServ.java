@@ -199,5 +199,12 @@ public interface GoodsEventServ {
 	 */
 	
 	Result getByPid(Parameter parameter) throws Exception;
+	/**
+	 * 获取省钱趴价格
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getSqpPrice(Parameter param) throws Exception;
 }
 
