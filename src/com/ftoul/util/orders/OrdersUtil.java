@@ -325,8 +325,9 @@ public class OrdersUtil {
 	 * 将购买的商品按店铺分组
 	 * @param param
 	 * @return
+	 * @throws Exception 
 	 */
-	public Map<String, List<ShopGoodsParamVo>> getNewShopAndGoodsParam(String param){
+	public Map<String, List<ShopGoodsParamVo>> getNewShopAndGoodsParam(String param) throws Exception{
 		Map<String, List<ShopGoodsParamVo>> group = new HashMap<String, List<ShopGoodsParamVo>>();
 		List<ShopGoodsParamVo> goodsParamVo = null;
 		String[] strList = param.split(":");
@@ -336,6 +337,9 @@ public class OrdersUtil {
 			ShopGoodsParamVo vo = new ShopGoodsParamVo();
 			vo.setGoodsParamId(str[0]);
 			vo.setNum(str[1]);
+			if(Integer.parseInt(str[1])<=0){
+				throw new Exception("您购买的此商品件数为"+str[1]+"，【注意：购买商品时件数要大于0】");
+			}
 			//vo.setPrice(str[2]);
 			vo.setShopId(str[2]);
 //			if(str.length==4){

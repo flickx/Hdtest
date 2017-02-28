@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -84,6 +85,27 @@ public class CouponUtil {
 	}
 	
 	/**
+	 * 获取用户在该店铺所购买的商品目前所有有效未使用的通用优惠券和品类券
+	 * @param shopId
+	 */
+	public List<Object> getCouponByParam(List<ShopGoodsParamVo> objList,String shopId,String userId){
+		List<Object> couponList = new ArrayList<>();
+		List<Object> currencyCouponList = getCurrencyCouponByParam(shopId,userId);
+		List<Object> notCurrencyCouponList = getCouponsByGoodsParamIdAndShopId(objList,shopId,userId);
+		for (Object object : currencyCouponList) {
+			UserCoupon userCoupon = (UserCoupon) object;
+			couponList.add(userCoupon.getCouponId());
+		}
+		for (Object object : notCurrencyCouponList) {
+			Map<String,List<Object>> couponGoodsMap = (Map<String, List<Object>>) object;
+			Set<String> key = couponGoodsMap.keySet();
+			Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, key.toArray()[0]+"");
+			couponList.add(coupon);
+		}
+		return couponList;
+	}
+	
+	/**
 	 * 获取用户在该店铺目前所有有效未使用的通用优惠券
 	 * @param shopId
 	 */
@@ -94,20 +116,20 @@ public class CouponUtil {
 	}
 	
 	/**
-	 * 获取该用户在该店铺目前所有的非通用优惠券
+	 * 获取该用户在该店铺目前所有的品类优惠券
 	 * @param shopId
 	 */
 	public List<Object> getNotCurrencyCouponByShopId(String userId,String shopId){
 		String currentTime = new DateStr().toString();
-		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1' and and isUsed='1' and couponId.useType='2' and userId='"+userId+"' and couponId.businessStore.id='"+shopId+"' and couponId.validStartTime>='"+currentTime+"' and couponId.validEndTime<='"+currentTime+"'");
+		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1' and isUsed='1' and couponId.useType='2' and userId='"+userId+"' and couponId.businessStore.id='"+shopId+"' and couponId.validStartTime>='"+currentTime+"' and couponId.validEndTime<='"+currentTime+"'");
 		return objList;
 	}
 	
 	/**
-	 * 通过商品获取可满足使用的非通用优惠券
+	 * 通过商品获取可满足使用的品类优惠券
 	 * @param objList
 	 */
-	public List<Object> getCouponsByGoodsParamIdAndShopId(List<ShopGoodsParamVo> objList,String userId,String shopId){
+	public List<Object> getCouponsByGoodsParamIdAndShopId(List<ShopGoodsParamVo> objList,String shopId,String userId){
 		List<Object> couponList = new ArrayList<Object>();
 		List<Object> userCouponList = getNotCurrencyCouponByShopId(userId,shopId);//获取该用户在该店铺目前所有的非通用优惠券
 		List<Map<String, ShopGoodsParamVo>> typesList = new ArrayList<Map<String, ShopGoodsParamVo>>();
