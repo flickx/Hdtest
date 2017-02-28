@@ -10,8 +10,6 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ftoul.app.vo.PcLimitGoods;
-import com.ftoul.app.vo.PcLimitGoodsVo;
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.DateUtil;
@@ -23,6 +21,8 @@ import com.ftoul.common.StrUtil;
 import com.ftoul.manage.goods.vo.GoodsListVo;
 import com.ftoul.manage.goods.vo.GoodsVo;
 import com.ftoul.manage.goodsEvent.service.GoodsEventServ;
+import com.ftoul.pc.interfaces.vo.PcLimitGoods;
+import com.ftoul.pc.interfaces.vo.PcLimitGoodsVo;
 import com.ftoul.po.EventOrderVO;
 import com.ftoul.po.EventType;
 import com.ftoul.po.FullCutRule;

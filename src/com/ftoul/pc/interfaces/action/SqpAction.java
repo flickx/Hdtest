@@ -9,11 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ftoul.app.vo.PcSqpGoods;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.goodsEvent.service.GoodsEventServ;
+import com.ftoul.pc.interfaces.vo.PcSqpGoods;
 import com.ftoul.po.GoodsEventJoin;
 import com.ftoul.po.GoodsParam;
 

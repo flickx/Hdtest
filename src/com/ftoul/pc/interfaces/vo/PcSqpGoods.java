@@ -1,16 +1,43 @@
-package com.ftoul.app.vo;
+package com.ftoul.pc.interfaces.vo;
 
 
-public class PcNewGoods {
+public class PcSqpGoods {
 	private String goodsId;
 	private String title;
 	private String subTitle;
 	private String model;
-	private double price;
-	private double marketPrice;
+	private String price;
+	private String eventPrice;
+	private String marketPrice;
 	private String picSrc;
-	private String num;//折扣
+	private String qunatity;//折扣
+	private String saleSum;
+	private String num;
 	
+	/**
+	 * @return the num
+	 */
+	public String getNum() {
+		return num;
+	}
+	/**
+	 * @param num the num to set
+	 */
+	public void setNum(String num) {
+		this.num = num;
+	}
+	/**
+	 * @return the eventPrice
+	 */
+	public String getEventPrice() {
+		return eventPrice;
+	}
+	/**
+	 * @param eventPrice the eventPrice to set
+	 */
+	public void setEventPrice(String eventPrice) {
+		this.eventPrice = eventPrice;
+	}
 	/**
 	 * @return the subTitle
 	 */
@@ -62,25 +89,27 @@ public class PcNewGoods {
 	/**
 	 * @return the price
 	 */
-	public double getPrice() {
+	public String getPrice() {
 		return price;
 	}
 	/**
 	 * @param price the price to set
 	 */
-	public void setPrice(double price) {
+	public void setPrice(String price) {
 		this.price = price;
 	}
+	
+	
 	/**
 	 * @return the marketPrice
 	 */
-	public double getMarketPrice() {
+	public String getMarketPrice() {
 		return marketPrice;
 	}
 	/**
 	 * @param marketPrice the marketPrice to set
 	 */
-	public void setMarketPrice(double marketPrice) {
+	public void setMarketPrice(String marketPrice) {
 		this.marketPrice = marketPrice;
 	}
 	/**
@@ -96,16 +125,28 @@ public class PcNewGoods {
 		this.picSrc = picSrc;
 	}
 	/**
-	 * @return the num
+	 * @return the qunatity
 	 */
-	public String getNum() {
-		return num;
+	public String getQunatity() {
+		return qunatity;
 	}
 	/**
-	 * @param num the num to set
+	 * @param qunatity the qunatity to set
 	 */
-	public void setNum(String num) {
-		this.num = num;
+	public void setQunatity(String qunatity) {
+		this.qunatity = qunatity;
+	}
+	/**
+	 * @return the saleSum
+	 */
+	public String getSaleSum() {
+		return saleSum;
+	}
+	/**
+	 * @param saleSum the saleSum to set
+	 */
+	public void setSaleSum(String saleSum) {
+		this.saleSum = saleSum;
 	}
 	
 }

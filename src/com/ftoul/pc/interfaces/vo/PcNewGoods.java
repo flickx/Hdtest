@@ -1,43 +1,16 @@
-package com.ftoul.app.vo;
+package com.ftoul.pc.interfaces.vo;
 
 
-public class PcSqpGoods {
+public class PcNewGoods {
 	private String goodsId;
 	private String title;
 	private String subTitle;
 	private String model;
-	private String price;
-	private String eventPrice;
-	private String marketPrice;
+	private double price;
+	private double marketPrice;
 	private String picSrc;
-	private String qunatity;//折扣
-	private String saleSum;
-	private String num;
+	private String num;//折扣
 	
-	/**
-	 * @return the num
-	 */
-	public String getNum() {
-		return num;
-	}
-	/**
-	 * @param num the num to set
-	 */
-	public void setNum(String num) {
-		this.num = num;
-	}
-	/**
-	 * @return the eventPrice
-	 */
-	public String getEventPrice() {
-		return eventPrice;
-	}
-	/**
-	 * @param eventPrice the eventPrice to set
-	 */
-	public void setEventPrice(String eventPrice) {
-		this.eventPrice = eventPrice;
-	}
 	/**
 	 * @return the subTitle
 	 */
@@ -89,27 +62,25 @@ public class PcSqpGoods {
 	/**
 	 * @return the price
 	 */
-	public String getPrice() {
+	public double getPrice() {
 		return price;
 	}
 	/**
 	 * @param price the price to set
 	 */
-	public void setPrice(String price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
-	
-	
 	/**
 	 * @return the marketPrice
 	 */
-	public String getMarketPrice() {
+	public double getMarketPrice() {
 		return marketPrice;
 	}
 	/**
 	 * @param marketPrice the marketPrice to set
 	 */
-	public void setMarketPrice(String marketPrice) {
+	public void setMarketPrice(double marketPrice) {
 		this.marketPrice = marketPrice;
 	}
 	/**
@@ -125,28 +96,16 @@ public class PcSqpGoods {
 		this.picSrc = picSrc;
 	}
 	/**
-	 * @return the qunatity
+	 * @return the num
 	 */
-	public String getQunatity() {
-		return qunatity;
+	public String getNum() {
+		return num;
 	}
 	/**
-	 * @param qunatity the qunatity to set
+	 * @param num the num to set
 	 */
-	public void setQunatity(String qunatity) {
-		this.qunatity = qunatity;
-	}
-	/**
-	 * @return the saleSum
-	 */
-	public String getSaleSum() {
-		return saleSum;
-	}
-	/**
-	 * @param saleSum the saleSum to set
-	 */
-	public void setSaleSum(String saleSum) {
-		this.saleSum = saleSum;
+	public void setNum(String num) {
+		this.num = num;
 	}
 	
 }

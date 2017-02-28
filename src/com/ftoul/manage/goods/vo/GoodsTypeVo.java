@@ -1,6 +1,9 @@
 package com.ftoul.manage.goods.vo;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.ftoul.pc.interfaces.vo.PcGoodsTypeVo;
 
 public class GoodsTypeVo {
 
@@ -8,6 +11,7 @@ public class GoodsTypeVo {
 	private String name;
 	private String picSrc;
 	private List<GoodsTypeVo> goodsTypelist;
+	private List<PcGoodsTypeVo> goodsList = new ArrayList<PcGoodsTypeVo>();
 	
 	public String getId() {
 		return id;
@@ -32,6 +36,12 @@ public class GoodsTypeVo {
 	}
 	public void setPicSrc(String picSrc) {
 		this.picSrc = picSrc;
+	}
+	public List<PcGoodsTypeVo> getGoodsList() {
+		return goodsList;
+	}
+	public void setGoodsList(List<PcGoodsTypeVo> goodsList) {
+		this.goodsList = goodsList;
 	}
 	
 	

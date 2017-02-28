@@ -35,6 +35,31 @@ public class PcGoodsTypeAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return goodsTypeServ.getNextGoodsTypes(parameter);
 	}
+	
+	/**
+	 * pc端接口：通过商品一级类别得到二三级分类列表
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getTypeList")  
+	public @ResponseBody Result getTypeList(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return goodsTypeServ.getGoodsTypeLevel23from1List(parameter);
+	}
+	
+	/**
+	 * pc端接口：通过商品一级类别得到二三级分类商品列表
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getGoodsList")  
+	public @ResponseBody Result getGoodsList(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return goodsTypeServ.getGoodsTypeList(parameter);
+	}
+	
 	/**
 	 * pc端接口：随机查询一级分类下的商品，显示6个
 	 * @param param 页面传递参数对象 一级分类id
