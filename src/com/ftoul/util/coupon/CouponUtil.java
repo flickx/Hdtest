@@ -111,7 +111,7 @@ public class CouponUtil {
 	 */
 	public List<Object> getCurrencyCouponByParam(String shopId,String userId){
 		String currentTime = new DateStr().toString();
-		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1' and isUsed='1' and couponId.state='1' and couponId.useType='1' and couponId.businessStore.id='"+shopId+"' and userId='"+userId+"' and validStartTime>='"+currentTime+"' and validEndTime<='"+currentTime+"'");
+		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1' and isUsed='1' and couponId.state='1' and couponId.useType='1' and couponId.businessStore.id='"+shopId+"' and userId='"+userId+"' and couponId.validStartTime>='"+currentTime+"' and couponId.validEndTime<='"+currentTime+"'");
 		return objList;
 	}
 	
