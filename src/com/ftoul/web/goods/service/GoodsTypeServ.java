@@ -84,5 +84,11 @@ public interface GoodsTypeServ{
 	 */
 	
 	Result getByid(Parameter parameter);
-	
+	/**
+	 * pc端接口：通过商品一级类别得到二三级商品类别
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	Result getGoodsTypeList (Parameter param) throws Exception;
 }

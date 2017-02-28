@@ -1,4 +1,4 @@
-package com.ftoul.app.vo;
+package com.ftoul.pc.interfaces.vo;
 
 import java.math.BigDecimal;
 

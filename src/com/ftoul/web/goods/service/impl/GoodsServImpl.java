@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ftoul.app.vo.PcNewGoods;
-import com.ftoul.app.vo.PcNewGoodsVo;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.DateUtil;
 import com.ftoul.common.ObjectToResult;
@@ -19,6 +17,8 @@ import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.goods.vo.GoodsVo;
+import com.ftoul.pc.interfaces.vo.PcNewGoods;
+import com.ftoul.pc.interfaces.vo.PcNewGoodsVo;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
 import com.ftoul.po.GoodsParam;
@@ -508,18 +508,18 @@ public class GoodsServImpl implements GoodsServ {
 		if ("1".equals(level)) {
 			sql = sql + " and g.goods_type1 ='" + id ;
 			if ("1".equals(sidx)) {
-				 sql = sql + "' order by rand() desc limit 6";			
+				 sql = sql + "' order by rand() desc limit 0,5";			
 			}else{
-				 sql = sql + "' order by g.sale_sum desc limit 6";		
+				 sql = sql + "' order by g.sale_sum desc limit 0,5";		
 			}
 		}
 		
 		else if ("2".equals(level)) {
 			sql = sql + " and g.goods_type2 ='" + id ;
 			if ("1".equals(sidx)) {
-				 sql = sql + "' order by rand() desc limit 6";			
+				 sql = sql + "' order by rand() desc limit 0,5";			
 			}else{
-				 sql = sql + "' order by g.sale_sum desc limit 6";		
+				 sql = sql + "' order by g.sale_sum desc limit 0,5";		
 			}
 		}
 		List<Object[]> list = hibernateUtil.sql(sql);
