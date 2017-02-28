@@ -12,7 +12,20 @@ public class PcSqpGoods {
 	private String picSrc;
 	private String qunatity;//折扣
 	private String saleSum;
+	private String num;
 	
+	/**
+	 * @return the num
+	 */
+	public String getNum() {
+		return num;
+	}
+	/**
+	 * @param num the num to set
+	 */
+	public void setNum(String num) {
+		this.num = num;
+	}
 	/**
 	 * @return the eventPrice
 	 */
