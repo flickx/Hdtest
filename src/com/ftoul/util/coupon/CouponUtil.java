@@ -84,12 +84,12 @@ public class CouponUtil {
 	}
 	
 	/**
-	 * 获取该店铺目前所有通用优惠券
+	 * 获取用户在该店铺目前所有有效未使用的通用优惠券
 	 * @param shopId
 	 */
-	public List<Object> getCurrencyCouponByShopId(String shopId){
+	public List<Object> getCurrencyCouponByParam(String shopId,String userId){
 		String currentTime = new DateStr().toString();
-		List<Object> objList = hibernateUtil.hql("from Coupon where state='1' and and useType='1' and validStartTime>='"+currentTime+"' and validEndTime<='"+currentTime+"'");
+		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1' and isUsed='1' and couponId.state='1' and couponId.useType='1' and couponId.businessStore.shopId='"+shopId+"' and userId='"+userId+"' and validStartTime>='"+currentTime+"' and validEndTime<='"+currentTime+"'");
 		return objList;
 	}
 	

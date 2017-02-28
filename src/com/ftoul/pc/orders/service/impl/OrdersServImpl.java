@@ -43,6 +43,7 @@ import com.ftoul.po.OrdersDetail;
 import com.ftoul.po.OrdersPay;
 import com.ftoul.po.User;
 import com.ftoul.po.UserAddress;
+import com.ftoul.util.coupon.CouponUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.logistics.LogisticsUtil;
 import com.ftoul.util.orders.OrdersUtil;
@@ -86,7 +87,8 @@ public class OrdersServImpl implements OrdersServ {
 	PriceUtil priceUtil;
 	@Autowired  
 	LogisticsUtil logisticsUtil;
-	
+	@Autowired  
+	CouponUtil couponUtil;
 	/**
 	 * 获取订单所有状态数量
 	 * @param param Parameter对象
@@ -770,6 +772,8 @@ public class OrdersServImpl implements OrdersServ {
 		vo.setOrderNumber(orders.getOrderNumber());
 		vo.setIsCard(isCard);
 		vo.setVoList(goodsVoList);
+		List<Object> notCurrencyCouponList = couponUtil.getCouponsByGoodsParamIdAndShopId(list, param.getUserToken().getUser().getId(), orders.getShopId().getId());
+		//vo.setCouponList();
 		return vo;
 	}
 	
@@ -1086,8 +1090,12 @@ public class OrdersServImpl implements OrdersServ {
 			ordersUtil.getDeductionCoinInfo(param,vo,orders);
 			ordersUtil.getDoubleCoinData(param,vo);//参与蜂币翻倍活动
 		}
+		if(vo.getMsg()!=null){
+			return ObjectToResult.getResult(vo.getMsg());
+		}else{
+			return ObjectToResult.getResult(vo);
+		}
 		
-		return ObjectToResult.getResult(vo);
 	}
 
 	/**

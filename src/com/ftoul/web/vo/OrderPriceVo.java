@@ -1,6 +1,5 @@
 package com.ftoul.web.vo;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class OrderPriceVo {
@@ -22,7 +21,7 @@ public class OrderPriceVo {
 	private int goodsNum;//购买商品数量
 	private double freight;//运费
 	private List<Object> voList;
-//	private List<ShopGoodsParamVo> shopGoodsParamList;
+	private List<Object> couponList;//优惠券列表
 	
 	public String getBenPrice() {
 		return benPrice;
@@ -84,12 +83,6 @@ public class OrderPriceVo {
 	public void setFlag(String flag) {
 		this.flag = flag;
 	}
-//	public List<ShopGoodsParamVo> getShopGoodsParamList() {
-//		return shopGoodsParamList;
-//	}
-//	public void setShopGoodsParamList(List<ShopGoodsParamVo> shopGoodsParamList) {
-//		this.shopGoodsParamList = shopGoodsParamList;
-//	}
 	public List<Object> getVoList() {
 		return voList;
 	}
@@ -131,6 +124,12 @@ public class OrderPriceVo {
 	}
 	public void setGoodsTotalPrice(double goodsTotalPrice) {
 		this.goodsTotalPrice = goodsTotalPrice;
+	}
+	public List<Object> getCouponList() {
+		return couponList;
+	}
+	public void setCouponList(List<Object> couponList) {
+		this.couponList = couponList;
 	}
 	
 }

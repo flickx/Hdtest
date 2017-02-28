@@ -25,6 +25,20 @@ public class ObjectToResult {
 	}
 	
 	/**
+	 * 单个对象返回前端对象
+	 * @param msg
+	 * @return
+	 */
+	public static Result getResult(String msg){
+		Result result  = new Result();
+		result.setResult(0);
+		result.setMessage(msg);
+		result.setTotalNum(1);
+		result.setIsPage(false);
+		return result;
+	}
+	
+	/**
 	 * 列表返回前端对象
 	 * @param object
 	 * @return
