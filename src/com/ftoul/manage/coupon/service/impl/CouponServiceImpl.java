@@ -85,7 +85,7 @@ public class CouponServiceImpl implements CouponServ {
 				hibernateUtil.save(join);
 			}
 		}
-		if("2".equals(coupon.getSpreadType())){//系统自动发放优惠券给用户
+		if("2".equals(coupon.getGiveoutType())){//系统自动发放优惠券给用户
 			couponUtil.autoSendCouponToUser(coupon.getId());
 		}
 		return ObjectToResult.getResult(obj);
