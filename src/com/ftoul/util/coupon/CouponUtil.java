@@ -103,7 +103,7 @@ public class CouponUtil {
 			vo.setFaceValue(String.valueOf(coupon.getFaceValue()));
 			vo.setId(coupon.getId());
 			vo.setName(coupon.getName());
-			vo.setValidEndTime(dateUtil.stringFormatToDate(coupon.getValidEndTime(), "yyyy-MM-dd").toLocaleString());
+			vo.setValidEndTime(dateUtil.dateFormatToString(dateUtil.stringFormatToDate(coupon.getValidEndTime(), "yyyy-MM-dd"),"yyyy-MM-dd"));
 			couponList.add(vo);
 		}
 		for (Object object : notCurrencyCouponList) {
@@ -113,7 +113,7 @@ public class CouponUtil {
 			vo.setFaceValue(String.valueOf(coupon.getFaceValue()));
 			vo.setId(coupon.getId());
 			vo.setName(coupon.getName());
-			vo.setValidEndTime(dateUtil.stringFormatToDate(coupon.getValidEndTime(), "yyyy-MM-dd").toString());
+			vo.setValidEndTime(dateUtil.dateFormatToString(dateUtil.stringFormatToDate(coupon.getValidEndTime(), "yyyy-MM-dd"),"yyyy-MM-dd"));
 			couponList.add(vo);
 		}
 		return couponList;
