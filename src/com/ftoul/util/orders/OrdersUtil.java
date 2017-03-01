@@ -2,6 +2,7 @@ package com.ftoul.util.orders;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -571,6 +572,52 @@ public class OrdersUtil {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 检查购买商品参加的活动类型、数量
+	 * @param param
+	 * @return
+	 */
+	public OrderPriceVo checkGoodsEvent(Parameter param){
+		String[] eventType = new String[]{"秒杀","限时抢","新品抢先","省钱趴"};
+		OrderPriceVo vo = new OrderPriceVo();
+		String id = param.getKey();
+		String[] goodsParams = id.split(":");
+		String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
+		String hql;
+		for (int i = 0; i < goodsParams.length; i++) {
+			String goodsParam = goodsParams[i];
+			String[] goods = goodsParam.split(",");
+			GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, goods[0]+"");
+			if(goodsP!=null){
+				Goods good = goodsP.getGoods();
+				//查询此商品参加的有效活动
+				List<Object> goodsEventList = hibernateUtil.hql("from GoodsEvent where id in (select goodsEvent.id from GoodsEventJoin where goods.id='"+good.getId()+"' and state='1') and state='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
+				for (int j = 0; j < goodsEventList.size(); j++) {
+					GoodsEvent event = (GoodsEvent) goodsEventList.get(j);
+					if(Arrays.asList(eventType).contains(event.getTypeName())&&"1".equals(event.getFirstOrder())){
+						if(Integer.parseInt(goods[1])!=1){
+							vo.setMsg("你购买的【"+good.getTitle()+"】商品参加了【"+event.getEventName()+"】活动，一人只能购买一件");
+							return vo;
+						}else{
+							hql = "select od from OrdersDetail od, Orders o where od.orders.id = o.id and o.orderStatic not in('0','8') and od.goodsParam.goods.id = '"+good.getId()+"' and od.eventType='"+event.getTypeName()+"' and od.eventBegen='"+event.getEventBegen()+"' and od.eventEnd = '"+event.getEventEnd()+"' and o.user.username = '"+param.getUserToken().getUser().getUsername()+"'";
+							List<Object> ordersDetailList = hibernateUtil.hql(hql);
+							if(ordersDetailList.size()>0){
+								vo.setMsg("你已经购买过【"+good.getTitle()+"】了，此商品参加的【"+event.getEventName()+"】活动一人只能购买一件");
+								return vo;
+							}
+							
+						}
+					}
+				}
+			}else{
+				vo.setMsg("没有此商品参数");
+				return vo;
+			}
+			
+		}
+		return vo;
 	}
 	
 	

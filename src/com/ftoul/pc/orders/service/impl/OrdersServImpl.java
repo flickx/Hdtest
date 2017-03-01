@@ -30,6 +30,9 @@ import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.manage.cart.service.CartServ;
 import com.ftoul.manage.coin.service.CoinSetServ;
+import com.ftoul.pc.orders.service.OrdersServ;
+import com.ftoul.pc.orders.vo.PcOrderVo;
+import com.ftoul.pc.orders.vo.UseCoponOrderPriceVo;
 import com.ftoul.po.BusinessStore;
 import com.ftoul.po.Coupon;
 import com.ftoul.po.Goods;
@@ -49,11 +52,7 @@ import com.ftoul.util.logistics.LogisticsUtil;
 import com.ftoul.util.orders.OrdersUtil;
 import com.ftoul.util.price.PriceUtil;
 import com.ftoul.web.goods.service.GoodsParamServ;
-import com.ftoul.pc.orders.service.OrdersServ;
-import com.ftoul.pc.orders.vo.PcOrderVo;
-import com.ftoul.pc.orders.vo.UseCoponOrderPriceVo;
 import com.ftoul.web.vo.GoodsVo;
-import com.ftoul.web.vo.ManyVsOneVo;
 import com.ftoul.web.vo.MjGoodsEventVo;
 import com.ftoul.web.vo.OrderPriceVo;
 import com.ftoul.web.vo.OrderStaticCountVo;
@@ -563,9 +562,6 @@ public class OrdersServImpl implements OrdersServ {
 	 * @return 返回结果（前台用Result对象）
 	 */
 	public OrderPriceVo getOrdersPayable(Parameter param,List<ShopGoodsParamVo> list,Orders o) throws Exception {
-		//首次进来生成订单
-		//OrderPriceVo vo = checkGoodsEvent(param);
-		//if(vo.getMsg()==null){
 		OrderPriceVo vo = new OrderPriceVo();
 		Orders orders;
 		if("1".equals(o.getIsHasChild())){
@@ -945,52 +941,6 @@ public class OrdersServImpl implements OrdersServ {
 	}
 	
 	/**
-	 * 检查购买商品参加的活动类型、数量
-	 * @param param
-	 * @return
-	 */
-	public OrderPriceVo checkGoodsEvent(Parameter param){
-		String[] eventType = new String[]{"秒杀","限时抢","新品抢先","省钱趴"};
-		OrderPriceVo vo = new OrderPriceVo();
-		String id = param.getKey();
-		String[] goodsParams = id.split(":");
-		String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
-		String hql;
-		for (int i = 0; i < goodsParams.length; i++) {
-			String goodsParam = goodsParams[i];
-			String[] goods = goodsParam.split(",");
-			GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, goods[0]+"");
-			if(goodsP!=null){
-				Goods good = goodsP.getGoods();
-				//查询此商品参加的有效活动
-				List<Object> goodsEventList = hibernateUtil.hql("from GoodsEvent where id in (select goodsEvent.id from GoodsEventJoin where goods.id='"+good.getId()+"' and state='1') and state='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
-				for (int j = 0; j < goodsEventList.size(); j++) {
-					GoodsEvent event = (GoodsEvent) goodsEventList.get(j);
-					if(Arrays.asList(eventType).contains(event.getTypeName())&&"1".equals(event.getFirstOrder())){
-						if(Integer.parseInt(goods[1])!=1){
-							vo.setMsg("你购买的【"+good.getTitle()+"】商品参加了【"+event.getEventName()+"】活动，一人只能购买一件");
-							return vo;
-						}else{
-							hql = "select od from OrdersDetail od, Orders o where od.orders.id = o.id and o.orderStatic not in('0','8') and od.goodsParam.goods.id = '"+good.getId()+"' and od.eventType='"+event.getTypeName()+"' and od.eventBegen='"+event.getEventBegen()+"' and od.eventEnd = '"+event.getEventEnd()+"' and o.user.username = '"+param.getUserToken().getUser().getUsername()+"'";
-							List<Object> ordersDetailList = hibernateUtil.hql(hql);
-							if(ordersDetailList.size()>0){
-								vo.setMsg("你已经购买过【"+good.getTitle()+"】了，此商品参加的【"+event.getEventName()+"】活动一人只能购买一件");
-								return vo;
-							}
-							
-						}
-					}
-				}
-			}else{
-				vo.setMsg("没有此商品参数");
-				return vo;
-			}
-			
-		}
-		return vo;
-	}
-	
-	/**
 	 * 根据主键获取订单详情
 	 */
 	@Override
@@ -1011,7 +961,9 @@ public class OrdersServImpl implements OrdersServ {
 		double freight = 0.00;
 		int totalCoinNumber = 0;
 		int goodsTotalNum = 0;
-		OrderPriceVo msgVo = checkGoodsEvent(param);
+		
+		OrderPriceVo msgVo = ordersUtil.checkGoodsEvent(param);//检查所购买的商品的数量是否满足参加活动规则
+		
 		OrderPriceVo vo = new OrderPriceVo();
 		List<Object> voList = new ArrayList<Object>();
 		if(msgVo.getMsg()==null){
@@ -1090,11 +1042,10 @@ public class OrdersServImpl implements OrdersServ {
 			ordersUtil.getCoinInfo(param,vo);//获取蜂币
 			ordersUtil.getDeductionCoinInfo(param,vo,orders);
 			ordersUtil.getDoubleCoinData(param,vo);//参与蜂币翻倍活动
-		}
-		if(vo.getMsg()!=null){
-			return ObjectToResult.getResult(vo.getMsg());
-		}else{
+			
 			return ObjectToResult.getResult(vo);
+		}else{
+			return ObjectToResult.getResult(vo.getMsg());
 		}
 		
 	}
