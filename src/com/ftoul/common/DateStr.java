@@ -6,11 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
 /**
  * 获取日期字符串
  * @author flick
  *
  */
+@Component
 public class DateStr {
 
 	private Date date;
