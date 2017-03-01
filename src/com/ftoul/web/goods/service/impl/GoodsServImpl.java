@@ -519,7 +519,7 @@ public class GoodsServImpl implements GoodsServ {
 			if ("1".equals(sidx)) {
 				 sql = sql + "' order by rand() desc limit 0,5";			
 			}else{
-				 sql = sql + "' order by g.sale_sum desc limit 0,5";		
+				 sql = sql + "' order by g.sale_sum desc limit 0,4";		
 			}
 		}
 		List<Object[]> list = hibernateUtil.sql(sql);
