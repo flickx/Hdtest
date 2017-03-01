@@ -76,6 +76,7 @@ public class AddressServImpl implements AddressServ {
 	public Result getUserAddressListByUserId(Parameter param) throws Exception {
 		String hql = "from UserAddress where state = '1' and user.id='"+param.getUserToken().getUser().getId()+"' order by createTime desc" ;
 		List<Object> list = hibernateUtil.hql(hql);
+		List<Object> voList = new ArrayList<>();
 		for (Object object : list) {
 			UserAddress address = (UserAddress) object;
 			com.ftoul.pc.address.AddressVo vo = new com.ftoul.pc.address.AddressVo();
@@ -84,8 +85,9 @@ public class AddressServImpl implements AddressServ {
 			vo.setName(address.getName());
 			vo.setAddress(address.getAddress());
 			vo.setIsDefault(address.getDefulat());
+			voList.add(vo);
 		}
-		return ObjectToResult.getResult(list);
+		return ObjectToResult.getResult(voList);
 	}
 	
 	/**
@@ -168,7 +170,7 @@ public class AddressServImpl implements AddressServ {
 		vo.setName(address.getName());
 		vo.setAddress(address.getAddress());
 		vo.setIsDefault(address.getDefulat());
-		return ObjectToResult.getResult(address);
+		return ObjectToResult.getResult(vo);
 	}
 	
 	/**
