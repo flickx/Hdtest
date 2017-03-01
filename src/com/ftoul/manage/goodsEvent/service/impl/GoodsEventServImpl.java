@@ -98,7 +98,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		List<PcLimitGoodsVo> goodsPcVoList = new ArrayList<PcLimitGoodsVo>();
 		if(goodsEvent!=null){
 		String eventId = goodsEvent.getId();
-		String hql2 = "from GoodsEventJoin where state='1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
+		String hql2 = "from GoodsEventJoin where state='1' and goodsEvent.state = '1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
 		List<Object> list = (List<Object>)hibernateUtil.hql(hql2);
 		List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
 		for (Object goodsEventJoin : list) {
@@ -153,7 +153,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 			for (Object o : goodsEventList) {
 				GoodsEvent	goodsEvent = (GoodsEvent)o;
 				String eventId = goodsEvent.getId();
-				String hql2 = "from GoodsEventJoin where state='1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
+				String hql2 = "from GoodsEventJoin where state='1'  and goodsEvent.state = '1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
 				List<Object> list = (List<Object>)hibernateUtil.hql(hql2);
 				List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
 				for (Object goodsEventJoin : list) {
@@ -327,7 +327,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 * @return返回结果（前台用Result对象）
 	 */
 	public Result getGoodsByEventId(Parameter param) throws Exception{		
-		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1'  and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
+		String hql = "from GoodsEventJoin where state='1' and goodsEvent.state = '1' and goods.state='1' and goods.grounding = '1'  and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
@@ -337,7 +337,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 * @return返回结果（前台用Result对象）
 	 */
 	public Result getTimeLimitGoods(String id) throws Exception{		
-		String hql = "from GoodsEventJoin where state='1' and goodsEvent.id= '"+id+"' and goods.state='1' and goods.grounding = '1' ";
+		String hql = "from GoodsEventJoin where state='1' and goodsEvent.state = '1' and goodsEvent.id= '"+id+"' and goods.state='1' and goods.grounding = '1' ";
 		List<Object> list = hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
 	}
@@ -348,7 +348,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 * @return返回结果（前台用Result对象）
 	 */
 	public Result getGoodsTypeByEventId(Parameter param) throws Exception{		
-		String hql = "from GoodsEventJoin where state='1' and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
+		String hql = "from GoodsEventJoin where state='1' and goodsEvent.state = '1' and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
@@ -358,7 +358,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 * @return返回结果（前台用Result对象）
 	 */
 	public Result getGoodsByEventCode(Parameter param) throws Exception{		
-		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' " + param.getWhereStr() + param.getOrderBy();
+		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goodsEvent.state = '1' and goods.grounding = '1' " + param.getWhereStr() + param.getOrderBy();
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
