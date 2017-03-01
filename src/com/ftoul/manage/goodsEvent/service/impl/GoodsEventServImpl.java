@@ -387,7 +387,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		if ("dpx".equals(typeName)) {
 			typeName = "大牌秀";
 		}
-		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.typeName= '" + typeName+ "'" + query+" order by eventPrice DESC";
+		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.state = '1' and goodsEvent.typeName= '" + typeName+ "'" + query+" order by eventPrice DESC";
 		Page page = hibernateUtil.hqlPage(null,hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
