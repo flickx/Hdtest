@@ -59,6 +59,7 @@ public class CommentServiceImpl implements CommentService {
 			vo.setUserSource(comment.getComeFrom());
 			vo.setUserLevel("");
 			vo.setUserPic("");
+			vo.setPicSrc(comment.getPicSrc());
 			voList.add(vo);
 		}
 		page.getObjList().retainAll(objList);

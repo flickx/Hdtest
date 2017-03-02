@@ -20,7 +20,7 @@ public class OrderPriceVo {
 	private String shopId;//店铺ID
 	private String eventName;//参加活动名称
 	private int goodsNum;//购买商品数量
-	private double freight;//运费
+	private String freight;//运费
 	private List<Object> voList;
 	private List<Object> couponList;//优惠券列表
 	private List<Object> mjList;//满减活动列表
@@ -115,10 +115,10 @@ public class OrderPriceVo {
 	public void setGoodsNum(int goodsNum) {
 		this.goodsNum = goodsNum;
 	}
-	public double getFreight() {
+	public String getFreight() {
 		return freight;
 	}
-	public void setFreight(double freight) {
+	public void setFreight(String freight) {
 		this.freight = freight;
 	}
 	public double getGoodsTotalPrice() {

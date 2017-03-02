@@ -762,7 +762,7 @@ public class OrdersServImpl implements OrdersServ {
 		hibernateUtil.save(orders);
 		
 		vo.setGoodsNum(goodsNum);
-		vo.setFreight(freight);
+		vo.setFreight(formate.format(freight));
 		vo.setPayable(formate.format(totalPayable));
 		vo.setOrderPrice(formate.format(orderPrice));//商品总价，不包括运费
 		vo.setBenPrice(formate.format(totalBenPrice));
@@ -989,7 +989,7 @@ public class OrdersServImpl implements OrdersServ {
 					//payable += Double.parseDouble(orderPriceVo.getPayable());
 					orderPrice += Double.parseDouble(orderPriceVo.getOrderPrice());
 					benPrice += Double.parseDouble(orderPriceVo.getBenPrice());
-					freight += orderPriceVo.getFreight();
+					freight += Double.parseDouble(orderPriceVo.getFreight());
 					goodsTotalNum += orderPriceVo.getGoodsNum();
 					if("1".equals(orderPriceVo.getIsCard())){
 						vo.setIsCard("yes");
@@ -1000,7 +1000,7 @@ public class OrdersServImpl implements OrdersServ {
 				vo.setCoinNumber(totalCoinNumber);
 				vo.setCoinPrice(coinPrice);
 				vo.setOrderNumber(orders.getOrderNumber());
-				vo.setFreight(freight);
+				vo.setFreight(String.valueOf(freight));
 				vo.setOrderPrice(String.valueOf(orderPrice+freight));
 				//vo.setPayable(String.valueOf(payable));
 				vo.setTotalCoinNumber(totalCoinNumber);
@@ -1079,7 +1079,7 @@ public class OrdersServImpl implements OrdersServ {
 					freight += logisticsUtil.getFreight(provinceName, childOrder.getShopId().getId(), Integer.parseInt(childOrder.getGoodsTotal()));
 				}
 			}
-			vo.setFreight(freight);
+			vo.setFreight(String.valueOf(freight));
 			vo.setOrderPrice(String.valueOf((order.getGoodsTotalPrice().doubleValue()+freight)));
 		}
 		
