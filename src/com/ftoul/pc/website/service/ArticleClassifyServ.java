@@ -38,5 +38,11 @@ public interface ArticleClassifyServ {
 	 * @throws Exception
 	 */
 	Result saveArticleClassify(Parameter parameter) throws Exception;
-	
+	/**
+	 * 删除文章分类
+	 * @author LiDing
+	 * @return
+	 * @throws Exception
+	 */
+	Result delArticleClassify(Parameter parameter) throws Exception;
 }

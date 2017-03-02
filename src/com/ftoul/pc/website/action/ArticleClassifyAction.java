@@ -34,7 +34,7 @@ public class ArticleClassifyAction {
 		return articleClassifyServ.getArticleClassifyList(parameter);
 	}
 	/**
-	 * 获取全部文章分类信息
+	 * 获取文章分类信息详情
 	 * @param param
 	 * @return
 	 * @throws Exception 

@@ -15,11 +15,16 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.pc.website.service.ArticleClassifyServ;
 import com.ftoul.po.ArticleClassify;
-import com.ftoul.po.UserAddress;
 import com.ftoul.util.hibernate.HibernateUtil;
 
 @Service("ArticleClassifyServImpl")
 public class ArticleClassifyServImpl implements ArticleClassifyServ {
+
+	@Override
+	public Result delArticleClassify(Parameter parameter) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Autowired
 	private HibernateUtil hibernateUtil;
@@ -34,8 +39,8 @@ public class ArticleClassifyServImpl implements ArticleClassifyServ {
 	@Override
 	public Result getArticleClassify(Parameter parameter) throws Exception {
 		String hql = " from ArticleClassify where state = 1 and id = '" + parameter.getId() +"'";
-		List<Object> articleClassifyList = hibernateUtil.hql(hql);
-		return ObjectToResult.getResult(articleClassifyList);
+		ArticleClassify articleClassify = (ArticleClassify)hibernateUtil.hqlFirst(hql);
+		return ObjectToResult.getResult(articleClassify);
 	}
 	
 	@Override
@@ -47,7 +52,7 @@ public class ArticleClassifyServImpl implements ArticleClassifyServ {
 	
 	@Override
 	public Result saveArticleClassify(Parameter param)throws Exception {
-		ArticleClassify articleClassify = (ArticleClassify) JSONObject.toBean((JSONObject) param.getObj(),UserAddress.class);
+		ArticleClassify articleClassify = (ArticleClassify) JSONObject.toBean((JSONObject) param.getObj(),ArticleClassify.class);
 		Object res;
 		if(Common.isNull(articleClassify.getId())){
 			articleClassify.setCreateTime(new DateStr().toString());
