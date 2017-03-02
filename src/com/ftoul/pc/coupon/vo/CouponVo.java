@@ -6,7 +6,7 @@ public class CouponVo {
 	private String id;
 	private String type;
 	private String name;
-	private int faceValue;
+	private String faceValue;
 	private String targetValue;
 	private String validEndTime;
 	private String isUsed;
@@ -53,10 +53,10 @@ public class CouponVo {
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
 	}
-	public int getFaceValue() {
+	public String getFaceValue() {
 		return faceValue;
 	}
-	public void setFaceValue(int faceValue) {
+	public void setFaceValue(String faceValue) {
 		this.faceValue = faceValue;
 	}
 	

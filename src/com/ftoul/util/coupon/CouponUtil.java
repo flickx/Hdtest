@@ -100,7 +100,7 @@ public class CouponUtil {
 		for (Object object : currencyCouponList) {
 			UserCoupon userCoupon = (UserCoupon) object;
 			Coupon coupon = userCoupon.getCouponId();
-			vo.setFaceValue(Integer.parseInt(String.valueOf(coupon.getFaceValue())));
+			vo.setFaceValue((String.valueOf(coupon.getFaceValue())).substring(0,(String.valueOf(coupon.getFaceValue())).indexOf(".")));
 			vo.setId(coupon.getId());
 			vo.setName(coupon.getName());
 			vo.setValidEndTime(dateUtil.dateFormatToString(dateUtil.stringFormatToDate(coupon.getValidEndTime(), "yyyy-MM-dd"),"yyyy-MM-dd"));
@@ -110,7 +110,7 @@ public class CouponUtil {
 			Map<String,List<Object>> couponGoodsMap = (Map<String, List<Object>>) object;
 			Set<String> key = couponGoodsMap.keySet();
 			Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, key.toArray()[0]+"");
-			vo.setFaceValue(Integer.parseInt(String.valueOf(coupon.getFaceValue())));
+			vo.setFaceValue((String.valueOf(coupon.getFaceValue())).substring(0,(String.valueOf(coupon.getFaceValue())).indexOf(".")));
 			vo.setId(coupon.getId());
 			vo.setName(coupon.getName());
 			vo.setValidEndTime(dateUtil.dateFormatToString(dateUtil.stringFormatToDate(coupon.getValidEndTime(), "yyyy-MM-dd"),"yyyy-MM-dd"));
