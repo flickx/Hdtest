@@ -33,17 +33,44 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<!-- 用于将对象转换为 JSON  -->
-	<bean id="stringConverter"
+<!-- 	<bean id="stringConverter"
         class="org.springframework.http.converter.StringHttpMessageConverter">
         <property name="supportedMediaTypes">
             <list>
                 <value>text/plain;charset=UTF-8</value>
             </list>
         </property>
-    </bean>
+    </bean> -->
     <bean id="jsonConverter" 
-    	class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
-    <bean
+      class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+           <property name="cacheSeconds" value="0" />
+           <property name="messageConverters">
+                 <list>
+                      <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                            <property name="objectMapper">
+                               <!-- <bean class="com.threeStepTech.ObjectMapper.CustomObjectMapper"/> -->
+                                  <bean class="com.fasterxml.jackson.databind.ObjectMapper">
+                                       <property name="dateFormat">
+                                             <bean class="java.text.SimpleDateFormat">
+                                                  <constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss" />
+                                             </bean>
+                                       </property>
+                                       <property name="serializationInclusion">
+                                             <!-- 注入枚举类型 -->
+                                             <value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_NULL</value>
+                                       </property>
+                                  </bean>
+                            </property>
+                            <property name="supportedMediaTypes">
+                                  <list>
+                                       <value>application/json;charset=UTF-8</value>
+                                  </list>
+                            </property>
+                      </bean>
+                 </list>
+           </property>
+      </bean>
+<!--     <bean
         class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
         <property name="messageConverters">
             <list>
@@ -51,7 +78,7 @@
                 <ref bean="jsonConverter" />
             </list>
         </property>
-    </bean>
+    </bean> -->
     
     <!-- 配置信息加载 -->
 	<bean id="configBean" class="com.ftoul.common.CustomizedPropertyConfigurer">  
