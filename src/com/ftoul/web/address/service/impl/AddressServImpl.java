@@ -76,18 +76,7 @@ public class AddressServImpl implements AddressServ {
 	public Result getUserAddressListByUserId(Parameter param) throws Exception {
 		String hql = "from UserAddress where state = '1' and user.id='"+param.getUserToken().getUser().getId()+"' order by createTime desc" ;
 		List<Object> list = hibernateUtil.hql(hql);
-		List<Object> voList = new ArrayList<>();
-		for (Object object : list) {
-			UserAddress address = (UserAddress) object;
-			com.ftoul.pc.address.AddressVo vo = new com.ftoul.pc.address.AddressVo();
-			vo.setId(address.getId());
-			vo.setConsigee(address.getConsignee());
-			vo.setName(address.getName());
-			vo.setAddress(address.getAddress());
-			vo.setIsDefault(address.getDefulat());
-			voList.add(vo);
-		}
-		return ObjectToResult.getResult(voList);
+		return ObjectToResult.getResult(list);
 	}
 	
 	/**
@@ -164,13 +153,7 @@ public class AddressServImpl implements AddressServ {
 	public Result getUserDefaultAddressById(Parameter param)
 			throws Exception {
 		UserAddress address = (UserAddress) hibernateUtil.hqlFirst("from UserAddress where defulat='true' and state= '1' and user.id='"+param.getUserToken().getUser().getId()+"'");
-		com.ftoul.pc.address.AddressVo vo = new com.ftoul.pc.address.AddressVo();
-		vo.setId(address.getId());
-		vo.setConsigee(address.getConsignee());
-		vo.setName(address.getName());
-		vo.setAddress(address.getAddress());
-		vo.setIsDefault(address.getDefulat());
-		return ObjectToResult.getResult(vo);
+		return ObjectToResult.getResult(address);
 	}
 	
 	/**

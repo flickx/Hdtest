@@ -29,12 +29,6 @@ public class CouponVo {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getFaceValue() {
-		return faceValue;
-	}
-	public void setFaceValue(String faceValue) {
-		this.faceValue = faceValue;
-	}
 	public String getTargetValue() {
 		return targetValue;
 	}
@@ -58,6 +52,12 @@ public class CouponVo {
 	}
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
+	}
+	public String getFaceValue() {
+		return faceValue;
+	}
+	public void setFaceValue(String faceValue) {
+		this.faceValue = faceValue;
 	}
 	
 }

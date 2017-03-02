@@ -508,16 +508,16 @@ public class GoodsServImpl implements GoodsServ {
 		if ("1".equals(level)) {
 			sql = sql + " and g.goods_type1 ='" + id ;
 			if ("1".equals(sidx)) {
-				 sql = sql + "' order by rand() desc limit 0,5";			
+				 sql = sql + "' order by rand() desc limit 0,6";			
 			}else{
-				 sql = sql + "' order by g.sale_sum desc limit 0,5";		
+				 sql = sql + "' order by g.sale_sum desc limit 0,4";		
 			}
 		}
 		
 		else if ("2".equals(level)) {
 			sql = sql + " and g.goods_type2 ='" + id ;
 			if ("1".equals(sidx)) {
-				 sql = sql + "' order by rand() desc limit 0,5";			
+				 sql = sql + "' order by rand() desc limit 0,6";			
 			}else{
 				 sql = sql + "' order by g.sale_sum desc limit 0,5";		
 			}

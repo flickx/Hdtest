@@ -241,7 +241,7 @@ public class GoodsTypeServImpl implements GoodsTypeServ {
 								goodsTypeVoLel3.setPicSrc(goodsTypeLevel3.getPicSrc());
 								goodsTypeVoLel3.setName(goodsTypeLevel3.getName());
 								goodsTypeVoLel3.setGoodsTypelist(null);
-								String sql = "select g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and g.shop_id = '1' order by rand() asc limit 0,2";
+								String sql = "select g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and g.shop_id = '1' order by rand() asc limit 0,5";
 								List<Object[]> list =	hibernateUtil.sql(sql);
 								List<PcGoodsTypeVo> pcTypeGoodsVoList = new ArrayList<PcGoodsTypeVo>();
 								for (Object[] goods : list) {

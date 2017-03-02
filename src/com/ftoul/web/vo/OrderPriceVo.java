@@ -1,5 +1,6 @@
 package com.ftoul.web.vo;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class OrderPriceVo {
@@ -22,6 +23,7 @@ public class OrderPriceVo {
 	private double freight;//运费
 	private List<Object> voList;
 	private List<Object> couponList;//优惠券列表
+	private List<Object> mjList;//满减活动列表
 	
 	public String getBenPrice() {
 		return benPrice;
@@ -130,6 +132,12 @@ public class OrderPriceVo {
 	}
 	public void setCouponList(List<Object> couponList) {
 		this.couponList = couponList;
+	}
+	public List<Object> getMjList() {
+		return mjList;
+	}
+	public void setMjList(List<Object> mjList) {
+		this.mjList = mjList;
 	}
 	
 }

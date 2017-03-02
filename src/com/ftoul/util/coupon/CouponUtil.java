@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ftoul.common.DateStr;
+import com.ftoul.common.DateUtil;
 import com.ftoul.pc.coupon.vo.CouponGoodsVo;
+import com.ftoul.pc.coupon.vo.CouponVo;
 import com.ftoul.po.Coupon;
 import com.ftoul.po.GoodsTypeEventJoin;
 import com.ftoul.po.User;
@@ -28,6 +30,8 @@ public class CouponUtil {
 	private HibernateUtil hibernateUtil;
 	@Autowired
 	private GoodsParamUtil paramUtil;
+	@Autowired
+	private DateUtil dateUtil;
 	
 	DecimalFormat df =new DecimalFormat("#.00"); 
 	
@@ -92,15 +96,25 @@ public class CouponUtil {
 		List<Object> couponList = new ArrayList<>();
 		List<Object> currencyCouponList = getCurrencyCouponByParam(shopId,userId);
 		List<Object> notCurrencyCouponList = getCouponsByGoodsParamIdAndShopId(objList,shopId,userId);
+		CouponVo vo = new CouponVo();
 		for (Object object : currencyCouponList) {
 			UserCoupon userCoupon = (UserCoupon) object;
-			couponList.add(userCoupon.getCouponId());
+			Coupon coupon = userCoupon.getCouponId();
+			vo.setFaceValue((String.valueOf(coupon.getFaceValue())).substring(0,(String.valueOf(coupon.getFaceValue())).indexOf(".")));
+			vo.setId(coupon.getId());
+			vo.setName(coupon.getName());
+			vo.setValidEndTime(dateUtil.dateFormatToString(dateUtil.stringFormatToDate(coupon.getValidEndTime(), "yyyy-MM-dd"),"yyyy-MM-dd"));
+			couponList.add(vo);
 		}
 		for (Object object : notCurrencyCouponList) {
 			Map<String,List<Object>> couponGoodsMap = (Map<String, List<Object>>) object;
 			Set<String> key = couponGoodsMap.keySet();
 			Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, key.toArray()[0]+"");
-			couponList.add(coupon);
+			vo.setFaceValue((String.valueOf(coupon.getFaceValue())).substring(0,(String.valueOf(coupon.getFaceValue())).indexOf(".")));
+			vo.setId(coupon.getId());
+			vo.setName(coupon.getName());
+			vo.setValidEndTime(dateUtil.dateFormatToString(dateUtil.stringFormatToDate(coupon.getValidEndTime(), "yyyy-MM-dd"),"yyyy-MM-dd"));
+			couponList.add(vo);
 		}
 		return couponList;
 	}
@@ -111,7 +125,7 @@ public class CouponUtil {
 	 */
 	public List<Object> getCurrencyCouponByParam(String shopId,String userId){
 		String currentTime = new DateStr().toString();
-		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1' and isUsed='1' and couponId.state='1' and couponId.useType='1' and couponId.businessStore.id='"+shopId+"' and userId='"+userId+"' and couponId.validStartTime>='"+currentTime+"' and couponId.validEndTime<='"+currentTime+"'");
+		List<Object> objList = hibernateUtil.hql("from UserCoupon where state='1' and isUsed='1' and couponId.state='1' and couponId.useType='1' and couponId.businessStore.id='"+shopId+"' and userId='"+userId+"' and '"+currentTime+"'>= couponId.validStartTime and '"+currentTime+"'<= couponId.validEndTime");
 		return objList;
 	}
 	
@@ -191,7 +205,7 @@ public class CouponUtil {
 	 * @param param
 	 * @return
 	 */
-	public List<Object> autoSendCouponToUser(String param){
+	public void autoSendCouponToUser(String param){
 		List<Object> objList = hibernateUtil.hql("from User where state='1'");
 		for (Object object : objList) {
 			User user = (User) object;
@@ -205,7 +219,6 @@ public class CouponUtil {
 			userCoupon.setState("1");
 			hibernateUtil.save(userCoupon);
 		}
-		return hibernateUtil.hql("from UserCoupon where state='1' and and isUsed='1' and userId='"+param+"'");
 	}
 	
 }
