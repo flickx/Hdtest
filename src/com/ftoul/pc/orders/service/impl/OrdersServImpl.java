@@ -1050,7 +1050,7 @@ public class OrdersServImpl implements OrdersServ {
 	}
 
 	/**
-	 * 根据订单号查询该订单所在地址的运费
+	 * 重新选择地址后计算订单运费及订单价格
 	 */
 	@Override
 	public Result getOrdersFreightByOrderNumber(Parameter param)
@@ -1098,8 +1098,10 @@ public class OrdersServImpl implements OrdersServ {
 					vo.setVoList(objList);
 				}
 			}
-			vo.setFreight(String.valueOf(freight));
-			vo.setOrderPrice(String.valueOf((order.getGoodsTotalPrice().doubleValue()+totalFreight)));
+			vo.setFreight(String.valueOf(totalFreight));
+			goodsTotalPriceDec = order.getGoodsTotalPrice();
+			freightDec = new BigDecimal(String.valueOf(totalFreight));
+			vo.setOrderPrice(formate.format(goodsTotalPriceDec.add(freightDec)));
 		}
 		
 		return ObjectToResult.getResult(vo);
