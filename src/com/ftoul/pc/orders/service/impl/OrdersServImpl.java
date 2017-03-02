@@ -325,6 +325,7 @@ public class OrdersServImpl implements OrdersServ {
 		int num = 0;
 		double totalFreight = 0.0;
 		double freight = 0.0;
+		double totalFaceValue = 0.00;
 		OrderVo vo = (OrderVo) Common.jsonToBean(param.getObj().toString(), OrderVo.class);
 		UserAddress userAddress = (UserAddress) hibernateUtil.find(UserAddress.class, vo.getAddressId());
 		Orders orders = (Orders) hibernateUtil.hqlFirst("from Orders where orderNumber='"+vo.getOrderNumber()+"'");
@@ -370,6 +371,19 @@ public class OrdersServImpl implements OrdersServ {
 			child.setOrderStatic("1");
 			child.setFreight(new BigDecimal(freight));
 			hibernateUtil.save(child);
+			//处理优惠券
+			List<Map> couponList = (List<Map>) orderPriceVo.get("couponList");
+			if(couponList!=null){
+				Map map = couponList.get(0);
+				String couponId = (String) map.get("id");
+				Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, couponId);
+				BigDecimal faceValue = new BigDecimal(coupon.getFaceValue());
+				BigDecimal orderPrice = new BigDecimal(child.getOrderPrice());
+				child.setOrderPrice(formate.format(orderPrice.subtract(faceValue)));
+				child.setCouponId(couponId);
+				totalFaceValue += faceValue.doubleValue();
+			}
+			
 			
 			List<Map> paramList = (List<Map>) orderPriceVo.get("voList");
 			String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
@@ -411,9 +425,11 @@ public class OrdersServImpl implements OrdersServ {
 			}
 			ordersUtil.updateGoodsParam(child.getId(),"add");
 		}
-		BigDecimal goodsTotalPriceD = orders.getGoodsTotalPrice();
-		BigDecimal totalFreightB = new BigDecimal(totalFreight);
-		orders.setOrderPrice(formate.format(goodsTotalPriceD.add(totalFreightB)));
+		BigDecimal goodsTotalPriceDec = orders.getGoodsTotalPrice();
+		BigDecimal totalFreightDec = new BigDecimal(totalFreight);
+		BigDecimal totalFaceValueDec = new BigDecimal(totalFreight);
+		orders.setGoodsTotalPrice(goodsTotalPriceDec.subtract(totalFaceValueDec));
+		orders.setOrderPrice(formate.format(goodsTotalPriceDec.add(totalFreightDec).subtract(totalFaceValueDec)));
 		
 		BigDecimal coinNumberB;
 		int coinNumber = 0;
