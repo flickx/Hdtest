@@ -46,7 +46,7 @@ public class CouponServiceImpl implements CouponService {
 			Coupon coupon = (Coupon) object;
 			CouponVo vo = new CouponVo();
 			vo.setId(coupon.getId());
-			vo.setFaceValue(coupon.getFaceValue().toString());
+			vo.setFaceValue((String.valueOf(coupon.getFaceValue())).substring(0,(String.valueOf(coupon.getFaceValue())).indexOf(".")));
 			vo.setName(coupon.getName());
 			vo.setType(couponUtil.getCouponType(coupon.getCouponType()));
 			vo.setValidEndTime(coupon.getValidEndTime());
@@ -100,7 +100,7 @@ public class CouponServiceImpl implements CouponService {
 			Coupon coupon = userCoupon.getCouponId();
 			CouponVo vo = new CouponVo();
 			vo.setId(coupon.getId());
-			vo.setFaceValue(coupon.getFaceValue().toString());
+			vo.setFaceValue((String.valueOf(coupon.getFaceValue())).substring(0,(String.valueOf(coupon.getFaceValue())).indexOf(".")));
 			vo.setName(coupon.getName());
 			vo.setType(couponUtil.getCouponType(coupon.getCouponType()));
 			vo.setValidEndTime(coupon.getValidEndTime());
