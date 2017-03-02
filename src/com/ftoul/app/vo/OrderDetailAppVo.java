@@ -22,7 +22,7 @@ public class OrderDetailAppVo {
 	private String beeCoins;//蜂币抵扣数量
 	private String coinPrice;//蜂币抵扣金额;
 	private String payable;//商品金额
-	private BigDecimal freight;//运费
+	private String freight;//运费
 	private String benefitPrice;//满减优惠金额
 	private List<OrderListDetailAppVo> detailList;//商品信息集合
 	public String getId() {
@@ -103,11 +103,11 @@ public class OrderDetailAppVo {
 	public void setPayable(String payable) {
 		this.payable = payable;
 	}
-	
-	public BigDecimal getFreight() {
+
+	public String getFreight() {
 		return freight;
 	}
-	public void setFreight(BigDecimal freight) {
+	public void setFreight(String freight) {
 		this.freight = freight;
 	}
 	public String getBenefitPrice() {

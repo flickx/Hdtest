@@ -220,7 +220,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 			orderDetailAppVo.setStoreName(order.getShopId().getStoreName());
 		}
 		orderDetailAppVo.setFeedback(order.getFeedback());
-		orderDetailAppVo.setFreight(order.getFreight());
+		orderDetailAppVo.setFreight(order.getFreight().toString());
 		orderDetailAppVo.setBeeCoins(order.getBeeCoins());
 		orderDetailAppVo.setBenefitPrice(order.getBenefitPrice());
 		orderDetailAppVo.setCoinPrice(order.getCoinPrice());
