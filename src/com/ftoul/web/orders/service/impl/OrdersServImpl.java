@@ -43,6 +43,7 @@ import com.ftoul.po.OrdersSet;
 import com.ftoul.po.SystemSet;
 import com.ftoul.po.User;
 import com.ftoul.po.UserAddress;
+import com.ftoul.util.coin.CoinUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.logistics.LogisticsUtil;
 import com.ftoul.util.orders.OrdersUtil;
@@ -84,6 +85,8 @@ public class OrdersServImpl implements OrdersServ {
 	OrdersUtil ordersUtil;
 	@Autowired  
 	PriceUtil priceUtil;
+	@Autowired  
+	CoinUtil coinUtil;
 	@Autowired  
 	LogisticsUtil logisticsUtil;
 	/**
@@ -354,7 +357,7 @@ public class OrdersServImpl implements OrdersServ {
 		int coinNumber = 0;
 		if(vo.getCoinFlag()){
 			OrderPriceVo priceVo = new OrderPriceVo();
-			ordersUtil.getCoinInfo(param,priceVo);
+			coinUtil.getCoinInfo(param,priceVo);
 			//double orderPrice = Double.valueOf(orders.getOrderPrice());
 			double orderPrice = orders.getGoodsTotalPrice().doubleValue();
 			double coinPrice;
@@ -1053,7 +1056,7 @@ public class OrdersServImpl implements OrdersServ {
 				vo.setFreight(orderPriceVo.getFreight());
 			}
 			
-			ordersUtil.getCoinInfo(param,vo);//获取蜂币
+			coinUtil.getCoinInfo(param,vo);//获取蜂币
 			ordersUtil.getDeductionCoinInfo(param,vo,orders);
 			ordersUtil.getDoubleCoinData(param,vo);//参与蜂币翻倍活动
 		}

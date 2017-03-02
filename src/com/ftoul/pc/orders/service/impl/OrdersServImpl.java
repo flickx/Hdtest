@@ -46,6 +46,7 @@ import com.ftoul.po.OrdersDetail;
 import com.ftoul.po.OrdersPay;
 import com.ftoul.po.User;
 import com.ftoul.po.UserAddress;
+import com.ftoul.util.coin.CoinUtil;
 import com.ftoul.util.coupon.CouponUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.logistics.LogisticsUtil;
@@ -88,6 +89,8 @@ public class OrdersServImpl implements OrdersServ {
 	LogisticsUtil logisticsUtil;
 	@Autowired  
 	CouponUtil couponUtil;
+	@Autowired  
+	CoinUtil coinUtil;
 	DecimalFormat formate = new DecimalFormat("0.00");
 	/**
 	 * 获取订单所有状态数量
@@ -332,20 +335,20 @@ public class OrdersServImpl implements OrdersServ {
 		orders.setProvince(province.getProviceName());
 		orders.setAddress(userAddress.getName()+userAddress.getAddress());
 		orders.setOrderTime(new DateStr().toString());
-		orders.setModifyTime(new DateStr().toString());
 		orders.setInvoiceType(vo.getInvoiceType());
 		orders.setInvoiceHead(vo.getInvoiceHead());
 		orders.setInvoiceContent(vo.getInvoiceContent());
 		orders.setFeedback(vo.getFeedBack());
 		orders.setState("1");
 		orders.setOrderStatic("1");
-		if(vo.getCard()!=null){
+		
+		if(vo.getCard()!=null){//身份证信息
 			User user = userAddress.getUser();
 			user.setCardId(vo.getCard());
 			user.setModifyTime(new DateStr().toString());
+			user.setModifyPerson(param.getUserToken().getUser().getUsername());
 			hibernateUtil.save(user);
 		}
-		hibernateUtil.save(orders);
 		
 		List<Object> objList = vo.getVoList();
 		for (Object object : objList) {
@@ -358,7 +361,6 @@ public class OrdersServImpl implements OrdersServ {
 			child.setConsigneeTel(userAddress.getTel());
 			child.setAddress(userAddress.getName()+userAddress.getAddress());
 			child.setOrderTime(new DateStr().toString());
-			child.setModifyTime(new DateStr().toString());
 			child.setInvoiceType(vo.getInvoiceType());
 			child.setInvoiceHead(vo.getInvoiceHead());
 			child.setInvoiceContent(vo.getInvoiceContent());
@@ -368,15 +370,12 @@ public class OrdersServImpl implements OrdersServ {
 			child.setOrderStatic("1");
 			child.setFreight(new BigDecimal(freight));
 			hibernateUtil.save(child);
-			List<Map> paramList = (List<Map>) orderPriceVo.get("voList");
 			
+			List<Map> paramList = (List<Map>) orderPriceVo.get("voList");
 			String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
 			for (Map shopGoodsParamVo : paramList) {
 				GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, shopGoodsParamVo.get("id")+"");
 				OrdersDetail ordersDetail = new OrdersDetail();
-				num = Integer.parseInt((String)shopGoodsParamVo.get("num"));
-				//totalNum += num;
-				ordersDetail.setNumber((String)shopGoodsParamVo.get("num"));
 				List<Object> goodsEventList = hibernateUtil.hql("from GoodsEvent where id in (select goodsEvent.id from GoodsEventJoin where goods.id='"+goodsP.getGoods().getId()+"' and state='1') and state='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
 				if(goodsEventList.size()>0){
 					GoodsEvent event = (GoodsEvent) goodsEventList.get(0);
@@ -389,7 +388,7 @@ public class OrdersServImpl implements OrdersServ {
 					}else if(event.getEventPrice()!=null){
 						ordersDetail.setPrice(event.getEventPrice().toString());
 					}else if(event.getDiscount()!=null){
-						ordersDetail.setPrice(new DecimalFormat("0.00").format(Double.parseDouble(goodsP.getPrice())*Float.parseFloat(event.getDiscount())));
+						ordersDetail.setPrice(formate.format(Double.parseDouble(goodsP.getPrice())*Float.parseFloat(event.getDiscount())));
 					}else{
 						ordersDetail.setPrice(goodsP.getPrice());
 					}
@@ -397,50 +396,52 @@ public class OrdersServImpl implements OrdersServ {
 					ordersDetail.setPrice(goodsP.getPrice());
 				}
 				double price = Double.parseDouble(ordersDetail.getPrice());
+				String goodsNum = (String)shopGoodsParamVo.get("num");
+				num = Integer.parseInt(goodsNum);
 				ordersDetail.setTotalPrice(new BigDecimal(num*price));
+				ordersDetail.setNumber(goodsNum);
 				ordersDetail.setGoodsParam(goodsP);
 				ordersDetail.setOrders(child);
 				ordersDetail.setShopId(child.getShopId().getId());
 				ordersDetail.setCreateTime(new DateStr().toString());
+				ordersDetail.setCreatePerson(param.getUserToken().getUser().getUsername());
 				ordersDetail.setState("1");
 				hibernateUtil.save(ordersDetail);
-				countGoodsEevntJoin(goodsP.getGoods().getId(),(String)shopGoodsParamVo.get("num"));//删除参加活动的商品数量
+				ordersUtil.countGoodsEevntJoin(goodsP.getGoods().getId(),goodsNum);//删除参加活动的商品数量
 			}
 			ordersUtil.updateGoodsParam(child.getId(),"add");
 		}
-		orders.setOrderPrice(String.valueOf(orders.getGoodsTotalPrice().doubleValue()+totalFreight));
-		BigDecimal goodsTotalPriceD = new BigDecimal(orders.getGoodsTotalPrice().doubleValue());
+		BigDecimal goodsTotalPriceD = orders.getGoodsTotalPrice();
 		BigDecimal totalFreightB = new BigDecimal(totalFreight);
-		orders.setOrderPrice(String.valueOf(goodsTotalPriceD.add(totalFreightB).doubleValue()));
-		//orders.setOrderPrice(new BigDecimal(orders.getGoodsTotalPrice().doubleValue()).add(new BigDecimal(totalFreight)).toString());
-//		double coinNumber = 0;
+		orders.setOrderPrice(formate.format(goodsTotalPriceD.add(totalFreightB)));
+		
 		BigDecimal coinNumberB;
 		int coinNumber = 0;
 		if(vo.getCoinFlag()){
-			OrderPriceVo priceVo = new com.ftoul.web.vo.OrderPriceVo();
-			ordersUtil.getCoinInfo(param,priceVo);
-			//double orderPrice = Double.valueOf(orders.getOrderPrice());
+			OrderPriceVo priceVo = new OrderPriceVo();
+			coinUtil.getCoinInfo(param,priceVo);//计算用户有多少枚蜂币及蜂币金额
+			
 			double orderPrice = orders.getGoodsTotalPrice().doubleValue();
-			double coinPrice;
+			BigDecimal coinPrice;
 			int newCoinNumber = priceVo.getCoinNumber();
-			if(newCoinNumber>=vo.getCoinNumber()){
+			int inputCoinNumber = vo.getCoinNumber();
+			if(newCoinNumber>=inputCoinNumber){
 				double base = priceVo.getCoinPrice()/priceVo.getCoinNumber();
-				double newOrderPrice = orderPrice - priceVo.getCoinPrice();
+				double newCoinPrice = base*inputCoinNumber;
+				double newOrderPrice = orderPrice - newCoinPrice;
 				if(newOrderPrice<0){
-					BigDecimal orderPriceB = new BigDecimal(Double.toString(orderPrice));
-					BigDecimal baseB = new BigDecimal(Double.toString(base));
-					double value = orderPriceB.divide(baseB,2,BigDecimal.ROUND_UP).doubleValue();
-					//coinNumber = Math.floor(value);
-					//coinPrice = coinNumber*base;
+					BigDecimal orderPriceDec = new BigDecimal(String.valueOf(orderPrice));
+					BigDecimal baseDec = new BigDecimal(String.valueOf(base));
+					double value = orderPriceDec.divide(baseDec,2,BigDecimal.ROUND_UP).doubleValue();
 					coinNumberB = new BigDecimal(Math.floor(value));
-					baseB = new BigDecimal(Double.toString(base));
-					coinPrice = coinNumberB.multiply(baseB).doubleValue();
-					newOrderPrice = orderPrice - coinPrice;
+					baseDec = new BigDecimal(String.valueOf(base));
+					coinPrice = coinNumberB.multiply(baseDec);
+					newOrderPrice = Double.parseDouble(formate.format(orderPriceDec.subtract(coinPrice)));
 					coinNumber = coinNumberB.intValue();
 					
 					if(newOrderPrice==0||newOrderPrice==0.0||newOrderPrice==0.00){
 						if(totalFreight==0.00){
-							orders.setOrderPrice(new DecimalFormat("0.00").format(newOrderPrice));
+							orders.setOrderPrice(formate.format(newOrderPrice));
 							orders.setOrderStatic("2");
 							orders.setPayStatic("1");
 							orders.setPayTime(new DateStr().toString());
@@ -457,53 +458,34 @@ public class OrdersServImpl implements OrdersServ {
 								}
 							}
 						}else{
-							orders.setOrderPrice(new DecimalFormat("0.00").format(totalFreight));
+							orders.setOrderPrice(formate.format(totalFreight));
 						}
 					}
-					//orders.setBeeCoins((int)coinNumber+"");
-					orders.setBeeCoins(coinNumber+"");
-					orders.setCoinPrice(new DecimalFormat("0.00").format(coinPrice));
-					//orders.setOrderPrice(new DecimalFormat("0.00").format(newOrderPrice));
+					orders.setBeeCoins(inputCoinNumber+"");
+					orders.setCoinPrice(formate.format(coinPrice));
 				}else{
-					orders.setBeeCoins(String.valueOf((int)priceVo.getCoinNumber()));
-					orders.setCoinPrice(new DecimalFormat("0.00").format(priceVo.getCoinPrice()));
-					orders.setOrderPrice(new DecimalFormat("0.00").format(newOrderPrice+totalFreight));
+					orders.setBeeCoins(String.valueOf(inputCoinNumber));
+					orders.setCoinPrice(formate.format(newCoinPrice));
+					orders.setOrderPrice(formate.format(newOrderPrice+totalFreight));
 				}
 				
 			}else{
 				priceVo.setMsg("您兑换的蜂币不够，请重新确认");
-				return ObjectToResult.getResult(priceVo);
+				return ObjectToResult.getResult(priceVo.getMsg());
+			}
+			//减掉用去的蜂币数量
+			if(coinNumber!=0){
+				ordersUtil.updateCoinInfo(param.getUserToken().getUser().getUsername(),coinNumber);
+			}else{
+				ordersUtil.updateCoinInfo(param.getUserToken().getUser().getUsername(),inputCoinNumber);
 			}
 			
 		}
 		orders.setFreight(new BigDecimal(totalFreight));
 		hibernateUtil.save(orders);
-		if(vo.getCoinFlag()){
-			if(coinNumber!=0){
-				ordersUtil.updateCoinInfo(param.getUserToken().getUser().getUsername(),coinNumber);
-			}else{
-				ordersUtil.updateCoinInfo(param.getUserToken().getUser().getUsername(),vo.getCoinNumber());
-			}
-			
-		}
 		//删除购物车的内容
 		ordersUtil.delShopCart(param);
 		return ObjectToResult.getResult(orders);
-	}
-	
-	/**
-	 * 删除参加活动的商品数量
-	 * @param goodsId
-	 * @param count
-	 */
-	public void countGoodsEevntJoin(String goodsId,String count){
-		List<Object> list = hibernateUtil.hql("from GoodsEventJoin where state='1' and quantity>0 and goods.id='"+goodsId+"'");
-		for (int j = 0; j < list.size(); j++) {
-			GoodsEventJoin join = (GoodsEventJoin) list.get(j);
-			int num = join.getQuantity()-Integer.parseInt(count);
-			join.setQuantity(num);
-			hibernateUtil.update(join);
-		}
 	}
 	
 	/**
@@ -1038,7 +1020,7 @@ public class OrdersServImpl implements OrdersServ {
 				vo.setFreight(orderPriceVo.getFreight());
 			}
 			
-			ordersUtil.getCoinInfo(param,vo);//获取蜂币
+			coinUtil.getCoinInfo(param,vo);//获取蜂币
 			ordersUtil.getDeductionCoinInfo(param,vo,orders);
 			ordersUtil.getDoubleCoinData(param,vo);//参与蜂币翻倍活动
 			

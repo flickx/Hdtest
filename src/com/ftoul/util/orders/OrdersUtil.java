@@ -458,62 +458,7 @@ public class OrdersUtil {
 		userService.modifyIntegral(param, num);
 	}
 	
-	/**
-	 * 获取用户蜂币
-	 * @param param
-	 * @param vo
-	 * @throws Exception
-	 */
-	public void getCoinInfo(Parameter param,OrderPriceVo vo) throws Exception{
-		UserService userService = WebserviceUtil.getService();
-		int coinNumber = userService.getIntegral(param.getUserToken().getUser().getUsername());
-		Result result = coinSetServ.getCoinSet(param);
-		SystemSet set = (SystemSet) result.getObj();
-		String current = DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss");
-		if(set!=null){
-			vo.setCoinNumber(coinNumber);
-			vo.setTotalCoinNumber(coinNumber);
-			double price = Double.parseDouble(set.getValue());
-			//如果商品享受蜂币翻倍则蜂币按翻倍规则计算抵扣蜂币
-			String params = param.getKey();
-			String[] goodsParams = {};
-			if (params == null) {
-				OrderVo v = (OrderVo) Common.jsonToBean(param.getObj().toString(), OrderVo.class);
-				goodsParams = v.getGoodsParameter().split(":");
-			}else{
-				goodsParams = param.getKey().split(":");
-			}
-			List<Object> goodsEventJoinList = new ArrayList<Object>();
-			for (int i = 0; i < goodsParams.length; i++) {
-				String goodsParam = goodsParams[i];
-				String[] goods = goodsParam.split(",");
-				GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, goods[0]+"");
-				Goods good = goodsP.getGoods();
-				goodsEventJoinList = hibernateUtil.hql("from GoodsEventJoin where goods.id='"+good.getId()+"' and state='1'");
-			}
-			for (int j = 0; j < goodsEventJoinList.size(); j++) {
-				GoodsEventJoin eventJoin = (GoodsEventJoin) goodsEventJoinList.get(j);
-				GoodsEvent goodsEvent = eventJoin.getGoodsEvent();
-				if("1".equals(goodsEvent.getHomeChannel())){
-					String hql = "select o from OrdersDetail od, Orders o where od.orders.id = o.id  and od.eventType in (select typeName from GoodsEvent where homeChannel='1' and state='1') and od.state='1' and o.orderStatic !='8' and o.state='1' and o.user.id= '"+param.getUserToken().getUser().getId()+"'";
-
-					List<Object> orderList = hibernateUtil.hql(hql);				
-					if (orderList.size() == 0) {
-//					vo.setMsg("您已有订单享受蜂币翻倍抵扣，不可再次享受翻倍抵扣，请知悉！");
-					GoodsEvent ge =(GoodsEvent) this.hibernateUtil.hqlFirst("from GoodsEvent where typeName='蜂币翻倍' and eventBegen<='"+current+"' and eventEnd>='"+current+"' and state='1'");
-//					base = base*(ge.getExchangeRate().doubleValue());
-					//原始倍率*活动翻倍率
-					if (ge!=null) {
-						price = ge.getExchangeRate().doubleValue()*price;
-						BigDecimal b = new BigDecimal(price);  
-						price = b.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();  
-					}
-					}
-				}
-			}
-			vo.setCoinPrice(coinNumber*price);
-		}
-	}
+	
 	
 	
 	/**
@@ -618,6 +563,21 @@ public class OrdersUtil {
 			
 		}
 		return vo;
+	}
+	
+	/**
+	 * 删除参加活动的商品数量
+	 * @param goodsId
+	 * @param count
+	 */
+	public void countGoodsEevntJoin(String goodsId,String count){
+		List<Object> list = hibernateUtil.hql("from GoodsEventJoin where state='1' and quantity>0 and goods.id='"+goodsId+"'");
+		for (int j = 0; j < list.size(); j++) {
+			GoodsEventJoin join = (GoodsEventJoin) list.get(j);
+			int num = join.getQuantity()-Integer.parseInt(count);
+			join.setQuantity(num);
+			hibernateUtil.update(join);
+		}
 	}
 	
 	
