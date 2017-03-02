@@ -969,7 +969,6 @@ public class OrdersServImpl implements OrdersServ {
 		List<Object> voList = new ArrayList<Object>();
 		if(msgVo.getMsg()==null){
 			Orders orders = saveOrdersFirst(param);
-			//Orders orders = (Orders) hibernateUtil.find(Orders.class, obj.toString());
 			Map<String, List<ShopGoodsParamVo>> map = ordersUtil.getNewShopAndGoodsParam(param.getKey());
 			if(map.size()>1){//存在多个店铺，需要拆分订单
 				orders.setIsHasChild("1");
@@ -978,22 +977,18 @@ public class OrdersServImpl implements OrdersServ {
 				for (Object object : key) {
 					list = map.get(object);
 					OrderPriceVo orderPriceVo = getOrdersPayable(param, list, orders);
-					voList.add(orderPriceVo);
-				}
-				
-				for (int i = 0; i < voList.size(); i++) {
-					OrderPriceVo orderPriceVo = (OrderPriceVo) voList.get(i);
 					if(orderPriceVo.getMsg()!=null){
-						return ObjectToResult.getResult(orderPriceVo);
+						return ObjectToResult.getResult(orderPriceVo.getMsg());
 					}
-					//payable += Double.parseDouble(orderPriceVo.getPayable());
+					payable += Double.parseDouble(orderPriceVo.getPayable());
 					orderPrice += Double.parseDouble(orderPriceVo.getOrderPrice());
 					benPrice += Double.parseDouble(orderPriceVo.getBenPrice());
 					freight += Double.parseDouble(orderPriceVo.getFreight());
 					goodsTotalNum += orderPriceVo.getGoodsNum();
 					if("1".equals(orderPriceVo.getIsCard())){
-						vo.setIsCard("yes");
+						vo.setIsCard("1");
 					}
+					voList.add(orderPriceVo);
 				}
 				
 				vo.setBenPrice(String.valueOf(benPrice));
@@ -1001,14 +996,16 @@ public class OrdersServImpl implements OrdersServ {
 				vo.setCoinPrice(coinPrice);
 				vo.setOrderNumber(orders.getOrderNumber());
 				vo.setFreight(String.valueOf(freight));
-				vo.setOrderPrice(String.valueOf(orderPrice+freight));
-				//vo.setPayable(String.valueOf(payable));
+				BigDecimal orderPriceDec = new BigDecimal(String.valueOf(orderPrice));
+				BigDecimal freightDec = new BigDecimal(String.valueOf(freight));
+				vo.setOrderPrice(formate.format(orderPriceDec.add(freightDec)));
+				vo.setPayable(String.valueOf(payable));
 				vo.setTotalCoinNumber(totalCoinNumber);
 				vo.setGoodsTotalPrice(orderPrice);
 				vo.setVoList(voList);
 				orders.setGoodsTotalPrice(new BigDecimal(orderPrice));
 				orders.setFreight(new BigDecimal(vo.getFreight()));
-				//orders.setPayable(vo.getPayable());
+				orders.setPayable(vo.getPayable());
 				orders.setOrderPrice(vo.getOrderPrice());
 				orders.setBenefitPrice(vo.getBenPrice());
 				orders.setGoodsTotal(String.valueOf(goodsTotalNum));
@@ -1053,14 +1050,18 @@ public class OrdersServImpl implements OrdersServ {
 	}
 
 	/**
-	 * 根据订单号查询该订单所在地址的运费
+	 * 重新选择地址后计算订单运费及订单价格
 	 */
 	@Override
 	public Result getOrdersFreightByOrderNumber(Parameter param)
 			throws Exception {
 		OrderPriceVo vo = new OrderPriceVo();
+		List<Object> objList = new ArrayList<>();
 		Object obj = hibernateUtil.hqlFirst("from Orders where state='0' and orderNumber='"+param.getId()+"'");
-		double freight = 0.0;
+		double freight = 0.00;
+		double totalFreight = 0.00;
+		BigDecimal goodsTotalPriceDec = null;
+		BigDecimal freightDec = null;
 		String provinceName = null;
 		if(obj!=null){
 			Orders order = (Orders) obj;
@@ -1072,15 +1073,35 @@ public class OrdersServImpl implements OrdersServ {
 			}
 			if("0".equals(order.getIsHasChild())){
 				freight = logisticsUtil.getFreight(provinceName, order.getShopId().getId(), Integer.parseInt(order.getGoodsTotal()));
+				totalFreight = freight;
+				OrderPriceVo notChildVo = new OrderPriceVo();
+				notChildVo.setOrderNumber(order.getOrderNumber());
+				notChildVo.setFreight(String.valueOf(freight));
+				goodsTotalPriceDec = order.getGoodsTotalPrice();
+				freightDec = new BigDecimal(String.valueOf(freight));
+				notChildVo.setOrderPrice(formate.format(goodsTotalPriceDec.add(freightDec)));
+				objList.add(notChildVo);
+				vo.setVoList(objList);
 			}else{
 				List<Object> list = hibernateUtil.hql("from Orders where state='0' and parentOrdersId='"+order.getId()+"'");
 				for (Object object : list) {
 					Orders childOrder = (Orders) object;
-					freight += logisticsUtil.getFreight(provinceName, childOrder.getShopId().getId(), Integer.parseInt(childOrder.getGoodsTotal()));
+					freight = logisticsUtil.getFreight(provinceName, childOrder.getShopId().getId(), Integer.parseInt(childOrder.getGoodsTotal()));
+					totalFreight += freight;
+					OrderPriceVo ChildVo = new OrderPriceVo();
+					ChildVo.setOrderNumber(childOrder.getOrderNumber());
+					ChildVo.setFreight(String.valueOf(freight));
+					goodsTotalPriceDec = childOrder.getGoodsTotalPrice();
+					freightDec = new BigDecimal(String.valueOf(freight));
+					ChildVo.setOrderPrice(formate.format(goodsTotalPriceDec.add(freightDec)));
+					objList.add(ChildVo);
+					vo.setVoList(objList);
 				}
 			}
-			vo.setFreight(String.valueOf(freight));
-			vo.setOrderPrice(String.valueOf((order.getGoodsTotalPrice().doubleValue()+freight)));
+			vo.setFreight(String.valueOf(totalFreight));
+			goodsTotalPriceDec = order.getGoodsTotalPrice();
+			freightDec = new BigDecimal(String.valueOf(totalFreight));
+			vo.setOrderPrice(formate.format(goodsTotalPriceDec.add(freightDec)));
 		}
 		
 		return ObjectToResult.getResult(vo);
