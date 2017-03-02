@@ -191,6 +191,8 @@ public class OrdersAppServImpl implements OrdersAppServ {
 			ordersList =  hibernateUtil.hql("from Orders where deliverStatic = '0' and user.id='"+param.getUserToken().getUser().getId()+"'");
 		}else if(OrdersConstant.NOT_TASK_DELIVER.equals(key)){
 			ordersList =  hibernateUtil.hql("from Orders where confirmStatic = '0' and user.id='"+param.getUserToken().getUser().getId()+"'");
+		}else if(OrdersConstant.NOT_EVALUATE.equals(key)){
+			ordersList =  hibernateUtil.hql("from Orders where feedback is NULL and user.id='"+param.getUserToken().getUser().getId()+"'");
 		}else{
 			ordersList =  hibernateUtil.hql("from Orders where user.id='"+param.getUserToken().getUser().getId()+"'");
 		}
@@ -574,7 +576,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 		System.out.println("店铺："+orders.getShopId().getStoreName()+"，订单号："+orders.getOrderNumber()+",商品最终总价格："+orders.getGoodsTotalPrice().doubleValue()+",订单金额（包含运费）："+orders.getOrderPrice()+",运费："+orders.getFreight().doubleValue());
 		hibernateUtil.save(orders);
 		vo.setGoodsNum(goodsNum);
-		vo.setFreight(new DecimalFormat("0.00").format(freight));
+		vo.setFreight(freight);
 		vo.setPayable(new DecimalFormat("0.00").format(totalPayable));
 		vo.setOrderPrice(new DecimalFormat("0.00").format(orderPrice));//商品总价，不包括运费
 		vo.setBenPrice(new DecimalFormat("0.00").format(totalBenPrice));
@@ -842,7 +844,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 					payable += Double.parseDouble(orderPriceVo.getPayable());
 					orderPrice += Double.parseDouble(orderPriceVo.getOrderPrice());
 					benPrice += Double.parseDouble(orderPriceVo.getBenPrice());
-					freight += Double.parseDouble(orderPriceVo.getFreight());
+					freight += orderPriceVo.getFreight();
 					goodsTotalNum += orderPriceVo.getGoodsNum();
 					if("1".equals(orderPriceVo.getIsCard())){
 						vo.setIsCard("yes");
@@ -853,7 +855,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 				vo.setCoinNumber(totalCoinNumber);
 				vo.setCoinPrice(coinPrice);
 				vo.setOrderNumber(orders.getOrderNumber());
-				vo.setFreight(String.valueOf(freight));
+				vo.setFreight(freight);
 				vo.setOrderPrice(String.valueOf(orderPrice+freight));
 				vo.setPayable(String.valueOf(payable));
 				vo.setTotalCoinNumber(totalCoinNumber);
@@ -928,7 +930,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 					freight += logisticsUtil.getFreight(provinceName, childOrder.getShopId().getId(), Integer.parseInt(childOrder.getGoodsTotal()));
 				}
 			}
-			vo.setFreight(String.valueOf(freight));
+			vo.setFreight(freight);
 			vo.setOrderPrice(String.valueOf((order.getGoodsTotalPrice().doubleValue()+freight)));
 		}
 		

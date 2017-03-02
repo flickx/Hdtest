@@ -1,6 +1,5 @@
 package com.ftoul.app.vo;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -103,7 +102,6 @@ public class OrderDetailAppVo {
 	public void setPayable(String payable) {
 		this.payable = payable;
 	}
-
 	public String getFreight() {
 		return freight;
 	}
