@@ -968,8 +968,8 @@ public class OrdersServImpl implements OrdersServ {
 		OrderPriceVo vo = new OrderPriceVo();
 		List<Object> voList = new ArrayList<Object>();
 		if(msgVo.getMsg()==null){
-			Object obj = saveOrdersFirst(param);
-			Orders orders = (Orders) hibernateUtil.find(Orders.class, obj.toString());
+			Orders orders = saveOrdersFirst(param);
+			//Orders orders = (Orders) hibernateUtil.find(Orders.class, obj.toString());
 			Map<String, List<ShopGoodsParamVo>> map = ordersUtil.getNewShopAndGoodsParam(param.getKey());
 			if(map.size()>1){//存在多个店铺，需要拆分订单
 				orders.setIsHasChild("1");
