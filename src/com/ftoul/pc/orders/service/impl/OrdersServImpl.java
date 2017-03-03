@@ -762,7 +762,7 @@ public class OrdersServImpl implements OrdersServ {
 		vo.setGoodsNum(goodsNum);
 		vo.setFreight(formate.format(freight));
 		vo.setPayable(formate.format(totalPayable));
-		vo.setOrderPrice(formate.format(orderPrice));//商品总价，不包括运费
+		vo.setOrderPrice(orders.getOrderPrice());//商品总价，不包括运费
 		vo.setBenPrice(formate.format(totalBenPrice));
 		vo.setOrderNumber(orders.getOrderNumber());
 		vo.setIsCard(isCard);
@@ -956,6 +956,7 @@ public class OrdersServImpl implements OrdersServ {
 	public Result getOrdersPayable(Parameter param) throws Exception {
 		double payable = 0.00;
 		double orderPrice = 0.00;
+		double goodsTotalPrice = 0.00;
 		double benPrice = 0.00;
 		double coinPrice = 0.00;
 		double freight = 0.00;
@@ -981,6 +982,7 @@ public class OrdersServImpl implements OrdersServ {
 					}
 					payable += Double.parseDouble(orderPriceVo.getPayable());
 					orderPrice += Double.parseDouble(orderPriceVo.getOrderPrice());
+					goodsTotalPrice += orderPriceVo.getGoodsTotalPrice();
 					benPrice += Double.parseDouble(orderPriceVo.getBenPrice());
 					freight += Double.parseDouble(orderPriceVo.getFreight());
 					goodsTotalNum += orderPriceVo.getGoodsNum();
@@ -998,12 +1000,12 @@ public class OrdersServImpl implements OrdersServ {
 				vo.setCoinPrice(coinPrice);
 				vo.setOrderNumber(orders.getOrderNumber());
 				vo.setFreight(String.valueOf(freight));
-				BigDecimal orderPriceDec = new BigDecimal(String.valueOf(orderPrice));
-				BigDecimal freightDec = new BigDecimal(String.valueOf(freight));
-				vo.setOrderPrice(formate.format(orderPriceDec.add(freightDec)));
+//				BigDecimal orderPriceDec = new BigDecimal(String.valueOf(orderPrice));
+//				BigDecimal freightDec = new BigDecimal(String.valueOf(freight));
+				vo.setOrderPrice(String.valueOf(orderPrice));
 				vo.setPayable(String.valueOf(payable));
 				vo.setTotalCoinNumber(totalCoinNumber);
-				vo.setGoodsTotalPrice(orderPrice);
+				vo.setGoodsTotalPrice(goodsTotalPrice);
 				vo.setVoList(voList);
 				orders.setGoodsTotalPrice(new BigDecimal(orderPrice));
 				orders.setFreight(new BigDecimal(vo.getFreight()));
@@ -1033,9 +1035,9 @@ public class OrdersServImpl implements OrdersServ {
 				vo.setCoinNumber(orderPriceVo.getCoinNumber());
 				vo.setCoinPrice(orderPriceVo.getCoinPrice());
 				vo.setOrderNumber(orders.getOrderNumber());
-				BigDecimal orderPriceDec = new BigDecimal(orderPriceVo.getOrderPrice());
-				BigDecimal freightDec = new BigDecimal(String.valueOf(orderPriceVo.getFreight()));
-				vo.setOrderPrice(formate.format(orderPriceDec.add(freightDec)));
+//				BigDecimal orderPriceDec = new BigDecimal(orderPriceVo.getOrderPrice());
+//				BigDecimal freightDec = new BigDecimal(String.valueOf(orderPriceVo.getFreight()));
+				vo.setOrderPrice(orderPriceVo.getOrderPrice());
 				vo.setPayable(orderPriceVo.getPayable());
 				vo.setTotalCoinNumber(orderPriceVo.getTotalCoinNumber());
 				vo.setGoodsTotalPrice(Double.parseDouble(orderPriceVo.getOrderPrice()));
