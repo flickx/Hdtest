@@ -341,14 +341,49 @@ public class OrdersUtil {
 			if(Integer.parseInt(str[1])<=0){
 				throw new Exception("您购买的此商品件数为"+str[1]+"，【注意：购买商品时件数要大于0】");
 			}
-			//vo.setPrice(str[2]);
 			vo.setShopId(str[2]);
-//			if(str.length==4){
-//				vo.setShopId("1");
-//			}else{
-//				vo.setShopId(str[4]);
-//			}
-			
+			voList.add(vo);
+		}
+		
+		for (int j = 0; j < voList.size(); j++) {
+			ShopGoodsParamVo vo = voList.get(j);
+			String shopId = vo.getShopId();
+			if(shopId!=null){
+				goodsParamVo = group.get(shopId);
+				if(goodsParamVo == null){
+					List<ShopGoodsParamVo> newVoList = new ArrayList<ShopGoodsParamVo>();
+					newVoList.add(vo);
+					group.put(shopId, newVoList);
+				}else{
+					goodsParamVo.add(vo);
+					group.put(shopId, goodsParamVo);
+				}
+			}
+		}
+		
+		return group;
+	}
+	
+	/**
+	 * 将购买的他她乐自营的商品按供货商分组
+	 * @param param
+	 * @return
+	 * @throws Exception 
+	 */
+	public Map<String, List<ShopGoodsParamVo>> supplierArray(String param) throws Exception{
+		Map<String, List<ShopGoodsParamVo>> group = new HashMap<String, List<ShopGoodsParamVo>>();
+		List<ShopGoodsParamVo> goodsParamVo = null;
+		String[] strList = param.split(":");
+		List<ShopGoodsParamVo> voList = new ArrayList<ShopGoodsParamVo>();
+		for (int i = 0; i < strList.length; i++) {
+			String[] str = strList[i].split(",");
+			ShopGoodsParamVo vo = new ShopGoodsParamVo();
+			vo.setGoodsParamId(str[0]);
+			vo.setNum(str[1]);
+			if(Integer.parseInt(str[1])<=0){
+				throw new Exception("您购买的此商品件数为"+str[1]+"，【注意：购买商品时件数要大于0】");
+			}
+			vo.setShopId(str[2]);
 			voList.add(vo);
 		}
 		
@@ -381,7 +416,7 @@ public class OrdersUtil {
 		String[] strList = vo.getGoodsParameter().split(":");
 		for (int i = 0; i < strList.length; i++) {
 			String[] str = strList[i].split(",");
-			param.setId(str[3]);
+			param.setId(str[2]);
 			
 			cartServ.delShopCart(param);
 		}
