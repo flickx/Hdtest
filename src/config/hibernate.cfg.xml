@@ -143,6 +143,7 @@
 		<mapping class="com.ftoul.po.Coupon"/>
 		<mapping class="com.ftoul.po.UserCoupon"/>
 		<mapping class="com.ftoul.po.GoodsTypeEventJoin"/>
+		<mapping class="com.ftoul.po.User"/>
 	</session-factory>
 
 </hibernate-configuration>

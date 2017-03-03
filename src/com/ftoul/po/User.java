@@ -312,7 +312,7 @@ public class User implements java.io.Serializable {
 	public void setDriveId(String driveId) {
 		this.driveId = driveId;
 	}
-
+	@Column(name = "card_front", length = 100)
 	public String getCardFront() {
 		return cardFront;
 	}
@@ -320,11 +320,11 @@ public class User implements java.io.Serializable {
 	public void setCardFront(String cardFront) {
 		this.cardFront = cardFront;
 	}
-
+	@Column(name = "card_back", length = 100)
 	public String getCardBack() {
 		return cardBack;
 	}
-
+	
 	public void setCardBack(String cardBack) {
 		this.cardBack = cardBack;
 	}
