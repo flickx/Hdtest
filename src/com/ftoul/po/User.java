@@ -46,7 +46,8 @@ public class User implements java.io.Serializable {
 	private String modifyPerson;
 	private String state;
 	private String driveId;
-
+	private String cardFront; 
+	private String cardBack; 
 	// Constructors
 
 	/** default constructor */
@@ -312,6 +313,19 @@ public class User implements java.io.Serializable {
 		this.driveId = driveId;
 	}
 
+	public String getCardFront() {
+		return cardFront;
+	}
 
-	
+	public void setCardFront(String cardFront) {
+		this.cardFront = cardFront;
+	}
+
+	public String getCardBack() {
+		return cardBack;
+	}
+
+	public void setCardBack(String cardBack) {
+		this.cardBack = cardBack;
+	}
 }
