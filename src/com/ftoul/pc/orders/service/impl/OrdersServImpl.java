@@ -373,7 +373,7 @@ public class OrdersServImpl implements OrdersServ {
 			hibernateUtil.save(child);
 			//处理优惠券
 			List<Map> couponList = (List<Map>) orderPriceVo.get("couponList");
-			if(couponList!=null){
+			if(couponList!=null&&couponList.size()>0){
 				Map map = couponList.get(0);
 				String couponId = (String) map.get("id");
 				Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, couponId);
@@ -427,7 +427,7 @@ public class OrdersServImpl implements OrdersServ {
 		}
 		BigDecimal goodsTotalPriceDec = orders.getGoodsTotalPrice();
 		BigDecimal totalFreightDec = new BigDecimal(totalFreight);
-		BigDecimal totalFaceValueDec = new BigDecimal(totalFreight);
+		BigDecimal totalFaceValueDec = new BigDecimal(totalFaceValue);
 		orders.setGoodsTotalPrice(goodsTotalPriceDec.subtract(totalFaceValueDec));
 		orders.setOrderPrice(formate.format(goodsTotalPriceDec.add(totalFreightDec).subtract(totalFaceValueDec)));
 		
@@ -1000,8 +1000,6 @@ public class OrdersServImpl implements OrdersServ {
 				vo.setCoinPrice(coinPrice);
 				vo.setOrderNumber(orders.getOrderNumber());
 				vo.setFreight(String.valueOf(freight));
-//				BigDecimal orderPriceDec = new BigDecimal(String.valueOf(orderPrice));
-//				BigDecimal freightDec = new BigDecimal(String.valueOf(freight));
 				vo.setOrderPrice(String.valueOf(orderPrice));
 				vo.setPayable(String.valueOf(payable));
 				vo.setTotalCoinNumber(totalCoinNumber);
@@ -1035,8 +1033,6 @@ public class OrdersServImpl implements OrdersServ {
 				vo.setCoinNumber(orderPriceVo.getCoinNumber());
 				vo.setCoinPrice(orderPriceVo.getCoinPrice());
 				vo.setOrderNumber(orders.getOrderNumber());
-//				BigDecimal orderPriceDec = new BigDecimal(orderPriceVo.getOrderPrice());
-//				BigDecimal freightDec = new BigDecimal(String.valueOf(orderPriceVo.getFreight()));
 				vo.setOrderPrice(orderPriceVo.getOrderPrice());
 				vo.setPayable(orderPriceVo.getPayable());
 				vo.setTotalCoinNumber(orderPriceVo.getTotalCoinNumber());
