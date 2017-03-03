@@ -985,10 +985,13 @@ public class OrdersServImpl implements OrdersServ {
 					goodsTotalNum += orderPriceVo.getGoodsNum();
 					if("1".equals(orderPriceVo.getIsCard())){
 						vo.setIsCard("1");
+						vo.setCard(param.getUserToken().getUser().getCardId());
 					}
 					voList.add(orderPriceVo);
 				}
-				
+				if(vo.getIsCard()==null){
+					vo.setIsCard("0");
+				}
 				vo.setBenPrice(String.valueOf(benPrice));
 				vo.setCoinNumber(totalCoinNumber);
 				vo.setCoinPrice(coinPrice);
@@ -1021,6 +1024,9 @@ public class OrdersServImpl implements OrdersServ {
 				voList.add(orderPriceVo);
 				if("1".equals(orderPriceVo.getIsCard())){
 					vo.setIsCard("1");
+					vo.setCard(param.getUserToken().getUser().getCardId());
+				}else{
+					vo.setIsCard("0");
 				}
 				vo.setBenPrice(orderPriceVo.getBenPrice());
 				vo.setCoinNumber(orderPriceVo.getCoinNumber());
