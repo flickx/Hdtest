@@ -768,7 +768,8 @@ public class OrdersServImpl implements OrdersServ {
 		vo.setIsCard(isCard);
 		vo.setVoList(goodsVoList);
 		//获取优惠券
-		List<Object> couponList = couponUtil.getCouponByParam(list, orders.getShopId().getId(), param.getUserToken().getUser().getId());
+		double totalOrderPrice = orderPrice+freight;
+		List<Object> couponList = couponUtil.getCouponByParam(list, orders.getShopId().getId(), param.getUserToken().getUser().getId(), totalOrderPrice);
 		vo.setCouponList(couponList);
 		return vo;
 	}
