@@ -92,24 +92,27 @@ public class CouponUtil {
 	 * 获取用户在该店铺所购买的商品目前所有有效未使用的通用优惠券和品类券
 	 * @param shopId
 	 */
-	public List<Object> getCouponByParam(List<ShopGoodsParamVo> objList,String shopId,String userId){
+	public List<Object> getCouponByParam(List<ShopGoodsParamVo> objList,String shopId,String userId,Double orderPrice){
 		List<Object> couponList = new ArrayList<>();
 		List<Object> currencyCouponList = getCurrencyCouponByParam(shopId,userId);
 		List<Object> notCurrencyCouponList = getCouponsByGoodsParamIdAndShopId(objList,shopId,userId);
-		CouponVo vo = new CouponVo();
 		for (Object object : currencyCouponList) {
 			UserCoupon userCoupon = (UserCoupon) object;
 			Coupon coupon = userCoupon.getCouponId();
-			vo.setFaceValue((String.valueOf(coupon.getFaceValue())).substring(0,(String.valueOf(coupon.getFaceValue())).indexOf(".")));
-			vo.setId(coupon.getId());
-			vo.setName(coupon.getName());
-			vo.setValidEndTime(dateUtil.dateFormatToString(dateUtil.stringFormatToDate(coupon.getValidEndTime(), "yyyy-MM-dd"),"yyyy-MM-dd"));
-			couponList.add(vo);
+			CouponVo vo = new CouponVo();
+			if(orderPrice>=coupon.getFaceValue()){
+				vo.setFaceValue((String.valueOf(coupon.getFaceValue())).substring(0,(String.valueOf(coupon.getFaceValue())).indexOf(".")));
+				vo.setId(coupon.getId());
+				vo.setName(coupon.getName());
+				vo.setValidEndTime(dateUtil.dateFormatToString(dateUtil.stringFormatToDate(coupon.getValidEndTime(), "yyyy-MM-dd"),"yyyy-MM-dd"));
+				couponList.add(vo);
+			}
 		}
 		for (Object object : notCurrencyCouponList) {
 			Map<String,List<Object>> couponGoodsMap = (Map<String, List<Object>>) object;
 			Set<String> key = couponGoodsMap.keySet();
 			Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, key.toArray()[0]+"");
+			CouponVo vo = new CouponVo();
 			vo.setFaceValue((String.valueOf(coupon.getFaceValue())).substring(0,(String.valueOf(coupon.getFaceValue())).indexOf(".")));
 			vo.setId(coupon.getId());
 			vo.setName(coupon.getName());

@@ -10,7 +10,8 @@ public class OrderPriceVo {
 	private double goodsTotalPrice;//商品总价格（不包含运费）
 	private String benPrice;//优惠金额
 	private String orderNumber;//订单号
-	private String isCard;//是否有身份证信息
+	private String isCard;//是否需要身份证信息
+	private String card;//身份证号码
 	private String msg;//存一些提示信息
 	private int coinNumber;//蜂币数量
 	private int totalCoinNumber;//总蜂币数量
@@ -138,6 +139,12 @@ public class OrderPriceVo {
 	}
 	public void setMjList(List<Object> mjList) {
 		this.mjList = mjList;
+	}
+	public String getCard() {
+		return card;
+	}
+	public void setCard(String card) {
+		this.card = card;
 	}
 	
 }

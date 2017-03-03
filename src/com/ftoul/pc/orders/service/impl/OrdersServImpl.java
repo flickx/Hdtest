@@ -373,7 +373,7 @@ public class OrdersServImpl implements OrdersServ {
 			hibernateUtil.save(child);
 			//处理优惠券
 			List<Map> couponList = (List<Map>) orderPriceVo.get("couponList");
-			if(couponList!=null){
+			if(couponList!=null&&couponList.size()>0){
 				Map map = couponList.get(0);
 				String couponId = (String) map.get("id");
 				Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, couponId);
@@ -427,7 +427,7 @@ public class OrdersServImpl implements OrdersServ {
 		}
 		BigDecimal goodsTotalPriceDec = orders.getGoodsTotalPrice();
 		BigDecimal totalFreightDec = new BigDecimal(totalFreight);
-		BigDecimal totalFaceValueDec = new BigDecimal(totalFreight);
+		BigDecimal totalFaceValueDec = new BigDecimal(totalFaceValue);
 		orders.setGoodsTotalPrice(goodsTotalPriceDec.subtract(totalFaceValueDec));
 		orders.setOrderPrice(formate.format(goodsTotalPriceDec.add(totalFreightDec).subtract(totalFaceValueDec)));
 		
@@ -762,13 +762,14 @@ public class OrdersServImpl implements OrdersServ {
 		vo.setGoodsNum(goodsNum);
 		vo.setFreight(formate.format(freight));
 		vo.setPayable(formate.format(totalPayable));
-		vo.setOrderPrice(formate.format(orderPrice));//商品总价，不包括运费
+		vo.setOrderPrice(orders.getOrderPrice());//商品总价，不包括运费
 		vo.setBenPrice(formate.format(totalBenPrice));
 		vo.setOrderNumber(orders.getOrderNumber());
 		vo.setIsCard(isCard);
 		vo.setVoList(goodsVoList);
 		//获取优惠券
-		List<Object> couponList = couponUtil.getCouponByParam(list, orders.getShopId().getId(), param.getUserToken().getUser().getId());
+		double totalOrderPrice = orderPrice+freight;
+		List<Object> couponList = couponUtil.getCouponByParam(list, orders.getShopId().getId(), param.getUserToken().getUser().getId(), totalOrderPrice);
 		vo.setCouponList(couponList);
 		return vo;
 	}
@@ -955,6 +956,109 @@ public class OrdersServImpl implements OrdersServ {
 	public Result getOrdersPayable(Parameter param) throws Exception {
 		double payable = 0.00;
 		double orderPrice = 0.00;
+		double goodsTotalPrice = 0.00;
+		double benPrice = 0.00;
+		double coinPrice = 0.00;
+		double freight = 0.00;
+		int totalCoinNumber = 0;
+		int goodsTotalNum = 0;
+		
+		OrderPriceVo msgVo = ordersUtil.checkGoodsEvent(param);//检查所购买的商品的数量是否满足参加活动规则
+		
+		OrderPriceVo vo = new OrderPriceVo();
+		List<Object> voList = new ArrayList<Object>();
+		if(msgVo.getMsg()==null){
+			Orders orders = saveOrdersFirst(param);
+			Map<String, List<ShopGoodsParamVo>> map = ordersUtil.getNewShopAndGoodsParam(param.getKey());
+			if(map.size()>1){//存在多个店铺，需要拆分订单
+				orders.setIsHasChild("1");
+				Object[] key = map.keySet().toArray();
+				List<ShopGoodsParamVo> list = new ArrayList<ShopGoodsParamVo>();
+				for (Object object : key) {
+					list = map.get(object);
+					OrderPriceVo orderPriceVo = getOrdersPayable(param, list, orders);
+					if(orderPriceVo.getMsg()!=null){
+						return ObjectToResult.getResult(orderPriceVo.getMsg());
+					}
+					payable += Double.parseDouble(orderPriceVo.getPayable());
+					orderPrice += Double.parseDouble(orderPriceVo.getOrderPrice());
+					goodsTotalPrice += orderPriceVo.getGoodsTotalPrice();
+					benPrice += Double.parseDouble(orderPriceVo.getBenPrice());
+					freight += Double.parseDouble(orderPriceVo.getFreight());
+					goodsTotalNum += orderPriceVo.getGoodsNum();
+					if("1".equals(orderPriceVo.getIsCard())){
+						vo.setIsCard("1");
+						vo.setCard(param.getUserToken().getUser().getCardId());
+					}
+					voList.add(orderPriceVo);
+				}
+				if(vo.getIsCard()==null){
+					vo.setIsCard("0");
+				}
+				vo.setBenPrice(String.valueOf(benPrice));
+				vo.setCoinNumber(totalCoinNumber);
+				vo.setCoinPrice(coinPrice);
+				vo.setOrderNumber(orders.getOrderNumber());
+				vo.setFreight(String.valueOf(freight));
+				vo.setOrderPrice(String.valueOf(orderPrice));
+				vo.setPayable(String.valueOf(payable));
+				vo.setTotalCoinNumber(totalCoinNumber);
+				vo.setGoodsTotalPrice(goodsTotalPrice);
+				vo.setVoList(voList);
+				orders.setGoodsTotalPrice(new BigDecimal(orderPrice));
+				orders.setFreight(new BigDecimal(vo.getFreight()));
+				orders.setPayable(vo.getPayable());
+				orders.setOrderPrice(vo.getOrderPrice());
+				orders.setBenefitPrice(vo.getBenPrice());
+				orders.setGoodsTotal(String.valueOf(goodsTotalNum));
+				hibernateUtil.update(orders);
+				
+			}else{
+				orders.setIsHasChild("0");
+				Object[] key = map.keySet().toArray();
+				Object object = key[0];
+				List<ShopGoodsParamVo> list = map.get(object);
+				OrderPriceVo orderPriceVo = getOrdersPayable(param, list, orders);
+				if(orderPriceVo.getMsg()!=null){
+					return ObjectToResult.getResult(orderPriceVo.getMsg());
+				}
+				voList.add(orderPriceVo);
+				if("1".equals(orderPriceVo.getIsCard())){
+					vo.setIsCard("1");
+					vo.setCard(param.getUserToken().getUser().getCardId());
+				}else{
+					vo.setIsCard("0");
+				}
+				vo.setBenPrice(orderPriceVo.getBenPrice());
+				vo.setCoinNumber(orderPriceVo.getCoinNumber());
+				vo.setCoinPrice(orderPriceVo.getCoinPrice());
+				vo.setOrderNumber(orders.getOrderNumber());
+				vo.setOrderPrice(orderPriceVo.getOrderPrice());
+				vo.setPayable(orderPriceVo.getPayable());
+				vo.setTotalCoinNumber(orderPriceVo.getTotalCoinNumber());
+				vo.setGoodsTotalPrice(Double.parseDouble(orderPriceVo.getOrderPrice()));
+				vo.setVoList(voList);
+				vo.setFreight(orderPriceVo.getFreight());
+			}
+			
+			coinUtil.getCoinInfo(param,vo);//获取蜂币
+			ordersUtil.getDeductionCoinInfo(param,vo,orders);
+			ordersUtil.getDoubleCoinData(param,vo);//参与蜂币翻倍活动
+			
+			return ObjectToResult.getResult(vo);
+		}else{
+			return ObjectToResult.getResult(vo.getMsg());
+		}
+		
+	}
+	
+	/**
+	 * 根据店铺进行订单拆分
+	 */
+//	@Override
+	public Result getTestOrdersPayable(Parameter param) throws Exception {
+		double payable = 0.00;
+		double orderPrice = 0.00;
 		double benPrice = 0.00;
 		double coinPrice = 0.00;
 		double freight = 0.00;
@@ -985,10 +1089,13 @@ public class OrdersServImpl implements OrdersServ {
 					goodsTotalNum += orderPriceVo.getGoodsNum();
 					if("1".equals(orderPriceVo.getIsCard())){
 						vo.setIsCard("1");
+						vo.setCard(param.getUserToken().getUser().getCardId());
 					}
 					voList.add(orderPriceVo);
 				}
-				
+				if(vo.getIsCard()==null){
+					vo.setIsCard("0");
+				}
 				vo.setBenPrice(String.valueOf(benPrice));
 				vo.setCoinNumber(totalCoinNumber);
 				vo.setCoinPrice(coinPrice);
@@ -1021,6 +1128,9 @@ public class OrdersServImpl implements OrdersServ {
 				voList.add(orderPriceVo);
 				if("1".equals(orderPriceVo.getIsCard())){
 					vo.setIsCard("1");
+					vo.setCard(param.getUserToken().getUser().getCardId());
+				}else{
+					vo.setIsCard("0");
 				}
 				vo.setBenPrice(orderPriceVo.getBenPrice());
 				vo.setCoinNumber(orderPriceVo.getCoinNumber());
