@@ -978,8 +978,8 @@ public class OrdersServImpl implements OrdersServ {
 	/**
 	 * 根据店铺进行订单拆分
 	 */
-	@Override
-	public Result getOrdersPayable(Parameter param) throws Exception {
+	//@Override
+	public Result getTOrdersPayable(Parameter param) throws Exception {
 		double payable = 0.00;
 		double orderPrice = 0.00;
 		double goodsTotalPrice = 0.00;
@@ -1082,8 +1082,8 @@ public class OrdersServImpl implements OrdersServ {
 	/**
 	 * 根据店铺进行订单拆分
 	 */
-//	@Override
-	public Result getTestOrdersPayable(Parameter param) throws Exception {
+	@Override
+	public Result getOrdersPayable(Parameter param) throws Exception {
 		double payable = 0.00;
 		double orderPrice = 0.00;
 		double benPrice = 0.00;
@@ -1096,10 +1096,8 @@ public class OrdersServImpl implements OrdersServ {
 		
 		OrderPriceVo vo = new OrderPriceVo();
 		List<Object> voList = new ArrayList<Object>();
-		List<Object> supplierVoList = new ArrayList<Object>();
 		if(msgVo.getMsg()==null){
 			Orders orders = saveOrdersFirst(param);
-			Orders parentOrders = saveOrdersFirst(param);
 			Map<String, List<ShopGoodsParamVo>> map = ordersUtil.getNewShopAndGoodsParam(param.getKey());
 			if(map.size()>1){//存在多个店铺，需要拆分订单
 				orders.setIsHasChild("1");
@@ -1145,20 +1143,18 @@ public class OrdersServImpl implements OrdersServ {
 				orders.setGoodsTotal(String.valueOf(goodsTotalNum));
 				hibernateUtil.update(orders);
 			}else{
-				
+				OrderPriceVo orderPriceVo = new OrderPriceVo();
 				Object[] key = map.keySet().toArray();
 				Object object = key[0];
 				List<ShopGoodsParamVo> list = map.get(object);
 				if("1".equals(object.toString())){//如果是他她乐自营需要进行供应商拆单
-					orders.setIsHasChild("1");
-					Orders applierOrders = saveOrdersFirst(param);
 					Map<String, List<ShopGoodsParamVo>> supplierMap = ordersUtil.supplierArray(list);
 					if(supplierMap.size()>1){//存在多个供应商需要进行拆单
-						applierOrders.setIsHasChild("1");
+						orders.setIsHasChild("1");
 						Object[] supplierKey = supplierMap.keySet().toArray();
 						for (Object supplier : supplierKey) {
 							List<ShopGoodsParamVo> supplierList = map.get(supplier);
-							OrderPriceVo orderPriceVo = getOrdersPayable(param, supplierList, applierOrders);
+							orderPriceVo = getOrdersPayable(param, supplierList, orders);
 							if(orderPriceVo.getMsg()!=null){
 								return ObjectToResult.getResult(orderPriceVo.getMsg());
 							}
@@ -1171,28 +1167,25 @@ public class OrdersServImpl implements OrdersServ {
 								vo.setIsCard("1");
 								vo.setCard(param.getUserToken().getUser().getCardId());
 							}
-							supplierVoList.add(orderPriceVo);
+							voList.add(orderPriceVo);
 						}
 					}
 					
-					
 				}else{
 					orders.setIsHasChild("0");
+					orderPriceVo = getOrdersPayable(param, list, orders);
+					if(orderPriceVo.getMsg()!=null){
+						return ObjectToResult.getResult(orderPriceVo.getMsg());
+					}
+					voList.add(orderPriceVo);
+					if("1".equals(orderPriceVo.getIsCard())){
+						vo.setIsCard("1");
+						vo.setCard(param.getUserToken().getUser().getCardId());
+					}else{
+						vo.setIsCard("0");
+					}
 				}
 				
-				
-				
-				OrderPriceVo orderPriceVo = getOrdersPayable(param, list, orders);
-				if(orderPriceVo.getMsg()!=null){
-					return ObjectToResult.getResult(orderPriceVo.getMsg());
-				}
-				voList.add(orderPriceVo);
-				if("1".equals(orderPriceVo.getIsCard())){
-					vo.setIsCard("1");
-					vo.setCard(param.getUserToken().getUser().getCardId());
-				}else{
-					vo.setIsCard("0");
-				}
 				vo.setBenPrice(orderPriceVo.getBenPrice());
 				vo.setCoinNumber(orderPriceVo.getCoinNumber());
 				vo.setCoinPrice(orderPriceVo.getCoinPrice());
