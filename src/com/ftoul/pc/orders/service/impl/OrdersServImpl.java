@@ -1153,7 +1153,7 @@ public class OrdersServImpl implements OrdersServ {
 						orders.setIsHasChild("1");
 						Object[] supplierKey = supplierMap.keySet().toArray();
 						for (Object supplier : supplierKey) {
-							List<ShopGoodsParamVo> supplierList = map.get(supplier);
+							List<ShopGoodsParamVo> supplierList = supplierMap.get(supplier);
 							orderPriceVo = getOrdersPayable(param, supplierList, orders);
 							if(orderPriceVo.getMsg()!=null){
 								return ObjectToResult.getResult(orderPriceVo.getMsg());
@@ -1169,8 +1169,20 @@ public class OrdersServImpl implements OrdersServ {
 							}
 							voList.add(orderPriceVo);
 						}
+					}else{
+						orders.setIsHasChild("0");
+						orderPriceVo = getOrdersPayable(param, list, orders);
+						if(orderPriceVo.getMsg()!=null){
+							return ObjectToResult.getResult(orderPriceVo.getMsg());
+						}
+						voList.add(orderPriceVo);
+						if("1".equals(orderPriceVo.getIsCard())){
+							vo.setIsCard("1");
+							vo.setCard(param.getUserToken().getUser().getCardId());
+						}else{
+							vo.setIsCard("0");
+						}
 					}
-					
 				}else{
 					orders.setIsHasChild("0");
 					orderPriceVo = getOrdersPayable(param, list, orders);
