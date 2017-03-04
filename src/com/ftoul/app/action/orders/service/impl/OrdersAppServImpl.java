@@ -46,6 +46,7 @@ import com.ftoul.po.OrdersDetail;
 import com.ftoul.po.OrdersPay;
 import com.ftoul.po.User;
 import com.ftoul.po.UserAddress;
+import com.ftoul.util.coin.CoinUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.logistics.LogisticsUtil;
 import com.ftoul.util.orders.OrdersUtil;
@@ -89,6 +90,8 @@ public class OrdersAppServImpl implements OrdersAppServ {
 	PriceUtil priceUtil;
 	@Autowired  
 	LogisticsUtil logisticsUtil;
+	@Autowired  
+	CoinUtil coinUtil;
 	@Autowired
 	private OrdersServ ordersServ;
 	/**
@@ -220,7 +223,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 			orderDetailAppVo.setStoreName(order.getShopId().getStoreName());
 		}
 		orderDetailAppVo.setFeedback(order.getFeedback());
-		orderDetailAppVo.setFreight(order.getFreight());
+		orderDetailAppVo.setFreight(order.getFreight().toString());
 		orderDetailAppVo.setBeeCoins(order.getBeeCoins());
 		orderDetailAppVo.setBenefitPrice(order.getBenefitPrice());
 		orderDetailAppVo.setCoinPrice(order.getCoinPrice());
@@ -574,7 +577,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 		System.out.println("店铺："+orders.getShopId().getStoreName()+"，订单号："+orders.getOrderNumber()+",商品最终总价格："+orders.getGoodsTotalPrice().doubleValue()+",订单金额（包含运费）："+orders.getOrderPrice()+",运费："+orders.getFreight().doubleValue());
 		hibernateUtil.save(orders);
 		vo.setGoodsNum(goodsNum);
-		vo.setFreight(freight);
+		vo.setFreight(new DecimalFormat("0.00").format(freight));
 		vo.setPayable(new DecimalFormat("0.00").format(totalPayable));
 		vo.setOrderPrice(new DecimalFormat("0.00").format(orderPrice));//商品总价，不包括运费
 		vo.setBenPrice(new DecimalFormat("0.00").format(totalBenPrice));
@@ -842,7 +845,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 					payable += Double.parseDouble(orderPriceVo.getPayable());
 					orderPrice += Double.parseDouble(orderPriceVo.getOrderPrice());
 					benPrice += Double.parseDouble(orderPriceVo.getBenPrice());
-					freight += orderPriceVo.getFreight();
+					freight += Double.parseDouble(orderPriceVo.getFreight());
 					goodsTotalNum += orderPriceVo.getGoodsNum();
 					if("1".equals(orderPriceVo.getIsCard())){
 						vo.setIsCard("yes");
@@ -853,7 +856,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 				vo.setCoinNumber(totalCoinNumber);
 				vo.setCoinPrice(coinPrice);
 				vo.setOrderNumber(orders.getOrderNumber());
-				vo.setFreight(freight);
+				vo.setFreight(String.valueOf(freight));
 				vo.setOrderPrice(String.valueOf(orderPrice+freight));
 				vo.setPayable(String.valueOf(payable));
 				vo.setTotalCoinNumber(totalCoinNumber);
@@ -893,7 +896,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 				vo.setFreight(orderPriceVo.getFreight());
 			}
 			
-			ordersUtil.getCoinInfo(param,vo);//获取蜂币
+			coinUtil.getCoinInfo(param,vo);//获取蜂币
 			ordersUtil.getDeductionCoinInfo(param,vo,orders);
 			ordersUtil.getDoubleCoinData(param,vo);//参与蜂币翻倍活动
 		}
@@ -928,7 +931,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 					freight += logisticsUtil.getFreight(provinceName, childOrder.getShopId().getId(), Integer.parseInt(childOrder.getGoodsTotal()));
 				}
 			}
-			vo.setFreight(freight);
+			vo.setFreight(String.valueOf(freight));
 			vo.setOrderPrice(String.valueOf((order.getGoodsTotalPrice().doubleValue()+freight)));
 		}
 		

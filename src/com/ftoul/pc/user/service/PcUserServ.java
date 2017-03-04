@@ -1,5 +1,7 @@
 package com.ftoul.pc.user.service;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 
@@ -24,4 +26,35 @@ public interface PcUserServ {
 	 * @throws Exception
 	 */
 	Result forgetPassword(Parameter param)throws Exception;
+	
+	/**
+	 * 获取用户个人信息
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getUserInfo(Parameter param)throws Exception;
+	
+	/**
+	 * 保存用户信息
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result saveUser(Parameter param)throws Exception;
+	
+	/**
+	 * 头像上传
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result picUpload(Parameter param,HttpServletRequest request)throws Exception;
+	
+	/**
+	 * 修改登陆密码
+	 * @return
+	 * @throws Exception
+	 */
+	Result updatePassword(Parameter param)throws Exception;
 }

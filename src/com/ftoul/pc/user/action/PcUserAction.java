@@ -1,5 +1,7 @@
 package com.ftoul.pc.user.action;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,4 +77,50 @@ public class PcUserAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return pcUserServ.forgetPassword(parameter);
 	}
+	/**
+	 * 获取用户个人信息
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getUserInfo") 
+	public @ResponseBody Result getUserInfo(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return pcUserServ.getUserInfo(parameter);
+	}
+	/**
+	 * 保存/修改用户个人信息
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "saveUser") 
+	public @ResponseBody Result saveUser(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return pcUserServ.saveUser(parameter);
+	}
+	/**
+	 * 头像上传
+	 * @param param
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "picUpload")
+	public @ResponseBody Result picUpload(String param, HttpServletRequest request)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return pcUserServ.picUpload(parameter, request);
+	}
+	/**
+	 * 修改登陆密码
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "updatePassword")
+	public @ResponseBody Result updatePassword(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return pcUserServ.updatePassword(parameter);
+	}
+	
 }

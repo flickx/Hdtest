@@ -122,7 +122,7 @@ public class UploadServImpl implements UploadServ {
 					if (!"".equals(goods.getPicSrc())) {
 						hibernateUtil.execHql("update GoodsUploadpic set state='0' where goods.id='"+goodsId+"' and picType='0'");
 					}
-					hibernateUtil.execHql("update Goods set picSrc='"+ thumbnailAddress +"' where id ='"+goodsId+"'");
+					hibernateUtil.execHql("update Goods set picSrc='"+ picAddress +"' where id ='"+goodsId+"'");
 				}
 				if("goods".equals(folderName)){
 					goodsUploadpic.setPicType("1");
