@@ -324,7 +324,7 @@ public class User implements java.io.Serializable {
 	public String getCardBack() {
 		return cardBack;
 	}
-
+	
 	public void setCardBack(String cardBack) {
 		this.cardBack = cardBack;
 	}
