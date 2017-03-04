@@ -13,6 +13,7 @@ import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.common.StrUtil;
 import com.ftoul.pc.website.service.ArticleClassifyServ;
 import com.ftoul.po.ArticleClassify;
 import com.ftoul.util.hibernate.HibernateUtil;
@@ -20,20 +21,15 @@ import com.ftoul.util.hibernate.HibernateUtil;
 @Service("ArticleClassifyServImpl")
 public class ArticleClassifyServImpl implements ArticleClassifyServ {
 
-	@Override
-	public Result delArticleClassify(Parameter parameter) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Autowired
 	private HibernateUtil hibernateUtil;
 	
 	@Override
-	public Result getArticleClassifyList(Parameter parameter) throws Exception {
-		String hql = " from ArticleClassify where state = 1 ";
-		List<Object> articleClassifyList = hibernateUtil.hql(hql);
-		return ObjectToResult.getResult(articleClassifyList);
+	public Result delArticleClassify(Parameter parameter) throws Exception {
+		//如果此分类下有文章 则不允许删除
+		String hql = " update ArticleClassify set state = 0  where id in ("+StrUtil.getIds(parameter.getId()+")");
+		Integer num = hibernateUtil.execHql(hql);
+		return ObjectToResult.getResult(num);
 	}
 	
 	@Override
@@ -44,7 +40,7 @@ public class ArticleClassifyServImpl implements ArticleClassifyServ {
 	}
 	
 	@Override
-	public Result getLogisticsCompanyPage(Parameter param) throws Exception {
+	public Result getArticleClassifyPage(Parameter param) throws Exception {
 		String hql = " from ArticleClassify where state = 1 "+param.getWhereStr();
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);

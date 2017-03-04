@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -20,7 +21,7 @@ public class ArticleClassify implements java.io.Serializable {
 	private String name;
 	private String anotherName;
 	private String sort;
-	private String PId;
+	private String pname;
 	private String description;
 	private String createTime;
 	private String modifyTime;
@@ -33,11 +34,11 @@ public class ArticleClassify implements java.io.Serializable {
 
 	/** full constructor */
 	public ArticleClassify(String name, String anotherName, String sort,
-			String PId, String description) {
+			String pName, String description) {
 		this.name = name;
 		this.anotherName = anotherName;
 		this.sort = sort;
-		this.PId = PId;
+		this.pname = pname;
 		this.description = description;
 	}
 
@@ -81,13 +82,13 @@ public class ArticleClassify implements java.io.Serializable {
 		this.sort = sort;
 	}
 
-	@Column(name = "p_id", length = 32)
-	public String getPId() {
-		return this.PId;
+	@Column(name = "p_name", length = 32)
+	public String getPname() {
+		return this.pname;
 	}
 
-	public void setPId(String PId) {
-		this.PId = PId;
+	public void setPname(String pname) {
+		this.pname = pname;
 	}
 
 	@Column(name = "description")

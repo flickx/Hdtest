@@ -11,13 +11,6 @@ import com.ftoul.common.Result;
  */
 public interface ArticleClassifyServ {
 	/**
-	 * 获取全部文章分类信息
-	 * @param param
-	 * @return
-	 * @throws Exception 
-	 */
-	Result getArticleClassifyList(Parameter parameter) throws Exception;
-	/**
 	 * 获取文章分类信息
 	 * @param param
 	 * @return
@@ -30,7 +23,7 @@ public interface ArticleClassifyServ {
 	 * @return
 	 * @throws Exception 
 	 */
-	Result getLogisticsCompanyPage(Parameter parameter) throws Exception;
+	Result getArticleClassifyPage(Parameter parameter) throws Exception;
 	/**
 	 * 保存文章分类
 	 * @author LiDing
