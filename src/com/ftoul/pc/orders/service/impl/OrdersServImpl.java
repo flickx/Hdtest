@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -788,7 +789,7 @@ public class OrdersServImpl implements OrdersServ {
 		vo.setGoodsNum(goodsNum);
 		vo.setFreight(formate.format(freight));
 		vo.setPayable(formate.format(totalPayable));
-		vo.setOrderPrice(orders.getOrderPrice());//商品总价，不包括运费
+		vo.setOrderPrice(orders.getOrderPrice());//支付金额
 		vo.setBenPrice(formate.format(totalBenPrice));
 		vo.setOrderNumber(orders.getOrderNumber());
 		vo.setIsCard(isCard);
@@ -1152,6 +1153,8 @@ public class OrdersServImpl implements OrdersServ {
 					if(supplierMap.size()>1){//存在多个供应商需要进行拆单
 						orders.setIsHasChild("1");
 						Object[] supplierKey = supplierMap.keySet().toArray();
+						List<Object> goodsVoList = new ArrayList<>();
+						Set<Object> couponList = new HashSet<>();
 						for (Object supplier : supplierKey) {
 							List<ShopGoodsParamVo> supplierList = supplierMap.get(supplier);
 							orderPriceVo = getOrdersPayable(param, supplierList, orders);
@@ -1167,8 +1170,23 @@ public class OrdersServImpl implements OrdersServ {
 								vo.setIsCard("1");
 								vo.setCard(param.getUserToken().getUser().getCardId());
 							}
-							voList.add(orderPriceVo);
+							goodsVoList.add(orderPriceVo.getVoList());
+							couponList.add(orderPriceVo.getCouponList());
+							//voList.add(orderPriceVo);
 						}
+						OrderPriceVo newPriceVo = new OrderPriceVo();
+						newPriceVo.setBenPrice(String.valueOf(benPrice));
+						newPriceVo.setCoinNumber(orderPriceVo.getCoinNumber());
+						newPriceVo.setCoinPrice(orderPriceVo.getCoinPrice());
+						newPriceVo.setOrderNumber(orders.getOrderNumber());
+						newPriceVo.setOrderPrice(String.valueOf(orderPrice));
+						newPriceVo.setPayable(String.valueOf(payable));
+						newPriceVo.setTotalCoinNumber(orderPriceVo.getTotalCoinNumber());
+						//newPriceVo.setGoodsTotalPrice(Double.parseDouble(orderPriceVo.getOrderPrice()));
+						newPriceVo.setVoList(goodsVoList);
+						newPriceVo.setCouponList(new ArrayList<>(couponList));
+						newPriceVo.setFreight(String.valueOf(freight));
+						voList.add(newPriceVo);
 					}else{
 						orders.setIsHasChild("0");
 						orderPriceVo = getOrdersPayable(param, list, orders);
@@ -1210,6 +1228,14 @@ public class OrdersServImpl implements OrdersServ {
 				vo.setGoodsTotalPrice(Double.parseDouble(orderPriceVo.getOrderPrice()));
 				vo.setVoList(voList);
 				vo.setFreight(orderPriceVo.getFreight());
+				
+				orders.setGoodsTotalPrice(new BigDecimal(orderPrice));
+				orders.setFreight(new BigDecimal(vo.getFreight()));
+				orders.setPayable(vo.getPayable());
+				orders.setOrderPrice(vo.getOrderPrice());
+				orders.setBenefitPrice(vo.getBenPrice());
+				orders.setGoodsTotal(String.valueOf(goodsTotalNum));
+				hibernateUtil.update(orders);
 			}
 			
 			coinUtil.getCoinInfo(param,vo);//获取蜂币
