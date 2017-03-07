@@ -1434,4 +1434,5 @@ public class OrdersServImpl implements OrdersServ {
 		vo.setParentOrderPrice(parentOrderPrice.multiply(facevalue));
 		return ObjectToResult.getResult(vo);
 	}
+	
 }
