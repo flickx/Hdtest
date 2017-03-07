@@ -1357,7 +1357,6 @@ public class OrdersServImpl implements OrdersServ {
 					freight = logisticsUtil.getFreight(provinceName, shopId, goodsNum);
 					totalFreight += freight;
 					OrderPriceVo childVo = new OrderPriceVo();
-					//childVo.setOrderNumber(order.getOrderNumber());
 					childVo.setFreight(String.valueOf(freight));
 					childVo.setShopId(shopId);
 					goodsTotalPriceDec = new BigDecimal(goodsTotalPrice);
@@ -1368,7 +1367,6 @@ public class OrdersServImpl implements OrdersServ {
 				}
 				
 			}
-			//vo.setFreight(String.valueOf(totalFreight));
 			goodsTotalPriceDec = order.getGoodsTotalPrice();
 			freightDec = new BigDecimal(String.valueOf(totalFreight));
 			vo.setOrderPrice(formate.format(goodsTotalPriceDec.add(freightDec)));
