@@ -2,11 +2,14 @@ package com.ftoul.common;
 
 import java.util.StringTokenizer;
 
+import org.springframework.stereotype.Component;
+
 /**
  * 字符串查找与替换相关工具类
  * @author flick
  *
  */
+@Component
 public class StrUtil {
 
 	private static int counter = 0;  

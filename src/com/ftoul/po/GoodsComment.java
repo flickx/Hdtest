@@ -28,6 +28,7 @@ public class GoodsComment implements java.io.Serializable {
 	private String ip;
 	private String commentTime;
 	private String isShow;
+	private String auditState;
 	private String state;
 	private String picSrc;
 	private String star;
@@ -234,6 +235,14 @@ public class GoodsComment implements java.io.Serializable {
 
 	public void setComeFrom(String comeFrom) {
 		this.comeFrom = comeFrom;
+	}
+	@Column(name = "audit_state", length = 1)
+	public String getAuditState() {
+		return auditState;
+	}
+
+	public void setAuditState(String auditState) {
+		this.auditState = auditState;
 	}
 
 }

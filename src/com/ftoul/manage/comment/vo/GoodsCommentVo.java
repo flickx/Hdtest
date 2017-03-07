@@ -12,7 +12,7 @@ public class GoodsCommentVo {
 	private String ip;
 	private String commentTime;
 	private String isShow;
-	private String state;
+	private String auditState;
 	private String picSrc;
 	private String star;
 	public String getId() {
@@ -69,12 +69,6 @@ public class GoodsCommentVo {
 	public void setIsShow(String isShow) {
 		this.isShow = isShow;
 	}
-	public String getState() {
-		return state;
-	}
-	public void setState(String state) {
-		this.state = state;
-	}
 	public String getPicSrc() {
 		return picSrc;
 	}
@@ -86,6 +80,12 @@ public class GoodsCommentVo {
 	}
 	public void setStar(String star) {
 		this.star = star;
+	}
+	public String getAuditState() {
+		return auditState;
+	}
+	public void setAuditState(String auditState) {
+		this.auditState = auditState;
 	}
 	
 	
