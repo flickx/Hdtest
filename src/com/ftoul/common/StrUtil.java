@@ -1,5 +1,6 @@
 package com.ftoul.common;
 
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.springframework.stereotype.Component;
@@ -112,4 +113,20 @@ public class StrUtil {
 		}
     	return resStr;
     }
+    
+    /** 
+     * 根据逗号生成数据库查询字段 
+     * 
+     * @param ids 
+     * @return 
+     */   
+   public static String getStrIds(List id) {
+		StringBuffer sb = new StringBuffer();
+		for (Object object : id) {
+			String s = (String) object;
+			sb.append(s);
+			sb.append(",");
+		}
+		return sb.toString();
+   }
 }

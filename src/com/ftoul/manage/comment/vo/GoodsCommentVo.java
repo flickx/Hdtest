@@ -1,5 +1,7 @@
 package com.ftoul.manage.comment.vo;
 
+import java.util.List;
+
 
 public class GoodsCommentVo {
 	
@@ -15,6 +17,7 @@ public class GoodsCommentVo {
 	private String auditState;
 	private String picSrc;
 	private String star;
+	private List<Object> list;
 	public String getId() {
 		return id;
 	}
@@ -86,6 +89,12 @@ public class GoodsCommentVo {
 	}
 	public void setAuditState(String auditState) {
 		this.auditState = auditState;
+	}
+	public List<Object> getList() {
+		return list;
+	}
+	public void setList(List<Object> list) {
+		this.list = list;
 	}
 	
 	
