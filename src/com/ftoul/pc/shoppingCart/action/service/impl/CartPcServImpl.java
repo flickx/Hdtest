@@ -74,8 +74,12 @@ public class CartPcServImpl implements CartPcServ {
 						}
 					}
 				}
-				shopCarVO.setStock(eventList.get(0)[4].toString());
-				shopCarVO.setTypeName(eventList.get(0)[5].toString());
+				if(eventList.get(0)[4]!=null){
+					shopCarVO.setStock(eventList.get(0)[4].toString());
+				}
+				if(eventList.get(0)[5]!=null){
+					shopCarVO.setTypeName(eventList.get(0)[5].toString());
+				}
 			}else{
 				if(null!=shopCarList.get(i)[7]){
 					shopCarVO.setStock(shopCarList.get(i)[7].toString());
