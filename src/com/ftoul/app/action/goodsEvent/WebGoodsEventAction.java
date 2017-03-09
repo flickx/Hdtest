@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.ftoul.app.action.goodsEvent;
 import java.util.ArrayList;
 import java.util.Date;

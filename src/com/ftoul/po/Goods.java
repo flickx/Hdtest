@@ -76,6 +76,8 @@ public class Goods implements java.io.Serializable {
 	private String packingLength;
 	private String packingWidth;
 	private String packingHeight;
+	private String countryId;
+	private String countryName;
 	// Constructors
 
 	/** default constructor */
@@ -586,6 +588,23 @@ public class Goods implements java.io.Serializable {
 
 	public void setPackingHeight(String packingHeight) {
 		this.packingHeight = packingHeight;
+	}
+
+	@Column(name = "country_id", length = 32)
+	public String getCountryId() {
+		return countryId;
+	}
+
+	public void setCountryId(String countryId) {
+		this.countryId = countryId;
+	}
+	@Column(name = "country_name", length = 32)
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
 	}
 	
 }

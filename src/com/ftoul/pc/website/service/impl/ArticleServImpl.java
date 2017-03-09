@@ -26,7 +26,7 @@ public class ArticleServImpl implements ArticleServ {
 	
 	@Override
 	public Result delArticle(Parameter parameter) throws Exception {
-		String hql = " update Article set state = 0  where id in ("+StrUtil.getIds(parameter.getId()+")");
+		String hql = " update Article set state = 0  where id in ("+ StrUtil.getIds(parameter.getId())+")";
 		Integer num = hibernateUtil.execHql(hql);
 		return ObjectToResult.getResult(num);
 	}
@@ -43,9 +43,9 @@ public class ArticleServImpl implements ArticleServ {
 		String queryStr = param.getWhereStr();
 		String hql;
 		if(queryStr!=null){
-			hql = " from Article where state = 1  "+queryStr+" order by sort desc";
+			hql = " from Article where state = 1  "+queryStr+" order by createTime desc";
 		}else{
-			hql = " from Article where state = 1  order by sort desc";
+			hql = " from Article where state = 1  order by createTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
