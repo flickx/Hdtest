@@ -72,6 +72,10 @@ public class GoodsServImpl implements GoodsServ {
 		//获取到该商品最新的信息
 		Goods newGoods = (Goods)hibernateUtil.find(Goods.class, goods.getId());
 		goods.setPicSrc(newGoods.getPicSrc());
+		//如果不是跨境商品 则置空国家馆
+		if ("0".equals(goods.getCrossborder())) {
+			goods.setCrossBorderMuseum(null);
+		}
 		//更新商品主图
 //		List<UploadPicVo> picMainVos = param.getUploadPicMainVoList();
 //		if (picMainVos!=null && picMainVos.size()>0) {			
