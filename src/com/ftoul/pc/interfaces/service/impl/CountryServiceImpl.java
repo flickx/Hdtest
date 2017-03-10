@@ -29,7 +29,7 @@ public class CountryServiceImpl implements CountryService{
 	 */
 	public Result getCountryList(Parameter param) throws Exception{
 		//查询所有国家
-		String sql ="select DISTINCT country_id,country_name from goods where state=1 and country_id is not null and crossborder = 1";
+		String sql ="select DISTINCT country_id from goods where state=1 and country_id is not null and crossborder = 1";
 		List<Object[]> countryList = hibernateUtil.sql(sql);
 		List<PcCountryVo> countryVoList = new ArrayList<PcCountryVo>();
 		for (Object[] objects : countryList) {

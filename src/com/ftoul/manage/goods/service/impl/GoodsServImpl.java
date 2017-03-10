@@ -27,6 +27,7 @@ import com.ftoul.manage.goods.vo.GoodsListVo;
 import com.ftoul.manage.goods.vo.GoodsTypeSetVo;
 import com.ftoul.manage.goods.vo.GoodsVo;
 import com.ftoul.po.BusinessStore;
+import com.ftoul.po.CrossBorderMuseum;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsBrand;
 import com.ftoul.po.GoodsCanal;
@@ -253,6 +254,10 @@ public class GoodsServImpl implements GoodsServ {
 		}
 		if(goodsVo.getMobilInfo()!=null){
 			goods.setMobilInfo(goodsVo.getMobilInfo());
+		}
+		if(goodsVo.getCountryId()!=null){
+			CrossBorderMuseum crossBorderMuseum =	(CrossBorderMuseum) this.hibernateUtil.find(CrossBorderMuseum.class, goodsVo.getCountryId());
+			goods.setCrossBorderMuseum(crossBorderMuseum);
 		}
 		//设置商品主图	
 		List<UploadPicVo> uploadPicMainList = goodsVo.getUploadPicMainList();
