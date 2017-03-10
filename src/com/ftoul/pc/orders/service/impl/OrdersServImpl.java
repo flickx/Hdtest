@@ -504,7 +504,7 @@ public class OrdersServImpl implements OrdersServ {
 		orders.setFreight(new BigDecimal(totalFreight));
 		hibernateUtil.save(orders);
 		//删除购物车的内容
-		ordersUtil.delShopCart(param);
+		//ordersUtil.delShopCart(param);
 		PcOrderVo pcOrderVo = new PcOrderVo();
 		pcOrderVo.setConsigeeName(orders.getConsignee());
 		pcOrderVo.setTel(orders.getConsigneeTel());
@@ -597,6 +597,7 @@ public class OrdersServImpl implements OrdersServ {
 		List<Object> goodsVoList = new ArrayList<Object>();
 		List<MjGoodsEventVo> mjGoodsEventList =  new ArrayList<MjGoodsEventVo>();
 		List<MjGoodsEventVo> mmjGoodsEventList =  new ArrayList<MjGoodsEventVo>();
+		List<Object> mjTitleList =  new ArrayList<Object>();
 		String eventName="";
 		for (int i = 0; i < list.size(); i++) {
 			ShopGoodsParamVo shopGoodsParamVo = (ShopGoodsParamVo) list.get(i);
@@ -685,6 +686,7 @@ public class OrdersServImpl implements OrdersServ {
 							mjVo.setOrderPrice(mjOrderPrice);
 							mjVo.setGoods(good);
 							mjGoodsEventList.add(mjVo);
+							mjTitleList.add(mjVo.getGoodsEvent().getEventName());
 						}else if(mmjVo!=null){//参加每满减活动
 							if(j==0){//只参加了每满减活动
 								price = Double.parseDouble(goodsP.getPrice());
@@ -696,6 +698,7 @@ public class OrdersServImpl implements OrdersServ {
 							mmjVo.setOrderPrice(mjOrderPrice);
 							mmjVo.setGoods(good);
 							mmjGoodsEventList.add(mmjVo);
+							mjTitleList.add(mjVo.getGoodsEvent().getEventName());
 						}else{//没参加满减活动
 							orderPrice += costPayable;
 						}
@@ -800,6 +803,7 @@ public class OrdersServImpl implements OrdersServ {
 		double totalOrderPrice = orderPrice+freight;
 		List<Object> couponList = couponUtil.getCouponByParam(list, orders.getShopId().getId(), param.getUserToken().getUser().getId(), totalOrderPrice);
 		vo.setCouponList(couponList);
+		vo.setMjList(mjTitleList);
 		return vo;
 	}
 	
@@ -826,7 +830,13 @@ public class OrdersServImpl implements OrdersServ {
 		}else if(OrdersConstant.CHINAPAY.equals(payType)){
 			result = chinaPayUtil.payByOrders(order);
 		}else if(OrdersConstant.ALIPAY.equals(payType)){
-			result = aliPayUtil.payByOrders(order);
+			result = aliPayUtil.payByOrdersPc(order);
+//			String resultStr = aliPayUtil.payByOrdersPc(order);
+//			System.out.println(resultStr);
+//			Result res = new Result();
+//			res.setResult(1);
+//			res.setMessage(resultStr);
+//			return ObjectToResult.getResult(res);
 		}else if(OrdersConstant.WXPAY.equals(payType)){
 			String mobilWxPayVo = weiXinPayUtil.payByOrders(order,req.getRemoteAddr());
 			Result mobilWxPay = ObjectToResult.getResult(mobilWxPayVo);
@@ -839,6 +849,7 @@ public class OrdersServImpl implements OrdersServ {
 		return ObjectToResult.getResult(result);
 	}
 	
+
 	/**
 	 * 获取订单商品展示信息
 	 */
@@ -1240,6 +1251,8 @@ public class OrdersServImpl implements OrdersServ {
 						newPriceVo.setVoList(goodsVoList);
 						voList.add(newPriceVo);
 						orderPriceVo = newPriceVo;
+						BusinessStore store = (BusinessStore) hibernateUtil.find(BusinessStore.class, orderPriceVo.getShopId());
+						orders.setShopId(store);
 					}else{
 						orders.setIsHasChild("0");
 						orderPriceVo = getOrdersPayable(param, list, orders);
