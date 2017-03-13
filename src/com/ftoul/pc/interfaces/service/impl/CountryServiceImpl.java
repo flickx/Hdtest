@@ -52,7 +52,7 @@ public class CountryServiceImpl implements CountryService{
 	 */
 	@Override
 	public Result getCountryTypeList(Parameter param) throws Exception {
-		String hql = "from Goods where state = 1 and crossborder = 1 and countryId = '"+param.getId()+"' group by goodsType1.id";
+		String hql = "from Goods where state = 1 and crossborder = 1 and crossBorderMuseum.id = '"+param.getId()+"' group by goodsType1.id";
 		List<Object> goodsList = (List<Object>)hibernateUtil.hql(hql);
 		List<Object> typeList = new ArrayList<Object>();
 		for (Object object : goodsList) {
