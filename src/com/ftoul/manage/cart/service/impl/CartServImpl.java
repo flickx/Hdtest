@@ -72,7 +72,7 @@ public class CartServImpl implements CartServ {
 					shopCarVO.setEventPrice(Float.parseFloat(eventList.get(0)[0].toString()));
 				}else{
 					if(null!=eventList.get(0)[1]){
-						shopCarVO.setEventPrice(Float.parseFloat(eventList.get(i)[1].toString()));
+						shopCarVO.setEventPrice(Float.parseFloat(eventList.get(0)[1].toString()));
 					}else{
 						if(null!=eventList.get(0)[2] && null!=eventList.get(0)[3] &&!"1".equals(eventList.get(0)[2])){
 							Float f = Float.parseFloat(eventList.get(0)[2].toString())*Float.parseFloat(eventList.get(0)[3].toString());

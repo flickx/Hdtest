@@ -63,7 +63,20 @@ public class GoodsVo {
 	
 	private String sumStock;//总库存
 	
+	private String place;//场地
 	private double freight;//运费
+	private String weight;//重量
+	private String packingList;//包装清单
+	private String afterService;//售后服务
+	private String packingLength;//包装长
+	private String packingWidth;//包装宽
+	private String packingHeight;//包装高
+	
+	private String goodsTypeNameOne;//一级分类名称
+	private String goodsTypeNameTwo;//二级分类名称
+	private String goodsTypeNameThree;//三级分类名称
+	private String fullCutName;//满减名称
+	private String countryId;
 	/**
 	 * @return the picSrc
 	 */
@@ -480,6 +493,101 @@ public class GoodsVo {
 
 	public void setFreight(double freight) {
 		this.freight = freight;
+	}
+
+	public String getPackingList() {
+		return packingList;
+	}
+
+	public void setPackingList(String packingList) {
+		this.packingList = packingList;
+	}
+
+	public String getAfterService() {
+		return afterService;
+	}
+
+	public void setAfterService(String afterService) {
+		this.afterService = afterService;
+	}
+
+	public String getPackingLength() {
+		return packingLength;
+	}
+
+	public void setPackingLength(String packingLength) {
+		this.packingLength = packingLength;
+	}
+
+	public String getPackingWidth() {
+		return packingWidth;
+	}
+
+	public void setPackingWidth(String packingWidth) {
+		this.packingWidth = packingWidth;
+	}
+
+	public String getPackingHeight() {
+		return packingHeight;
+	}
+
+	public void setPackingHeight(String packingHeight) {
+		this.packingHeight = packingHeight;
+	}
+
+	public String getWeight() {
+		return weight;
+	}
+
+	public void setWeight(String weight) {
+		this.weight = weight;
+	}
+
+	public String getPlace() {
+		return place;
+	}
+
+	public void setPlace(String place) {
+		this.place = place;
+	}
+
+	public String getGoodsTypeNameOne() {
+		return goodsTypeNameOne;
+	}
+
+	public void setGoodsTypeNameOne(String goodsTypeNameOne) {
+		this.goodsTypeNameOne = goodsTypeNameOne;
+	}
+
+	public String getGoodsTypeNameTwo() {
+		return goodsTypeNameTwo;
+	}
+
+	public void setGoodsTypeNameTwo(String goodsTypeNameTwo) {
+		this.goodsTypeNameTwo = goodsTypeNameTwo;
+	}
+
+	public String getGoodsTypeNameThree() {
+		return goodsTypeNameThree;
+	}
+
+	public void setGoodsTypeNameThree(String goodsTypeNameThree) {
+		this.goodsTypeNameThree = goodsTypeNameThree;
+	}
+	public String getFullCutName() {
+		return fullCutName;
+	}
+
+	public void setFullCutName(String fullCutName) {
+		this.fullCutName = fullCutName;
+	}
+
+	public String getCountryId() {
+		return countryId;
+	}
+
+	public void setCountryId(String countryId) {
+		this.countryId = countryId;
 	}
 	
 }

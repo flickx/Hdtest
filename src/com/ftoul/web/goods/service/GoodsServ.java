@@ -75,4 +75,25 @@ public interface GoodsServ{
 	 * @throws Exception
 	 */
 	Result getAppGoodsListByKeyWord(Parameter param) throws Exception; 
+	/**
+	 * pc首页“每日上新”接口
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getPcNewGoods(Parameter param) throws Exception; 
+	/**
+	 * pc“每日上新”详情页面接口
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getPcNewGoodsList(Parameter param) throws Exception;
+	/**
+	 * pc首页“查询分类商品”接口
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getGoodsByType(Parameter param) throws Exception;
 }

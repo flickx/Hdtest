@@ -74,6 +74,7 @@ public class Orders  implements java.io.Serializable {
      private String province;
      private BigDecimal freight;
      private BigDecimal goodsTotalPrice;
+     private String couponId;
     // Constructors
 
     /** default constructor */
@@ -558,6 +559,16 @@ public class Orders  implements java.io.Serializable {
 	public void setGoodsTotalPrice(BigDecimal goodsTotalPrice) {
 		this.goodsTotalPrice = goodsTotalPrice;
 	}
+
+	@Column(name="coupon_id", length=32)
+	public String getCouponId() {
+		return couponId;
+	}
+
+	public void setCouponId(String couponId) {
+		this.couponId = couponId;
+	}
+	
 	
 
 }

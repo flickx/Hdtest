@@ -10,7 +10,8 @@ public class OrderPriceVo {
 	private double goodsTotalPrice;//商品总价格（不包含运费）
 	private String benPrice;//优惠金额
 	private String orderNumber;//订单号
-	private String isCard;//是否有身份证信息
+	private String isCard;//是否需要身份证信息
+	private String card;//身份证号码
 	private String msg;//存一些提示信息
 	private int coinNumber;//蜂币数量
 	private int totalCoinNumber;//总蜂币数量
@@ -20,9 +21,10 @@ public class OrderPriceVo {
 	private String shopId;//店铺ID
 	private String eventName;//参加活动名称
 	private int goodsNum;//购买商品数量
-	private double freight;//运费
+	private String freight;//运费
 	private List<Object> voList;
-//	private List<ShopGoodsParamVo> shopGoodsParamList;
+	private List<Object> couponList;//优惠券列表
+	private List<Object> mjList;//满减活动列表
 	
 	public String getBenPrice() {
 		return benPrice;
@@ -84,12 +86,6 @@ public class OrderPriceVo {
 	public void setFlag(String flag) {
 		this.flag = flag;
 	}
-//	public List<ShopGoodsParamVo> getShopGoodsParamList() {
-//		return shopGoodsParamList;
-//	}
-//	public void setShopGoodsParamList(List<ShopGoodsParamVo> shopGoodsParamList) {
-//		this.shopGoodsParamList = shopGoodsParamList;
-//	}
 	public List<Object> getVoList() {
 		return voList;
 	}
@@ -120,10 +116,10 @@ public class OrderPriceVo {
 	public void setGoodsNum(int goodsNum) {
 		this.goodsNum = goodsNum;
 	}
-	public double getFreight() {
+	public String getFreight() {
 		return freight;
 	}
-	public void setFreight(double freight) {
+	public void setFreight(String freight) {
 		this.freight = freight;
 	}
 	public double getGoodsTotalPrice() {
@@ -131,6 +127,24 @@ public class OrderPriceVo {
 	}
 	public void setGoodsTotalPrice(double goodsTotalPrice) {
 		this.goodsTotalPrice = goodsTotalPrice;
+	}
+	public List<Object> getCouponList() {
+		return couponList;
+	}
+	public void setCouponList(List<Object> couponList) {
+		this.couponList = couponList;
+	}
+	public List<Object> getMjList() {
+		return mjList;
+	}
+	public void setMjList(List<Object> mjList) {
+		this.mjList = mjList;
+	}
+	public String getCard() {
+		return card;
+	}
+	public void setCard(String card) {
+		this.card = card;
 	}
 	
 }

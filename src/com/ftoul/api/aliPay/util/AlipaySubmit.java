@@ -12,6 +12,9 @@ import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
+import com.ftoul.api.aliPay.util.rsa.RSA;
+
+
 /* *
  *类名：AlipaySubmit
  *功能：支付宝各接口请求提交类
@@ -128,5 +131,37 @@ public class AlipaySubmit {
         }
 
         return result.toString();
+    }
+	
+	 /**
+     * 生成签名结果
+     * @param sPara 要签名的数组
+     * @return 签名结果字符串
+     */
+	public static String buildRequestMysign_new(Map<String, String> sPara) {
+    	String prestr = AlipayCore.createLinkString(sPara); //把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+        String mysign = "";
+        if(AlipayConfig.rsa_sign_type.equals("RSA") ){
+        	mysign = RSA.sign(prestr, AlipayConfig.private_key, AlipayConfig.input_charset);
+        }
+        return mysign;
+    }
+	
+    /**
+     * 生成要请求给支付宝的参数数组
+     * @param sParaTemp 请求前的参数数组
+     * @return 要请求的参数数组
+     */
+    public static Map<String, String> buildRequestPara_new(Map<String, String> sParaTemp) {
+        //除去数组中的空值和签名参数
+        Map<String, String> sPara = AlipayCore.paraFilter(sParaTemp);
+        //生成签名结果
+        String mysign = buildRequestMysign_new(sPara);
+
+        //签名结果与签名方式加入请求提交参数组中
+        sPara.put("sign", mysign);
+        sPara.put("sign_type", AlipayConfig.rsa_sign_type);
+
+        return sPara;
     }
 }

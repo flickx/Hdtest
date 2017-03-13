@@ -199,5 +199,28 @@ public interface GoodsEventServ {
 	 */
 	
 	Result getByPid(Parameter parameter) throws Exception;
+	/**
+	 * 获取pc端首页正在限时抢活动
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	Result getPcLimitEvent(Parameter param) throws Exception;
+	/**
+	 * 获取pc端限时抢页面限时抢活动商品列表
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	Result getPcLimitEventList(Parameter param) throws Exception;
+	/**
+	 * 获取省钱趴价格
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getSqpPrice(Parameter param) throws Exception;
+	
+	Result getSaleSumByGoodsId(String goodsId) throws Exception;
 }
 

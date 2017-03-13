@@ -384,6 +384,8 @@ public class MyInterceptor {
 					hibernateUtil.save(loginUserLog);
 				}else if(nameSpace.indexOf("/businessManage/") == 0){
 					object = invock(pjp,isAdmin,baseResourceList);
+				}else if(nameSpace.indexOf("/pc/") == 0){
+					object = invock(pjp,isAdmin,baseResourceList);
 				}else{
 					result.setResult(0);
 					result.setMessage("权限不足");

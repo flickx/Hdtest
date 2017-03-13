@@ -17,12 +17,15 @@ import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.goods.vo.GoodsVo;
+import com.ftoul.pc.interfaces.vo.PcNewGoods;
+import com.ftoul.pc.interfaces.vo.PcNewGoodsVo;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.GoodsProp;
 import com.ftoul.po.GoodsType;
 import com.ftoul.po.GoodsUploadpic;
+import com.ftoul.po.PcTypeGoods;
 import com.ftoul.po.User;
 import com.ftoul.po.UserBrowse;
 import com.ftoul.util.hibernate.HibernateUtil;
@@ -162,7 +165,7 @@ public class GoodsServImpl implements GoodsServ {
 		}
 		//获取商品价格 1.优先取商品活动价格2.取活动促销价格.3 折扣价
 		String hql2 = "select ge.eventName,gej.eventPrice,ge.eventPrice,ge.discount,gej.quantity,ge.eventBegen,ge.eventEnd,gs.picSrc,ge.state,gej.state,ge.typeName,ge.homeChannel,gs.subtitle from Goods gs,"
-				+ "GoodsEventJoin gej,GoodsEvent ge where gs.id = gej.goods.id and ge.id = gej.goodsEvent.id and gej.state = '1' and ge.state = '1' and gs.id ='"+param.getId()+"'";
+				+ "GoodsEventJoin gej,GoodsEvent ge where gs.id = gej.goods.id and ge.id = gej.goodsEvent.id and gej.state = '1' and ge.state = '1' and ge.typeName!='满减' and gs.id ='"+param.getId()+"'";
 		List<Object> eventList = this.hibernateUtil.hql(hql2);
 		Date currentTime = DateUtil.stringFormatToDate(
 				DateUtil.dateFormatToString(new Date(), "yyyy/MM/dd HH:mm:ss"),
@@ -212,6 +215,15 @@ public class GoodsServImpl implements GoodsServ {
 				goodsVo.setHomeChannel("1");
 			}
 		}
+		
+		//是否参加满减活动
+		String hql3 = "select ge.eventName,ge.typeName from Goods gs,"
+				+ "GoodsEventJoin gej,GoodsEvent ge where gs.id = gej.goods.id and ge.id = gej.goodsEvent.id and gej.state = '1' and ge.state = '1' and ge.typeName='满减' and gs.id ='"+param.getId()+"'";
+		List<Object> fullCutList = this.hibernateUtil.hql(hql3);
+		if(fullCutList.size()>0){
+			Object[] obj = (Object[])fullCutList.get(0);
+			goodsVo.setFullCutName(obj[0].toString());
+		}
 		goodsVo.setPicSrc(goods.getPicSrc());
 		DecimalFormat df = new DecimalFormat("0.00");
 		goodsVo.setPrice(df.format(goods.getPrice()));
@@ -236,8 +248,17 @@ public class GoodsServImpl implements GoodsServ {
 			goodsVo.setGoodsPicInfoList(goodsPicInfoList);
 		}
 		goodsVo.setId(goods.getId());
+		if(goods.getGoodsType1()!=null){
+			goodsVo.setGoodsType1(goods.getGoodsType1().getId());
+			goodsVo.setGoodsTypeNameOne(goods.getGoodsType1().getName());
+		}
+		if(goods.getGoodsType2()!=null){
+			goodsVo.setGoodsType2(goods.getGoodsType2().getId());
+			goodsVo.setGoodsTypeNameTwo(goods.getGoodsType2().getName());
+		}
 		if(goods.getGoodsType3()!=null){
 			goodsVo.setGoodsType3(goods.getGoodsType3().getId());
+			goodsVo.setGoodsTypeNameThree(goods.getGoodsType3().getName());
 		}
 		if(goods.getGoodsPropType()!=null){
 			goodsVo.setGoodsPropTypeId(goods.getGoodsPropType().getId());
@@ -267,6 +288,24 @@ public class GoodsServImpl implements GoodsServ {
 		}
 		if(goods.getGoodsLabel()!=null){
 			goodsVo.setGoodsLabel(goods.getGoodsLabel());
+		}
+		if(goods.getWeight()!=null){
+			goodsVo.setWeight(goods.getWeight());
+		}
+		if(goods.getPackingLength()!=null){
+			goodsVo.setPackingLength(goods.getPackingLength());
+		}
+		if(goods.getPackingWidth()!=null){
+			goodsVo.setPackingWidth(goods.getPackingWidth());
+		}
+		if(goods.getPackingHeight()!=null){
+			goodsVo.setPackingHeight(goods.getPackingHeight());
+		}
+		if(goods.getPackingList()!=null){
+			goodsVo.setPackingList(goods.getPackingList());
+		}
+		if(goods.getAfterService()!=null){
+			goodsVo.setAfterService(goods.getAfterService());
 		}
 		return ObjectToResult.getResult(goodsVo);
 		
@@ -386,7 +425,128 @@ public class GoodsServImpl implements GoodsServ {
 	    }
 	    return ip.equals("0:0:0:0:0:0:0:1")?"127.0.0.1":ip;
 	}
-
-
+	/**
+	 * pc首页“每日上新”接口
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public Result getPcNewGoods(Parameter param) throws Exception{
+		String startTime = new DateStr().getStartTime();
+		startTime = startTime.replace("/","-");
+		String endTime = new DateStr().getEndTime();
+		endTime = endTime.replace("/","-");
+		String sql = "select g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and '"+startTime+"' <= g.create_time and g.create_time <= '"+endTime+"' and g.shop_id = '1' order by rand() asc limit 0,4";
+		List<Object[]> list =	hibernateUtil.sql(sql);
+		List<PcNewGoods> newGoodsList = new ArrayList<PcNewGoods>();
+		for (Object[] goods : list) {
+			PcNewGoods newGoods = new PcNewGoods();
+			newGoods.setGoodsId(goods[0].toString());
+			newGoods.setTitle(goods[1].toString());
+			if(goods[2]!=null){
+				newGoods.setSubTitle(goods[2].toString());
+			}
+			newGoods.setModel(goods[3].toString());
+			newGoods.setPrice((double)goods[4]);
+			newGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
+			newGoods.setPicSrc(goods[6].toString());
+			newGoods.setNum(Double.toString(Math.round((double)goods[4]*1.0/Double.parseDouble(goods[5].toString())*10)));
+			newGoodsList.add(newGoods);
+		}
+		return ObjectToResult.getResult(newGoodsList);
+	}
+	/**
+	 * pc“每日上新”详情页面接口
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	public Result getPcNewGoodsList(Parameter param) throws Exception{
+		//获取全部一级分类
+		List<GoodsType> typeList = (List<GoodsType>)goodsTypeServ.getGoodsTypeLevel1List(param).getObj();
+		List<PcNewGoodsVo> pcNewGoodsList = new ArrayList<PcNewGoodsVo>();
+		//查询一级分类下每日上新商品
+		for (GoodsType type : typeList) {
+			String typeId = type.getId();
+			PcNewGoodsVo vo = new PcNewGoodsVo();
+			String startTime = new DateStr().getStartTime();
+			startTime = startTime.replace("/","-");
+			String endTime = new DateStr().getEndTime();
+			endTime = endTime.replace("/","-");
+			String sql = "select g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and '"+startTime+"' <= g.create_time and g.create_time <= '"+endTime+"' and g.shop_id = '1' and g.goods_type1 ='"+typeId+"'  order by rand() asc";
+			List<Object[]> goodsList = hibernateUtil.sql(sql);
+			List<PcNewGoods> newGoodsList = new ArrayList<PcNewGoods>();
+			for (Object[] goods : goodsList) {
+				PcNewGoods newGoods = new PcNewGoods();
+				newGoods.setGoodsId(goods[0].toString());
+				newGoods.setTitle(goods[1].toString());
+				newGoods.setSubTitle(goods[2].toString());
+				newGoods.setModel(goods[3].toString());
+				newGoods.setPrice((double)goods[4]);
+				newGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
+				newGoods.setPicSrc(goods[6].toString());
+				newGoods.setNum(Double.toString(Math.round((double)goods[4]*1.0/Double.parseDouble(goods[5].toString())*10)));
+				newGoodsList.add(newGoods);  
+			}
+			vo.setTotal(goodsList.size());
+			vo.setGoodsType1Name(type.getName());
+			vo.setPcNewGoodsList(newGoodsList);
+			pcNewGoodsList.add(vo);
+		}
+		return ObjectToResult.getResult(pcNewGoodsList);
+	}
 	
+	/**
+	 * pc首页“查询分类商品”接口
+	 * @param param id:分类id，key：分类级别，sidx：排序字段
+	 * @return
+	 * @throws Exception
+	 */
+	public Result getGoodsByType(Parameter param) throws Exception{
+		String id = param.getId().toString();//分类id
+		String level = param.getKey();//分类级别，1：一级分类，2：二级分类
+		String sidx = param.getSidx();//排序字段，1：随机，2：销量
+		String sql = "select g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and g.shop_id = '1'";
+		if ("1".equals(level)) {
+			sql = sql + " and g.goods_type1 ='" + id ;
+			if ("1".equals(sidx)) {
+				 sql = sql + "' order by rand() desc limit 0,6";			
+			}else{
+				 sql = sql + "' order by g.sale_sum desc limit 0,4";		
+			}
+		}
+		
+		else if ("2".equals(level)) {
+			sql = sql + " and g.goods_type2 ='" + id ;
+			if ("1".equals(sidx)) {
+				 sql = sql + "' order by rand() desc limit 0,6";			
+			}else{
+				 sql = sql + "' order by g.sale_sum desc limit 0,5";		
+			}
+		}
+		List<Object[]> list = hibernateUtil.sql(sql);
+		List<PcTypeGoods> typeGoodsList = new ArrayList<PcTypeGoods>();
+		for (Object[] goods : list) {
+			PcTypeGoods typeGoods = new PcTypeGoods();
+			typeGoods.setGoodsId(goods[0].toString());
+			typeGoods.setTitle(goods[1].toString());
+			if (goods[2]==null) {
+				typeGoods.setSubTitle("");
+			}else{
+				typeGoods.setSubTitle(goods[2].toString());
+			}
+			typeGoods.setGoodsParam(goods[3].toString());
+			if(goods[4]!=null){
+				typeGoods.setPrice(Double.parseDouble(goods[4].toString()));
+			}
+			if(goods[5]!=null){
+				typeGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
+			}
+			if(goods[6]!=null){
+				typeGoods.setPicSrc(goods[6].toString());
+			}
+			typeGoodsList.add(typeGoods);
+		}
+		return ObjectToResult.getResult(typeGoodsList);
+	}
 }

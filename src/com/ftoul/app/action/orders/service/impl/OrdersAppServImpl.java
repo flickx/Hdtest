@@ -46,6 +46,7 @@ import com.ftoul.po.OrdersDetail;
 import com.ftoul.po.OrdersPay;
 import com.ftoul.po.User;
 import com.ftoul.po.UserAddress;
+import com.ftoul.util.coin.CoinUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.logistics.LogisticsUtil;
 import com.ftoul.util.orders.OrdersUtil;
@@ -89,6 +90,8 @@ public class OrdersAppServImpl implements OrdersAppServ {
 	PriceUtil priceUtil;
 	@Autowired  
 	LogisticsUtil logisticsUtil;
+	@Autowired  
+	CoinUtil coinUtil;
 	@Autowired
 	private OrdersServ ordersServ;
 	/**
@@ -111,7 +114,9 @@ public class OrdersAppServImpl implements OrdersAppServ {
 			ordersListVo.setOrderPrice(order.getOrderPrice());
 			ordersListVo.setOrderTime(order.getOrderTime());
 			ordersListVo.setOrderStatic(order.getOrderStatic());
-			ordersListVo.setStoreName(order.getShopId().getStoreName());
+			if(null!=order.getShopId()){
+				ordersListVo.setStoreName(order.getShopId().getStoreName());	
+			}
 			List<Object> manyVsOneVoList = manyVsOneVo.getList();
 			List<OrderListDetailAppVo> detailList = new ArrayList<OrderListDetailAppVo>();
 			for (Object object2 : manyVsOneVoList) {
@@ -214,26 +219,30 @@ public class OrdersAppServImpl implements OrdersAppServ {
 		orderDetailAppVo.setConsignee(order.getConsignee());
 		orderDetailAppVo.setConsigneeTel(order.getConsigneeTel());
 		orderDetailAppVo.setAddress(order.getAddress());
-		orderDetailAppVo.setStoreName(order.getShopId().getStoreName());
+		if(null!=order.getShopId()){
+			orderDetailAppVo.setStoreName(order.getShopId().getStoreName());
+		}
 		orderDetailAppVo.setFeedback(order.getFeedback());
-		orderDetailAppVo.setFreight(order.getFreight());
+		orderDetailAppVo.setFreight(order.getFreight().toString());
 		orderDetailAppVo.setBeeCoins(order.getBeeCoins());
 		orderDetailAppVo.setBenefitPrice(order.getBenefitPrice());
 		orderDetailAppVo.setCoinPrice(order.getCoinPrice());
 		orderDetailAppVo.setPayable(order.getPayable());
 		List<Object> manyVsOneVoList = manyVsOneVo.getList();
 		List<OrderListDetailAppVo> detailList = new ArrayList<OrderListDetailAppVo>();
-		ManyVsOneVo vo = (ManyVsOneVo) manyVsOneVoList.get(0);
-		for (Object object2 : vo.getList()) {
-			OrdersDetail ordersDetail = (OrdersDetail) object2;
-			OrderListDetailAppVo detailAppVo = new OrderListDetailAppVo();
-			detailAppVo.setId(ordersDetail.getGoodsParam().getGoods().getId());
-			detailAppVo.setTitle(ordersDetail.getGoodsParam().getGoods().getTitle());
-			detailAppVo.setParamName(ordersDetail.getGoodsParam().getParamName());
-			detailAppVo.setPicSrc(ordersDetail.getGoodsParam().getGoods().getPicSrc());
-			detailAppVo.setNumber(ordersDetail.getNumber());
-			detailAppVo.setPrice(ordersDetail.getGoodsParam().getGoods().getPrice());
-			detailList.add(detailAppVo);
+		for (Object object : manyVsOneVoList) {
+			ManyVsOneVo vo = (ManyVsOneVo) object;
+			for (Object object2 : vo.getList()) {
+				OrdersDetail ordersDetail = (OrdersDetail) object2;
+				OrderListDetailAppVo detailAppVo = new OrderListDetailAppVo();
+				detailAppVo.setId(ordersDetail.getGoodsParam().getGoods().getId());
+				detailAppVo.setTitle(ordersDetail.getGoodsParam().getGoods().getTitle());
+				detailAppVo.setParamName(ordersDetail.getGoodsParam().getParamName());
+				detailAppVo.setPicSrc(ordersDetail.getGoodsParam().getGoods().getPicSrc());
+				detailAppVo.setNumber(ordersDetail.getNumber());
+				detailAppVo.setPrice(ordersDetail.getGoodsParam().getGoods().getPrice());
+				detailList.add(detailAppVo);
+			}
 		}
 		orderDetailAppVo.setDetailList(detailList);
 		return ObjectToResult.getResult(orderDetailAppVo);
@@ -339,8 +348,8 @@ public class OrdersAppServImpl implements OrdersAppServ {
 	public Result getOrdersLogistics(Parameter param) throws Exception {
 		Orders orders = (Orders) hibernateUtil.find(Orders.class, param.getId()+"");
 		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
-		//String res = kdniaoTrackQueryAPI.getOrderTracesByJson(orders.getLogisticsCompany().getCode(), orders.getOdd());
-		String res = kdniaoTrackQueryAPI.getOrderTracesByJson("YD", "1202401432095");
+		String res = kdniaoTrackQueryAPI.getOrderTracesByJson(orders.getLogisticsCompany().getCode(), orders.getOdd());
+//		String res = kdniaoTrackQueryAPI.getOrderTracesByJson("YD", "1202401432095");
 		OrdersLogisticsVo vo = new OrdersLogisticsVo();
 		vo.setOrderNumber(orders.getOrderNumber());
 		vo.setLogisticeCompanyName(orders.getLogisticsCompany().getName());
@@ -568,7 +577,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 		System.out.println("店铺："+orders.getShopId().getStoreName()+"，订单号："+orders.getOrderNumber()+",商品最终总价格："+orders.getGoodsTotalPrice().doubleValue()+",订单金额（包含运费）："+orders.getOrderPrice()+",运费："+orders.getFreight().doubleValue());
 		hibernateUtil.save(orders);
 		vo.setGoodsNum(goodsNum);
-		vo.setFreight(freight);
+		vo.setFreight(new DecimalFormat("0.00").format(freight));
 		vo.setPayable(new DecimalFormat("0.00").format(totalPayable));
 		vo.setOrderPrice(new DecimalFormat("0.00").format(orderPrice));//商品总价，不包括运费
 		vo.setBenPrice(new DecimalFormat("0.00").format(totalBenPrice));
@@ -836,7 +845,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 					payable += Double.parseDouble(orderPriceVo.getPayable());
 					orderPrice += Double.parseDouble(orderPriceVo.getOrderPrice());
 					benPrice += Double.parseDouble(orderPriceVo.getBenPrice());
-					freight += orderPriceVo.getFreight();
+					freight += Double.parseDouble(orderPriceVo.getFreight());
 					goodsTotalNum += orderPriceVo.getGoodsNum();
 					if("1".equals(orderPriceVo.getIsCard())){
 						vo.setIsCard("yes");
@@ -847,7 +856,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 				vo.setCoinNumber(totalCoinNumber);
 				vo.setCoinPrice(coinPrice);
 				vo.setOrderNumber(orders.getOrderNumber());
-				vo.setFreight(freight);
+				vo.setFreight(String.valueOf(freight));
 				vo.setOrderPrice(String.valueOf(orderPrice+freight));
 				vo.setPayable(String.valueOf(payable));
 				vo.setTotalCoinNumber(totalCoinNumber);
@@ -887,7 +896,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 				vo.setFreight(orderPriceVo.getFreight());
 			}
 			
-			ordersUtil.getCoinInfo(param,vo);//获取蜂币
+			coinUtil.getCoinInfo(param,vo);//获取蜂币
 			ordersUtil.getDeductionCoinInfo(param,vo,orders);
 			ordersUtil.getDoubleCoinData(param,vo);//参与蜂币翻倍活动
 		}
@@ -922,7 +931,7 @@ public class OrdersAppServImpl implements OrdersAppServ {
 					freight += logisticsUtil.getFreight(provinceName, childOrder.getShopId().getId(), Integer.parseInt(childOrder.getGoodsTotal()));
 				}
 			}
-			vo.setFreight(freight);
+			vo.setFreight(String.valueOf(freight));
 			vo.setOrderPrice(String.valueOf((order.getGoodsTotalPrice().doubleValue()+freight)));
 		}
 		

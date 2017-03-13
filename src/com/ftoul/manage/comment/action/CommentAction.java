@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.manage.comment.service.CommentService;
+import com.ftoul.manage.comment.service.CommentServ;
 
 /**
  * 评论管理
@@ -20,7 +20,7 @@ import com.ftoul.manage.comment.service.CommentService;
 public class CommentAction {
 	
 	@Autowired
-	CommentService commentService;
+	CommentServ commentService;
 
 	/**
 	 * 查询评论
@@ -50,6 +50,16 @@ public class CommentAction {
 	public @ResponseBody Result deleteComment(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return commentService.deleteComment(parameter);
+	}
+	
+	/**
+	 * 隐藏评论
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "hideComment")  
+	public @ResponseBody Result hideComment(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return commentService.hideComment(parameter);
 	}
 	
 	/**

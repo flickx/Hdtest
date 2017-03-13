@@ -38,17 +38,11 @@ public class CommentServiceImpl implements CommentService {
 	 */
 	@Override
 	public Result getCommentPage(Parameter param) throws Exception {
-		String whereStr = param.getWhereStr();
-		String key = param.getKey();
 		String hql;
-		
-		if(whereStr!=null){
-			if("1".equals(key)){//只查询带图评论的
-				whereStr += " and picSrc is not null";
-			}
-			hql = "from GoodsComment where state = '2' and isShow='1' "+whereStr+" order by commentTime desc";
+		if("1".equals(param.getKey())){//只查询带图评论的
+			hql = "from GoodsComment where state = '2' and isShow='1' and picSrc is not null and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
 		}else{
-			hql = "from GoodsComment where state = '2' and isShow='1' order by commentTime desc";
+			hql = "from GoodsComment where state = '2' and isShow='1' and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<Object> objList = page.getObjList();
@@ -61,6 +55,11 @@ public class CommentServiceImpl implements CommentService {
 			vo.setUserName(comment.getUserName());
 			vo.setParamName(comment.getOrdersDetail().getParamName());
 			vo.setStar(comment.getStar());
+			vo.setCommentTime(comment.getCommentTime());
+			vo.setUserSource(comment.getComeFrom());
+			vo.setUserLevel("");
+			vo.setUserPic("");
+			vo.setPicSrc(comment.getPicSrc());
 			voList.add(vo);
 		}
 		page.getObjList().retainAll(objList);

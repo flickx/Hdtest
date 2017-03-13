@@ -1,5 +1,6 @@
 package com.ftoul.manage.goodsEvent.service.impl;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,8 @@ import com.ftoul.common.StrUtil;
 import com.ftoul.manage.goods.vo.GoodsListVo;
 import com.ftoul.manage.goods.vo.GoodsVo;
 import com.ftoul.manage.goodsEvent.service.GoodsEventServ;
+import com.ftoul.pc.interfaces.vo.PcLimitGoods;
+import com.ftoul.pc.interfaces.vo.PcLimitGoodsVo;
 import com.ftoul.po.EventOrderVO;
 import com.ftoul.po.EventType;
 import com.ftoul.po.FullCutRule;
@@ -73,12 +76,121 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 */
 	@Override
 	public Result getLimitEventList(Parameter param) throws Exception {
+		String now = new DateStr().getNowTime();
 		String startTime = new DateStr().getStartTime();
 		String endTime = new DateStr().getEndTime();
-		String hql = "from GoodsEvent where state = '1' and '"+startTime+"' < eventBegen and eventBegen < '"+endTime+"' and shopId is null and typeName = '限时抢' order by eventBegen asc limit 5";
+		String hql = "from GoodsEvent where state = '1' and '"+startTime+"' < eventBegen and eventBegen < '"+endTime+"' and eventEnd > '"+now+"' and shopId is null and typeName = '限时抢' order by eventBegen asc limit 5";
 		List<Object> list = new ArrayList<Object>(5);
 		list =	hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
+	}
+	/**
+	 * 获取pc端首页正在限时抢活动
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@Override
+	public Result getPcLimitEvent(Parameter param) throws Exception {
+		String now = new DateStr().getNowTime();
+		String hql = "from GoodsEvent where state = '1' and '"+now+"' > eventBegen and eventEnd > '"+now+"' and shopId is null and typeName = '限时抢' order by eventBegen asc";
+		GoodsEvent goodsEvent = (GoodsEvent)hibernateUtil.hqlFirst(hql);
+		List<PcLimitGoodsVo> goodsPcVoList = new ArrayList<PcLimitGoodsVo>();
+		if(goodsEvent!=null){
+		String eventId = goodsEvent.getId();
+		String hql2 = "from GoodsEventJoin where state='1' and goodsEvent.state = '1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
+		List<Object> list = (List<Object>)hibernateUtil.hql(hql2);
+		List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
+		for (Object goodsEventJoin : list) {
+			GoodsEventJoin g = (GoodsEventJoin)goodsEventJoin;
+			PcLimitGoods pcLimitGoods = new PcLimitGoods();
+			pcLimitGoods.setGoodsId(g.getGoods().getId());
+			pcLimitGoods.setImgUrl(g.getGoods().getPicSrc());
+			pcLimitGoods.setName(g.getGoods().getTitle());
+			pcLimitGoods.setSubName(g.getGoods().getSubtitle());
+	        NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
+	        format.setMinimumFractionDigits(0);// 设置小数位
+	        pcLimitGoods.setNum(format.format(g.getQuantity()*1.0/g.getDefaultQuantity()));
+	        pcLimitGoods.setOriginalPrice(g.getGoods().getPrice());
+	        pcLimitGoods.setPresentPrice(g.getEventPrice());
+			goodsList.add(pcLimitGoods);
+		}
+		
+		PcLimitGoodsVo i  =new PcLimitGoodsVo();
+		long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+		long endTime = DateUtil.stringFormatToDate(goodsEvent.getEventEnd().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+		long nowTime = new Date().getTime();
+		long distance = endTime - nowTime;
+		if (nowTime > beginTime) {
+			i.setEndTime((endTime - nowTime)/1000);
+			i.setHasBegin("1");
+		}else{
+			i.setEndTime((beginTime - nowTime)/1000);
+			i.setHasBegin("0");
+		}
+		i.setStartTime(goodsEvent.getEventBegen().toString().substring(11,16));
+		i.setEndTime(distance/1000);
+		i.setPcLimitGoodsList(goodsList);
+		goodsPcVoList.add(i);
+		}
+		return ObjectToResult.getResult(goodsPcVoList);
+	}
+	/**
+	 * 获取pc端限时抢页面限时抢活动商品列表
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception 
+	 */
+	@Override
+	public Result getPcLimitEventList(Parameter param) throws Exception {
+		String start = new DateStr().getStartTime();
+		String end = new DateStr().getEndTime();
+		String now = new DateStr().getNowTime();
+		String hql = "from GoodsEvent where state = '1' and eventEnd > '"+now+"' and '"+start+"' < eventBegen and eventBegen < '"+end+"' and shopId is null and typeName = '限时抢' order by eventBegen asc";
+		List<Object> goodsEventList = (List<Object>)hibernateUtil.hql(hql);
+		List<PcLimitGoodsVo> goodsPcVoList = new ArrayList<PcLimitGoodsVo>();
+		if (goodsEventList!=null && goodsEventList.size()>0) {
+			for (Object o : goodsEventList) {
+				GoodsEvent	goodsEvent = (GoodsEvent)o;
+				String eventId = goodsEvent.getId();
+				String hql2 = "from GoodsEventJoin where state='1'  and goodsEvent.state = '1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
+				List<Object> list = (List<Object>)hibernateUtil.hql(hql2);
+				List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
+				for (Object goodsEventJoin : list) {
+					GoodsEventJoin g = (GoodsEventJoin)goodsEventJoin;
+					PcLimitGoods pcLimitGoods = new PcLimitGoods();
+					pcLimitGoods.setGoodsId(g.getGoods().getId());
+					pcLimitGoods.setImgUrl(g.getGoods().getPicSrc());
+					pcLimitGoods.setName(g.getGoods().getTitle());
+					pcLimitGoods.setSubName(g.getGoods().getSubtitle());
+			        NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
+			        format.setMinimumFractionDigits(2);// 设置小数位
+			        pcLimitGoods.setNum(format.format(g.getQuantity()*1.0/g.getDefaultQuantity()));
+			        pcLimitGoods.setQunatity(g.getQuantity());
+			        pcLimitGoods.setOriginalPrice(g.getGoods().getPrice());
+			        pcLimitGoods.setPresentPrice(g.getEventPrice());
+					goodsList.add(pcLimitGoods);
+				}
+				
+				PcLimitGoodsVo i  =new PcLimitGoodsVo();
+				long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+				long endTime = DateUtil.stringFormatToDate(goodsEvent.getEventEnd().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+				long nowTime = new Date().getTime();
+				long distance = endTime - nowTime;
+				if (nowTime > beginTime) {
+					i.setEndTime((endTime - nowTime)/1000);
+					i.setHasBegin("1");
+				}else{
+					i.setEndTime((beginTime - nowTime)/1000);
+					i.setHasBegin("0");
+				}
+				i.setStartTime(goodsEvent.getEventBegen().toString().substring(11,16));
+				i.setEndTime(distance/1000);
+				i.setPcLimitGoodsList(goodsList);
+				goodsPcVoList.add(i);
+			}
+		}
+		return ObjectToResult.getResult(goodsPcVoList);
 	}
 	/**
 	 * 根据活动ID获取单个活动对象
@@ -215,7 +327,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 * @return返回结果（前台用Result对象）
 	 */
 	public Result getGoodsByEventId(Parameter param) throws Exception{		
-		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1'  and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
+		String hql = "from GoodsEventJoin where state='1' and goodsEvent.state = '1' and goods.state='1' and goods.grounding = '1'  and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
@@ -225,7 +337,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 * @return返回结果（前台用Result对象）
 	 */
 	public Result getTimeLimitGoods(String id) throws Exception{		
-		String hql = "from GoodsEventJoin where state='1' and goodsEvent.id= '"+id+"' and goods.state='1' and goods.grounding = '1' ";
+		String hql = "from GoodsEventJoin where state='1' and goodsEvent.state = '1' and goodsEvent.id= '"+id+"' and goods.state='1' and goods.grounding = '1' ";
 		List<Object> list = hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
 	}
@@ -236,7 +348,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 * @return返回结果（前台用Result对象）
 	 */
 	public Result getGoodsTypeByEventId(Parameter param) throws Exception{		
-		String hql = "from GoodsEventJoin where state='1' and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
+		String hql = "from GoodsEventJoin where state='1' and goodsEvent.state = '1' and goodsEvent.id = '" + param.getId() +"' " + param.getWhereStr() + param.getOrderBy() ;
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
@@ -246,7 +358,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 * @return返回结果（前台用Result对象）
 	 */
 	public Result getGoodsByEventCode(Parameter param) throws Exception{		
-		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' " + param.getWhereStr() + param.getOrderBy();
+		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goodsEvent.state = '1' and goods.grounding = '1' " + param.getWhereStr() + param.getOrderBy();
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
@@ -257,8 +369,14 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 */
 	public Result getAppGoodsByEventCode(Parameter param) throws Exception{		
 		String typeName = param.getId().toString();
+		String price = "9.9";
+		if (param.getKey()!=null) {
+			price = param.getKey().toString();
+		}
+		String query ="";
 		if ("sqp".equals(typeName)) {
 			typeName = "省钱趴";
+			query = " and eventPrice = '"+price+"'";
 		}
 		if ("csh".equals(typeName)) {
 			typeName = "超实惠";
@@ -269,9 +387,24 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		if ("dpx".equals(typeName)) {
 			typeName = "大牌秀";
 		}
-		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.typeName= '" + typeName+ "'";
+		String hql = "from GoodsEventJoin where state='1' and goods.state='1' and goods.grounding = '1' and goodsEvent.state = '1' and goodsEvent.typeName= '" + typeName+ "'" + query+" order by eventPrice DESC";
 		Page page = hibernateUtil.hqlPage(null,hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
+	}
+	/**
+	 * 获取省钱趴配置价格
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getSqpPrice(Parameter param) throws Exception{		
+		String typeName = param.getId().toString();
+		if ("sqp".equals(typeName)) {
+			typeName = "省钱趴";
+		}
+		String sql = "select DISTINCT truncate(gej.event_price,1) from goods_event_join gej,goods_event ge where gej.event_id = ge.id and gej.state='1' and gej.event_price is not null and ge.type_name= '" + typeName+ "' order by gej.event_price asc";
+		List<Object[]> priceList = hibernateUtil.sql(sql);
+		return ObjectToResult.getResult(priceList);
 	}
 	/**
 	 * 根据类型ID获取活动类型
@@ -319,6 +452,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 				String quantity = (String)hibernateUtil.hqlFirst("SELECT sum(stock) from GoodsParam where state = '1' and goods.grounding = '1' and goods.id = '"+goodsId+"'");
 				if (quantity!=null) {
 					goodsEventJoin.setQuantity(Integer.parseInt(quantity));
+					goodsEventJoin.setDefaultQuantity(Integer.parseInt(quantity));
 				}
 				res=hibernateUtil.save(goodsEventJoin);
 			}
@@ -383,7 +517,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 */
 	@Override
 	public Result getAppNewestGoodsList(Parameter param) throws Exception{
-		String hql="from Goods where state='1' and grounding = '1' order by createTime DESC ";
+		String hql="from Goods where state='1' and grounding = '1' order by rand() DESC ";
 		Page page = hibernateUtil.hqlPage(null,hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
@@ -550,5 +684,20 @@ public class GoodsEventServImpl implements GoodsEventServ {
 			goodsTypeList = hibernateUtil.hql(hql);
 		}
 		return ObjectToResult.getResult(goodsTypeList);
+	}
+	/**
+	 * 
+	 *  查询商品销量
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getSaleSumByGoodsId(String goodsId) {
+		Object o = null;
+		if(null != goodsId){
+			String hql = "from GoodsParam where state=1 and goods.id='"+goodsId+"'";
+			o = hibernateUtil.hqlFirst(hql);
+		}
+		return ObjectToResult.getResult(o);
 	}
 }

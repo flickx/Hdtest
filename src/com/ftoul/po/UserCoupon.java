@@ -63,7 +63,7 @@ public class UserCoupon implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="coupon_id")
 	public Coupon getCouponId() {
 		return this.couponId;
@@ -82,7 +82,7 @@ public class UserCoupon implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "is_used", length = 1)
+	@Column(name = "is_used", length = 10)
 	public String getIsUsed() {
 		return this.isUsed;
 	}

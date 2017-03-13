@@ -5,11 +5,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
 /**
  * 日期时间及字符串转换相关工具类
  * @author flick
  *
  */
+@Component
 public class DateUtil {
 	/**
      * 日期转为字符串

@@ -41,7 +41,7 @@ public class HomeAction {
 	@RequestMapping(value = "getIndexCarouselList") 
 	public @ResponseBody Result getIndexCarouselList(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		Result re =  homeServ.getIndexCarouselList(parameter);
+		Result re =  homeServ.getAppIndexCarouselList(parameter);
 		List<IndexCarouselPic> index = (List<IndexCarouselPic>)re.getObj();
 		List<IndexCarouselAppVo> indexCarouselAppVoList = new ArrayList<IndexCarouselAppVo>();
 		for (IndexCarouselPic indexCarouselPic : index) {

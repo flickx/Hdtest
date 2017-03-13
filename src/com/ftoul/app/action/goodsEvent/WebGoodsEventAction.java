@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.ftoul.app.action.goodsEvent;
 import java.util.ArrayList;
 import java.util.Date;
@@ -98,20 +95,34 @@ public class WebGoodsEventAction {
 			}
 			
 			AppLimitGoodsVo i  =new AppLimitGoodsVo();
-			String begen = goodsEvent.getEventBegen().toString().substring(11,16);
-			
+			String begin = goodsEvent.getEventBegen().toString().substring(11,16);
 			String end = goodsEvent.getEventEnd().toString();
-			long last = DateUtil.stringFormatToDate(end, "yyyy/MM/dd HH:mm:ss").getTime();
+			long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
+			long endTime = DateUtil.stringFormatToDate(end, "yyyy/MM/dd HH:mm:ss").getTime();
 			long now = new Date().getTime();
-			long distance = last - now;
-			long endTime = distance/1000;
-			i.setStartTime(begen);
-			i.setEndTime(endTime);
+			if (now > beginTime) {
+				i.setEndTime((endTime- now)/1000);
+				i.setHasBegin("1");
+			}else{
+				i.setEndTime((beginTime - now)/1000);
+				i.setHasBegin("0");
+			}
+			i.setStartTime(begin);
 			i.setAppLimitGoodsList(goodsList);
 			goodsAppVoList.add(i);
 		}
 		return ObjectToResult.getResult(goodsAppVoList);
 	}
+	
+	/**
+	 *获取省钱趴后台配置价格 
+	 */
+	@RequestMapping(value = "getSqpPrice")  
+	public @ResponseBody Result getSqpPrice(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return  goodsEventServ.getSqpPrice(parameter);
+	}
+	
 	/**
 	 * 通过活动代码获取所有活动商品
 	 * @param param Parameter对象
@@ -128,6 +139,7 @@ public class WebGoodsEventAction {
 			i.setGoodsId(goodsAppVo.getGoods().getId());
 			i.setPicSrc(goodsAppVo.getGoods().getPicSrc());
 			i.setPrice(goodsAppVo.getGoods().getPrice());
+			i.setEventPrice(goodsAppVo.getEventPrice());
 			i.setTitle(goodsAppVo.getGoods().getTitle());
 			goodsAppVoList.add(i);
 		}
@@ -170,10 +182,18 @@ public class WebGoodsEventAction {
 		for (Object o : goodsAppVos) {
 			Object[] index = (Object[])o;
 			IndexGoodsAppVo i  =new IndexGoodsAppVo();
-			i.setGoodsId(index[0].toString());
-			i.setTitle(index[1].toString());
-			i.setPicSrc(index[2].toString());
-			i.setPrice(new Double(index[3].toString()));
+			if (null !=index[0]) {
+				i.setGoodsId(index[0].toString());
+			}
+			if (null != index[1]) {
+				i.setTitle(index[1].toString());
+			}
+			if (null != index[2]) {
+				i.setPicSrc(index[2].toString());
+			}
+			if (null != index[3]) {
+				i.setPrice(new Double(index[3].toString()));
+			}
 			goodsAppVoList.add(i);
 		}
 		re.setObj(goodsAppVoList);

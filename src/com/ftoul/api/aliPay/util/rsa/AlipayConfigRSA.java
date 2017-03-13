@@ -54,6 +54,7 @@ public class AlipayConfigRSA {
 	// 调用的接口名，无需修改
 //	public static String service = "alipay.wap.create.direct.pay.by.user";
 	public static String service = "mobile.securitypay.pay";
+	public static String pc_service = "create_direct_pay_by_user";
 
 	// 设置未付款交易的超时时间
 	// 默认30分钟，一旦超时，该笔交易就会自动被关闭。

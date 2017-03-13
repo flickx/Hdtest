@@ -1,15 +1,19 @@
 package com.ftoul.common;
 
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.springframework.stereotype.Component;
 
 /**
  * 获取日期字符串
  * @author flick
  *
  */
+@Component
 public class DateStr {
 
 	private Date date;
@@ -94,7 +98,7 @@ public class DateStr {
 	    String startTime = sdf.format(start);
 	    return startTime;
     }  
-      
+	
 	public String getEndTime(){  
 	    Calendar calendar = Calendar.getInstance();
 	    calendar.setTime(new Date());
@@ -108,7 +112,18 @@ public class DateStr {
 	    String endTime = sdf.format(end);
 	    return endTime;
     }  
+	
+	public String getNowTime(){  
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.setTime(new Date());
+	    Date end = calendar.getTime();
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	    String endTime = sdf.format(end);
+	    return endTime;
+    }
 	public static void main(String[] args) throws ParseException{
-		System.out.println(new DateStr().compare("2016-01-02 12:10:00", "2016-01-02 12:09:59"));
+		NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
+        format.setMinimumFractionDigits(2);// 设置小数位
+		System.out.println(Math.round(15.8));
 	}
 }

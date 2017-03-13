@@ -1,5 +1,6 @@
 package com.ftoul.manage.orders.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,13 +18,10 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.logistics.vo.LogisticsCompanyVo;
 import com.ftoul.manage.orders.service.OrdersServ;
-import com.ftoul.manage.orders.vo.AfterScheduleVo;
 import com.ftoul.manage.orders.vo.GoodsVo;
 import com.ftoul.manage.orders.vo.OrderDetailVo;
 import com.ftoul.manage.orders.vo.OrdersPayVo;
 import com.ftoul.manage.orders.vo.OrdersVo;
-import com.ftoul.po.AfterOpLog;
-import com.ftoul.po.AfterSchedule;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.Orders;
@@ -440,15 +438,17 @@ public class OrdersServImpl implements OrdersServ {
 		String keys = parameter.getKey();
 		String[] key = keys.split(";");
 		Orders orders = (Orders) hibernateUtil.find(Orders.class, parameter.getId()+"");
-		double orderPrice = Double.parseDouble(orders.getOrderPrice());
-		double payable = Double.parseDouble(orders.getPayable());
-		double benPrice = Double.parseDouble(key[0]);
-		orderPrice = payable - benPrice;
+		BigDecimal payableDec = new BigDecimal(orders.getPayable());
+		BigDecimal benDec = new BigDecimal(key[0]);
+		String orderPrice = payableDec.subtract(benDec).toString();
+		if(payableDec.subtract(benDec).doubleValue()<0){
+			throw new Exception("优惠金额已经大于原价了");
+		}
 		String hql;
 		if(key[1]==null){
-			hql = "update Orders set benefitPrice ='"+key[0]+"',orderPrice='"+String.valueOf(orderPrice)+"' where id='"+parameter.getId()+"'";
+			hql = "update Orders set benefitPrice ='"+key[0]+"',orderPrice='"+orderPrice+"' where id='"+parameter.getId()+"'";
 		}else{
-			hql = "update Orders set benefitPrice ='"+key[0]+"',benefitReason ='"+key[1]+"',orderPrice='"+String.valueOf(orderPrice)+"' where id='"+parameter.getId()+"'";
+			hql = "update Orders set benefitPrice ='"+key[0]+"',benefitReason ='"+key[1]+"',orderPrice='"+orderPrice+"' where id='"+parameter.getId()+"'";
 		}
 		int result = hibernateUtil.execHql(hql);
 		UserOpLog log = new UserOpLog();
@@ -754,5 +754,5 @@ public class OrdersServImpl implements OrdersServ {
 		}
 		return ObjectToResult.getResult(reportDataList);
 	}
-
+	
 }

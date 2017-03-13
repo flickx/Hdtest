@@ -7,6 +7,7 @@ public class CouponVo {
 	private String id;
 	private String code;
 	private String type;
+	private String useType;
 	private String name;
 	private String faceValue;
 	private String targetValue;
@@ -15,6 +16,7 @@ public class CouponVo {
 	private String validStartTime;
 	private String validEndTime;
 	private String createTime;
+	private String giveoutType;
 	private List<Object> typeList;
 	public String getId() {
 		return id;
@@ -87,6 +89,18 @@ public class CouponVo {
 	}
 	public void setTargetValue(String targetValue) {
 		this.targetValue = targetValue;
+	}
+	public String getUseType() {
+		return useType;
+	}
+	public void setUseType(String useType) {
+		this.useType = useType;
+	}
+	public String getGiveoutType() {
+		return giveoutType;
+	}
+	public void setGiveoutType(String giveoutType) {
+		this.giveoutType = giveoutType;
 	}
 	
 }

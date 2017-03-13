@@ -11,6 +11,7 @@
 		<list>/web/manage/user</list>
 		<list>/web/business</list>
 		<list>/web/afterService</list>
+		<list>/pc/goods</list>
 		<list>/pc/search</list>
 		<list>/pc/user</list>
 		<list>/pc/orders</list>
@@ -18,6 +19,8 @@
 		<list>/pc/address</list>
 		<list>/pc/cart</list>
 		<list>/pc/store</list>
+		<list>/pc/website</list>
+		<list>/pcInterface</list>
 	</nameSpace>
 	<methodName>
 		<list>login</list>

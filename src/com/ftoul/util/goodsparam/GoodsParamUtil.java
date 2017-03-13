@@ -40,21 +40,66 @@ public class GoodsParamUtil {
 	}
 	
 	/**
-	 * 查询该商品参数的三级分类
+	 * 查询该商品参数的第三级分类
 	 */
-	public List<String> getGoodsTypeByGoodsParamId(String param){
-		List<String> list = new ArrayList<String>();
+	public String getGoodsTypeByGoodsParamId(String param){
 		GoodsParam goodsParam = (GoodsParam) hibernateUtil.find(GoodsParam.class, param);
+		GoodsType type3 = null;
 		if(goodsParam!=null){
 			Goods goods = goodsParam.getGoods();
-			GoodsType type1 = goods.getGoodsType1();
-			GoodsType type2 = goods.getGoodsType2();
-			GoodsType type3 = goods.getGoodsType3();
-			list.add(type1.getName());
-			list.add(type2.getName());
-			list.add(type3.getName());
+			type3 = goods.getGoodsType3();
 		}
-		return list;
+		return type3.getName();
+	}
+	
+	/**
+	 * 通过分类及分类级别查询此级别以下的所有三级分类
+	 * @param type
+	 * @param level
+	 */
+	public List<String> getThirdType(String type,String level){
+		List<String> types = new ArrayList<String>();
+		if("1".equals(level)){
+			List<Object> objList = hibernateUtil.hql("from GoodsType where state='1' and pid='"+type+"' and level='2'");
+			for (Object object : objList) {
+				GoodsType goodsType = (GoodsType) object;
+				List<Object> objs = hibernateUtil.hql("from GoodsType where state='1' and pid='"+goodsType.getId()+"' and level='3'");
+				for (Object object2 : objs) {
+					GoodsType goodsType2 = (GoodsType) object2;
+					types.add(goodsType2.getId());
+				}
+			}
+		}else if("2".equals(level)){
+			List<Object> objs = hibernateUtil.hql("from GoodsType where state='1' and pid='"+type+"' and level='3'");
+			for (Object object : objs) {
+				GoodsType goodsType = (GoodsType) object;
+				types.add(goodsType.getId());
+			}
+		}
+		return types;
+	}
+	
+	/**
+	 * 通过分类及分类级别查询此级别上层的所有分类
+	 * @param type
+	 * @param level
+	 */
+	public List<String> getUpperType(String type,String level){
+		List<String> types = new ArrayList<String>();
+		GoodsType goodsType = (GoodsType) hibernateUtil.find(GoodsType.class, type);
+		if("3".equals(level)){
+			String secondType = goodsType.getPid();
+			GoodsType secondGoodsType = (GoodsType) hibernateUtil.find(GoodsType.class, secondType);//获取二级分类
+			List<Object> objs = hibernateUtil.hql("from GoodsType where state='1' and pid='"+secondGoodsType.getPid()+"' and level='2'");//获取所有的二级分类
+			for (Object object : objs) {
+				GoodsType secondGoodstype = (GoodsType) object;
+				types.add(secondGoodstype.getId());//放入二级分类
+			}
+			types.add(secondGoodsType.getPid());//放入一级分类
+		}else if("2".equals(level)){
+			types.add(goodsType.getPid());//放入一级分类
+		}
+		return types;
 	}
 	
 	public Map<String, List<ShopGoodsParamVo>> getShopAndGoodsParam(String param){

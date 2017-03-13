@@ -14,8 +14,10 @@ import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.goods.vo.GoodsTypeVo;
+import com.ftoul.pc.interfaces.vo.PcGoodsTypeVo;
 import com.ftoul.po.GoodsType;
 import com.ftoul.util.hibernate.HibernateUtil;
+import com.ftoul.web.goods.service.GoodsServ;
 import com.ftoul.web.goods.service.GoodsTypeServ;
 
 
@@ -34,7 +36,8 @@ public class GoodsTypeServImpl implements GoodsTypeServ {
 
 	@Autowired
 	private HibernateUtil hibernateUtil;
-	
+	@Autowired
+	private GoodsServ goodsServ;
 	/**
 	 * 保存/更新用户对象
 	 * @param param Parameter对象
@@ -57,7 +60,6 @@ public class GoodsTypeServImpl implements GoodsTypeServ {
 
 	
 	/**
-	 * 
 	 *  查找下一级产品类别
 	 * @param   param Parameter对象
 	 * @return  返回结果（前台用Result对象）
@@ -69,14 +71,13 @@ public class GoodsTypeServImpl implements GoodsTypeServ {
 		if("3".equals(goodsType.getLevel())){
 			throw new Exception("没有下一级商品类别");
 		}
-		String hql = "from GoodsType where state =1 pid = "+"'"+param.getId().toString()+"'";
+		String hql = "from GoodsType where state =1 and pid = "+"'"+param.getId().toString()+"'";
 		List<Object> list = hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
 	}
 
 	
 	/**
-	 * 
 	 * 删除商品类别对象
 	 * @param   param Parameter对象
 	 * @return  返回结果（前台用Result对象）
@@ -172,7 +173,7 @@ public class GoodsTypeServImpl implements GoodsTypeServ {
 	 */
 	@Override
 	public Result getLevel3GoodsType(Parameter parameter) {
-		String hql ="from GoodsType where level =3 state=1 order by typeSort asc,createTime asc";
+		String hql ="from GoodsType where level =3 and state=1 order by typeSort asc,createTime asc";
 		List<Object> typeLevel1List = hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(typeLevel1List) ;
 	}
@@ -199,6 +200,92 @@ public class GoodsTypeServImpl implements GoodsTypeServ {
 	public Result getByid(Parameter param) {
 		GoodsType goodsType = (GoodsType) hibernateUtil.find(GoodsType.class, param.getId() + "");
 		return ObjectToResult.getResult(goodsType) ;
+		
+	}
+	
+	/**
+	 * 通过商品类别一级得到二三级商品类别
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getGoodsTypeList(Parameter param) throws Exception {
+		String hql ="from GoodsType where level =1 and state =1 ";
+		if(param.getId()!=null){
+			hql+=" and id = '" + param.getId() +"'";
+		}
+		hql+="order by typeSort asc,createTime asc";
+		List<Object> typeLevel1List = hibernateUtil.hql(hql);
+		List<GoodsTypeVo> typeLevel1VoList = new ArrayList<GoodsTypeVo>();
+		if(typeLevel1List != null){
+			for (Object object : typeLevel1List) {
+				GoodsType goodsType = (GoodsType) object;
+				GoodsTypeVo goodsTypeVoLel1 = new GoodsTypeVo();
+				hql = "from GoodsType where state =1 and pid = '" + goodsType.getId() +"'";
+				hql+="order by typeSort asc,createTime asc";
+				List<Object> typeLevel2List = hibernateUtil.hql(hql);
+				List<GoodsTypeVo> typeLevel2VoList = new ArrayList<GoodsTypeVo>();
+				if(typeLevel2List != null){
+					for (Object object2 : typeLevel2List) {
+						GoodsType goodsTypeLevel2 = (GoodsType)object2;
+						GoodsTypeVo goodsTypeVoLel2 = new GoodsTypeVo();
+						hql = "from GoodsType where state =1 and pid = '" + goodsTypeLevel2.getId() +"'";
+						hql+="order by typeSort asc,createTime asc";
+						List<Object> typeLevel3List = hibernateUtil.hql(hql);
+						List<GoodsTypeVo> typeLevel3VoList = new ArrayList<GoodsTypeVo>();
+						if(typeLevel3List != null){
+							for (Object object3 : typeLevel3List) {
+								GoodsType goodsTypeLevel3 = (GoodsType)object3;
+								GoodsTypeVo goodsTypeVoLel3 = new GoodsTypeVo();
+								goodsTypeVoLel3.setId(goodsTypeLevel3.getId());
+								goodsTypeVoLel3.setPicSrc(goodsTypeLevel3.getPicSrc());
+								goodsTypeVoLel3.setName(goodsTypeLevel3.getName());
+								goodsTypeVoLel3.setGoodsTypelist(null);
+								String sql = "select g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and g.shop_id = '1' order by rand() asc limit 0,5";
+								List<Object[]> list =	hibernateUtil.sql(sql);
+								List<PcGoodsTypeVo> pcTypeGoodsVoList = new ArrayList<PcGoodsTypeVo>();
+								for (Object[] goods : list) {
+									PcGoodsTypeVo newGoods = new PcGoodsTypeVo();
+									newGoods.setGoodsId(goods[0].toString());
+									newGoods.setTitle(goods[1].toString());
+									if (null!=goods[2]) {
+										newGoods.setSubTitle(goods[2].toString());
+									}
+									if (null!=goods[3]) {
+										newGoods.setModel(goods[3].toString());
+									}
+									if (null!=goods[4]) {
+										newGoods.setPrice(goods[4].toString());
+									}	
+									if (null!=goods[5]) {
+										newGoods.setMarketPrice(goods[5].toString());
+									}
+									if (null!=goods[6]) {
+										newGoods.setPicSrc(goods[6].toString());
+									}	
+									if (null!=goods[4] && null!=goods[5]) {
+										newGoods.setDiscount(Double.toString(Math.round((double)goods[4]*1.0/Double.parseDouble(goods[5].toString())*10)));
+									}
+									pcTypeGoodsVoList.add(newGoods);
+								}
+								goodsTypeVoLel3.setGoodsList(pcTypeGoodsVoList);
+								typeLevel3VoList.add(goodsTypeVoLel3);
+							}
+						}
+						goodsTypeVoLel2.setId(goodsTypeLevel2.getId());
+						goodsTypeVoLel2.setName(goodsTypeLevel2.getName());
+						goodsTypeVoLel2.setGoodsTypelist(typeLevel3VoList);
+						goodsTypeVoLel2.setPicSrc(goodsTypeLevel2.getPicSrc());
+						typeLevel2VoList.add(goodsTypeVoLel2);
+					}
+					goodsTypeVoLel1.setId(goodsType.getId());
+					goodsTypeVoLel1.setName(goodsType.getName());
+					goodsTypeVoLel1.setGoodsTypelist(typeLevel2VoList);
+					typeLevel1VoList.add(goodsTypeVoLel1);
+				}
+			}
+		}
+		return ObjectToResult.getResult(typeLevel1VoList) ;
 		
 	}
 }

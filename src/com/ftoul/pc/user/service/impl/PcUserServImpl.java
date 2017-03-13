@@ -1,18 +1,27 @@
 package com.ftoul.pc.user.service.impl;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.DatatypeConverter;
 
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import sun.misc.BASE64Decoder;
+
 import com.ftoul.api.sms.util.MessageUtil;
 import com.ftoul.api.sms.util.SmsCodeUtil;
-import com.ftoul.businessManage.login.action.CodeAction;
 import com.ftoul.common.DateStr;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
@@ -20,12 +29,14 @@ import com.ftoul.common.Result;
 import com.ftoul.exption.MyExption;
 import com.ftoul.pc.user.action.ImgCodeAction;
 import com.ftoul.pc.user.service.PcUserServ;
+import com.ftoul.pc.user.vo.PcUserVo;
 import com.ftoul.po.MessageVerification;
 import com.ftoul.po.User;
 import com.ftoul.po.UserToken;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.token.TokenUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
+import com.ftoul.web.manage.user.vo.ResetPasswordVo;
 import com.ftoul.web.vo.UsersVO;
 import com.ftoul.web.webservice.UserService;
 @Service("PcUserServImpl")
@@ -94,7 +105,7 @@ public class PcUserServImpl implements PcUserServ {
 					throw new Exception("用户已被禁用");
 				}
 			}
-			UserToken userToken = tokenUtil.toMobilToken(u);//暂时用手机端token,需要换pc端Token
+			UserToken userToken = tokenUtil.toPcToken(u);
 			return ObjectToResult.getResult(userToken);
 		}
 
@@ -205,4 +216,118 @@ public class PcUserServImpl implements PcUserServ {
 		}
 		return ObjectToResult.getResult(res);
 	}
+	@Override
+	public Result getUserInfo(Parameter param) throws Exception {
+		User user = (User) this.hibernateUtil.find(User.class, param.getUserToken().getUser().getId());
+		PcUserVo pcUserVo = new PcUserVo();
+		pcUserVo.setUsername(user.getUsername());
+		pcUserVo.setNickname(user.getNickname());
+		pcUserVo.setSex(user.getSex());
+		pcUserVo.setBirth(user.getBirth());
+		pcUserVo.setMobil(user.getMobil());
+		pcUserVo.setEmail(user.getEmail());
+		pcUserVo.setName(user.getName());
+		return ObjectToResult.getResult(pcUserVo);
+	}
+	@Override
+	public Result saveUser(Parameter param) throws Exception {
+		User user = (User) this.hibernateUtil.find(User.class, param.getUserToken().getUser().getId());
+		PcUserVo pcUserVo = (PcUserVo) JSONObject.toBean((JSONObject) param.getObj(), PcUserVo.class);
+		if(null!= pcUserVo.getNickname()){
+			user.setNickname(pcUserVo.getNickname());
+		}
+		if(null!=pcUserVo.getSex()){
+			user.setSex(pcUserVo.getSex());
+		}
+		if(null!=pcUserVo.getBirth()){
+			user.setBirth(pcUserVo.getBirth());
+		}
+		if(null!=pcUserVo.getMobil()){
+			user.setMobil(pcUserVo.getMobil());
+		}
+		if(null!=pcUserVo.getEmail()){
+			user.setEmail(pcUserVo.getEmail());
+		}
+		if(null!=pcUserVo.getName()){
+			user.setName(pcUserVo.getName());
+		}
+		if(null!=pcUserVo.getCardFront()){
+			user.setCardFront(pcUserVo.getCardFront());
+		}
+		if(null!=pcUserVo.getCardBack()){
+			user.setCardBack(pcUserVo.getCardBack());
+		}
+		Object res;
+		res = hibernateUtil.update(user);
+		return ObjectToResult.getResult(res);
+	}
+	@Override
+	public Result picUpload(Parameter param,HttpServletRequest request) throws Exception {
+		BufferedImage image = null;  
+        byte[] imageByte = null;
+        String strFileName=param.getId().toString().split(",")[0].split(";")[0].split("/")[1];
+    	BASE64Decoder decoder = new sun.misc.BASE64Decoder();
+    	imageByte=decoder.decodeBuffer(param.getId().toString().split(",")[1]);
+    	// 处理数据
+        for(int i=0;i<imageByte.length;i++){
+        	if(imageByte[i]<0){
+        		imageByte[i]+=256;
+        	}
+        }
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);  
+        image = ImageIO.read(new ByteArrayInputStream(imageByte));  
+        bis.close();  
+        String picPath = "/upload/img/";
+        String path = request.getSession().getServletContext().getRealPath("upload/img/");
+        String picName = UUID.randomUUID()+"."+strFileName;
+        String picAddress = picPath+ picName;
+        File outputfile = new File(path+picName);  
+        System.out.println(image);
+        Map<String ,Object> map = new HashMap<String ,Object>();
+        map.put("picAddress", picAddress);
+		map.put("picName", picName );
+		map.put("hasUpload", true );
+        ImageIO.write(image,strFileName, outputfile);  
+		return ObjectToResult.getResult(map);
+	}
+	@Override
+	public Result updatePassword(Parameter param) throws Exception {
+		ResetPasswordVo resetPasswordVo = (ResetPasswordVo) JSONObject.toBean(
+				(JSONObject) param.getObj(), ResetPasswordVo.class);
+		User user = (User) this.hibernateUtil.find(User.class, param.getId()
+				+ "");
+		Result res = new Result();
+		if (user == null) {
+			res.setResult(0);
+			res.setMessage("没有该用户");
+			return res;
+		}
+		UserService userService = WebserviceUtil.getService();
+		// 通过Webservice验证用户
+		String p2pID = userService.checkUser(user.getUsername(),
+				resetPasswordVo.getOldPassword());
+		if ("".equals(p2pID)) {
+			res.setResult(0);
+			res.setMessage("原密码错误");
+			return res;
+		}
+
+		// 通过webservice修改密码
+		userService.modifyPwd(user.getUsername(),
+				resetPasswordVo.getNewPassword());
+		String hql = "from User where state = 1 and username = '"
+				+ user.getUsername() + "'";
+		User userDb = (User) hibernateUtil.hqlFirst(hql);
+		String passwordVersion = userDb.getPasswordVersion();
+		if (passwordVersion == null)
+			passwordVersion = "1";
+		else {
+			passwordVersion = (Integer.parseInt(passwordVersion) + 1) + "";
+		}
+		tokenUtil.uploadSecretKey(userDb);
+		hibernateUtil.update(userDb);
+		res.setResult(1);
+		return ObjectToResult.getResult(res);
+	}
+	
 }

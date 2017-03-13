@@ -61,6 +61,35 @@ public class AliPayUtil {
 		return linkString;
 	}
 	
+	/**
+	 * 根据订单进行网页版支付操作 
+	 * @param orders
+	 * @throws IOException 
+	 * @throws JDOMException 
+	 */
+	public Map<String, String> payByOrdersPc(Orders orders) throws Exception{
+		Map<String, String> sendMap = new HashMap<String,String>();
+		Map<String, String> sPara = new HashMap<String,String>();
+		sendMap.put("service",AlipayConfig.pc_service);
+		sendMap.put("partner", AlipayConfig.partner);
+		sendMap.put("seller_id", AlipayConfig.seller_id);
+		sendMap.put("_input_charset", AlipayConfig.input_charset);
+		sendMap.put("payment_type", AlipayConfig.payment_type);
+		sendMap.put("notify_url", AlipayConfig.notify_url);
+		sendMap.put("return_url", AlipayConfig.return_url);
+		sendMap.put("out_trade_no", orders.getOrderNumber());
+		sendMap.put("subject", orders.getOrderNumber());
+		sendMap.put("total_fee", orders.getOrderPrice());
+		//订单的URL
+		sendMap.put("show_url", AlipayConfig.show_url 
+				+ "?orderNumber=" + orders.getOrderNumber()
+				+ "&orderPrice=" + orders.getOrderPrice());
+		//增加签名信息
+//		sPara = AlipaySubmit.buildRequestPara(sendMap);
+		sPara = AlipaySubmit.buildRequestPara_new(sendMap);
+		return sPara;
+	}
+	
     public static void main(String[] args) throws Exception{
 //    	WeiXinPayUtil weiXinPayUtil = new WeiXinPayUtil();
 //    	weiXinPayUtil.payByOrders(null);

@@ -1,3 +1,4 @@
+
 package com.ftoul.app.action.cart.service.impl;
 
 import java.util.ArrayList;
@@ -149,6 +150,21 @@ public class CartAppServImpl implements CartAppServ {
 	@Override
 	public Result clearShopCart(Parameter param) throws Exception {
 		Integer num = hibernateUtil.execHql("update ShopCar set state = '0' where user.id='" +param.getUserToken().getUser().getId()+"'");
+		return ObjectToResult.getResult(num);
+	}
+
+	@Override
+	public Result clearNoStock(Parameter param) throws Exception {
+		Result ret = cartServ.getShopCartByUserId(param);
+		List<ShopCarVO> shopCarList = (List<ShopCarVO>)ret.getObj();
+		Integer num = 0 ;
+		for (int i = 0; i < shopCarList.size(); i++) {
+			ShopCarVO shopCarVO = shopCarList.get(i);
+			if("0".equals(shopCarVO.getStock())){
+				num = hibernateUtil.execHql("update ShopCar set state = '0' where id='" +shopCarVO.getId()+"'");
+				num++;
+			}
+		}
 		return ObjectToResult.getResult(num);
 	}
 	

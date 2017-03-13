@@ -158,5 +158,4 @@ public class GoodsUploadpic implements java.io.Serializable {
 	public void setPicType(String picType) {
 		this.picType = picType;
 	}
-	
 }

@@ -10,6 +10,7 @@ import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.pc.store.service.StoreServ;
+import com.ftoul.web.business.service.BusinessWebServ;
 @Controller
 @RequestMapping(value="/pc/store")
 public class StoreAction {
@@ -17,6 +18,9 @@ public class StoreAction {
 	private StoreServ storeServ;
 	@Autowired
 	private BusinessClassifyServ businessClassifyServ;
+	
+	@Autowired
+	private BusinessWebServ businessWebServ;
 	/**
 	 * 
 	 * 得到店铺商铺列表
@@ -27,6 +31,17 @@ public class StoreAction {
 	public @ResponseBody Result getStoreGoodsPage(String param)throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return storeServ.getStoreGoodsPage(parameter);
+	}
+	/**
+	 * 
+	 * 根据商品ID获取店铺详情以及商品统计
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */ 
+	@RequestMapping(value="getBusinessStorePageByGoodsId")
+	public @ResponseBody Result getBusinessStorePageByGoodsId(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return businessWebServ.getBusinessStorePageByGoodsId(parameter);
 	}
 	/**
 	 * 根据店铺Id查询店铺分类
@@ -49,5 +64,16 @@ public class StoreAction {
 	public @ResponseBody Result getStoreGoodsPageByBusinessClassify(String param)throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return storeServ.getStoreGoodsPageByBusinessClassify(parameter);
+	}
+	/**
+	 * 
+	 * 根据店铺id获取店铺简介，营业执照
+	 * @param   param Parameter对象
+	 * @return  返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value="getStoreSummary")
+	public @ResponseBody Result getStoreSummary(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return storeServ.getStoreSummary(parameter);
 	}
 }

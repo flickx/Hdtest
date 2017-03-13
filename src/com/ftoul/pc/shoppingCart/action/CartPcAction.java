@@ -5,16 +5,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ftoul.app.action.cart.service.CartAppServ;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.pc.shoppingCart.action.service.CartPcServ;
 
 @Controller("CartPcAction")
 @RequestMapping("/pc/cart")
 public class CartPcAction {
 	@Autowired
-	private CartAppServ cartAppServ;
+	private CartPcServ cartPcServ;
 	/**
 	 * 根据用户ID获取购物车信息
 	 * @param param
@@ -24,7 +24,7 @@ public class CartPcAction {
 	@RequestMapping(value = "getShopCartByUserId")  
 	public @ResponseBody Result getShopCartByUserId(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return cartAppServ.getShopCartByUserId(parameter);
+		return cartPcServ.getShopCartByUserId(parameter);
 	}
 	/**
 	 * 保存购物车信息
@@ -35,7 +35,7 @@ public class CartPcAction {
 	@RequestMapping(value = "saveShopCart")  
 	public @ResponseBody Result saveShopCart(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return cartAppServ.saveShopCart(parameter);
+		return cartPcServ.saveShopCart(parameter);
 	}
 	/**
 	 * 修改购物车数量
@@ -46,7 +46,7 @@ public class CartPcAction {
 	@RequestMapping(value = "updateShopCart")  
 	public @ResponseBody Result updateShopCart(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return cartAppServ.updateShopCart(parameter);
+		return cartPcServ.updateShopCart(parameter);
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public class CartPcAction {
 	@RequestMapping(value = "delShopCart")  
 	public @ResponseBody Result delShopCart(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return cartAppServ.delShopCart(parameter);
+		return cartPcServ.delShopCart(parameter);
 	}
 	/**
 	 * 清空购物车
@@ -69,7 +69,18 @@ public class CartPcAction {
 	@RequestMapping(value = "clearShopCart")  
 	public @ResponseBody Result clearShopCart(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return cartAppServ.clearShopCart(parameter);
+		return cartPcServ.clearShopCart(parameter);
+	}
+	/**
+	 * 清除无货商品
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "clearNoStock")  
+	public @ResponseBody Result clearNoStock(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return cartPcServ.clearNoStock(parameter);
 	}
 	/**
 	 * 推荐商品
@@ -80,6 +91,6 @@ public class CartPcAction {
 	@RequestMapping(value = "getGoodsList")  
 	public @ResponseBody Result getGoodsList(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return cartAppServ.getGoodsList(parameter);
+		return cartPcServ.getGoodsList(parameter);
 	}
 }
