@@ -53,6 +53,16 @@ public class CommentAction {
 	}
 	
 	/**
+	 * 隐藏评论
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "hideComment")  
+	public @ResponseBody Result hideComment(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return commentService.hideComment(parameter);
+	}
+	
+	/**
 	 * 审核评论
 	 * @throws Exception 
 	 */

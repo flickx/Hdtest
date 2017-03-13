@@ -370,35 +370,22 @@ public class OrdersUtil {
 	 * @return
 	 * @throws Exception 
 	 */
-	public Map<String, List<ShopGoodsParamVo>> supplierArray(String param) throws Exception{
+	public Map<String, List<ShopGoodsParamVo>> supplierArray(List<ShopGoodsParamVo> list) throws Exception{
 		Map<String, List<ShopGoodsParamVo>> group = new HashMap<String, List<ShopGoodsParamVo>>();
 		List<ShopGoodsParamVo> goodsParamVo = null;
-		String[] strList = param.split(":");
-		List<ShopGoodsParamVo> voList = new ArrayList<ShopGoodsParamVo>();
-		for (int i = 0; i < strList.length; i++) {
-			String[] str = strList[i].split(",");
-			ShopGoodsParamVo vo = new ShopGoodsParamVo();
-			vo.setGoodsParamId(str[0]);
-			vo.setNum(str[1]);
-			if(Integer.parseInt(str[1])<=0){
-				throw new Exception("您购买的此商品件数为"+str[1]+"，【注意：购买商品时件数要大于0】");
-			}
-			vo.setShopId(str[2]);
-			voList.add(vo);
-		}
-		
-		for (int j = 0; j < voList.size(); j++) {
-			ShopGoodsParamVo vo = voList.get(j);
-			String shopId = vo.getShopId();
-			if(shopId!=null){
-				goodsParamVo = group.get(shopId);
+		for (int i = 0; i < list.size(); i++) {
+			ShopGoodsParamVo vo = list.get(i);
+			GoodsParam goodsParam = (GoodsParam) hibernateUtil.find(GoodsParam.class, vo.getGoodsParamId());
+			String canalId = goodsParam.getGoods().getGoodsCanal().getId();
+			if(canalId!=null){
+				goodsParamVo = group.get(canalId);
 				if(goodsParamVo == null){
 					List<ShopGoodsParamVo> newVoList = new ArrayList<ShopGoodsParamVo>();
 					newVoList.add(vo);
-					group.put(shopId, newVoList);
+					group.put(canalId, newVoList);
 				}else{
 					goodsParamVo.add(vo);
-					group.put(shopId, goodsParamVo);
+					group.put(canalId, goodsParamVo);
 				}
 			}
 		}
@@ -417,7 +404,6 @@ public class OrdersUtil {
 		for (int i = 0; i < strList.length; i++) {
 			String[] str = strList[i].split(",");
 			param.setId(str[2]);
-			
 			cartServ.delShopCart(param);
 		}
 	}

@@ -11,7 +11,7 @@ import com.ftoul.common.Result;
 import com.ftoul.pc.website.service.ArticleClassifyServ;
 
 /**
- * 物流管理
+ * 文章分类管理
  * @author LiDing
  * 2017-02-15
  */
@@ -21,20 +21,8 @@ public class ArticleClassifyAction {
 
 	@Autowired
 	private ArticleClassifyServ articleClassifyServ; 
-	
 	/**
-	 * 获取全部文章分类信息
-	 * @param param
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping(value = "getArticleClassifyList")  
-	public @ResponseBody Result getLogisticsCompany(String param) throws Exception{
-		Parameter parameter = Common.jsonToParam(param);
-		return articleClassifyServ.getArticleClassifyList(parameter);
-	}
-	/**
-	 * 获取全部文章分类信息
+	 * 获取文章分类信息详情
 	 * @param param
 	 * @return
 	 * @throws Exception 
@@ -51,9 +39,9 @@ public class ArticleClassifyAction {
 	 * @throws Exception 
 	 */
 	@RequestMapping(value = "getArticleClassifyPage")  
-	public @ResponseBody Result getLogisticsCompanyPage(String param) throws Exception{
+	public @ResponseBody Result getArticleClassifyPage(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return articleClassifyServ.getLogisticsCompanyPage(parameter);
+		return articleClassifyServ.getArticleClassifyPage(parameter);
 	}
 	/**
 	 * 保存文章分类
@@ -62,8 +50,19 @@ public class ArticleClassifyAction {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="saveArticleClassify")
-	public @ResponseBody Result saveLogisticsCompanyJoinList(String param) throws Exception{
+	public @ResponseBody Result saveArticleClassify(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return articleClassifyServ.saveArticleClassify(parameter);
+	}
+	/**
+	 * 删除文章分类
+	 * @author LiDing
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="delArticleClassify")
+	public @ResponseBody Result delArticleClassify(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return articleClassifyServ.delArticleClassify(parameter);
 	}
 }

@@ -76,6 +76,7 @@ public class GoodsVo {
 	private String goodsTypeNameTwo;//二级分类名称
 	private String goodsTypeNameThree;//三级分类名称
 	private String fullCutName;//满减名称
+	private String countryId;
 	/**
 	 * @return the picSrc
 	 */
@@ -579,6 +580,14 @@ public class GoodsVo {
 
 	public void setFullCutName(String fullCutName) {
 		this.fullCutName = fullCutName;
+	}
+
+	public String getCountryId() {
+		return countryId;
+	}
+
+	public void setCountryId(String countryId) {
+		this.countryId = countryId;
 	}
 	
 }

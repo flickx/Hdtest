@@ -76,6 +76,7 @@ public class Goods implements java.io.Serializable {
 	private String packingLength;
 	private String packingWidth;
 	private String packingHeight;
+	private CrossBorderMuseum crossBorderMuseum;
 	// Constructors
 
 	/** default constructor */
@@ -587,5 +588,14 @@ public class Goods implements java.io.Serializable {
 	public void setPackingHeight(String packingHeight) {
 		this.packingHeight = packingHeight;
 	}
-	
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "country_id")
+	public CrossBorderMuseum getCrossBorderMuseum() {
+		return crossBorderMuseum;
+	}
+	public void setCrossBorderMuseum(CrossBorderMuseum crossBorderMuseum) {
+		this.crossBorderMuseum = crossBorderMuseum;
+	}
+
 }

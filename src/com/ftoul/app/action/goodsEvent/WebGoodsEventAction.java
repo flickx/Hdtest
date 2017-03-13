@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.ftoul.app.action.goodsEvent;
 import java.util.ArrayList;
 import java.util.Date;
@@ -185,10 +182,18 @@ public class WebGoodsEventAction {
 		for (Object o : goodsAppVos) {
 			Object[] index = (Object[])o;
 			IndexGoodsAppVo i  =new IndexGoodsAppVo();
-			i.setGoodsId(index[0].toString());
-			i.setTitle(index[1].toString());
-			i.setPicSrc(index[2].toString());
-			i.setPrice(new Double(index[3].toString()));
+			if (null !=index[0]) {
+				i.setGoodsId(index[0].toString());
+			}
+			if (null != index[1]) {
+				i.setTitle(index[1].toString());
+			}
+			if (null != index[2]) {
+				i.setPicSrc(index[2].toString());
+			}
+			if (null != index[3]) {
+				i.setPrice(new Double(index[3].toString()));
+			}
 			goodsAppVoList.add(i);
 		}
 		re.setObj(goodsAppVoList);

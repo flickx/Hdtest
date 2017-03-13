@@ -12,4 +12,6 @@ public interface CommentServ {
 	Result deleteComment(Parameter param) throws Exception;
 	
 	Result auditComment(Parameter param) throws Exception;
+
+	Result hideComment(Parameter param) throws Exception;
 }

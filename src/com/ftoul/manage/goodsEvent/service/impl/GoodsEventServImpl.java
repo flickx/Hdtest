@@ -517,7 +517,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 	 */
 	@Override
 	public Result getAppNewestGoodsList(Parameter param) throws Exception{
-		String hql="from Goods where state='1' and grounding = '1' order by createTime DESC ";
+		String hql="from Goods where state='1' and grounding = '1' order by rand() DESC ";
 		Page page = hibernateUtil.hqlPage(null,hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}

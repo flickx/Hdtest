@@ -1,19 +1,24 @@
 package com.ftoul.pc.user.service.impl;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.DatatypeConverter;
 
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import sun.misc.BASE64Decoder;
 
 import com.ftoul.api.sms.util.MessageUtil;
 import com.ftoul.api.sms.util.SmsCodeUtil;
@@ -258,28 +263,31 @@ public class PcUserServImpl implements PcUserServ {
 	}
 	@Override
 	public Result picUpload(Parameter param,HttpServletRequest request) throws Exception {
-		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request; 
-		List<MultipartFile> fileList = multipartRequest.getFiles("file_data");
-		//图片文件夹名称
-		String folderName = request.getParameter("folderName");
-		String path = request.getSession().getServletContext().getRealPath("upload/img/"+folderName+"/");
-		String picPath = "/upload/img/" + folderName + "/";
-		Map<String ,Object> map = new HashMap<String ,Object>();
-		if (fileList.size()>0) {
-			for (MultipartFile multipartFile : fileList) {
-				String picName = UUID.randomUUID()+"."+multipartFile.getOriginalFilename().split("\\.")[1];
-			    String picAddress = picPath+ picName;
-				File targetFile = new File(path, picName);  
-			        if(!targetFile.exists()){  
-			            targetFile.mkdirs();  
-			        } 
-			        multipartFile.transferTo(targetFile);
-					map.put("folderName", folderName);
-					map.put("picAddress", picAddress);
-					map.put("picName", picName );
-					map.put("hasUpload", true );
-			}
-		}
+		BufferedImage image = null;  
+        byte[] imageByte = null;
+        String strFileName=param.getId().toString().split(",")[0].split(";")[0].split("/")[1];
+    	BASE64Decoder decoder = new sun.misc.BASE64Decoder();
+    	imageByte=decoder.decodeBuffer(param.getId().toString().split(",")[1]);
+    	// 处理数据
+        for(int i=0;i<imageByte.length;i++){
+        	if(imageByte[i]<0){
+        		imageByte[i]+=256;
+        	}
+        }
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);  
+        image = ImageIO.read(new ByteArrayInputStream(imageByte));  
+        bis.close();  
+        String picPath = "/upload/img/";
+        String path = request.getSession().getServletContext().getRealPath("upload/img/");
+        String picName = UUID.randomUUID()+"."+strFileName;
+        String picAddress = picPath+ picName;
+        File outputfile = new File(path+picName);  
+        System.out.println(image);
+        Map<String ,Object> map = new HashMap<String ,Object>();
+        map.put("picAddress", picAddress);
+		map.put("picName", picName );
+		map.put("hasUpload", true );
+        ImageIO.write(image,strFileName, outputfile);  
 		return ObjectToResult.getResult(map);
 	}
 	@Override
