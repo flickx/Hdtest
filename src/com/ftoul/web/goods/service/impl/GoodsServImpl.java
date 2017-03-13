@@ -443,7 +443,9 @@ public class GoodsServImpl implements GoodsServ {
 			PcNewGoods newGoods = new PcNewGoods();
 			newGoods.setGoodsId(goods[0].toString());
 			newGoods.setTitle(goods[1].toString());
-			newGoods.setSubTitle(goods[2].toString());
+			if(goods[2]!=null){
+				newGoods.setSubTitle(goods[2].toString());
+			}
 			newGoods.setModel(goods[3].toString());
 			newGoods.setPrice((double)goods[4]);
 			newGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
