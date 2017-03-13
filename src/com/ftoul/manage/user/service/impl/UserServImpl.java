@@ -117,7 +117,13 @@ public class UserServImpl implements UserServ {
 	 */
 	@Override
 	public Result getUserList(Parameter param) throws Exception {
-		String hql = "from User where state = '1'" + param.getWhereStr() + param.getOrderBy() ;
+		String queryStr = param.getWhereStr();
+		String hql = "from User where state = '1'" ;
+		if (queryStr!= null) {			
+			hql = hql + queryStr + param.getOrderBy() ;
+		}else{
+			hql = hql + param.getOrderBy() ;
+		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
