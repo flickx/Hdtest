@@ -14,6 +14,7 @@ import com.ftoul.pc.interfaces.service.CountryService;
 import com.ftoul.pc.interfaces.vo.PcCountryTypeVo;
 import com.ftoul.pc.interfaces.vo.PcCountryVo;
 import com.ftoul.pc.interfaces.vo.PcNewGoods;
+import com.ftoul.po.CrossBorderMuseum;
 import com.ftoul.po.Goods;
 import com.ftoul.util.hibernate.HibernateUtil;
 
@@ -28,18 +29,28 @@ public class CountryServiceImpl implements CountryService{
 	 * @throws Exception 
 	 */
 	public Result getCountryList(Parameter param) throws Exception{
-		//查询所有国家
-		String sql ="select DISTINCT country_id from goods where state=1 and country_id is not null and crossborder = 1";
-		List<Object[]> countryList = hibernateUtil.sql(sql);
+//		//查询所有国家
+//		String sql ="select DISTINCT country_id from goods where state=1 and country_id is not null and crossborder = 1";
+//		List<Object[]> countryList = hibernateUtil.sql(sql);
+//		List<PcCountryVo> countryVoList = new ArrayList<PcCountryVo>();
+//		for (Object[] objects : countryList) {
+//			PcCountryVo country = new PcCountryVo();
+//			if (null!=objects[0]) {
+//				country.setId(objects[0].toString());
+//			}
+//			if (null!=objects[1]) {
+//				country.setName(objects[1].toString());
+//			}
+//			countryVoList.add(country);
+//		}
+		String hql = "from CrossBorderMuseum where state = '1'";
+		List<Object> o  = hibernateUtil.hql(hql);
 		List<PcCountryVo> countryVoList = new ArrayList<PcCountryVo>();
-		for (Object[] objects : countryList) {
+		for (Object object : o) {
+			CrossBorderMuseum c = (CrossBorderMuseum)object;
 			PcCountryVo country = new PcCountryVo();
-			if (null!=objects[0]) {
-				country.setId(objects[0].toString());
-			}
-			if (null!=objects[1]) {
-				country.setName(objects[1].toString());
-			}
+			country.setId(c.getId());
+			country.setName(c.getName());
 			countryVoList.add(country);
 		}
 		return ObjectToResult.getResult(countryVoList);
