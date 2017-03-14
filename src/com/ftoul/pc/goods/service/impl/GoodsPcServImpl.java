@@ -19,6 +19,7 @@ import com.ftoul.common.Result;
 import com.ftoul.manage.goods.vo.GoodsVo;
 import com.ftoul.pc.goods.service.GoodsPcServ;
 import com.ftoul.pc.goods.vo.GoodsPcVo;
+import com.ftoul.pc.goods.vo.GoodsSearchMainVo;
 import com.ftoul.pc.goods.vo.GoodsSearchVo;
 import com.ftoul.pc.goods.vo.SearchVo;
 import com.ftoul.po.GoodsParam;
@@ -184,8 +185,8 @@ public class GoodsPcServImpl implements GoodsPcServ {
 	}
 	@Override
 	public Result getGoodsBySearchName(Parameter param) throws Exception {
-		String goodsSql ="select gs.id,gs.title,gs.price,gs.pic_src,gs.shop_id,ifnull(sum(uco.id),0) "
-						+ "from Goods gs left join user_comment uco on gs.id = uco.good_id "
+		String goodsSql ="select gs.id,gs.title,gs.price,gs.pic_src,gs.shop_id,sum(uco.id),gs.sale_sum,bs.store_name "
+						+ "from Goods gs join business_store bs on gs.shop_id = bs.id left join user_comment uco on gs.id = uco.good_id "
 						+ "where gs.state = 1 and gs.grounding  = 1 and gs.title like '%"+param.getKey()+"%' group by gs.id" ;
 		
 		String goodsCount ="select count(*) "
@@ -224,74 +225,85 @@ public class GoodsPcServImpl implements GoodsPcServ {
 		Page goodsTypePage = hibernateUtil.sqlPage(goodsTypeCount, goodsTypeSql, param.getPageNum(), param.getPageSize());
 		
 		
-		List<GoodsSearchVo> goodsList = new ArrayList<GoodsSearchVo>();
+		List<GoodsSearchMainVo> goodsList = new ArrayList<GoodsSearchMainVo>();
+		List<GoodsSearchVo> goodsSearchVoList = new ArrayList<GoodsSearchVo>();
+		GoodsSearchVo goodsSearchVo = new GoodsSearchVo();
 		for (int i = 0; i < goodsPage.getObjList().size(); i++) {
-			GoodsSearchVo goodsSearchVo = new GoodsSearchVo();
+			GoodsSearchMainVo goodsSearchMainVo = new GoodsSearchMainVo();
 			Object[] obj = (Object[])goodsPage.getObjList().get(i);
 			if(obj[0]!=null){
-				goodsSearchVo.setId(obj[0].toString());
+				goodsSearchMainVo.setId(obj[0].toString());
 			}
 			if(obj[1]!=null){
-				goodsSearchVo.setTitle(obj[1].toString());
+				goodsSearchMainVo.setTitle(obj[1].toString());
 			}
 			if(obj[2]!=null){
-				goodsSearchVo.setPrice(obj[2].toString());
+				goodsSearchMainVo.setPrice(obj[2].toString());
 			}
 			if(obj[3]!=null){
-				goodsSearchVo.setPicSrc(obj[3].toString());
+				goodsSearchMainVo.setPicSrc(obj[3].toString());
 			}
 			if(obj[4]!=null){
-				goodsSearchVo.setShopId(obj[4].toString());
+				goodsSearchMainVo.setShopId(obj[4].toString());
 			}
 			if(obj[5]!=null){
-				goodsSearchVo.setComment(obj[5].toString());
+				goodsSearchMainVo.setComment(obj[5].toString());
+			}else{
+				goodsSearchMainVo.setComment("0");
 			}
-			if(i==0){
-				List<SearchVo> brandList = new ArrayList<SearchVo>();
-				for (int j = 0; j < brandPage.getObjList().size(); j++){
-					SearchVo searchVo = new SearchVo();
-					Object[] brandObj = (Object[])goodsPage.getObjList().get(j);
-					if(brandObj[0]!=null){
-						searchVo.setId(brandObj[0].toString());
-					}
-					if(brandObj[1]!=null){
-						searchVo.setName(brandObj[1].toString());
-					}
-					brandList.add(searchVo);
-				}
-				goodsSearchVo.setGoodsBrandList(brandList);
-				
-				List<SearchVo> countryList = new ArrayList<SearchVo>();
-				for (int k = 0; k < countryPage.getObjList().size(); k++){
-					SearchVo searchVo = new SearchVo();
-					Object[] countryObj = (Object[])countryPage.getObjList().get(k);
-					if(countryObj[0]!=null){
-						searchVo.setId(countryObj[0].toString());
-					}
-					if(countryObj[1]!=null){
-						searchVo.setName(countryObj[1].toString());
-					}
-					countryList.add(searchVo);
-				}
-				goodsSearchVo.setCountryList(countryList);
-				
-				List<SearchVo> goodsTypeList = new ArrayList<SearchVo>();
-				for (int l = 0; l < goodsTypePage.getObjList().size(); l++){
-					SearchVo searchVo = new SearchVo();
-					Object[] goodsTypeObj = (Object[])goodsTypePage.getObjList().get(l);
-					if(goodsTypeObj[0]!=null){
-						searchVo.setId(goodsTypeObj[0].toString());
-					}
-					if(goodsTypeObj[1]!=null){
-						searchVo.setName(goodsTypeObj[1].toString());
-					}
-					goodsTypeList.add(searchVo);
-				}
-				goodsSearchVo.setGoodsTypeList(goodsTypeList);
+			if(obj[6]!=null){
+				goodsSearchMainVo.setSaleSum(obj[6].toString());
 			}
-			goodsList.add(goodsSearchVo);
+			if(obj[7]!=null){
+				goodsSearchMainVo.setShopName(obj[7].toString());
+			}
+			goodsList.add(goodsSearchMainVo);
 		}
-		goodsPage.setVoList(goodsList);
+		goodsSearchVo.setGoodsList(goodsList);
+		List<SearchVo> brandList = new ArrayList<SearchVo>();
+		for (int i = 0; i < brandPage.getObjList().size(); i++){
+			SearchVo searchVo = new SearchVo();
+			Object[] brandObj = (Object[])goodsPage.getObjList().get(i);
+			if(brandObj[0]!=null){
+				searchVo.setId(brandObj[0].toString());
+			}
+			if(brandObj[1]!=null){
+				searchVo.setName(brandObj[1].toString());
+			}
+			brandList.add(searchVo);
+		}
+		goodsSearchVo.setGoodsBrandList(brandList);
+			
+		List<SearchVo> countryList = new ArrayList<SearchVo>();
+		for (int i = 0; i < countryPage.getObjList().size(); i++){
+			SearchVo searchVo = new SearchVo();
+			Object[] countryObj = (Object[])countryPage.getObjList().get(i);
+			if(countryObj[0]!=null){
+				searchVo.setId(countryObj[0].toString());
+			}
+			if(countryObj[1]!=null){
+				searchVo.setName(countryObj[1].toString());
+			}
+			countryList.add(searchVo);
+		}
+		goodsSearchVo.setCountryList(countryList);
+			
+		List<SearchVo> goodsTypeList = new ArrayList<SearchVo>();
+		for (int i = 0; i < goodsTypePage.getObjList().size(); i++){
+			SearchVo searchVo = new SearchVo();
+			Object[] goodsTypeObj = (Object[])goodsTypePage.getObjList().get(i);
+			if(goodsTypeObj[0]!=null){
+				searchVo.setId(goodsTypeObj[0].toString());
+			}
+			if(goodsTypeObj[1]!=null){
+				searchVo.setName(goodsTypeObj[1].toString());
+			}
+			goodsTypeList.add(searchVo);
+		}
+		goodsSearchVo.setGoodsTypeList(goodsTypeList);
+		
+		goodsSearchVoList.add(goodsSearchVo);
+		goodsPage.setVoList(goodsSearchVoList);
 		return ObjectToResult.getVoResult(goodsPage);
 	}
 	
