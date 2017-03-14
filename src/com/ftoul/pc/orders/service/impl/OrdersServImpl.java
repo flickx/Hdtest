@@ -838,7 +838,7 @@ public class OrdersServImpl implements OrdersServ {
 //			res.setMessage(resultStr);
 //			return ObjectToResult.getResult(res);
 		}else if(OrdersConstant.WXPAY.equals(payType)){
-			String mobilWxPayVo = weiXinPayUtil.payByOrders(order,req.getRemoteAddr());
+			String mobilWxPayVo = weiXinPayUtil.payByOrdersPc(order,req.getRemoteAddr());
 			Result mobilWxPay = ObjectToResult.getResult(mobilWxPayVo);
 			return mobilWxPay;
 		}else if(OrdersConstant.ALIQBPAY.equals(payType)){
