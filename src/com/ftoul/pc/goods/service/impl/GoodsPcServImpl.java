@@ -263,7 +263,7 @@ public class GoodsPcServImpl implements GoodsPcServ {
 		List<SearchVo> brandList = new ArrayList<SearchVo>();
 		for (int i = 0; i < brandPage.getObjList().size(); i++){
 			SearchVo searchVo = new SearchVo();
-			Object[] brandObj = (Object[])goodsPage.getObjList().get(i);
+			Object[] brandObj = (Object[])brandPage.getObjList().get(i);
 			if(brandObj[0]!=null){
 				searchVo.setId(brandObj[0].toString());
 			}
