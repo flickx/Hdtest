@@ -113,4 +113,42 @@ public class WeiXinPayUtil {
     	System.out.println(WXMD5.MD5Encode("admin&ad的"));
     	System.out.println(new Date().getTime());
 	}
+
+    /**
+     * 微信网页版扫码支付
+     * @param order
+     * @param remoteAddr
+     * @return
+     * @throws IOException 
+     * @throws JDOMException 
+     */
+	public String payByOrdersPc(Orders orders, String ipAddress) throws Exception {
+		SortedMap<Object,Object> parameters = new TreeMap<Object,Object>();
+		parameters.put("appid", ConfigUtil.APPID);
+		parameters.put("mch_id", ConfigUtil.MCH_ID);
+		String nonceStr = PayCommonUtil.CreateNoncestr();
+		parameters.put("nonce_str", nonceStr);
+		parameters.put("body", "他她乐订单支付");
+		parameters.put("out_trade_no", orders.getOrderNumber());
+		BigDecimal price = new BigDecimal(orders.getOrderPrice());
+		BigDecimal base = new BigDecimal(100);
+		String money = price.multiply(base).toString();
+		parameters.put("total_fee",money.substring(0,money.indexOf(".")));
+		parameters.put("spbill_create_ip",ipAddress);
+		parameters.put("notify_url", ConfigUtil.NOTIFY_URL);
+//		parameters.put("timeStamp", new Date().getTime()+"");
+		parameters.put("trade_type", "APP");
+		String sign = PayCommonUtil.createSign("UTF-8", parameters);
+		parameters.put("sign", sign);
+		String requestXML = PayCommonUtil.getRequestXml(parameters);
+		System.out.println(requestXML);
+		
+		String result =CommonUtil.httpsRequest(ConfigUtil.UNIFIED_ORDER_URL, "POST", requestXML);
+		System.out.println(result);
+		
+		Map<String, Object> map = XMLUtil.doXMLParse(result);
+		String codeUrl = (String) map.get("code_url");
+		
+	    return null;
+	}
 }
