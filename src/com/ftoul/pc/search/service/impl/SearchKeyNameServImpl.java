@@ -1,5 +1,6 @@
 package com.ftoul.pc.search.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,9 @@ import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.pc.goods.vo.GoodsSearchMainVo;
+import com.ftoul.pc.goods.vo.GoodsSearchVo;
+import com.ftoul.pc.goods.vo.SearchVo;
 import com.ftoul.pc.search.service.SearchKeyNameServ;
 import com.ftoul.util.hibernate.HibernateUtil;
 @Service("SearchKeyNameServImpl")
@@ -33,57 +37,134 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 	 */
 	@Override
 	public Result getGoodsBykeyName(Parameter param) throws Exception {
-		String hql="";
-		if(param.getKey()!=null&&!param.getKey().equals("{}")){
-			hql=
-				" FROM" +
-				"	Goods " +
-				"WHERE  state =1  and grounding='1' and (" +
-				"	title LIKE '%"+ param.getKey()+ "%' " +
-				"OR goodsType3.id IN (" +
-				"	SELECT" +
-				"		id" +
-				"	FROM" +
-				"		GoodsType" +
-				"	WHERE" +
-				"		NAME LIKE '%"+ param.getKey()+ "%' " +
-				")" +
-				"OR goodsType2.id IN (" +
-				"	SELECT" +
-				"		id" +
-				"	FROM" +
-				"		GoodsType" +
-				"	WHERE" +
-				"		NAME LIKE '%"+ param.getKey()+ "%' " +
-				")" +
-				"OR goodsType1.id IN (" +
-				"	SELECT" +
-				"		id" +
-				"	FROM" +
-				"		GoodsType" +
-				"	WHERE" +
-				"		NAME LIKE '%"+ param.getKey()+ "%' " +
-				")" +
-				"OR goodsBrand.id IN ( " +
-				"	SELECT " +
-				"		id " +
-				"	FROM " +
-				"		GoodsBrand " +
-				"	WHERE " +
-				"		NAME LIKE '%"+ param.getKey()+"%' " +
-				")" +
-				"OR goodsPropType.id IN ( " +
-				"	SELECT" +
-				"		id " +
-				"	FROM" +
-				"		GoodsPropType " +
-				"	WHERE" +
-				"		NAME LIKE '%"+ param.getKey()+"%' )) "+param.getOrderBy();
+
+		String order;
+		if(param.getOrderBy()==null || param.getOrderBy().trim().equals("order by id desc")){
+			order = " order by gs.sale_sum desc";
 		}else{
-			hql = "from Goods where state = '1' and grounding = '1' and id in (select gp.goods.id from GoodsParam gp where gp.state='1') "+param.getOrderBy();
+			order = param.getOrderBy();
 		}
-		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
-		return ObjectToResult.getResult(page);
+		String goodsSql ="select gs.id,gs.title,gs.price,gs.pic_src,gs.shop_id,sum(uco.id),gs.sale_sum,bs.store_name "
+						+ "from Goods gs join business_store bs on gs.shop_id = bs.id left join user_comment uco on gs.id = uco.good_id "
+						+ "where gs.state = 1 and gs.grounding  = 1 and gs.title like '%"+param.getKey()+"%' group by gs.id"+order ;
+		
+		String goodsCount ="select count(*) "
+				+ "from Goods gs left join user_comment uco on gs.id = uco.good_id "
+				+ "where gs.state = 1 and gs.grounding  = 1 and gs.title like '%"+param.getKey()+"%' group by gs.id "+order ;
+		
+		Page goodsPage = hibernateUtil.sqlPage(goodsCount, goodsSql, param.getPageNum(), param.getPageSize());
+		
+		String brandSql ="select DISTINCT gb.id,gb.name from Goods gs join goods_brand gb "
+					+"on gs.goods_brand_id = gb.id and gs.state =1 and gs.grounding =1 and gb.state = 1 "
+					+"and gs.title like '%"+param.getKey()+"%'" +order;
+		
+		String brandCount ="select count(*) from Goods gs join goods_brand gb "
+				+"on gs.goods_brand_id = gb.id and gs.state =1 and gs.grounding =1 and gb.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'" +order;
+		
+		Page brandPage = hibernateUtil.sqlPage(brandCount, brandSql, param.getPageNum(), param.getPageSize());
+		
+		String countrySql ="select DISTINCT cbm.id,cbm.name from Goods gs join cross_border_museum cbm "
+				+"on gs.country_id = cbm.id and gs.state =1 and gs.grounding =1 and cbm.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'" +order;
+		
+		String countryCount ="select count(*) from Goods gs join cross_border_museum cbm "
+				+"on gs.country_id = cbm.id and gs.state =1 and gs.grounding =1 and cbm.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'" +order;
+		
+		Page countryPage = hibernateUtil.sqlPage(countryCount, countrySql, param.getPageNum(), param.getPageSize());
+		
+		String goodsTypeSql ="select DISTINCT gt.id,gt.name from Goods gs join goods_type gt "
+				+"on gs.goods_type1 = gt.id and gs.state =1 and gs.grounding =1 and gt.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'"+" group by gt.id" +order;
+		
+		String goodsTypeCount ="select count(*) from Goods gs join goods_type gt "
+				+"on gs.goods_type1 = gt.id and gs.state =1 and gs.grounding =1 and gt.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'" +order;
+		Page goodsTypePage = hibernateUtil.sqlPage(goodsTypeCount, goodsTypeSql, param.getPageNum(), param.getPageSize());
+		
+		
+		List<GoodsSearchMainVo> goodsList = new ArrayList<GoodsSearchMainVo>();
+		List<GoodsSearchVo> goodsSearchVoList = new ArrayList<GoodsSearchVo>();
+		GoodsSearchVo goodsSearchVo = new GoodsSearchVo();
+		for (int i = 0; i < goodsPage.getObjList().size(); i++) {
+			GoodsSearchMainVo goodsSearchMainVo = new GoodsSearchMainVo();
+			Object[] obj = (Object[])goodsPage.getObjList().get(i);
+			if(obj[0]!=null){
+				goodsSearchMainVo.setId(obj[0].toString());
+			}
+			if(obj[1]!=null){
+				goodsSearchMainVo.setTitle(obj[1].toString());
+			}
+			if(obj[2]!=null){
+				goodsSearchMainVo.setPrice(obj[2].toString());
+			}
+			if(obj[3]!=null){
+				goodsSearchMainVo.setPicSrc(obj[3].toString());
+			}
+			if(obj[4]!=null){
+				goodsSearchMainVo.setShopId(obj[4].toString());
+			}
+			if(obj[5]!=null){
+				goodsSearchMainVo.setComment(obj[5].toString());
+			}else{
+				goodsSearchMainVo.setComment("0");
+			}
+			if(obj[6]!=null){
+				goodsSearchMainVo.setSaleSum(obj[6].toString());
+			}
+			if(obj[7]!=null){
+				goodsSearchMainVo.setShopName(obj[7].toString());
+			}
+			goodsList.add(goodsSearchMainVo);
+		}
+		goodsSearchVo.setGoodsList(goodsList);
+		List<SearchVo> brandList = new ArrayList<SearchVo>();
+		for (int i = 0; i < brandPage.getObjList().size(); i++){
+			SearchVo searchVo = new SearchVo();
+			Object[] brandObj = (Object[])brandPage.getObjList().get(i);
+			if(brandObj[0]!=null){
+				searchVo.setId(brandObj[0].toString());
+			}
+			if(brandObj[1]!=null){
+				searchVo.setName(brandObj[1].toString());
+			}
+			brandList.add(searchVo);
+		}
+		goodsSearchVo.setGoodsBrandList(brandList);
+			
+		List<SearchVo> countryList = new ArrayList<SearchVo>();
+		for (int i = 0; i < countryPage.getObjList().size(); i++){
+			SearchVo searchVo = new SearchVo();
+			Object[] countryObj = (Object[])countryPage.getObjList().get(i);
+			if(countryObj[0]!=null){
+				searchVo.setId(countryObj[0].toString());
+			}
+			if(countryObj[1]!=null){
+				searchVo.setName(countryObj[1].toString());
+			}
+			countryList.add(searchVo);
+		}
+		goodsSearchVo.setCountryList(countryList);
+			
+		List<SearchVo> goodsTypeList = new ArrayList<SearchVo>();
+		for (int i = 0; i < goodsTypePage.getObjList().size(); i++){
+			SearchVo searchVo = new SearchVo();
+			Object[] goodsTypeObj = (Object[])goodsTypePage.getObjList().get(i);
+			if(goodsTypeObj[0]!=null){
+				searchVo.setId(goodsTypeObj[0].toString());
+			}
+			if(goodsTypeObj[1]!=null){
+				searchVo.setName(goodsTypeObj[1].toString());
+			}
+			goodsTypeList.add(searchVo);
+		}
+		goodsSearchVo.setGoodsTypeList(goodsTypeList);
+		
+		goodsSearchVoList.add(goodsSearchVo);
+		goodsPage.setVoList(goodsSearchVoList);
+		return ObjectToResult.getVoResult(goodsPage);
+	
 	}
 	/**
 	 * 猜猜你喜欢

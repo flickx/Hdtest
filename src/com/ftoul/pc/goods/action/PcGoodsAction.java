@@ -224,15 +224,4 @@ public class PcGoodsAction {
 		}
 		return ObjectToResult.getResult(goodsAppVoList);
 	}
-	/**
-	 * 根据搜索名获取商品列表
-	 * @param param
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "getGoodsBySearchName")  
-	public @ResponseBody Result getGoodsBySearchName(String param) throws Exception{	
-		Parameter parameter = Common.jsonToParam(param);
-		return goodsPcServ.getGoodsBySearchName(parameter);
-	}
 }
