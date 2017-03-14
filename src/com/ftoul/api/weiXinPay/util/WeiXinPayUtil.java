@@ -6,11 +6,16 @@ import java.util.Date;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.jdom.JDOMException;
 import org.springframework.stereotype.Component;
 
 import com.ftoul.po.Orders;
+import com.ftoul.util.zxing.ZxResult;
+import com.ftoul.util.zxing.ZxingUtil;
 
 /**
  * 银联支付中心工具包
@@ -112,5 +117,51 @@ public class WeiXinPayUtil {
     	System.out.println(MD5Util.MD5Encode("admin&ad的", "UTF-8"));
     	System.out.println(WXMD5.MD5Encode("admin&ad的"));
     	System.out.println(new Date().getTime());
+	}
+
+    /**
+     * 微信网页版扫码支付
+     * @param order
+     * @param remoteAddr
+     * @return
+     * @throws IOException 
+     * @throws JDOMException 
+     */
+	public String payByOrdersPc(Orders orders, HttpServletRequest request) throws Exception {
+		SortedMap<Object,Object> parameters = new TreeMap<Object,Object>();
+		parameters.put("appid", ConfigUtil.APPID);
+		parameters.put("mch_id", ConfigUtil.MCH_ID);
+		String nonceStr = PayCommonUtil.CreateNoncestr();
+		parameters.put("nonce_str", nonceStr);
+		parameters.put("body", "他她乐订单支付");
+		parameters.put("out_trade_no", orders.getOrderNumber());
+		BigDecimal price = new BigDecimal(orders.getOrderPrice());
+		BigDecimal base = new BigDecimal(100);
+		String money = price.multiply(base).toString();
+		parameters.put("total_fee",money.substring(0,money.indexOf(".")));
+		parameters.put("spbill_create_ip",request.getRemoteAddr());
+		parameters.put("notify_url", ConfigUtil.NOTIFY_URL);
+//		parameters.put("timeStamp", new Date().getTime()+"");
+		parameters.put("trade_type", "NATIVE");
+		String sign = PayCommonUtil.createSign("UTF-8", parameters);
+		parameters.put("sign", sign);
+		String requestXML = PayCommonUtil.getRequestXml(parameters);
+		System.out.println(requestXML);
+		
+		String result =CommonUtil.httpsRequest(ConfigUtil.UNIFIED_ORDER_URL, "POST", requestXML);
+		System.out.println(result);
+		
+		Map<String, Object> map = XMLUtil.doXMLParse(result);
+		String codeUrl = (String) map.get("code_url");
+		System.out.println("codeUrl:"+codeUrl);
+		String uuid = UUID.randomUUID()+".png";
+		String path = request.getSession().getServletContext().getRealPath("/upload/img/wx/");
+		ZxResult zxResult = ZxingUtil.createZxing(path+uuid, codeUrl);
+		if(zxResult.isResult()){
+			return zxResult.getMessage();
+		}else{
+			return "二维码罢工了，请稍后再试";
+		}
+	    
 	}
 }

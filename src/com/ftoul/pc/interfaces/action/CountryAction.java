@@ -9,7 +9,6 @@ import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.pc.interfaces.service.CountryService;
-import com.ftoul.web.goods.service.CrossBorderMuseumServ;
 
 /**
  * pc端国家馆二级页面接口
@@ -21,8 +20,6 @@ import com.ftoul.web.goods.service.CrossBorderMuseumServ;
 public class CountryAction {
 	@Autowired
 	private CountryService countryService;
-	@Autowired
-	private CrossBorderMuseumServ crossBorderMuseumServ;
 	/**
 	 * pc端国家馆二级页面获取所有国家接口
 	 * @param param Parameter对象
@@ -31,7 +28,7 @@ public class CountryAction {
 	@RequestMapping(value = "getCountryList")  
 	public @ResponseBody Result getCountryList(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return  crossBorderMuseumServ.getCrossBorderMuseumList(parameter);
+		return  countryService.getCountryList(parameter);
 	}
 	/**
 	 * pc端国家馆二级页面获取所有有进口商品的商品分类接口
