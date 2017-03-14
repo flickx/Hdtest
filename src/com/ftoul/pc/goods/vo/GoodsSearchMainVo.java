@@ -9,6 +9,7 @@ public class GoodsSearchMainVo {
 	private String comment;//评论数
 	private String saleSum;//总销量
 	private String shopName;//店铺名
+	private String marketPrice;//市场价
 	public String getId() {
 		return id;
 	}
@@ -56,6 +57,12 @@ public class GoodsSearchMainVo {
 	}
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
+	}
+	public String getMarketPrice() {
+		return marketPrice;
+	}
+	public void setMarketPrice(String marketPrice) {
+		this.marketPrice = marketPrice;
 	}
 	
 }

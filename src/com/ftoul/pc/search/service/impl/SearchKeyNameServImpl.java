@@ -44,8 +44,10 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 		}else{
 			order = param.getOrderBy();
 		}
-		String goodsSql ="select gs.id,gs.title,gs.price,gs.pic_src,gs.shop_id,sum(uco.id),gs.sale_sum,bs.store_name "
-						+ "from Goods gs join business_store bs on gs.shop_id = bs.id left join user_comment uco on gs.id = uco.good_id "
+		String goodsSql ="select gs.id,gs.title,gs.price,gs.pic_src,gs.shop_id,sum(uco.id),gs.sale_sum,bs.store_name,gp.market_price "
+						+ "from Goods gs join business_store bs on gs.shop_id = bs.id "
+						+ "join goods_param gp on gs.id = gp.goods_id and gp.state = 1 and gp.defalut = 1 "
+						+ "left join user_comment uco on gs.id = uco.good_id "
 						+ "where gs.state = 1 and gs.grounding  = 1 and gs.title like '%"+param.getKey()+"%' group by gs.id"+order ;
 		
 		String goodsCount ="select count(*) "
@@ -115,6 +117,9 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 			}
 			if(obj[7]!=null){
 				goodsSearchMainVo.setShopName(obj[7].toString());
+			}
+			if(obj[8]!=null){
+				goodsSearchMainVo.setMarketPrice(obj[8].toString());
 			}
 			goodsList.add(goodsSearchMainVo);
 		}
