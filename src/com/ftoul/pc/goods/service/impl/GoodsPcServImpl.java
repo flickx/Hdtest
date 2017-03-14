@@ -13,11 +13,14 @@ import com.ftoul.app.vo.GoodsPicAppVo;
 import com.ftoul.app.vo.GoodsPropAppVo;
 import com.ftoul.app.vo.ShopVo;
 import com.ftoul.common.ObjectToResult;
+import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.goods.vo.GoodsVo;
 import com.ftoul.pc.goods.service.GoodsPcServ;
 import com.ftoul.pc.goods.vo.GoodsPcVo;
+import com.ftoul.pc.goods.vo.GoodsSearchVo;
+import com.ftoul.pc.goods.vo.SearchVo;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.GoodsProp;
 import com.ftoul.po.GoodsUploadpic;
@@ -179,4 +182,117 @@ public class GoodsPcServImpl implements GoodsPcServ {
 	    }
 	    return ip.equals("0:0:0:0:0:0:0:1")?"127.0.0.1":ip;
 	}
+	@Override
+	public Result getGoodsBySearchName(Parameter param) throws Exception {
+		String goodsSql ="select gs.id,gs.title,gs.price,gs.pic_src,gs.shop_id,ifnull(sum(uco.id),0) "
+						+ "from Goods gs left join user_comment uco on gs.id = uco.good_id "
+						+ "where gs.state = 1 and gs.grounding  = 1 and gs.title like '%"+param.getKey()+"%' group by gs.id" ;
+		
+		String goodsCount ="select count(*) "
+				+ "from Goods gs left join user_comment uco on gs.id = uco.good_id "
+				+ "where gs.state = 1 and gs.grounding  = 1 and gs.title like '%"+param.getKey()+"%' group by gs.id" ;
+		
+		Page goodsPage = hibernateUtil.sqlPage(goodsCount, goodsSql, param.getPageNum(), param.getPageSize());
+		
+		String brandSql ="select DISTINCT gb.id,gb.name from Goods gs join goods_brand gb "
+					+"on gs.goods_brand_id = gb.id and gs.state =1 and gs.grounding =1 and gb.state = 1 "
+					+"and gs.title like '%"+param.getKey()+"%'" ;
+		
+		String brandCount ="select count(*) from Goods gs join goods_brand gb "
+				+"on gs.goods_brand_id = gb.id and gs.state =1 and gs.grounding =1 and gb.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'" ;
+		
+		Page brandPage = hibernateUtil.sqlPage(brandCount, brandSql, param.getPageNum(), param.getPageSize());
+		
+		String countrySql ="select DISTINCT cbm.id,cbm.name from Goods gs join cross_border_museum cbm "
+				+"on gs.country_id = cbm.id and gs.state =1 and gs.grounding =1 and cbm.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'" ;
+		
+		String countryCount ="select count(*) from Goods gs join cross_border_museum cbm "
+				+"on gs.country_id = cbm.id and gs.state =1 and gs.grounding =1 and cbm.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'" ;
+		
+		Page countryPage = hibernateUtil.sqlPage(countryCount, countrySql, param.getPageNum(), param.getPageSize());
+		
+		String goodsTypeSql ="select DISTINCT gt.id,gt.name from Goods gs join goods_type gt "
+				+"on gs.goods_type1 = gt.id and gs.state =1 and gs.grounding =1 and gt.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'"+" group by gt.id" ;
+		
+		String goodsTypeCount ="select count(*) from Goods gs join goods_type gt "
+				+"on gs.goods_type1 = gt.id and gs.state =1 and gs.grounding =1 and gt.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'" ;
+		Page goodsTypePage = hibernateUtil.sqlPage(goodsTypeCount, goodsTypeSql, param.getPageNum(), param.getPageSize());
+		
+		
+		List<GoodsSearchVo> goodsList = new ArrayList<GoodsSearchVo>();
+		for (int i = 0; i < goodsPage.getObjList().size(); i++) {
+			GoodsSearchVo goodsSearchVo = new GoodsSearchVo();
+			Object[] obj = (Object[])goodsPage.getObjList().get(i);
+			if(obj[0]!=null){
+				goodsSearchVo.setId(obj[0].toString());
+			}
+			if(obj[1]!=null){
+				goodsSearchVo.setTitle(obj[1].toString());
+			}
+			if(obj[2]!=null){
+				goodsSearchVo.setPrice(obj[2].toString());
+			}
+			if(obj[3]!=null){
+				goodsSearchVo.setPicSrc(obj[3].toString());
+			}
+			if(obj[4]!=null){
+				goodsSearchVo.setShopId(obj[4].toString());
+			}
+			if(obj[5]!=null){
+				goodsSearchVo.setComment(obj[5].toString());
+			}
+			if(i==0){
+				List<SearchVo> brandList = new ArrayList<SearchVo>();
+				for (int j = 0; j < brandPage.getObjList().size(); j++){
+					SearchVo searchVo = new SearchVo();
+					Object[] brandObj = (Object[])goodsPage.getObjList().get(j);
+					if(brandObj[0]!=null){
+						searchVo.setId(brandObj[0].toString());
+					}
+					if(brandObj[1]!=null){
+						searchVo.setName(brandObj[1].toString());
+					}
+					brandList.add(searchVo);
+				}
+				goodsSearchVo.setGoodsBrandList(brandList);
+				
+				List<SearchVo> countryList = new ArrayList<SearchVo>();
+				for (int k = 0; k < countryPage.getObjList().size(); k++){
+					SearchVo searchVo = new SearchVo();
+					Object[] countryObj = (Object[])countryPage.getObjList().get(k);
+					if(countryObj[0]!=null){
+						searchVo.setId(countryObj[0].toString());
+					}
+					if(countryObj[1]!=null){
+						searchVo.setName(countryObj[1].toString());
+					}
+					countryList.add(searchVo);
+				}
+				goodsSearchVo.setCountryList(countryList);
+				
+				List<SearchVo> goodsTypeList = new ArrayList<SearchVo>();
+				for (int l = 0; l < goodsTypePage.getObjList().size(); l++){
+					SearchVo searchVo = new SearchVo();
+					Object[] goodsTypeObj = (Object[])goodsTypePage.getObjList().get(l);
+					if(goodsTypeObj[0]!=null){
+						searchVo.setId(goodsTypeObj[0].toString());
+					}
+					if(goodsTypeObj[1]!=null){
+						searchVo.setName(goodsTypeObj[1].toString());
+					}
+					goodsTypeList.add(searchVo);
+				}
+				goodsSearchVo.setGoodsTypeList(goodsTypeList);
+			}
+			goodsList.add(goodsSearchVo);
+		}
+		goodsPage.setVoList(goodsList);
+		return ObjectToResult.getVoResult(goodsPage);
+	}
+	
 }

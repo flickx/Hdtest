@@ -16,4 +16,12 @@ public interface GoodsPcServ{
 	 * @return  返回结果（前台用Result对象）
 	 */
 	Result getGoodsDetail(Parameter parameter) throws Exception;
+	
+	/**
+	 * 根据搜索名获取商品列表
+	 * @param parameter
+	 * @return
+	 * @throws Exception
+	 */
+	Result getGoodsBySearchName(Parameter parameter) throws Exception;
 }
