@@ -82,7 +82,7 @@ public class OrdersServImpl implements OrdersServ {
 	@Autowired
 	GoodsParamServ goodsParamServ;
 	@Autowired  
-	private  HttpServletRequest req;
+	HttpServletRequest req;
 	@Autowired  
 	OrdersUtil ordersUtil;
 	@Autowired  
@@ -838,9 +838,11 @@ public class OrdersServImpl implements OrdersServ {
 //			res.setMessage(resultStr);
 //			return ObjectToResult.getResult(res);
 		}else if(OrdersConstant.WXPAY.equals(payType)){
-			String mobilWxPayVo = weiXinPayUtil.payByOrdersPc(order,req.getRemoteAddr());
-			Result mobilWxPay = ObjectToResult.getResult(mobilWxPayVo);
-			return mobilWxPay;
+			String pay = weiXinPayUtil.payByOrdersPc(order,req);
+			Result wxResult = new Result();
+			wxResult.setMessage(pay);
+			wxResult.setResult(1);
+			return wxResult;
 		}else if(OrdersConstant.ALIQBPAY.equals(payType)){
 			String resultStr = aliPayUtil.payByOrdersApp(order);
 			System.out.println(resultStr);

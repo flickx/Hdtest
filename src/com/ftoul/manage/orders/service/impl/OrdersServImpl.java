@@ -754,5 +754,56 @@ public class OrdersServImpl implements OrdersServ {
 		}
 		return ObjectToResult.getResult(reportDataList);
 	}
+
+	@Override
+	public Result getOrderListByUserId(Parameter param) throws Exception {
+		ordersUtil.autoCancelOrders(param);
+		String hql = " from Orders where orderStatic!='0' and user.id='"+param.getId() +"' order by orderTime desc";
+		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
+		List<Object> ordersList = page.getObjList();
+		List<Object> voList = new ArrayList<Object>();
+		for (Object object : ordersList) {
+			Orders orders = (Orders) object;
+			OrdersVo ordersVo = new OrdersVo();
+			ordersVo.setId(orders.getId());
+			ordersVo.setOrderNumber(orders.getOrderNumber());
+			ordersVo.setGoodsTotal(orders.getGoodsTotal());
+			ordersVo.setOrderTime(orders.getOrderTime());
+			ordersVo.setOrderStatic(ordersUtil.getState(orders.getOrderStatic()));
+			ordersVo.setOrderPrice(orders.getOrderPrice());
+			ordersVo.setPayable(orders.getPayable());
+			hql = " from OrdersDetail where orders.id='"+orders.getId()+"'";
+			List<Object> ordersDetailList = hibernateUtil.hql(hql);
+			List<String> ordersDetailVoList = new ArrayList<String>();
+			for (Object object2 : ordersDetailList) {
+				OrdersDetail ordersDetail = (OrdersDetail) object2;
+				String goodsPicSrc = ordersDetail.getGoodsParam().getGoods().getPicSrc();
+				ordersDetailVoList.add(goodsPicSrc);
+			}
+			ordersVo.setGoodPicSrcs(ordersDetailVoList);
+			ordersVo.setUserName(orders.getUser().getUsername());
+			ordersVo.setTel(orders.getConsigneeTel());
+			ordersVo.setConginee(orders.getConsignee());
+			ordersVo.setAddress(orders.getAddress());
+			if(orders.getFreight()!=null){
+				ordersVo.setFreight(orders.getFreight().toString());
+			}
+			if(orders.getShopId()!=null){
+				ordersVo.setShopName(orders.getShopId().getStoreName());
+			}
+			if("1".equals(orders.getIsHasChild())){
+				ordersVo.setIsHasChild("是");
+			}
+			Orders parent = (Orders) hibernateUtil.find(Orders.class, orders.getParentOrdersId()+"");
+			if(parent!=null){
+				ordersVo.setParentOrderNumber(parent.getOrderNumber());
+			}
+			
+			voList.add(ordersVo);
+		}
+		page.setObjList(voList);
+		
+		return ObjectToResult.getResult(page);
+	}
 	
 }

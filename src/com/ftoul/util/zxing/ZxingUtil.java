@@ -45,8 +45,11 @@ public class ZxingUtil {
 	        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);//纠错等级L,M,Q,H
 	        hints.put(EncodeHintType.MARGIN, 2); //边距
 	        BitMatrix bitMatrix=new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, width, hight, hints);
-	        Path file=new File(filePath).toPath();
-	        MatrixToImageWriter.writeToPath(bitMatrix, format, file);
+	        File file=new File(filePath);
+	        if(!file.exists()){
+	        	file.createNewFile();
+	        }
+	        MatrixToImageWriter.writeToPath(bitMatrix, format, file.toPath());
 	        
 	        zxResult.setResult(true);
 	        zxResult.setMessage(filePath);

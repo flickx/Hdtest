@@ -29,4 +29,12 @@ public interface AddressServ {
 
 	public Result getUserAddressById(Parameter param) throws Exception ;
 	
+	/**
+	 * 根据用户id获取用户地址
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getUserAddressByUserId(Parameter param) throws Exception;
+	
 }

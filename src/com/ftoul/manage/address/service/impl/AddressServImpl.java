@@ -169,4 +169,11 @@ public class AddressServImpl implements AddressServ {
 		return ObjectToResult.getResult(userAddress);
 	}
 
+	@Override
+	public Result getUserAddressByUserId(Parameter param) throws Exception {
+		String hql = "from UserAddress where state = '1' and user.id = '" + param.getId()+"'" ;
+		List<Object> list = hibernateUtil.hql(hql);
+		return ObjectToResult.getResult(list);
+	}
+
 }

@@ -130,5 +130,16 @@ public class AddressAction {
 		return addressServ.getTownByCityId(parameter);
 	}
 	
+	/**
+	 * 根据用户id获取用户地址
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getUserAddressByUserId")  
+	public @ResponseBody Result getUserAddressByUserId(String param) throws Exception {
+		Parameter parameter = Common.jsonToParam(param);
+		return addressServ.getUserAddressByUserId(parameter);
+	}
 	
 }
