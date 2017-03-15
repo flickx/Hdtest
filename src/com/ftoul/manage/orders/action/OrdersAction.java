@@ -354,4 +354,15 @@ public class OrdersAction {
 		return ordersServ.getSendGoodsListPage(parameter);
 	}
 	
+	/**
+	 * 根据用户id获取订单列表
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getOrderListByUserId")  
+	public @ResponseBody Result getOrderListByUserId(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return ordersServ.getOrderListByUserId(parameter);
+	}
 }
