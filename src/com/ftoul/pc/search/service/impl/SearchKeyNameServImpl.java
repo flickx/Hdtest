@@ -38,51 +38,63 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 	@Override
 	public Result getGoodsBykeyName(Parameter param) throws Exception {
 
-		String order;
+		String order = "";
+		String whereStr = "";
 		if(param.getOrderBy()==null || param.getOrderBy().trim().equals("order by id desc")){
-			order = " order by gs.sale_sum desc";
+			order = " order by sum(uco.id) desc";
 		}else{
 			order = param.getOrderBy();
+		}
+		if(null!=param.getWhereStr()){
+			whereStr = param.getWhereStr();
 		}
 		String goodsSql ="select gs.id,gs.title,gs.price,gs.pic_src,gs.shop_id,sum(uco.id),gs.sale_sum,bs.store_name,gp.market_price "
 						+ "from Goods gs join business_store bs on gs.shop_id = bs.id "
 						+ "join goods_param gp on gs.id = gp.goods_id and gp.state = 1 and gp.defalut = 1 "
-						+ "left join user_comment uco on gs.id = uco.good_id "
-						+ "where gs.state = 1 and gs.grounding  = 1 and gs.title like '%"+param.getKey()+"%' group by gs.id"+order ;
+						+ "left join user_comment uco on gs.id = uco.good_id and uco.state = 1 "
+						+ "where gs.state = 1 and gs.grounding  = 1 and gs.title like '%"+param.getKey()+"%'" +whereStr+" group by gs.id"+order ;
 		
 		String goodsCount ="select count(*) "
-				+ "from Goods gs left join user_comment uco on gs.id = uco.good_id "
-				+ "where gs.state = 1 and gs.grounding  = 1 and gs.title like '%"+param.getKey()+"%' group by gs.id "+order ;
+				+ "from Goods gs join business_store bs on gs.shop_id = bs.id "
+				+ "join goods_param gp on gs.id = gp.goods_id and gp.state = 1 and gp.defalut = 1 "
+				+ "left join user_comment uco on gs.id = uco.good_id and uco.state = 1 "
+				+ "where gs.state = 1 and gs.grounding  = 1 and gs.title like '%"+param.getKey()+"%'" ;
 		
 		Page goodsPage = hibernateUtil.sqlPage(goodsCount, goodsSql, param.getPageNum(), param.getPageSize());
 		
 		String brandSql ="select DISTINCT gb.id,gb.name from Goods gs join goods_brand gb "
 					+"on gs.goods_brand_id = gb.id and gs.state =1 and gs.grounding =1 and gb.state = 1 "
-					+"and gs.title like '%"+param.getKey()+"%'" +order;
+					+"left join user_comment uco on gs.id = uco.good_id and uco.state = 1 "
+					+"and gs.title like '%"+param.getKey()+"%'"+whereStr +order;
 		
 		String brandCount ="select count(*) from Goods gs join goods_brand gb "
 				+"on gs.goods_brand_id = gb.id and gs.state =1 and gs.grounding =1 and gb.state = 1 "
-				+"and gs.title like '%"+param.getKey()+"%'" +order;
+				+"left join user_comment uco on gs.id = uco.good_id and uco.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'"+whereStr;
 		
 		Page brandPage = hibernateUtil.sqlPage(brandCount, brandSql, param.getPageNum(), param.getPageSize());
 		
 		String countrySql ="select DISTINCT cbm.id,cbm.name from Goods gs join cross_border_museum cbm "
 				+"on gs.country_id = cbm.id and gs.state =1 and gs.grounding =1 and cbm.state = 1 "
-				+"and gs.title like '%"+param.getKey()+"%'" +order;
+				+"left join user_comment uco on gs.id = uco.good_id and uco.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'"+whereStr +order;
 		
 		String countryCount ="select count(*) from Goods gs join cross_border_museum cbm "
 				+"on gs.country_id = cbm.id and gs.state =1 and gs.grounding =1 and cbm.state = 1 "
-				+"and gs.title like '%"+param.getKey()+"%'" +order;
+				+"left join user_comment uco on gs.id = uco.good_id and uco.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'"+whereStr;
 		
 		Page countryPage = hibernateUtil.sqlPage(countryCount, countrySql, param.getPageNum(), param.getPageSize());
 		
 		String goodsTypeSql ="select DISTINCT gt.id,gt.name from Goods gs join goods_type gt "
 				+"on gs.goods_type1 = gt.id and gs.state =1 and gs.grounding =1 and gt.state = 1 "
-				+"and gs.title like '%"+param.getKey()+"%'"+" group by gt.id" +order;
+				+"left join user_comment uco on gs.id = uco.good_id and uco.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'"+whereStr+" group by gt.id" +order;
 		
 		String goodsTypeCount ="select count(*) from Goods gs join goods_type gt "
 				+"on gs.goods_type1 = gt.id and gs.state =1 and gs.grounding =1 and gt.state = 1 "
-				+"and gs.title like '%"+param.getKey()+"%'" +order;
+				+"left join user_comment uco on gs.id = uco.good_id and uco.state = 1 "
+				+"and gs.title like '%"+param.getKey()+"%'"+whereStr;
 		Page goodsTypePage = hibernateUtil.sqlPage(goodsTypeCount, goodsTypeSql, param.getPageNum(), param.getPageSize());
 		
 		
