@@ -50,6 +50,7 @@ public class ZxingUtil {
 	        	file.createNewFile();
 	        }
 	        MatrixToImageWriter.writeToPath(bitMatrix, format, file.toPath());
+	        
 	        zxResult.setResult(true);
 	        zxResult.setMessage(filePath);
 	        return zxResult;

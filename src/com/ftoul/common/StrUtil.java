@@ -129,4 +129,20 @@ public class StrUtil {
 		}
 		return sb.toString();
    }
+   /**
+    * 首字母改小写
+    * @param str
+    * @return
+    */
+   public static String firstToLower(String str){
+	   if(str != null){
+		   char[] chars=new char[1];
+		   chars[0]=str.charAt(0);
+		   String temp=new String(chars);  
+	       if(chars[0]>='A'  &&  chars[0]<='Z'){  
+	    	   str = str.replaceFirst(temp,temp.toLowerCase());  
+	       }
+	   }
+       return str;
+   }
 }
