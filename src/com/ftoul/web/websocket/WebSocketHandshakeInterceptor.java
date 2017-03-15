@@ -2,6 +2,7 @@ package com.ftoul.web.websocket;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.server.ServerHttpRequest;
@@ -23,6 +24,11 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor{
                 String userName = (String) session.getAttribute(WxWebSocketHandler.WebSocketUserName);
                 attributes.put(WxWebSocketHandler.WebSocketUserName,userName);
             }
+            HttpServletRequest requests = servletRequest.getServletRequest();
+            attributes.put("orderNumber",servletRequest.getServletRequest().getParameter("orderNumber"));
+            attributes.put("userToken",servletRequest.getServletRequest().getParameter("userToken"));
+            System.out.println("orderNumber:"+servletRequest.getServletRequest().getParameter("orderNumber"));
+            System.out.println("userToken:"+servletRequest.getServletRequest().getParameter("userToken"));
         }
         return true;
     }
