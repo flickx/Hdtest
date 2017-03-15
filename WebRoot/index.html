@@ -1,0 +1,27 @@
+<script type="text/javascript" src="http://localhost:8080/Origami/websocket/sockjs-0.3.min.js"></script>
+        <script>
+            var websocket;
+            if ('WebSocket' in window) {
+                websocket = new WebSocket("ws://localhost:8080/FtShop/webSocketServer.action?webSocketUserName=123");
+            } else if ('MozWebSocket' in window) {
+                websocket = new MozWebSocket("ws://localhost:8080/FtShop/webSocketServer.action?webSocketUserName=123");
+            } else {
+                websocket = new SockJS("http://localhost:8080/FtShop/sockjs/webSocketServer.action?webSocketUserName=123");
+            }
+            websocket.onopen = function (evnt) {
+            	alert(1);
+            };
+            websocket.onmessage = function (evnt) {
+                //$("#msgcount").html("(<font color='red'>"+evnt.data+"</font>)")
+                alert(evnt.data);
+                websocket.close();
+            };
+            websocket.onerror = function (evnt) {
+            	console.log(evnt);
+            	alert(2);
+            };
+            websocket.onclose = function (evnt) {
+            	alert(3);
+            }
+
+        </script>
