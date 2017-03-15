@@ -49,16 +49,30 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 			whereStr = param.getWhereStr();
 		}
 		String goodsSql ="select gs.id,gs.title,gs.price,gs.pic_src,gs.shop_id,sum(uco.id),gs.sale_sum,bs.store_name,gp.market_price "
-						+ "from Goods gs join business_store bs on gs.shop_id = bs.id "
-						+ "join goods_param gp on gs.id = gp.goods_id and gp.state = 1 and gp.defalut = 1 "
+						+ "from Goods gs join business_store bs on gs.shop_id = bs.id and gs.state = 1 and gs.grounding  = 1 "
+						+ "join goods_param gp on gs.id = gp.goods_id and gp.state = 1 and gp.defalut = 1 and gs.state = 1 and gs.grounding  = 1 "
+						+ "join goods_brand gb on gs.goods_brand_id = gb.id and gs.state = 1 and gs.grounding  = 1 and gb.state = 1 "
+						+ "join goods_type gt on gs.goods_type1 = gt.id and gs.state =1 and gs.grounding =1 and gt.state = 1 "
+						+ "left join goods_type gt2 on gs.goods_type2 = gt2.id and gs.state =1 and gs.grounding =1 and gt2.state = 1 "
+						+ "left join goods_type gt3 on gs.goods_type3 = gt3.id and gs.state =1 and gs.grounding =1 and gt3.state = 1 "
+						+ "left join cross_border_museum cbm on gs.country_id = cbm.id and gs.state =1 and gs.grounding =1 and cbm.state = 1 "
 						+ "left join user_comment uco on gs.id = uco.good_id and uco.state = 1 "
-						+ "where gs.state = 1 and gs.grounding  = 1 and gs.title like '%"+param.getKey()+"%'" +whereStr+" group by gs.id"+order ;
+						+ "where (gs.title like '%"+param.getKey()+"%'"+ " or gb.name like '%"+param.getKey()+"%'"+ " or cbm.name like '%"+param.getKey()+"%' "
+						+ "or gt.name like '%"+param.getKey()+"%'"+ " or gt2.name like '%"+param.getKey()+"%'" + " or gt3.name like '%"+param.getKey()+"%') "
+						+  whereStr+" group by gs.id "+order ;
 		
-		String goodsCount ="select count(*) "
-				+ "from Goods gs join business_store bs on gs.shop_id = bs.id "
-				+ "join goods_param gp on gs.id = gp.goods_id and gp.state = 1 and gp.defalut = 1 "
+		String goodsCount ="select count(gs.id) "
+				+ "from Goods gs join business_store bs on gs.shop_id = bs.id and gs.state = 1 and gs.grounding  = 1 "
+				+ "join goods_param gp on gs.id = gp.goods_id and gp.state = 1 and gp.defalut = 1 and gs.state = 1 and gs.grounding  = 1 "
+				+ "join goods_brand gb on gs.goods_brand_id = gb.id and gs.state = 1 and gs.grounding  = 1 and gb.state = 1 "
+				+ "join goods_type gt on gs.goods_type1 = gt.id and gs.state =1 and gs.grounding =1 and gt.state = 1 "
+				+ "left join goods_type gt2 on gs.goods_type2 = gt2.id and gs.state =1 and gs.grounding =1 and gt2.state = 1 "
+				+ "left join goods_type gt3 on gs.goods_type3 = gt3.id and gs.state =1 and gs.grounding =1 and gt3.state = 1 "
+				+ "left join cross_border_museum cbm on gs.country_id = cbm.id and gs.state =1 and gs.grounding =1 and cbm.state = 1 "
 				+ "left join user_comment uco on gs.id = uco.good_id and uco.state = 1 "
-				+ "where gs.state = 1 and gs.grounding  = 1 and gs.title like '%"+param.getKey()+"%'" ;
+				+ "where (gs.title like '%"+param.getKey()+"%'"+ " or gb.name like '%"+param.getKey()+"%'"+ " or cbm.name like '%"+param.getKey()+"%' "
+				+ "or gt.name like '%"+param.getKey()+"%'"+ " or gt2.name like '%"+param.getKey()+"%'" + " or gt3.name like '%"+param.getKey()+"%') "
+				+  whereStr;
 		
 		Page goodsPage = hibernateUtil.sqlPage(goodsCount, goodsSql, param.getPageNum(), param.getPageSize());
 		
