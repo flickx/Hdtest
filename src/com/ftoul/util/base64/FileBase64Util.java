@@ -30,9 +30,9 @@ public class FileBase64Util {
 			byte[] bytes = new byte[input.available()];
 			input.read(bytes);
 			result = encoder.encodeBuffer(bytes).trim();
-			System.out.println("将图片转换为BASE64加密字符串成功！");
+			System.out.println("将文件转换为BASE64加密字符串成功！");
 		} catch (IOException e) {
-			System.out.println("将图片转换为 BASE64加密字符串失败: " + e);
+			System.out.println("将文件转换为 BASE64加密字符串失败: " + e);
 		} finally {
 			try {
 				if (input != null) {
