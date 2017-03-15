@@ -146,5 +146,4 @@
 		<mapping class="com.ftoul.po.Article"/>
 		<mapping class="com.ftoul.po.CrossBorderMuseum"/>
 	</session-factory>
-
 </hibernate-configuration>

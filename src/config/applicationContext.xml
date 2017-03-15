@@ -21,7 +21,6 @@
      http://www.springframework.org/schema/util/spring-util-3.0.xsd
      ">
 
-
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="configLocation"
@@ -85,4 +84,7 @@
         <mvc:mapping path="/**" allowed-origins="*" allow-credentials="true" max-age="1800" allowed-methods="GET,POST,OPTIONS"/>
     </mvc:cors>
 	<mvc:annotation-driven />
+	<beans>
+         <import resource="applicationContext-mongodb.xml"/>
+    </beans>
 </beans>
