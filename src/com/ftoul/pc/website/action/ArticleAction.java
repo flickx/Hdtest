@@ -1,5 +1,7 @@
 package com.ftoul.pc.website.action;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -87,5 +89,15 @@ public class ArticleAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return articleServ.getNextClassifyList(parameter);
 	}
-	
+	/**
+	 * 文章文件处理
+	 * @author LiDing
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="getFilePath")
+	public @ResponseBody Result getFilePath(String param, HttpServletRequest request) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return articleServ.getFilePath(parameter,request);
+	}
 }

@@ -1,6 +1,10 @@
 package com.ftoul.pc.website.service.impl;
 
+import java.io.File;
 import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
 
@@ -16,6 +20,7 @@ import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.pc.website.service.ArticleServ;
 import com.ftoul.po.Article;
+import com.ftoul.util.base64.FileBase64Util;
 import com.ftoul.util.hibernate.HibernateUtil;
 
 @Service("ArticleServImpl")
@@ -80,6 +85,23 @@ public class ArticleServImpl implements ArticleServ {
 			res = hibernateUtil.update(article);
 		}
 		return ObjectToResult.getResult(res);
+	}
+	
+	@Override
+	public Result getFilePath(Parameter parameter, HttpServletRequest request) throws Exception {
+		String fileLastName = parameter.getId().toString().split(",")[0].split(";")[0].split("/")[1];
+		String base64String = parameter.getId().toString().split(",")[1];
+		String fileFirstName = UUID.randomUUID().toString();
+		String folderName = parameter.getKey();
+		String path = request.getSession().getServletContext().getRealPath("upload/img/"+folderName+"/");
+		String picPath = "/upload/img/" + folderName + "/"+fileFirstName+"."+fileLastName;
+		String filePath = path+fileFirstName+"."+fileLastName;
+		File targetFile = new File(path, filePath);  
+		 if(!targetFile.exists()){  
+	            targetFile.mkdirs();  
+	        } 
+		new FileBase64Util().convertByteToFile(base64String, filePath);
+		return ObjectToResult.getResult(picPath);
 	}
 	
 }
