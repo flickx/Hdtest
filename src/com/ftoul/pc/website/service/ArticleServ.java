@@ -56,4 +56,6 @@ public interface ArticleServ {
 	 */
 	Result getNextClassifyList(Parameter parameter) throws Exception;
 	Result getFilePath(Parameter parameter, HttpServletRequest request) throws Exception;
+	
+	Result getArticleListByClassifyId(Parameter parameter) throws Exception;
 }

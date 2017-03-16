@@ -38,4 +38,8 @@ public interface ArticleClassifyServ {
 	 * @throws Exception
 	 */
 	Result delArticleClassify(Parameter parameter) throws Exception;
+	/**
+	 *获取帮助中心文章分类
+	 */
+	Result getArticleClassifyList(Parameter parameter) throws Exception;
 }
