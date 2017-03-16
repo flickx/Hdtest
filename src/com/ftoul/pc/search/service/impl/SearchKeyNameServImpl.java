@@ -113,7 +113,8 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 				goodsSearchMainVo.setShopId(obj[4].toString());
 			}
 			if(obj[5]!=null){
-				goodsSearchMainVo.setComment(obj[5].toString());
+				Integer com = new Double((Double)obj[5]).intValue();
+				goodsSearchMainVo.setComment(com.toString());
 			}else{
 				goodsSearchMainVo.setComment("0");
 			}

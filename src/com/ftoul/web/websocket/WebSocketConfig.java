@@ -18,10 +18,10 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		registry.addHandler(wxWebSocketHandler(), "/webSocketServer.action")
-				.addInterceptors(new WebSocketHandshakeInterceptor());
+				.addInterceptors(new WebSocketHandshakeInterceptor()).setAllowedOrigins("*");
 
 		registry.addHandler(wxWebSocketHandler(), "/sockjs/webSocketServer.action")
-				.addInterceptors(new WebSocketHandshakeInterceptor())
+				.addInterceptors(new WebSocketHandshakeInterceptor()).setAllowedOrigins("*")
 				.withSockJS();
 	}
 

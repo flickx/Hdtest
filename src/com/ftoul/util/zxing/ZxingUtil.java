@@ -46,7 +46,7 @@ public class ZxingUtil {
 	        hints.put(EncodeHintType.MARGIN, 2); //边距
 	        BitMatrix bitMatrix=new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, width, hight, hints);
 	        File file=new File(filePath);
-	        if(!file.exists()){
+	        if(!file.exists()&&file.mkdirs()){
 	        	file.createNewFile();
 	        }
 	        MatrixToImageWriter.writeToPath(bitMatrix, format, file.toPath());

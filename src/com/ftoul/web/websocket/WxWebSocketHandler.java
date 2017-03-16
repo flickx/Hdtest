@@ -11,6 +11,8 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import com.ftoul.common.Common;
+import com.ftoul.po.UserToken;
 import com.ftoul.web.websocket.service.WebSocketServ;
 
 public class WxWebSocketHandler implements WebSocketHandler {
@@ -43,6 +45,11 @@ public class WxWebSocketHandler implements WebSocketHandler {
         }
         sendMessageToUsers(new TextMessage("有人上线了"));
 //        afterConnectionClosed(session, null);
+        String orderNumber = (String) session.getAttributes().get("orderNumber");
+        String userToken = (String) session.getAttributes().get("userToken");
+        UserToken token = (UserToken) Common.jsonToBean(userToken, UserToken.class);
+        sendMessageToUsers(new TextMessage("订单号为："+orderNumber));
+        sendMessageToUsers(new TextMessage("token为："+userToken));
     }
 
     @Override
