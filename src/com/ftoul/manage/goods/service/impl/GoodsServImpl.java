@@ -26,7 +26,6 @@ import com.ftoul.manage.goods.service.GoodsTypeServ;
 import com.ftoul.manage.goods.vo.GoodsListVo;
 import com.ftoul.manage.goods.vo.GoodsTypeSetVo;
 import com.ftoul.manage.goods.vo.GoodsVo;
-import com.ftoul.po.BusinessStore;
 import com.ftoul.po.CrossBorderMuseum;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsBrand;
@@ -36,7 +35,6 @@ import com.ftoul.po.GoodsPropType;
 import com.ftoul.po.GoodsPropertyTypeInfo;
 import com.ftoul.po.GoodsType;
 import com.ftoul.po.GoodsUploadpic;
-import com.ftoul.po.Shop;
 import com.ftoul.util.hibernate.HibernateUtil;
 
 /**
@@ -75,6 +73,9 @@ public class GoodsServImpl implements GoodsServ {
 		//如果不是跨境商品 则置空国家馆
 		if ("0".equals(goods.getCrossborder())) {
 			goods.setCrossBorderMuseum(null);
+		}else{
+			CrossBorderMuseum c = (CrossBorderMuseum)hibernateUtil.find(CrossBorderMuseum.class, goods.getCrossBorderMuseum().getId());
+			goods.setCrossBorderMuseum(c);
 		}
 		//更新商品主图
 //		List<UploadPicVo> picMainVos = param.getUploadPicMainVoList();
