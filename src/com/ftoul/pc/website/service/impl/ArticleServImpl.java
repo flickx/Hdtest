@@ -1,6 +1,7 @@
 package com.ftoul.pc.website.service.impl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +19,7 @@ import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
+import com.ftoul.pc.interfaces.vo.PcArticleVo;
 import com.ftoul.pc.website.service.ArticleServ;
 import com.ftoul.po.Article;
 import com.ftoul.util.base64.FileBase64Util;
@@ -42,7 +44,20 @@ public class ArticleServImpl implements ArticleServ {
 		Article article = (Article)hibernateUtil.hqlFirst(hql);
 		return ObjectToResult.getResult(article);
 	}
-	
+	@Override
+	public Result getArticleListByClassifyId(Parameter parameter) throws Exception {
+		String hql = " from Article where state = 1 and classify.id = '" + parameter.getId() +"'";
+		List<Object> list = (List<Object>)hibernateUtil.hql(hql);
+		List<PcArticleVo> articleList = new ArrayList<PcArticleVo>();
+		for (Object o : list) {
+			Article a = (Article)o;
+			PcArticleVo vo = new PcArticleVo();
+			vo.setContent(a.getContent());
+			vo.setName(a.getClassify().getName());
+			articleList.add(vo);
+		}
+		return ObjectToResult.getResult(articleList);
+	}
 	@Override
 	public Result getArticlePage(Parameter param) throws Exception {
 		String queryStr = param.getWhereStr();
@@ -86,20 +101,30 @@ public class ArticleServImpl implements ArticleServ {
 		}
 		return ObjectToResult.getResult(res);
 	}
-	
+	/**
+	 * bootstrap-wysiwyg富文本编辑器图片处理
+	 */
 	@Override
 	public Result getFilePath(Parameter parameter, HttpServletRequest request) throws Exception {
+		//获取文件后缀
 		String fileLastName = parameter.getId().toString().split(",")[0].split(";")[0].split("/")[1];
+		//获取编辑器传来的图片base64数据
 		String base64String = parameter.getId().toString().split(",")[1];
+		//将生成的图片名称，去UUID
 		String fileFirstName = UUID.randomUUID().toString();
+		//文件夹名称
 		String folderName = parameter.getKey();
+		//保存至系统的绝对路径
 		String path = request.getSession().getServletContext().getRealPath("upload/img/"+folderName+"/");
+		//相对路径
 		String picPath = "/upload/img/" + folderName + "/"+fileFirstName+"."+fileLastName;
+		//绝对路径
 		String filePath = path+fileFirstName+"."+fileLastName;
 		File targetFile = new File(path, filePath);  
 		 if(!targetFile.exists()){  
 	            targetFile.mkdirs();  
 	        } 
+		//写入系统
 		new FileBase64Util().convertByteToFile(base64String, filePath);
 		return ObjectToResult.getResult(picPath);
 	}
