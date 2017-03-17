@@ -11,7 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
  * UserGrade entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "user_grade", catalog = "ftoul_shop")
+@Table(name = "user_grade")
 public class UserGrade implements java.io.Serializable {
 
 	// Fields

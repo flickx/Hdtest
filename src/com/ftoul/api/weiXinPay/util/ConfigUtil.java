@@ -12,7 +12,7 @@ public class ConfigUtil {
 	 
 //	 public final static String SIGN_TYPE = "MD5";//签名加密方式
 	//微信支付统一接口的回调action
-	 public final static String NOTIFY_URL = "http://test.tatll.com/FtShop/api/weiXinPay/payReturn.action";
+	 public final static String NOTIFY_URL = "http://api2.tatll.com/FtShop/api/weiXinPay/payReturn.action";
 	//微信支付成功支付后跳转的地址
 	 public final static String SUCCESS_URL = "http://test.tatll.com/FtShop/api/weiXinPay/payResult.action";
 	 //oauth2授权时回调action
