@@ -11,7 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
  * CrossBorderMuseum entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "cross_border_museum", catalog = "ftoul_shop")
+@Table(name = "cross_border_museum")
 public class CrossBorderMuseum implements java.io.Serializable {
 
 	// Fields

@@ -12,7 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
  * UserGrowth entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "user_growth", catalog = "ftoul_shop")
+@Table(name = "user_growth")
 public class UserGrowth implements java.io.Serializable {
 
 	// Fields
