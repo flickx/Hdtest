@@ -123,12 +123,12 @@ public class WeiXinPayServImpl implements WeiXinPayServ{
 			hibernateUtil.update(orders);
 			hibernateUtil.save(ordersPay);
 		}
-		sendMessageToPage(orders.getUser().getId(),orders.getOrderNumber());
+		sendMessageToPage(orders.getUser().getId(),orders.getOrderNumber(),hibernateUtil);
 		
 	}
 	
-	public void sendMessageToPage(String userId,String orderNumber) throws Exception{
-		wxWebSocketHandler().sendMessageToPage(userId, orderNumber);
+	public void sendMessageToPage(String userId,String orderNumber,HibernateUtil hibernateUtil) throws Exception{
+		wxWebSocketHandler().sendMessageToPage(userId, orderNumber,hibernateUtil);
 	}
 
 }

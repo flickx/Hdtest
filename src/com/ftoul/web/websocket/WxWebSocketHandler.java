@@ -19,8 +19,6 @@ import com.ftoul.web.websocket.service.WebSocketServ;
 
 public class WxWebSocketHandler implements WebSocketHandler {
 
-	@Autowired
-	HibernateUtil hibernateUtil;
     private static ArrayList<WebSocketSession> users;
     public static final String WebSocketUserName = "webSocketUserName";
 
@@ -120,7 +118,7 @@ public class WxWebSocketHandler implements WebSocketHandler {
      * @param orderNumber
      * @throws Exception
      */
-	public void sendMessageToPage(String userName, String orderNumber)
+	public void sendMessageToPage(String userName, String orderNumber,HibernateUtil hibernateUtil)
 			throws Exception {
 		for (WebSocketSession user : users) {
 			String userToken = (String) user.getAttributes().get("userToken");
