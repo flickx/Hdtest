@@ -57,4 +57,30 @@ public interface PcUserServ {
 	 * @throws Exception
 	 */
 	Result updatePassword(Parameter param)throws Exception;
+	
+	/**
+	 * 判断邮箱是否存在
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getEmailByName(Parameter param)throws Exception;
+	
+	/**
+	 * 发送邮件
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result sendEmail(Parameter param,HttpServletRequest request)throws Exception;
+	/**
+	 * 验证邮箱激活码
+	 * @param email
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	Result activeEmail(String userId,String code)throws Exception;
+	
+	
 }

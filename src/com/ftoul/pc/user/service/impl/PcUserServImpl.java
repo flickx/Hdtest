@@ -3,7 +3,6 @@ package com.ftoul.pc.user.service.impl;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,6 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.DatatypeConverter;
 
 import net.sf.json.JSONObject;
 
@@ -33,6 +31,8 @@ import com.ftoul.pc.user.vo.PcUserVo;
 import com.ftoul.po.MessageVerification;
 import com.ftoul.po.User;
 import com.ftoul.po.UserToken;
+import com.ftoul.util.email.MD5Util;
+import com.ftoul.util.email.SendEmail;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.token.TokenUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
@@ -328,6 +328,59 @@ public class PcUserServImpl implements PcUserServ {
 		hibernateUtil.update(userDb);
 		res.setResult(1);
 		return ObjectToResult.getResult(res);
+	}
+	
+	@Override
+	public Result getEmailByName(Parameter param) throws Exception {
+		PcUserVo pcUserVo = (PcUserVo) JSONObject.toBean((JSONObject) param.getObj(), PcUserVo.class);
+		String hql = "from User where state = 1 and email = '"+ pcUserVo.getEmail()+ "'";
+		List<Object> obj = (List<Object>) hibernateUtil.hql(hql);
+		if(obj.size()>1){
+			return ObjectToResult.getResult(1);
+		}else{
+			return ObjectToResult.getResult(0);
+		}
+	}
+	
+	
+	@Override
+	public Result sendEmail(Parameter param,HttpServletRequest request) throws Exception {
+		String userId = param.getUserToken().getUser().getId();
+		String email = param.getKey();
+		String code = MD5Util.encode2hex(email);
+		String url = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+request.getContextPath();
+		///邮件的内容  
+        StringBuffer sb=new StringBuffer("点击下面链接激活邮箱，请尽快激活！</br>");  
+        sb.append("<a href=\""+url+"/pc/user/activeEmail.action?");
+        sb.append("userId="+userId);
+        sb.append("&code="+code);
+        sb.append("\">"+url+"/pc/user/activeEmail.action?");
+        sb.append("userId="+userId);
+        sb.append("&code="+code);
+        sb.append("</a>");
+        //发送邮件  
+        SendEmail.send(email, sb.toString());  
+        User user = new User();
+        user.setId(userId);
+        user.setValidateCode(code);
+        user.setActiveState("0");
+        hibernateUtil.update(user);
+        Result ret = new Result();
+        ret.setResult(1);
+		return ret;
+	}
+	@Override
+	public Result activeEmail(String userId,String code) throws Exception {
+		User user = (User) hibernateUtil.find(User.class, userId);
+		Result ret = new Result();
+		if(code.equals(user.getValidateCode())){
+			user.setActiveState("1");
+			ret.setResult(1);
+			return ret;
+		}else{
+			ret.setResult(0);
+			return ret;
+		}
 	}
 	
 }
