@@ -197,7 +197,9 @@ public class OrdersUtil {
 		vo.setOrderStatic(order.getOrderStatic());
 		vo.setOrderTime(order.getOrderTime());
 		vo.setPayType(getPayType(order.getPayType()));
-		vo.setShopName(order.getShopId().getStoreName());
+		if(order.getShopId()!=null){
+			vo.setShopName(order.getShopId().getStoreName());
+		}
 		List<Object> detailList = new ArrayList<Object>();
 		for (Object object : ordersDetailList) {
 			OrdersDetail orderDetail = (OrdersDetail) object;

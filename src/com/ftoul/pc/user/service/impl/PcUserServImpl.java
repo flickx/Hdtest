@@ -220,6 +220,7 @@ public class PcUserServImpl implements PcUserServ {
 	public Result getUserInfo(Parameter param) throws Exception {
 		User user = (User) this.hibernateUtil.find(User.class, param.getUserToken().getUser().getId());
 		PcUserVo pcUserVo = new PcUserVo();
+		pcUserVo.setId(user.getId());
 		pcUserVo.setUsername(user.getUsername());
 		pcUserVo.setNickname(user.getNickname());
 		pcUserVo.setSex(user.getSex());
@@ -227,6 +228,7 @@ public class PcUserServImpl implements PcUserServ {
 		pcUserVo.setMobil(user.getMobil());
 		pcUserVo.setEmail(user.getEmail());
 		pcUserVo.setName(user.getName());
+		pcUserVo.setActiveState(user.getActiveState());
 		return ObjectToResult.getResult(pcUserVo);
 	}
 	@Override

@@ -393,38 +393,38 @@ public class OrdersServImpl implements OrdersServ {
 			for (Map shopGoodsParamVo : paramList) {
 				GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, shopGoodsParamVo.get("id")+"");
 				titleList.add(goodsP.getGoods().getTitle());
-				OrdersDetail ordersDetail = new OrdersDetail();
-				List<Object> goodsEventList = hibernateUtil.hql("from GoodsEvent where id in (select goodsEvent.id from GoodsEventJoin where goods.id='"+goodsP.getGoods().getId()+"' and state='1') and state='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
-				if(goodsEventList.size()>0){
-					GoodsEvent event = (GoodsEvent) goodsEventList.get(0);
-					ordersDetail.setEventType(event.getTypeName());
-					ordersDetail.setEventBegen(event.getEventBegen());
-					ordersDetail.setEventEnd(event.getEventEnd());
-					GoodsEventJoin join = (GoodsEventJoin) hibernateUtil.hqlFirst("from GoodsEventJoin where state='1' and goodsEvent.id='"+event.getId()+"' and goods.id='"+goodsP.getGoods().getId()+"'");
-					if(join.getEventPrice()!=null){
-						ordersDetail.setPrice(join.getEventPrice().toString());
-					}else if(event.getEventPrice()!=null){
-						ordersDetail.setPrice(event.getEventPrice().toString());
-					}else if(event.getDiscount()!=null){
-						ordersDetail.setPrice(formate.format(Double.parseDouble(goodsP.getPrice())*Float.parseFloat(event.getDiscount())));
-					}else{
-						ordersDetail.setPrice(goodsP.getPrice());
-					}
-				}else{
-					ordersDetail.setPrice(goodsP.getPrice());
-				}
-				double price = Double.parseDouble(ordersDetail.getPrice());
+				//OrdersDetail ordersDetail = new OrdersDetail();
+//				List<Object> goodsEventList = hibernateUtil.hql("from GoodsEvent where id in (select goodsEvent.id from GoodsEventJoin where goods.id='"+goodsP.getGoods().getId()+"' and state='1') and state='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
+//				if(goodsEventList.size()>0){
+//					GoodsEvent event = (GoodsEvent) goodsEventList.get(0);
+//					ordersDetail.setEventType(event.getTypeName());
+//					ordersDetail.setEventBegen(event.getEventBegen());
+//					ordersDetail.setEventEnd(event.getEventEnd());
+//					GoodsEventJoin join = (GoodsEventJoin) hibernateUtil.hqlFirst("from GoodsEventJoin where state='1' and goodsEvent.id='"+event.getId()+"' and goods.id='"+goodsP.getGoods().getId()+"'");
+//					if(join.getEventPrice()!=null){
+//						ordersDetail.setPrice(join.getEventPrice().toString());
+//					}else if(event.getEventPrice()!=null){
+//						ordersDetail.setPrice(event.getEventPrice().toString());
+//					}else if(event.getDiscount()!=null){
+//						ordersDetail.setPrice(formate.format(Double.parseDouble(goodsP.getPrice())*Float.parseFloat(event.getDiscount())));
+//					}else{
+//						ordersDetail.setPrice(goodsP.getPrice());
+//					}
+//				}else{
+//					ordersDetail.setPrice(goodsP.getPrice());
+//				}
+				//double price = Double.parseDouble(ordersDetail.getPrice());
 				String goodsNum = (String)shopGoodsParamVo.get("num");
 				num = Integer.parseInt(goodsNum);
-				ordersDetail.setTotalPrice(new BigDecimal(num*price));
-				ordersDetail.setNumber(goodsNum);
-				ordersDetail.setGoodsParam(goodsP);
-				ordersDetail.setOrders(child);
-				ordersDetail.setShopId(child.getShopId().getId());
-				ordersDetail.setCreateTime(new DateStr().toString());
-				ordersDetail.setCreatePerson(param.getUserToken().getUser().getUsername());
-				ordersDetail.setState("1");
-				hibernateUtil.save(ordersDetail);
+//				ordersDetail.setTotalPrice(new BigDecimal(num*price));
+//				ordersDetail.setNumber(goodsNum);
+//				ordersDetail.setGoodsParam(goodsP);
+//				ordersDetail.setOrders(child);
+//				ordersDetail.setShopId(child.getShopId().getId());
+//				ordersDetail.setCreateTime(new DateStr().toString());
+//				ordersDetail.setCreatePerson(param.getUserToken().getUser().getUsername());
+//				ordersDetail.setState("1");
+//				hibernateUtil.save(ordersDetail);
 				ordersUtil.countGoodsEevntJoin(goodsP.getGoods().getId(),goodsNum);//删除参加活动的商品数量
 			}
 			ordersUtil.updateGoodsParam(child.getId(),"add");
@@ -686,7 +686,9 @@ public class OrdersServImpl implements OrdersServ {
 							mjVo.setOrderPrice(mjOrderPrice);
 							mjVo.setGoods(good);
 							mjGoodsEventList.add(mjVo);
-							mjTitleList.add(mjVo.getGoodsEvent().getEventName());
+							if(mjVo.getGoodsEvent()!=null){
+								mjTitleList.add(mjVo.getGoodsEvent().getEventName());
+							}
 						}else if(mmjVo!=null){//参加每满减活动
 							if(j==0){//只参加了每满减活动
 								price = Double.parseDouble(goodsP.getPrice());
@@ -698,7 +700,10 @@ public class OrdersServImpl implements OrdersServ {
 							mmjVo.setOrderPrice(mjOrderPrice);
 							mmjVo.setGoods(good);
 							mmjGoodsEventList.add(mmjVo);
-							mjTitleList.add(mjVo.getGoodsEvent().getEventName());
+							if(mmjVo.getGoodsEvent()!=null){
+								mjTitleList.add(mmjVo.getGoodsEvent().getEventName());
+							}
+							
 						}else{//没参加满减活动
 							orderPrice += costPayable;
 						}
