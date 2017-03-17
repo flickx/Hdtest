@@ -122,5 +122,38 @@ public class PcUserAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return pcUserServ.updatePassword(parameter);
 	}
-	
+	/**
+	 * 判断邮箱是否存在
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getEmailByName")
+	public @ResponseBody Result getEmailByName(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return pcUserServ.getEmailByName(parameter);
+	}
+	/**
+	 * 发送邮件
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "sendEmail")
+	public @ResponseBody Result sendEmail(String param,HttpServletRequest request)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return pcUserServ.sendEmail(parameter, request);
+	}
+	/**
+	 * 验证邮箱激活码
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "activeEmail")
+	public @ResponseBody Result activeEmail(String param,HttpServletRequest request)throws Exception{
+		String userId = request.getParameter("userId");
+		String code = request.getParameter("code");
+		return pcUserServ.activeEmail(userId,code);
+	}
 }
