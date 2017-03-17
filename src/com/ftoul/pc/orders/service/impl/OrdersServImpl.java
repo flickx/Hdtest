@@ -686,7 +686,9 @@ public class OrdersServImpl implements OrdersServ {
 							mjVo.setOrderPrice(mjOrderPrice);
 							mjVo.setGoods(good);
 							mjGoodsEventList.add(mjVo);
-							mjTitleList.add(mjVo.getGoodsEvent().getEventName());
+							if(mjVo.getGoodsEvent()!=null){
+								mjTitleList.add(mjVo.getGoodsEvent().getEventName());
+							}
 						}else if(mmjVo!=null){//参加每满减活动
 							if(j==0){//只参加了每满减活动
 								price = Double.parseDouble(goodsP.getPrice());
@@ -698,7 +700,10 @@ public class OrdersServImpl implements OrdersServ {
 							mmjVo.setOrderPrice(mjOrderPrice);
 							mmjVo.setGoods(good);
 							mmjGoodsEventList.add(mmjVo);
-							mjTitleList.add(mjVo.getGoodsEvent().getEventName());
+							if(mmjVo.getGoodsEvent()!=null){
+								mjTitleList.add(mmjVo.getGoodsEvent().getEventName());
+							}
+							
 						}else{//没参加满减活动
 							orderPrice += costPayable;
 						}
