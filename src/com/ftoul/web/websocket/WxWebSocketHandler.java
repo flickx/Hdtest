@@ -36,26 +36,18 @@ public class WxWebSocketHandler implements WebSocketHandler {
         System.out.println("connect to the websocket success......");
         users.add(session);
         String userName = (String) session.getAttributes().get(WebSocketUserName);
-        //WebSocketMessage<?> message = new TextMessage("abc");
-        //session.sendMessage(message);
+        WebSocketMessage<?> message = new TextMessage("abc");
+//        session.sendMessage(message);
         Map map = session.getAttributes();
-        System.out.println("id="+session.getId());
-//        if(userName!= null){
-//            //查询未读消息
-//            int count = webSocketServ.getUnReadNews((String) session.getAttributes().get(WebSocketUserName));
-//
-//            session.sendMessage(new TextMessage(count + ""));
-//        }
-//        sendMessageToUser(session.getId(),new TextMessage(session.getId()+"上线了"));
-//        afterConnectionClosed(session, null);
-        String orderNumber = (String) session.getAttributes().get("orderNumber");
-        String userToken = (String) session.getAttributes().get("userToken");
-        UserToken token = (UserToken) Common.jsonToBean(userToken, UserToken.class);
-        sendMessageToUser(session.getId(),new TextMessage(session.getId()+"订单号为："+orderNumber));
-        if(token==null){
-        	sendMessageToUser(session.getId(),new TextMessage("0"));//没有传用户过来
+//        System.out.println("id="+session.getId());
+        if(userName!= null){
+            //查询未读消息
+            int count = webSocketServ.getUnReadNews((String) session.getAttributes().get(WebSocketUserName));
+
+            session.sendMessage(new TextMessage(count + ""));
         }
-        sendMessageToUser(session.getId(),new TextMessage("token为："+userToken));
+//        sendMessageToUsers(new TextMessage("有人上线了"));
+//        afterConnectionClosed(session, null);
     }
 
     @Override
@@ -109,8 +101,7 @@ public class WxWebSocketHandler implements WebSocketHandler {
      */
     public void sendMessageToUser(String userName, TextMessage message) {
         for (WebSocketSession user : users) {
-            //if (user.getAttributes().get(WebSocketUserName).equals(userName)) {
-        	if (user.getId().equals(userName)) {
+            if (user.getAttributes().get(WebSocketUserName).equals(userName)) {
                 try {
                     if (user.isOpen()) {
                         user.sendMessage(message);
@@ -147,5 +138,6 @@ public class WxWebSocketHandler implements WebSocketHandler {
 			}
 		}
 	}
-  
+ 
+
 }
