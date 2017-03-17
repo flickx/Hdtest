@@ -2,6 +2,8 @@ package com.ftoul.pc.user.vo;
 
 public class PcUserVo {
 	
+	private String id;
+	
 	private String username;//用户名
 	
 	private String nickname;//昵称
@@ -100,6 +102,14 @@ public class PcUserVo {
 
 	public void setCardBack(String cardBack) {
 		this.cardBack = cardBack;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }
