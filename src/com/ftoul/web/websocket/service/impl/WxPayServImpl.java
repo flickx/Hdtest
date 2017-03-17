@@ -8,13 +8,13 @@ import com.ftoul.web.websocket.WxWebSocketHandler;
 
 public class WxPayServImpl {
 
-	@Bean
-	public WxWebSocketHandler wxWebSocketHandler(){
-		return new WxWebSocketHandler();
-	}
+//	@Bean
+//	public WxWebSocketHandler wxWebSocketHandler(){
+//		return new WxWebSocketHandler();
+//	}
 	
-	public Result test(){
-		wxWebSocketHandler().sendMessageToUser("", new TextMessage("abc"));
-		return null;
-	}
+//	public Result test(){
+//		wxWebSocketHandler().sendMessageToUser("", new TextMessage("abc"));
+//		return null;
+//	}
 }
