@@ -29,7 +29,7 @@ public class ArticleClassifyServImpl implements ArticleClassifyServ {
 	@Override
 	public Result delArticleClassify(Parameter parameter) throws Exception {
 		//如果此分类下有文章 则不允许删除
-		String hql = " update ArticleClassify set state = 0  where id in ("+StrUtil.getIds(parameter.getId()+")");
+		String hql = " update ArticleClassify set state = 0  where id in ("+StrUtil.getIds(parameter.getId())+")";
 		Integer num = hibernateUtil.execHql(hql);
 		return ObjectToResult.getResult(num);
 	}
@@ -65,14 +65,14 @@ public class ArticleClassifyServImpl implements ArticleClassifyServ {
 
 	@Override
 	public Result getArticleClassifyList(Parameter parameter) throws Exception {
-		String hql ="from ArticleClassify where pname is null and state =1 order by createTime asc";
+		String hql ="from ArticleClassify where classify.id is null and state =1 order by createTime asc";
 		List<Object> typeLevel1List = hibernateUtil.hql(hql);
 		List<PcArticleClassifyVo> typeLevel1VoList = new ArrayList<PcArticleClassifyVo>();
 		if(typeLevel1List != null){
 			for (Object object : typeLevel1List) {
 				ArticleClassify ArticleClassify = (ArticleClassify) object;
 				PcArticleClassifyVo ArticleClassifyVoLel1 = new PcArticleClassifyVo();
-				hql = "from ArticleClassify where state =1 and pname = '" + ArticleClassify.getName() +"'";
+				hql = "from ArticleClassify where state =1 and classify.id = '" + ArticleClassify.getId() +"'";
 				hql+="order by createTime asc";
 				List<Object> typeLevel2List = hibernateUtil.hql(hql);
 				List<PcArticleClassifyVo> typeLevel2VoList = new ArrayList<PcArticleClassifyVo>();
@@ -80,7 +80,7 @@ public class ArticleClassifyServImpl implements ArticleClassifyServ {
 					for (Object object2 : typeLevel2List) {
 						ArticleClassify ArticleClassifyLevel2 = (ArticleClassify)object2;
 						PcArticleClassifyVo ArticleClassifyVoLel2 = new PcArticleClassifyVo();
-						hql = "from ArticleClassify where state =1 and pname = '" + ArticleClassifyLevel2.getName() +"'";
+						hql = "from ArticleClassify where state =1 and classify.id = '" + ArticleClassifyLevel2.getId() +"'";
 						hql+="order by createTime asc";
 						List<Object> typeLevel3List = hibernateUtil.hql(hql);
 						List<PcArticleClassifyVo> typeLevel3VoList = new ArrayList<PcArticleClassifyVo>();
