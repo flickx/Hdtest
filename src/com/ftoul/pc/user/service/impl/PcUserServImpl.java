@@ -277,11 +277,14 @@ public class PcUserServImpl implements PcUserServ {
         ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);  
         image = ImageIO.read(new ByteArrayInputStream(imageByte));  
         bis.close();  
-        String picPath = "/upload/img/";
-        String path = request.getSession().getServletContext().getRealPath("upload/img/");
+        String picPath = "/upload/img/header/";
+        String path = request.getSession().getServletContext().getRealPath("upload/img/header/");
         String picName = UUID.randomUUID()+"."+strFileName;
         String picAddress = picPath+ picName;
-        File outputfile = new File(path+picName);  
+        File outputfile = new File(path+picName);
+        if(!outputfile.exists()){
+        	outputfile.mkdirs();
+        }
         System.out.println(image);
         Map<String ,Object> map = new HashMap<String ,Object>();
         map.put("picAddress", picAddress);

@@ -158,6 +158,7 @@ public class WeiXinPayUtil {
 		String path = request.getSession().getServletContext().getRealPath("/upload/img/wx/");
 		ZxResult zxResult = ZxingUtil.createZxing(path+uuid, codeUrl);
 		if(zxResult.isResult()){
+			zxResult.setMessage("/upload/img/wx/"+uuid);
 			return zxResult.getMessage();
 		}else{
 			return "二维码罢工了，请稍后再试";

@@ -11,11 +11,16 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import com.ftoul.common.Common;
+import com.ftoul.po.Orders;
+import com.ftoul.po.UserToken;
+import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.web.websocket.service.WebSocketServ;
 
 public class WxWebSocketHandler implements WebSocketHandler {
 
-
+	@Autowired
+	HibernateUtil hibernateUtil;
     private static ArrayList<WebSocketSession> users;
     public static final String WebSocketUserName = "webSocketUserName";
 
@@ -31,18 +36,26 @@ public class WxWebSocketHandler implements WebSocketHandler {
         System.out.println("connect to the websocket success......");
         users.add(session);
         String userName = (String) session.getAttributes().get(WebSocketUserName);
-        WebSocketMessage<?> message = new TextMessage("abc");
-        session.sendMessage(message);
+        //WebSocketMessage<?> message = new TextMessage("abc");
+        //session.sendMessage(message);
         Map map = session.getAttributes();
         System.out.println("id="+session.getId());
-        if(userName!= null){
-            //查询未读消息
-            int count = webSocketServ.getUnReadNews((String) session.getAttributes().get(WebSocketUserName));
-
-            session.sendMessage(new TextMessage(count + ""));
-        }
-        sendMessageToUsers(new TextMessage("有人上线了"));
+//        if(userName!= null){
+//            //查询未读消息
+//            int count = webSocketServ.getUnReadNews((String) session.getAttributes().get(WebSocketUserName));
+//
+//            session.sendMessage(new TextMessage(count + ""));
+//        }
+//        sendMessageToUser(session.getId(),new TextMessage(session.getId()+"上线了"));
 //        afterConnectionClosed(session, null);
+        String orderNumber = (String) session.getAttributes().get("orderNumber");
+        String userToken = (String) session.getAttributes().get("userToken");
+        UserToken token = (UserToken) Common.jsonToBean(userToken, UserToken.class);
+        sendMessageToUser(session.getId(),new TextMessage(session.getId()+"订单号为："+orderNumber));
+        if(token==null){
+        	sendMessageToUser(session.getId(),new TextMessage("0"));//没有传用户过来
+        }
+        sendMessageToUser(session.getId(),new TextMessage("token为："+userToken));
     }
 
     @Override
@@ -96,7 +109,8 @@ public class WxWebSocketHandler implements WebSocketHandler {
      */
     public void sendMessageToUser(String userName, TextMessage message) {
         for (WebSocketSession user : users) {
-            if (user.getAttributes().get(WebSocketUserName).equals(userName)) {
+            //if (user.getAttributes().get(WebSocketUserName).equals(userName)) {
+        	if (user.getId().equals(userName)) {
                 try {
                     if (user.isOpen()) {
                         user.sendMessage(message);
@@ -108,5 +122,30 @@ public class WxWebSocketHandler implements WebSocketHandler {
             }
         }
     }
-
+    
+    /**
+     * 支付跳转页面
+     * @param userName
+     * @param orderNumber
+     * @throws Exception
+     */
+	public void sendMessageToPage(String userName, String orderNumber)
+			throws Exception {
+		for (WebSocketSession user : users) {
+			String userToken = (String) user.getAttributes().get("userToken");
+			UserToken token = (UserToken) Common.jsonToBean(userToken,UserToken.class);
+			if (token.getUser().getId().equals(userName)) {
+				if (user.isOpen()) {
+					Orders order = (Orders) hibernateUtil.hqlFirst("from Orders where state='1' and orderNumber='"+ orderNumber + "'");
+					if ("2".equals(order.getOrderStatic())) {
+						sendMessageToUser(user.getId(), new TextMessage("2"));// 已支付
+					} else {
+						sendMessageToUser(user.getId(), new TextMessage("1"));// 待支付
+					}
+				}
+				break;
+			}
+		}
+	}
+  
 }
