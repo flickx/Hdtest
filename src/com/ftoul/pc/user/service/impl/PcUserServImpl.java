@@ -228,6 +228,7 @@ public class PcUserServImpl implements PcUserServ {
 		pcUserVo.setMobil(user.getMobil());
 		pcUserVo.setEmail(user.getEmail());
 		pcUserVo.setName(user.getName());
+		pcUserVo.setActiveState(user.getActiveState());
 		return ObjectToResult.getResult(pcUserVo);
 	}
 	@Override

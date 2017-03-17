@@ -23,6 +23,8 @@ public class PcUserVo {
 	private String cardFront;//身份证正面
 	
 	private String cardBack;//身份证背面
+	
+	private String activeState;//邮箱是否验证
 
 	public String getUsername() {
 		return username;
@@ -110,6 +112,14 @@ public class PcUserVo {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getActiveState() {
+		return activeState;
+	}
+
+	public void setActiveState(String activeState) {
+		this.activeState = activeState;
 	}
 
 }
