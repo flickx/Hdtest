@@ -76,7 +76,7 @@ public class AliPayUtil {
 		sendMap.put("_input_charset", AlipayConfig.input_charset);
 		sendMap.put("payment_type", AlipayConfig.payment_type);
 		sendMap.put("notify_url", AlipayConfig.notify_url);
-		sendMap.put("return_url", AlipayConfig.return_url);
+		//sendMap.put("return_url", AlipayConfig.return_url);
 		sendMap.put("out_trade_no", orders.getOrderNumber());
 		sendMap.put("subject", orders.getOrderNumber());
 		sendMap.put("total_fee", orders.getOrderPrice());
