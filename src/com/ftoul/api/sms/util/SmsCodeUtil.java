@@ -70,6 +70,9 @@ public class SmsCodeUtil {
 		}if (messageType.equals("2")) {
 			content = "【他她乐】亲爱的"+mobile+"手机用户：您的找回密码验证码为"+code+"，如非本人操作，请致电客服0731-82208568";
 		}
+		if (messageType.equals("3")) {
+			content = "【他她乐】亲爱的"+mobile+"手机用户：您的验证邮件验证码为"+code+"，如非本人操作，请致电客服0731-82208568";
+		}
 		messageVerification.setIp(SmsCodeUtil.getLocalIp(req));
 		messageVerification.setMobile(mobile);
 		messageVerification.setContent(content);
