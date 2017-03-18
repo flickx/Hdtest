@@ -36,8 +36,8 @@ public class AlipayConfig {
 	public static String return_url = "http://api2.tatll.com/FtShop/api/aliPay/payResult.action";
 	
 	//点击返回回到页面
-	public static String show_url = "http://m.tatll.com/pages/Order/OrderList.html?type=waitPayment";
-
+	//public static String show_url = "http://m.tatll.com/pages/Order/OrderList.html?type=waitPayment";
+	public static String show_url = "http://pc2.tatll.com/#!/personal/content/order";
 	// 签名方式
 	public static String sign_type = "MD5";
 	public static String rsa_sign_type = "RSA";
