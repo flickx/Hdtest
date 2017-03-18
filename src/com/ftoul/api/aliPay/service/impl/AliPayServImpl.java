@@ -144,7 +144,7 @@ public class AliPayServImpl implements AliPayServ{
 //		}else{
 //			payResult.setResult(false);
 //		}
-		wxWebSocketHandler.sendMessageToPage(orders.getUser().getId(), orders.getOrderNumber(), hibernateUtil);
+//		wxWebSocketHandler.sendMessageToPage(orders.getUser().getId(), orders.getOrderNumber(), hibernateUtil);
 		return payResult;
 	}
 	/**
