@@ -128,16 +128,22 @@ public class AliPayServImpl implements AliPayServ{
 		String merOrderNo = resultMap.get("out_trade_no");
 		String orderStatus = resultMap.get("trade_status");
 		payResult.setOrdersNum(merOrderNo);
-		//验证签名
-		if(AlipayNotify.verify(resultMap)){
-			if("TRADE_SUCCESS".equals(orderStatus)){
-				payResult.setResult(true);
-			}else{
-				payResult.setResult(false);
-			}
+		Orders orders = (Orders) hibernateUtil.hqlFirst("from Orders where state = '1' and orderNumber = '" + merOrderNo + "'");
+		if("2".equals(orders.getOrderStatic())){
+			payResult.setResult(true);
 		}else{
 			payResult.setResult(false);
 		}
+		//验证签名
+//		if(AlipayNotify.verify(resultMap)){
+//			if("TRADE_SUCCESS".equals(orderStatus)){
+//				payResult.setResult(true);
+//			}else{
+//				payResult.setResult(false);
+//			}
+//		}else{
+//			payResult.setResult(false);
+//		}
 		
 		return payResult;
 	}

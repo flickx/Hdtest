@@ -59,13 +59,13 @@ public class WxWebSocketHandlerImpl implements WxWebSocketHandler{
         if(session.isOpen()){
             session.close();
         }
-        System.out.println("websocket connection closed......");
+        System.out.println("handleTransportError  websocket connection closed......");
         users.remove(session);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-        System.out.println("websocket connection closed......");
+        System.out.println("afterConnectionClosed websocket connection closed......");
         users.remove(session);
     }
 
