@@ -1,27 +1,24 @@
 package com.ftoul.pc.goods.vo;
 
+import java.util.List;
+
 public class GoodsBrandVo {
 	
-	private String id;
-	private String name;
-	private String logo;
-	public String getId() {
-		return id;
+	private String adventLogo;
+	
+	private List<BrandVo> brandList;
+	
+	public String getAdventLogo() {
+		return adventLogo;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setAdventLogo(String adventLogo) {
+		this.adventLogo = adventLogo;
 	}
-	public String getName() {
-		return name;
+	public List<BrandVo> getBrandList() {
+		return brandList;
 	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getLogo() {
-		return logo;
-	}
-	public void setLogo(String logo) {
-		this.logo = logo;
+	public void setBrandList(List<BrandVo> brandList) {
+		this.brandList = brandList;
 	}
 	
 

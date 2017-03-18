@@ -397,11 +397,15 @@ public class PcUserServImpl implements PcUserServ {
 				user.getSmscodeType(), maxSort);
 		String smsCode = user.getSmsCode();
 		Result result = new Result();
+		String hql = "from User where username = '"+user.getUsername()+"'";
+		List<Object> list = hibernateUtil.hql(hql);
 		if (m == null || !smsCode.equals(m.getVerificationCode())) {
 			result.setResult(0);
 			result.setMessage("短信验证码错误");
 		}else{
+			User u = (User) list.get(0);
 			result.setResult(1);
+			result.setObj(u.getEmail());
 		}
 		return result;
 	}

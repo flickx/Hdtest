@@ -17,6 +17,7 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.goods.vo.GoodsVo;
 import com.ftoul.pc.goods.service.GoodsPcServ;
+import com.ftoul.pc.goods.vo.BrandVo;
 import com.ftoul.pc.goods.vo.GoodsBrandVo;
 import com.ftoul.pc.goods.vo.GoodsPcVo;
 import com.ftoul.po.GoodsParam;
@@ -184,22 +185,32 @@ public class GoodsPcServImpl implements GoodsPcServ {
 	public Result getGoodsBrand(Parameter parameter) throws Exception {
 		String sql ="select id,name,logo from Goods_Brand where state = 1 group by id ORDER BY RAND()  LIMIT 18" ;
 		List<Object[]> goodsBrandList = hibernateUtil.sql(sql);
-		List<GoodsBrandVo> goodsBrandVoList = new ArrayList<GoodsBrandVo>();
+		String adventSql ="select id,pic_address from index_carousel_pic where carousel_type = 5" ;
+		List<Object[]> adventList = hibernateUtil.sql(adventSql);
+		List<BrandVo> goodsBrandVoList = new ArrayList<BrandVo>();
+		GoodsBrandVo goodsBrandVo = new GoodsBrandVo();
 		for (int i = 0; i < goodsBrandList.size(); i++) {
-			GoodsBrandVo goodsBrandVo = new GoodsBrandVo();
+			BrandVo brandVo = new BrandVo();
 			Object[] obj = (Object[])goodsBrandList.get(i);
 			if(obj[0]!=null){
-				goodsBrandVo.setId(obj[0].toString());
+				brandVo.setId(obj[0].toString());
 			}
 			if(obj[1]!=null){
-				goodsBrandVo.setName(obj[1].toString());
+				brandVo.setName(obj[1].toString());
 			}
 			if(obj[2]!=null){
-				goodsBrandVo.setLogo(obj[2].toString());
+				brandVo.setLogo(obj[2].toString());
 			}
-			goodsBrandVoList.add(goodsBrandVo);
+			goodsBrandVoList.add(brandVo);
 		}
-		return ObjectToResult.getResult(goodsBrandVoList);
+		goodsBrandVo.setBrandList(goodsBrandVoList);
+		if(adventList.size()>0){
+			Object[] obj =  (Object[])adventList.get(0);
+			if(obj[1]!=null){
+				goodsBrandVo.setAdventLogo(obj[1].toString());
+			}
+		}
+		return ObjectToResult.getResult(goodsBrandVo);
 	}
 	@Override
 	public Result getGoodsBrandByTypeId1(Parameter parameter) throws Exception {
@@ -207,9 +218,9 @@ public class GoodsPcServImpl implements GoodsPcServ {
 					 +"and gs.goods_type1 = '"+ parameter.getKey()+"' "
 					 +"group by gb.id ORDER BY RAND() LIMIT 8";
 		List<Object[]> goodsBrandList = hibernateUtil.sql(sql);
-		List<GoodsBrandVo> goodsBrandVoList = new ArrayList<GoodsBrandVo>();
+		List<BrandVo> goodsBrandVoList = new ArrayList<BrandVo>();
 		for (int i = 0; i < goodsBrandList.size(); i++) {
-			GoodsBrandVo goodsBrandVo = new GoodsBrandVo();
+			BrandVo goodsBrandVo = new BrandVo();
 			Object[] obj = (Object[])goodsBrandList.get(i);
 			if(obj[0]!=null){
 				goodsBrandVo.setId(obj[0].toString());
@@ -230,9 +241,9 @@ public class GoodsPcServImpl implements GoodsPcServ {
 					 +"and gs.goods_type2 = '"+ parameter.getKey()+"' "
 					 +"group by gb.id ORDER BY RAND() LIMIT 4";
 		List<Object[]> goodsBrandList = hibernateUtil.sql(sql);
-		List<GoodsBrandVo> goodsBrandVoList = new ArrayList<GoodsBrandVo>();
+		List<BrandVo> goodsBrandVoList = new ArrayList<BrandVo>();
 		for (int i = 0; i < goodsBrandList.size(); i++) {
-			GoodsBrandVo goodsBrandVo = new GoodsBrandVo();
+			BrandVo goodsBrandVo = new BrandVo();
 			Object[] obj = (Object[])goodsBrandList.get(i);
 			if(obj[0]!=null){
 				goodsBrandVo.setId(obj[0].toString());
