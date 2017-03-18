@@ -98,6 +98,7 @@ public class WxWebSocketHandlerImpl implements WxWebSocketHandler{
      * @param message
      */
     public void sendMessageToUser(String userName, TextMessage message) {
+    	System.out.println("userName:"+userName);
         for (WebSocketSession user : users) {
 //            if (user.getAttributes().get(WebSocketUserName).equals(userName)) {
 //                try {
@@ -111,8 +112,12 @@ public class WxWebSocketHandlerImpl implements WxWebSocketHandler{
 //            }
             try {
             	String userToken = (String) user.getAttributes().get("userToken");
+            	System.out.println("userToken:"+userToken);
     			UserToken token = (UserToken) Common.jsonToBean(userToken,UserToken.class);
+    			System.out.println("token.getUser().getId():"+token.getUser().getId());
     			if (token.getUser().getId().equals(userName)) {
+    				System.out.println("进来了");
+    				System.out.println(user.isOpen());
 	                if (user.isOpen()) {
 	                    user.sendMessage(message);
 	                }
@@ -140,8 +145,10 @@ public class WxWebSocketHandlerImpl implements WxWebSocketHandler{
 				if (user.isOpen()) {
 					Orders order = (Orders) hibernateUtil.hqlFirst("from Orders where state='1' and orderNumber='"+ orderNumber + "'");
 					if ("2".equals(order.getOrderStatic())) {
+						System.out.println("22222222支付成功");
 						sendMessageToUser(user.getId(), new TextMessage("2"));// 已支付
 					} else {
+						System.out.println("111111支付失败");
 						sendMessageToUser(user.getId(), new TextMessage("1"));// 待支付
 					}
 				}
