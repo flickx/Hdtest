@@ -99,16 +99,29 @@ public class WxWebSocketHandlerImpl implements WxWebSocketHandler{
      */
     public void sendMessageToUser(String userName, TextMessage message) {
         for (WebSocketSession user : users) {
-            if (user.getAttributes().get(WebSocketUserName).equals(userName)) {
-                try {
-                    if (user.isOpen()) {
-                        user.sendMessage(message);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                break;
+//            if (user.getAttributes().get(WebSocketUserName).equals(userName)) {
+//                try {
+//                    if (user.isOpen()) {
+//                        user.sendMessage(message);
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                break;
+//            }
+            try {
+            	String userToken = (String) user.getAttributes().get("userToken");
+    			UserToken token = (UserToken) Common.jsonToBean(userToken,UserToken.class);
+    			if (token.getUser().getId().equals(userName)) {
+	                if (user.isOpen()) {
+	                    user.sendMessage(message);
+	                }
+	                break;
+    			}
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            
         }
     }
     
