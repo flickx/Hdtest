@@ -6,12 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketHandler;
 
 import com.ftoul.api.aliPay.util.httpClient.HttpRequest;
 import com.ftoul.api.chinaPay.util.SignUtil;
@@ -36,11 +38,12 @@ public class WeiXinPayServImpl implements WeiXinPayServ{
 	HibernateUtil hibernateUtil;
 	@Autowired  
 	private  HttpServletRequest req;
-	
-	@Bean
-	public WxWebSocketHandler wxWebSocketHandler(){
-		return new WxWebSocketHandler();
-	}
+	@Autowired
+	WxWebSocketHandler wxWebSocketHandler;
+//	@Bean
+//	public WxWebSocketHandler wxWebSocketHandler(){
+//		return new WxWebSocketHandler();
+//	}
 	
 	/**
 	 * 支付订单
@@ -123,12 +126,12 @@ public class WeiXinPayServImpl implements WeiXinPayServ{
 			hibernateUtil.update(orders);
 			hibernateUtil.save(ordersPay);
 		}
-		sendMessageToPage(orders.getUser().getId(),orders.getOrderNumber());
+		sendMessageToPage(orders.getUser().getId(),orders.getOrderNumber(),hibernateUtil);
 		
 	}
 	
-	public void sendMessageToPage(String userId,String orderNumber) throws Exception{
-		wxWebSocketHandler().sendMessageToPage(userId, orderNumber);
+	public void sendMessageToPage(String userId,String orderNumber,HibernateUtil hibernateUtil) throws Exception{
+		wxWebSocketHandler.sendMessageToPage(userId, orderNumber,hibernateUtil);
 	}
 
 }

@@ -1277,6 +1277,7 @@ public class OrdersServImpl implements OrdersServ {
 				}else{
 					orders.setIsHasChild("0");
 					orderPriceVo = getOrdersPayable(param, list, orders);
+					goodsTotalNum = orderPriceVo.getGoodsNum();
 					if(orderPriceVo.getMsg()!=null){
 						return ObjectToResult.getResult(orderPriceVo.getMsg());
 					}

@@ -9,6 +9,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import com.ftoul.web.websocket.impl.WxWebSocketHandlerImpl;
+
 @Configuration
 @EnableWebMvc
 @EnableWebSocket
@@ -26,8 +28,8 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements
 	}
 
 	@Bean
-	public WebSocketHandler wxWebSocketHandler() {
-		return new WxWebSocketHandler();
+	public WxWebSocketHandlerImpl wxWebSocketHandler() {
+		return new WxWebSocketHandlerImpl();
 	}
 
 }

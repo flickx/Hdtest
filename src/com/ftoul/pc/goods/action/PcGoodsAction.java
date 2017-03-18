@@ -224,4 +224,38 @@ public class PcGoodsAction {
 		}
 		return ObjectToResult.getResult(goodsAppVoList);
 	}
+	/**
+	 * 查询首页需展示的品牌
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getGoodsBrand")  
+	public @ResponseBody Result getGoodsBrand(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return goodsPcServ.getGoodsBrand(parameter);
+	}
+	
+	/**
+	 * 根据一级分类id查询品牌
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getGoodsBrandByTypeId1")  
+	public @ResponseBody Result getGoodsBrandByTypeId1(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return goodsPcServ.getGoodsBrandByTypeId1(parameter);
+	}
+	/**
+	 * 根据二级分类id查询品牌
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getGoodsBrandByTypeId2")  
+	public @ResponseBody Result getGoodsBrandByTypeId2(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return goodsPcServ.getGoodsBrandByTypeId2(parameter);
+	}
 }
