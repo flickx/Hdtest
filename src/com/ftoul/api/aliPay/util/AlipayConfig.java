@@ -30,10 +30,10 @@ public class AlipayConfig {
     public static String private_key = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBANCpeZDXIJLzmoFcbjnRwrg88ThlbM1r285sMcnpEw3WgVvFdFig2vwiiiQ17r2zfAo1+2MXyOg1ylURNd3LyfbiXbOAJpJ1RCb04LIsA2kffaEIkbAyfvRC82+gKmAxiF8zgFwJHQFYKl1esIUz6vwdkx4oMB/uNn1D9UbajjhDAgMBAAECgYAyxfpRtzcy6tnevmoH4bW69QFRUsS924/507PtyKwdQuPpO8vKwSFoFtN8ai80s9br+SS5gREfB++68VwlIzB6VKvdaG15c0FlOfoti418a88wVAyjnDTOVzN9QwW9nnxMz/sKKdmtFspkyhkq+779fg+F17o/ENrxbNcMQd6LAQJBAP6K/QpfS5gMxkQrVsLmUCvuIJJ2MlT7vaJDX137F8ai55yHxyPNLMjWmLWubpIXrvN5+sE2Eb8/QeMYzq2aMIECQQDR20Byz3tg3vL1+Kz7Kjq4+QRh7deGVk3K1H8tghdGcN4+yxWo+HQvZtibPDc0lX4sibygNHXOGco5FwOI2EbDAkEA4GdGF8vViBHTBSw0DBUhnukLXDPJwbRCBXhh7ie8WUkq6YumW4C5t8HA1YMXRcKNYWcrUwTI9pLdEkm/g7sIgQJAWpMlB+ihObhAaQWBs44QdlGUIKhFA4gwX0DD+2JQpWiFo9iHaryBeQwMpUOiGCIFqTdxoDvENMZQz78tGV0vfQJAaaQelUiyyIUNv2usRHr4dtV/PVfyfeAkLwhzKATguUmY4zNakqARPc0T0Up3IWp/bdDgXDX6hBuaCMFQIVH7jA==";
 
     // 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-	public static String notify_url = "http://api.tatll.com/FtShop/api/aliPay/payReturn.action";
+	public static String notify_url = "http://api2.tatll.com/FtShop/api/aliPay/payReturn.action";
 
 	// 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-	public static String return_url = "http://api.tatll.com/FtShop/api/aliPay/payResult.action";
+	public static String return_url = "http://api2.tatll.com/FtShop/api/aliPay/payResult.action";
 	
 	//点击返回回到页面
 	public static String show_url = "http://m.tatll.com/pages/Order/OrderList.html?type=waitPayment";
