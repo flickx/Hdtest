@@ -146,10 +146,10 @@ public class WxWebSocketHandlerImpl implements WxWebSocketHandler{
 					Orders order = (Orders) hibernateUtil.hqlFirst("from Orders where state='1' and orderNumber='"+ orderNumber + "'");
 					if ("2".equals(order.getOrderStatic())) {
 						System.out.println("22222222支付成功");
-						sendMessageToUser(user.getId(), new TextMessage("2"));// 已支付
+						sendMessageToUser(userName, new TextMessage("2"));// 已支付
 					} else {
 						System.out.println("111111支付失败");
-						sendMessageToUser(user.getId(), new TextMessage("1"));// 待支付
+						sendMessageToUser(userName, new TextMessage("1"));// 待支付
 					}
 				}
 				break;
