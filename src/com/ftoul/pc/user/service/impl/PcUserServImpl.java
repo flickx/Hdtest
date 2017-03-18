@@ -387,5 +387,23 @@ public class PcUserServImpl implements PcUserServ {
 			return ret;
 		}
 	}
+	@Override
+	public Result validteSmsCode(Parameter param) throws Exception {
+		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),
+				UsersVO.class);
+		int maxSort = smsCodeUtil.getMaxSmsSort(user.getUsername(),
+				user.getSmscodeType());
+		MessageVerification m = smsCodeUtil.getMaxSmsCode(user.getUsername(),
+				user.getSmscodeType(), maxSort);
+		String smsCode = user.getSmsCode();
+		Result result = new Result();
+		if (m == null || !smsCode.equals(m.getVerificationCode())) {
+			result.setResult(0);
+			result.setMessage("短信验证码错误");
+		}else{
+			result.setResult(1);
+		}
+		return result;
+	}
 	
 }

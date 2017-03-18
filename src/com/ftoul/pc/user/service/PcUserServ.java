@@ -83,4 +83,12 @@ public interface PcUserServ {
 	Result activeEmail(String userId,String code)throws Exception;
 	
 	
+	/**
+	 * 验证短信验证码是否正确
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result validteSmsCode(Parameter param)throws Exception;
+	
 }

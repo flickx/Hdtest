@@ -156,4 +156,18 @@ public class PcUserAction {
 		String code = request.getParameter("code");
 		return pcUserServ.activeEmail(userId,code);
 	}
+	
+	
+	/**
+	 * 验证手机验证码是否正确
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "validteSmsCode")
+	public @ResponseBody Result validteSmsCode(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return pcUserServ.validteSmsCode(parameter);
+	}
+	
 }
