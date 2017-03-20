@@ -160,7 +160,7 @@ public class PcUserAction {
 		if(result.getResult() == 1){
 			mav.setViewName("../../success.html");  
 		}else{
-			mav.setViewName("../../failure.html");  
+			mav.setViewName("../../fail.html");  
 		}
 		
 		return mav;
