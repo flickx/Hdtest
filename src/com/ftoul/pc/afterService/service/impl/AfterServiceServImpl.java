@@ -56,7 +56,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	@Override
 	public Result getAfterListByUserId(Parameter param) throws Exception {
 		ordersUtil.autoCancelOrders(param);
-		List<Object> ordersList = new ArrayList<Object>();
+		List<?> ordersList = new ArrayList<Object>();
 		Page page = new Page();
 		page =  hibernateUtil.hqlPage(null,"from Orders where isHasChild='0' and orderStatic not in ('0','1','7','8') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		ordersList = page.getObjList();

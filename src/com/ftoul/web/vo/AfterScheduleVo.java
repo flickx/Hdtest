@@ -22,7 +22,7 @@ public class AfterScheduleVo {
 	private String tel;
 	private String state;
 	private String salePrice;
-	private List<Object> list;
+	private List<?> list;
 	private String createTime;
 	public String getId() {
 		return id;
@@ -120,10 +120,10 @@ public class AfterScheduleVo {
 	public void setSalePrice(String salePrice) {
 		this.salePrice = salePrice;
 	}
-	public List<Object> getList() {
+	public List<?> getList() {
 		return list;
 	}
-	public void setList(List<Object> list) {
+	public void setList(List<?> list) {
 		this.list = list;
 	}
 	public String getCreateTime() {

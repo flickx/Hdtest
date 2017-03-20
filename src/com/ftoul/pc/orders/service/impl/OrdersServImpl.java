@@ -132,7 +132,7 @@ public class OrdersServImpl implements OrdersServ {
 	public Result getOrdersListByUserId(Parameter param) throws Exception {
 		ordersUtil.autoCancelOrders(param);
 		String key = param.getKey();
-		List<Object> ordersList = new ArrayList<Object>();
+		List<?> ordersList = new ArrayList<Object>();
 		Page page = new Page();
 		String whereStr = param.getWhereStr();
 		if(whereStr==null){
@@ -1408,7 +1408,7 @@ public class OrdersServImpl implements OrdersServ {
 			whereStr = "";
 		}
 		Page page =  hibernateUtil.hqlPage(null,"from Orders where isHasChild!='1' and state='2' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
-		List<Object> ordersList = page.getObjList();
+		List<?> ordersList = page.getObjList();
 		PcOrderVo vo = new PcOrderVo();
 		List<Object> list = new ArrayList<Object>();
 		for (int i = 0; i < ordersList.size(); i++) {

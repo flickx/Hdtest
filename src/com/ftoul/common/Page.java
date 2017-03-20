@@ -13,7 +13,7 @@ public class Page {
 	/**
 	 * 记录总数
 	 */
-	private Integer count;
+	private Long count;
 	/**
 	 * 每页记录数
 	 */
@@ -29,18 +29,18 @@ public class Page {
 	/**
 	 * 每页记录对象集合
 	 */
-	private List<Object> objList;
+	private List<?> objList;
 	
 	/**
 	 * vo每页记录对象集合
 	 */
 	private List<?> voList;
 
-	public Integer getCount() {
+	public Long getCount() {
 		return count;
 	}
 
-	public void setCount(Integer count) {
+	public void setCount(Long count) {
 		this.count = count;
 	}
 
@@ -68,11 +68,11 @@ public class Page {
 		this.maxPage = maxPage;
 	}
 
-	public List<Object> getObjList() {
+	public List<?> getObjList() {
 		return objList;
 	}
 
-	public void setObjList(List<Object> objList) {
+	public void setObjList(List<?> objList) {
 		this.objList = objList;
 	}
 

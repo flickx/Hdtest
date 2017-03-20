@@ -22,6 +22,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,10 +34,12 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.Rule;
 import com.ftoul.manage.user.vo.ManageTokenVo;
+import com.ftoul.mongo.po.LoginUserLog;
 import com.ftoul.po.BaseResource;
-import com.ftoul.po.LoginUserLog;
+import com.ftoul.po.LoginUser;
 import com.ftoul.po.UserToken;
 import com.ftoul.util.hibernate.HibernateUtil;
+import com.ftoul.util.mongodb.MongoDbUtil;
 import com.ftoul.util.token.TokenUtil;
 
 
@@ -62,6 +65,8 @@ public class MyInterceptor {
 	private HttpServletResponse res;
 	@Autowired
 	private TokenUtil tokenUtil;
+	@Autowired
+	MongoDbUtil mongoDbUtil;
 	private static final Integer PageSize = 10 ;
 	private static List<Element> nameSpaceList;
 	private static List<Element> methodNameList;
@@ -341,9 +346,13 @@ public class MyInterceptor {
 					ManageTokenVo manageToken = parameter.getManageToken();
 					result = tokenUtil.checkManageToken(manageToken);
 					if(result.getResult() != null && result.getResult() == 1){
-						
-						loginUserLog.setLoginUser(manageToken.getLoginUser());
-						
+						LoginUser loginUser = manageToken.getLoginUser();
+						com.ftoul.mongo.po.LoginUser loginUser2 = null;
+						if(loginUser!=null){
+							loginUser2 = new com.ftoul.mongo.po.LoginUser();
+							BeanUtils.copyProperties(loginUser, loginUser2);
+						}
+						loginUserLog.setLoginUser(loginUser2);
 						String operation = "";
 						JSONObject parameterJson = parameters.toJson();
 						if(methodName.indexOf("get") >= 0 && methodName.indexOf("List") >= 0)
@@ -381,7 +390,8 @@ public class MyInterceptor {
 						object = result;
 						loginUserLog.setResText(((Result)object).getMessage());
 					}
-					hibernateUtil.save(loginUserLog);
+//					hibernateUtil.save(loginUserLog);
+					mongoDbUtil.insert(loginUserLog);
 				}else if(nameSpace.indexOf("/businessManage/") == 0){
 					object = invock(pjp,isAdmin,baseResourceList);
 				}else if(nameSpace.indexOf("/pc/") == 0){

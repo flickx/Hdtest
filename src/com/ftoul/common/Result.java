@@ -24,7 +24,7 @@ public class Result implements java.io.Serializable{
 	/**
 	 * 总数量
 	 */
-	private Integer totalNum;
+	private Long totalNum;
 	/**
 	 * 是否分页
 	 */
@@ -58,10 +58,10 @@ public class Result implements java.io.Serializable{
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public Integer getTotalNum() {
+	public Long getTotalNum() {
 		return totalNum;
 	}
-	public void setTotalNum(Integer totalNum) {
+	public void setTotalNum(Long totalNum) {
 		this.totalNum = totalNum;
 	}
 	public Boolean getIsPage() {

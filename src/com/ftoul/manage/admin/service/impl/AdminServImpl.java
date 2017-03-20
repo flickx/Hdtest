@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
+import com.ftoul.common.Filters;
 import com.ftoul.common.MD5;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Page;
@@ -17,10 +18,8 @@ import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.manage.admin.service.AdminServ;
 import com.ftoul.po.LoginUser;
-import com.ftoul.po.OrdersDetail;
-import com.ftoul.po.User;
-import com.ftoul.po.UserBrowse;
 import com.ftoul.util.hibernate.HibernateUtil;
+import com.ftoul.util.mongodb.MongoDbUtil;
 import com.ftoul.util.token.TokenUtil;
 
 @Service("AdminServImpl")
@@ -30,7 +29,8 @@ public class AdminServImpl implements AdminServ {
 	private HibernateUtil hibernateUtil;
 	@Autowired
 	private TokenUtil tokenUtil;
-	
+	@Autowired
+	MongoDbUtil mongoDbUtil;
 	/**
 	 * 获取管理员列表（带分页）
 	 * @param param Parameter对象
@@ -102,6 +102,19 @@ public class AdminServImpl implements AdminServ {
 	public Result getLogList(Parameter param) throws Exception {
 		String hql = "from LoginUserLog where 1 = 1 " +  param.getWhereStr() + param.getOrderBy() ;
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
+		return ObjectToResult.getResult(page);
+	}
+	/**
+	 * 操作日志(MONGODB)
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getLogByMongoList(Parameter param) throws Exception {
+		Filters filters = null;
+		if(param!=null && param.getFilters()!=null)
+			filters = param.getFilters();
+		Page page = mongoDbUtil.getListPage(com.ftoul.mongo.po.LoginUserLog.class, param.getPageNum(), param.getPageSize(),param.getSidx(),param.getSord(),filters);
 		return ObjectToResult.getResult(page);
 	}
 }

@@ -16,7 +16,7 @@ import com.ftoul.util.mongodb.MongoDbUtil;
 public class MongoDbServImpl implements MongoDbServ {
 
 	@Autowired
-	MongoDbUtil<?> mongoDbUtil;
+	MongoDbUtil mongoDbUtil;
 	/**
 	 * 新增学生
 	 * @param param
