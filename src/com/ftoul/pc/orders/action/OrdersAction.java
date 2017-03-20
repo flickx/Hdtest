@@ -277,4 +277,16 @@ public class OrdersAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return ordersServ.useCoupon(parameter);
 	}
+	
+	/**
+	 * 去支付
+	 * @param param 用户ID
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "toPay")  
+	public @ResponseBody Result toPay(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return ordersServ.toPay(parameter);
+	}
 }

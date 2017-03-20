@@ -3,11 +3,9 @@ package com.ftoul.pc.orders.service.impl;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1454,6 +1452,29 @@ public class OrdersServImpl implements OrdersServ {
 		BigDecimal parentOrderPrice = new BigDecimal(parentOrder.getOrderPrice());
 		vo.setParentOrderPrice(parentOrderPrice.multiply(facevalue));
 		return ObjectToResult.getResult(vo);
+	}
+
+	/**
+	 * 去支付
+	 */
+	@Override
+	public Result toPay(Parameter param) throws Exception {
+		Orders orders = (Orders) hibernateUtil.find(Orders.class, param.getId()+"");
+		PcOrderVo pcOrderVo = new PcOrderVo();
+		pcOrderVo.setConsigeeName(orders.getConsignee());
+		pcOrderVo.setTel(orders.getConsigneeTel());
+		pcOrderVo.setAddress(orders.getAddress());
+		pcOrderVo.setId(orders.getId());
+		pcOrderVo.setOrderNumber(orders.getOrderNumber());
+		pcOrderVo.setOrderPrice(orders.getOrderPrice());
+		List<Object> objList = hibernateUtil.hql("from OrdersDetail where state='1' and orders.id='"+orders.getId()+"'");
+		List<Object> titleList = new ArrayList<>();
+		for (Object object : objList) {
+			OrdersDetail detail = (OrdersDetail) object;
+			titleList.add(detail.getGoodsTitle());
+		}
+		pcOrderVo.setDetailVoList(titleList);
+		return ObjectToResult.getResult(pcOrderVo);
 	}
 	
 }
