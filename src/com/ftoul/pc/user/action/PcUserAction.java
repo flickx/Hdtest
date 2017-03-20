@@ -178,5 +178,15 @@ public class PcUserAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return pcUserServ.validteSmsCode(parameter);
 	}
-	
+	/**
+	 * 查询用户优惠券 蜂币数量等
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getUser")
+	public @ResponseBody Result getUser(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return pcUserServ.getUser(parameter);
+	}
 }

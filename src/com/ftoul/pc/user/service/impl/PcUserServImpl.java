@@ -413,5 +413,31 @@ public class PcUserServImpl implements PcUserServ {
 		}
 		return result;
 	}
+	@Override
+	public Result getUser(Parameter param) throws Exception {
+		User user = (User) this.hibernateUtil.find(User.class, param.getKey());
+		PcUserVo pcUserVo = new PcUserVo();
+		pcUserVo.setId(user.getId());
+		pcUserVo.setUsername(user.getUsername());
+		pcUserVo.setNickname(user.getNickname());
+		pcUserVo.setPic(user.getPic());
+		UserService userService = WebserviceUtil.getService();
+		Integer coinAmount = userService.getIntegral(user.getUsername());
+		pcUserVo.setCoinAmount(coinAmount);
+		
+		String sql = "select cp.* from user_coupon ucp join coupon cp on ucp.coupon_id = cp.id"
+					+" join user u on u.id= ucp.user_id where ucp.user_id = u.id and u.id = '"+param.getKey()+"'"
+					+" and ucp.state = 1 and ucp.is_used = 1";
+		List<Object[]> list = hibernateUtil.sql(sql);	
+		pcUserVo.setCouponCount(list.size());
+		
+		String totalSql = "select u.id,IFNULL(sum(cp.face_value),0) from user_coupon ucp join coupon cp on ucp.coupon_id = cp.id"
+				+" join user u on u.id= ucp.user_id where ucp.user_id = u.id and u.id = '"+param.getKey()+"'"
+				+" and ucp.state = 1 and ucp.is_used = 1 group by u.id";
+		List<Object[]> totalList = hibernateUtil.sql(totalSql);	
+		Double couponTotal = Double.parseDouble(totalList.get(0)[1].toString()); 
+		pcUserVo.setCouponTotal(couponTotal);
+		return ObjectToResult.getResult(pcUserVo);
+	}
 	
 }
