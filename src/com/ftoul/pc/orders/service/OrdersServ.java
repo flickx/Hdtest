@@ -38,16 +38,12 @@ public interface OrdersServ {
 
 	Result getGoods(Parameter parameter) throws Exception;
 	
-	//OrderPriceVo getOrderGoodsBenPrice(Parameter param) throws Exception;
-
 	Result getOrdersById(Parameter parameter) throws Exception;
 
 	Result confirmTakeGoods(Parameter parameter) throws Exception;
 	
 	Result getOrdersByOrdersNumber(Parameter param) throws Exception;
 	
-	//Result autoCancelOrders(Parameter param) throws Exception;
-
 	Result getOrdersDetailById(Parameter parameter) throws Exception;
 
 	Result getOrdersFreightByOrderNumber(Parameter parameter) throws Exception;
@@ -59,4 +55,6 @@ public interface OrdersServ {
 	Result getRecoveryOrdersPage(Parameter parameter) throws Exception;
 
 	Result useCoupon(Parameter parameter) throws Exception;
+
+	Result toPay(Parameter parameter) throws Exception;
 }

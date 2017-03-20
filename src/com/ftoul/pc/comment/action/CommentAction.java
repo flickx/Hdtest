@@ -1,5 +1,7 @@
 package com.ftoul.pc.comment.action;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,16 @@ public class CommentAction {
 	public @ResponseBody Result getCommentPage(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return commentService.getCommentPage(parameter);
+	}
+	
+	/**
+	 * 查询好评率pc前端
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "getCommentScore")  
+	public @ResponseBody Result getCommentScore(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return commentService.getCommentScore(parameter);
 	}
 	
 	/**
@@ -80,6 +92,18 @@ public class CommentAction {
 	public @ResponseBody Result getGoods(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return commentService.getGoods(parameter);
+	}
+	
+	/**
+	 * 商品评论图片上传
+	 * @param param 页面传递参数对象
+	 * @return AJAX调用Result的JSON对象
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "goodsCommentPicUpload")
+	public @ResponseBody Result goodsCommentPicUpload(String param, HttpServletRequest request)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return commentService.goodsCommentPicUpload(parameter, request);
 	}
 	
 }

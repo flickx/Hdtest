@@ -229,6 +229,7 @@ public class PcUserServImpl implements PcUserServ {
 		pcUserVo.setEmail(user.getEmail());
 		pcUserVo.setName(user.getName());
 		pcUserVo.setActiveState(user.getActiveState());
+		pcUserVo.setPic(user.getPic());
 		return ObjectToResult.getResult(pcUserVo);
 	}
 	@Override
@@ -258,6 +259,9 @@ public class PcUserServImpl implements PcUserServ {
 		}
 		if(null!=pcUserVo.getCardBack()){
 			user.setCardBack(pcUserVo.getCardBack());
+		}
+		if(null!=pcUserVo.getPic()){
+			user.setPic(pcUserVo.getPic());
 		}
 		Object res;
 		res = hibernateUtil.update(user);
