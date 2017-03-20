@@ -1,5 +1,6 @@
 package com.ftoul.pc.website.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -14,6 +15,7 @@ import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
+import com.ftoul.pc.interfaces.vo.PcArticleClassifyVo;
 import com.ftoul.pc.website.service.ArticleClassifyServ;
 import com.ftoul.po.ArticleClassify;
 import com.ftoul.util.hibernate.HibernateUtil;
@@ -27,7 +29,7 @@ public class ArticleClassifyServImpl implements ArticleClassifyServ {
 	@Override
 	public Result delArticleClassify(Parameter parameter) throws Exception {
 		//如果此分类下有文章 则不允许删除
-		String hql = " update ArticleClassify set state = 0  where id in ("+StrUtil.getIds(parameter.getId()+")");
+		String hql = " update ArticleClassify set state = 0  where id in ("+StrUtil.getIds(parameter.getId())+")";
 		Integer num = hibernateUtil.execHql(hql);
 		return ObjectToResult.getResult(num);
 	}
@@ -59,6 +61,54 @@ public class ArticleClassifyServImpl implements ArticleClassifyServ {
 			res = hibernateUtil.update(articleClassify);
 		}
 		return ObjectToResult.getResult(res);
+	}
+
+	@Override
+	public Result getArticleClassifyList(Parameter parameter) throws Exception {
+		String hql ="from ArticleClassify where classify.id is null and state =1 order by createTime asc";
+		List<Object> typeLevel1List = hibernateUtil.hql(hql);
+		List<PcArticleClassifyVo> typeLevel1VoList = new ArrayList<PcArticleClassifyVo>();
+		if(typeLevel1List != null){
+			for (Object object : typeLevel1List) {
+				ArticleClassify ArticleClassify = (ArticleClassify) object;
+				PcArticleClassifyVo ArticleClassifyVoLel1 = new PcArticleClassifyVo();
+				hql = "from ArticleClassify where state =1 and classify.id = '" + ArticleClassify.getId() +"'";
+				hql+="order by createTime asc";
+				List<Object> typeLevel2List = hibernateUtil.hql(hql);
+				List<PcArticleClassifyVo> typeLevel2VoList = new ArrayList<PcArticleClassifyVo>();
+				if(typeLevel2List != null){
+					for (Object object2 : typeLevel2List) {
+						ArticleClassify ArticleClassifyLevel2 = (ArticleClassify)object2;
+						PcArticleClassifyVo ArticleClassifyVoLel2 = new PcArticleClassifyVo();
+						hql = "from ArticleClassify where state =1 and classify.id = '" + ArticleClassifyLevel2.getId() +"'";
+						hql+="order by createTime asc";
+						List<Object> typeLevel3List = hibernateUtil.hql(hql);
+						List<PcArticleClassifyVo> typeLevel3VoList = new ArrayList<PcArticleClassifyVo>();
+						if(typeLevel3List != null){
+							for (Object object3 : typeLevel3List) {
+								ArticleClassify ArticleClassifyLevel3 = (ArticleClassify)object3;
+								PcArticleClassifyVo ArticleClassifyVoLel3 = new PcArticleClassifyVo();
+								ArticleClassifyVoLel3.setId(ArticleClassifyLevel3.getId());
+								ArticleClassifyVoLel3.setName(ArticleClassifyLevel3.getName());
+								ArticleClassifyVoLel3.setArticleClassifyList(null);
+								typeLevel3VoList.add(ArticleClassifyVoLel3);
+							}
+						}
+						ArticleClassifyVoLel2.setId(ArticleClassifyLevel2.getId());
+						ArticleClassifyVoLel2.setName(ArticleClassifyLevel2.getName());
+						ArticleClassifyVoLel2.setArticleClassifyList(typeLevel3VoList);
+						typeLevel2VoList.add(ArticleClassifyVoLel2);
+					}
+					ArticleClassifyVoLel1.setId(ArticleClassify.getId());
+					ArticleClassifyVoLel1.setName(ArticleClassify.getName());
+					ArticleClassifyVoLel1.setArticleClassifyList(typeLevel2VoList);
+					typeLevel1VoList.add(ArticleClassifyVoLel1);
+				}
+			}
+		}
+		return ObjectToResult.getResult(typeLevel1VoList) ;
+		
+	
 	}
 	
 }

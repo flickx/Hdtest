@@ -3,7 +3,6 @@ package com.ftoul.pc.user.service.impl;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,6 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.DatatypeConverter;
 
 import net.sf.json.JSONObject;
 
@@ -33,6 +31,8 @@ import com.ftoul.pc.user.vo.PcUserVo;
 import com.ftoul.po.MessageVerification;
 import com.ftoul.po.User;
 import com.ftoul.po.UserToken;
+import com.ftoul.util.email.MD5Util;
+import com.ftoul.util.email.SendEmail;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.token.TokenUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
@@ -220,6 +220,7 @@ public class PcUserServImpl implements PcUserServ {
 	public Result getUserInfo(Parameter param) throws Exception {
 		User user = (User) this.hibernateUtil.find(User.class, param.getUserToken().getUser().getId());
 		PcUserVo pcUserVo = new PcUserVo();
+		pcUserVo.setId(user.getId());
 		pcUserVo.setUsername(user.getUsername());
 		pcUserVo.setNickname(user.getNickname());
 		pcUserVo.setSex(user.getSex());
@@ -227,6 +228,8 @@ public class PcUserServImpl implements PcUserServ {
 		pcUserVo.setMobil(user.getMobil());
 		pcUserVo.setEmail(user.getEmail());
 		pcUserVo.setName(user.getName());
+		pcUserVo.setActiveState(user.getActiveState());
+		pcUserVo.setPic(user.getPic());
 		return ObjectToResult.getResult(pcUserVo);
 	}
 	@Override
@@ -257,6 +260,9 @@ public class PcUserServImpl implements PcUserServ {
 		if(null!=pcUserVo.getCardBack()){
 			user.setCardBack(pcUserVo.getCardBack());
 		}
+		if(null!=pcUserVo.getPic()){
+			user.setPic(pcUserVo.getPic());
+		}
 		Object res;
 		res = hibernateUtil.update(user);
 		return ObjectToResult.getResult(res);
@@ -277,11 +283,14 @@ public class PcUserServImpl implements PcUserServ {
         ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);  
         image = ImageIO.read(new ByteArrayInputStream(imageByte));  
         bis.close();  
-        String picPath = "/upload/img/";
-        String path = request.getSession().getServletContext().getRealPath("upload/img/");
+        String picPath = "/upload/img/header/";
+        String path = request.getSession().getServletContext().getRealPath("upload/img/header/");
         String picName = UUID.randomUUID()+"."+strFileName;
         String picAddress = picPath+ picName;
-        File outputfile = new File(path+picName);  
+        File outputfile = new File(path+picName);
+        if(!outputfile.exists()){
+        	outputfile.mkdirs();
+        }
         System.out.println(image);
         Map<String ,Object> map = new HashMap<String ,Object>();
         map.put("picAddress", picAddress);
@@ -328,6 +337,107 @@ public class PcUserServImpl implements PcUserServ {
 		hibernateUtil.update(userDb);
 		res.setResult(1);
 		return ObjectToResult.getResult(res);
+	}
+	
+	@Override
+	public Result getEmailByName(Parameter param) throws Exception {
+		PcUserVo pcUserVo = (PcUserVo) JSONObject.toBean((JSONObject) param.getObj(), PcUserVo.class);
+		String hql = "from User where state = 1 and email = '"+ pcUserVo.getEmail()+ "'";
+		List<Object> obj = (List<Object>) hibernateUtil.hql(hql);
+		if(obj.size()>1){
+			return ObjectToResult.getResult(1);
+		}else{
+			return ObjectToResult.getResult(0);
+		}
+	}
+	
+	
+	@Override
+	public Result sendEmail(Parameter param,HttpServletRequest request) throws Exception {
+		String userId = param.getUserToken().getUser().getId();
+		String email = param.getKey();
+		String code = MD5Util.encode2hex(email);
+		String url = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+request.getContextPath();
+		///邮件的内容  
+        StringBuffer sb=new StringBuffer("点击下面链接激活邮箱，请尽快激活！</br>");  
+        sb.append("<a href=\""+url+"/pc/user/activeEmail.action?");
+        sb.append("userId="+userId);
+        sb.append("&code="+code);
+        sb.append("\">"+url+"/pc/user/activeEmail.action?");
+        sb.append("userId="+userId);
+        sb.append("&code="+code);
+        sb.append("</a>");
+        //发送邮件  
+        SendEmail.send(email, sb.toString());  
+        User user = new User();
+        user.setId(userId);
+        user.setValidateCode(code);
+        user.setActiveState("0");
+        hibernateUtil.update(user);
+        Result ret = new Result();
+        ret.setResult(1);
+		return ret;
+	}
+	@Override
+	public Result activeEmail(String userId,String code) throws Exception {
+		User user = (User) hibernateUtil.find(User.class, userId);
+		Result ret = new Result();
+		if(code.equals(user.getValidateCode())){
+			user.setActiveState("1");
+			ret.setResult(1);
+			return ret;
+		}else{
+			ret.setResult(0);
+			return ret;
+		}
+	}
+	@Override
+	public Result validteSmsCode(Parameter param) throws Exception {
+		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),
+				UsersVO.class);
+		int maxSort = smsCodeUtil.getMaxSmsSort(user.getUsername(),
+				user.getSmscodeType());
+		MessageVerification m = smsCodeUtil.getMaxSmsCode(user.getUsername(),
+				user.getSmscodeType(), maxSort);
+		String smsCode = user.getSmsCode();
+		Result result = new Result();
+		String hql = "from User where username = '"+user.getUsername()+"'";
+		List<Object> list = hibernateUtil.hql(hql);
+		if (m == null || !smsCode.equals(m.getVerificationCode())) {
+			result.setResult(0);
+			result.setMessage("短信验证码错误");
+		}else{
+			User u = (User) list.get(0);
+			result.setResult(1);
+			result.setObj(u.getEmail());
+		}
+		return result;
+	}
+	@Override
+	public Result getUser(Parameter param) throws Exception {
+		User user = (User) this.hibernateUtil.find(User.class, param.getKey());
+		PcUserVo pcUserVo = new PcUserVo();
+		pcUserVo.setId(user.getId());
+		pcUserVo.setUsername(user.getUsername());
+		pcUserVo.setNickname(user.getNickname());
+		pcUserVo.setPic(user.getPic());
+		UserService userService = WebserviceUtil.getService();
+		Integer coinAmount = userService.getIntegral(user.getUsername());
+		pcUserVo.setCoinAmount(coinAmount);
+		
+		String sql = "select cp.* from user_coupon ucp join coupon cp on ucp.coupon_id = cp.id"
+					+" join user u on u.id= ucp.user_id where ucp.user_id = u.id and u.id = '"+param.getKey()+"'"
+					+" and ucp.state = 1 and ucp.is_used = 1";
+		List<Object[]> list = hibernateUtil.sql(sql);	
+		pcUserVo.setCouponCount(list.size());
+		
+		String totalSql = "select u.id,IFNULL(sum(cp.face_value),0) from user_coupon ucp join coupon cp on ucp.coupon_id = cp.id"
+				+" join user u on u.id= ucp.user_id where ucp.user_id = u.id and u.id = '"+param.getKey()+"'"
+				+" and ucp.state = 1 and ucp.is_used = 1 group by u.id";
+		List<Object[]> totalList = hibernateUtil.sql(totalSql);	
+		Double couponTotal = Double.parseDouble(totalList.get(0)[1].toString()); 
+		pcUserVo.setCouponTotal(couponTotal);
+		return ObjectToResult.getResult(pcUserVo);
 	}
 	
 }

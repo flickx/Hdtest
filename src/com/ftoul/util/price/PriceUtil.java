@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.ftoul.common.DateUtil;
 import com.ftoul.common.Parameter;
+import com.ftoul.common.StrUtil;
 import com.ftoul.po.FullCutRule;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsEvent;
@@ -158,7 +159,7 @@ public class PriceUtil {
 		if(eventList!=null){
 			for (Object object : eventList) {
 				GoodsEvent event = (GoodsEvent) object;
-				List<Object> joinList = hibernateUtil.hql("from GoodsEventJoin where state='1' and goodsEvent.id='"+event.getId()+"' goodsType.id in("+sb.toString()+")");
+				List<Object> joinList = hibernateUtil.hql("from GoodsEventJoin where state='1' and goodsEvent.id='"+event.getId()+"'and goodsType.id in("+StrUtil.getIds(sb)+")");
 				if(joinList!=null){
 					mjVo = new MjGoodsEventVo();
 					mjVo.setGoods(goods);

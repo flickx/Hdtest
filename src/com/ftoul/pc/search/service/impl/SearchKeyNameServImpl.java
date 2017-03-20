@@ -48,6 +48,10 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 		if(null!=param.getWhereStr()){
 			whereStr = param.getWhereStr();
 		}
+		String title = param.getKey();
+		if(title.contains("'")){
+			title = title.replace("'", "\\'");
+		}
 		String goodsSql ="select gs.id,gs.title,gs.price,gs.pic_src,gs.shop_id,sum(uco.id),gs.sale_sum,bs.store_name,gp.market_price "
 						+ "from Goods gs join business_store bs on gs.shop_id = bs.id and gs.state = 1 and gs.grounding  = 1 "
 						+ "join goods_param gp on gs.id = gp.goods_id and gp.state = 1 and gp.defalut = 1 and gs.state = 1 and gs.grounding  = 1 "
@@ -57,8 +61,8 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 						+ "left join goods_type gt3 on gs.goods_type3 = gt3.id and gs.state =1 and gs.grounding =1 and gt3.state = 1 "
 						+ "left join cross_border_museum cbm on gs.country_id = cbm.id and gs.state =1 and gs.grounding =1 and cbm.state = 1 "
 						+ "left join user_comment uco on gs.id = uco.good_id and uco.state = 1 "
-						+ "where (gs.title like '%"+param.getKey()+"%'"+ " or gb.name like '%"+param.getKey()+"%'"+ " or cbm.name like '%"+param.getKey()+"%' "
-						+ "or gt.name like '%"+param.getKey()+"%'"+ " or gt2.name like '%"+param.getKey()+"%'" + " or gt3.name like '%"+param.getKey()+"%') "
+						+ "where (gs.title like '%"+title+"%'"+ " or gb.name like '%"+title+"%'"+ " or cbm.name like '%"+title+"%' "
+						+ "or gt.name like '%"+title+"%'"+ " or gt2.name like '%"+title+"%'" + " or gt3.name like '%"+title+"%') "
 						+  whereStr+" group by gs.id "+order ;
 		
 		String goodsCount ="select count(gs.id) "
@@ -70,8 +74,8 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 				+ "left join goods_type gt3 on gs.goods_type3 = gt3.id and gs.state =1 and gs.grounding =1 and gt3.state = 1 "
 				+ "left join cross_border_museum cbm on gs.country_id = cbm.id and gs.state =1 and gs.grounding =1 and cbm.state = 1 "
 				+ "left join user_comment uco on gs.id = uco.good_id and uco.state = 1 "
-				+ "where (gs.title like '%"+param.getKey()+"%'"+ " or gb.name like '%"+param.getKey()+"%'"+ " or cbm.name like '%"+param.getKey()+"%' "
-				+ "or gt.name like '%"+param.getKey()+"%'"+ " or gt2.name like '%"+param.getKey()+"%'" + " or gt3.name like '%"+param.getKey()+"%') "
+				+ "where (gs.title like '%"+title+"%'"+ " or gb.name like '%"+title+"%'"+ " or cbm.name like '%"+title+"%' "
+				+ "or gt.name like '%"+title+"%'"+ " or gt2.name like '%"+title+"%'" + " or gt3.name like '%"+title+"%') "
 				+  whereStr;
 		
 		Page goodsPage = hibernateUtil.sqlPage(goodsCount, goodsSql, param.getPageNum(), param.getPageSize());
@@ -113,7 +117,8 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 				goodsSearchMainVo.setShopId(obj[4].toString());
 			}
 			if(obj[5]!=null){
-				goodsSearchMainVo.setComment(obj[5].toString());
+				Integer com = new Double((Double)obj[5]).intValue();
+				goodsSearchMainVo.setComment(com.toString());
 			}else{
 				goodsSearchMainVo.setComment("0");
 			}

@@ -1,5 +1,7 @@
 package com.ftoul.pc.website.service;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 
@@ -53,4 +55,7 @@ public interface ArticleServ {
 	 * @throws Exception
 	 */
 	Result getNextClassifyList(Parameter parameter) throws Exception;
+	Result getFilePath(Parameter parameter, HttpServletRequest request) throws Exception;
+	
+	Result getArticleListByClassifyId(Parameter parameter) throws Exception;
 }

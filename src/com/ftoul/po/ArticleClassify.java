@@ -2,8 +2,11 @@ package com.ftoul.po;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -12,7 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * ArticleClassify entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "article_classify", catalog = "ftoul_shop")
+@Table(name = "article_classify")
 public class ArticleClassify implements java.io.Serializable {
 
 	// Fields
@@ -21,7 +24,7 @@ public class ArticleClassify implements java.io.Serializable {
 	private String name;
 	private String anotherName;
 	private String sort;
-	private String pname;
+	private ArticleClassify classify;
 	private String description;
 	private String createTime;
 	private String modifyTime;
@@ -33,12 +36,10 @@ public class ArticleClassify implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ArticleClassify(String name, String anotherName, String sort,
-			String pName, String description) {
+	public ArticleClassify(String name, String anotherName, String sort,String description) {
 		this.name = name;
 		this.anotherName = anotherName;
 		this.sort = sort;
-		this.pname = pname;
 		this.description = description;
 	}
 
@@ -81,14 +82,14 @@ public class ArticleClassify implements java.io.Serializable {
 	public void setSort(String sort) {
 		this.sort = sort;
 	}
-
-	@Column(name = "p_name", length = 32)
-	public String getPname() {
-		return this.pname;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "p_id")
+	public ArticleClassify getClassify() {
+		return this.classify;
 	}
 
-	public void setPname(String pname) {
-		this.pname = pname;
+	public void setClassify(ArticleClassify classify) {
+		this.classify = classify;
 	}
 
 	@Column(name = "description")

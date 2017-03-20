@@ -132,7 +132,7 @@ public class UploadServImpl implements UploadServ {
 				}
 				goodsUploadpic.setCreateTime(new DateStr().toString());
 				goodsUploadpic.setState("1");
-				goodsUploadpic.setCreatePerson(parameter.getManageToken().getLoginUser().getLoginName());
+				//goodsUploadpic.setCreatePerson(parameter.getManageToken().getLoginUser().getLoginName());
 				
 				hibernateUtil.save(goodsUploadpic);
 			}

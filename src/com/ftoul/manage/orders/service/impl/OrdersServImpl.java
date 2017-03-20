@@ -438,11 +438,11 @@ public class OrdersServImpl implements OrdersServ {
 		String keys = parameter.getKey();
 		String[] key = keys.split(";");
 		Orders orders = (Orders) hibernateUtil.find(Orders.class, parameter.getId()+"");
-		BigDecimal payableDec = new BigDecimal(orders.getPayable());
+		BigDecimal priceDec = new BigDecimal(orders.getOrderPrice());
 		BigDecimal benDec = new BigDecimal(key[0]);
-		String orderPrice = payableDec.subtract(benDec).toString();
-		if(payableDec.subtract(benDec).doubleValue()<0){
-			throw new Exception("优惠金额已经大于原价了");
+		String orderPrice = priceDec.subtract(benDec).toString();
+		if(priceDec.subtract(benDec).doubleValue()<0){
+			throw new Exception("优惠金额已经大于原订单金额了");
 		}
 		String hql;
 		if(key[1]==null){
@@ -457,6 +457,7 @@ public class OrdersServImpl implements OrdersServ {
 		log.setOpTypeCode(parameter.getKey());
 		log.setOpTypeName("修改订单价格");
 		log.setOpReason("后台修改订单价格,优惠金额为"+key[0]);
+		log.setCreatePerson(parameter.getManageToken().getLoginUser().getLoginName());
 		log.setState("1");
 		log.setOrders(orders);
 		hibernateUtil.save(log);

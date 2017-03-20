@@ -48,6 +48,8 @@ public class User implements java.io.Serializable {
 	private String driveId;
 	private String cardFront; 
 	private String cardBack; 
+	private String validateCode;
+	private String activeState;
 	// Constructors
 
 	/** default constructor */
@@ -328,4 +330,21 @@ public class User implements java.io.Serializable {
 	public void setCardBack(String cardBack) {
 		this.cardBack = cardBack;
 	}
+	@Column(name = "validate_code", length = 100)
+	public String getValidateCode() {
+		return validateCode;
+	}
+
+	public void setValidateCode(String validateCode) {
+		this.validateCode = validateCode;
+	}
+	@Column(name = "active_state", length = 1)
+	public String getActiveState() {
+		return activeState;
+	}
+
+	public void setActiveState(String activeState) {
+		this.activeState = activeState;
+	}
+	
 }

@@ -13,15 +13,14 @@ import com.ftoul.app.vo.GoodsPicAppVo;
 import com.ftoul.app.vo.GoodsPropAppVo;
 import com.ftoul.app.vo.ShopVo;
 import com.ftoul.common.ObjectToResult;
-import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.manage.coupon.vo.GoodsTypeVo;
 import com.ftoul.manage.goods.vo.GoodsVo;
 import com.ftoul.pc.goods.service.GoodsPcServ;
+import com.ftoul.pc.goods.vo.BrandVo;
+import com.ftoul.pc.goods.vo.GoodsBrandVo;
 import com.ftoul.pc.goods.vo.GoodsPcVo;
-import com.ftoul.pc.goods.vo.GoodsSearchMainVo;
-import com.ftoul.pc.goods.vo.GoodsSearchVo;
-import com.ftoul.pc.goods.vo.SearchVo;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.GoodsProp;
 import com.ftoul.po.GoodsUploadpic;
@@ -183,4 +182,103 @@ public class GoodsPcServImpl implements GoodsPcServ {
 	    }
 	    return ip.equals("0:0:0:0:0:0:0:1")?"127.0.0.1":ip;
 	}
+	@Override
+	public Result getGoodsBrand(Parameter parameter) throws Exception {
+		String sql ="select id,name,logo from Goods_Brand where state = 1 group by id ORDER BY RAND()  LIMIT 18" ;
+		List<Object[]> goodsBrandList = hibernateUtil.sql(sql);
+		String adventSql ="select id,pic_address from index_carousel_pic where carousel_type = 5" ;
+		List<Object[]> adventList = hibernateUtil.sql(adventSql);
+		List<BrandVo> goodsBrandVoList = new ArrayList<BrandVo>();
+		GoodsBrandVo goodsBrandVo = new GoodsBrandVo();
+		for (int i = 0; i < goodsBrandList.size(); i++) {
+			BrandVo brandVo = new BrandVo();
+			Object[] obj = (Object[])goodsBrandList.get(i);
+			if(obj[0]!=null){
+				brandVo.setId(obj[0].toString());
+			}
+			if(obj[1]!=null){
+				brandVo.setName(obj[1].toString());
+			}
+			if(obj[2]!=null){
+				brandVo.setLogo(obj[2].toString());
+			}
+			goodsBrandVoList.add(brandVo);
+		}
+		goodsBrandVo.setBrandList(goodsBrandVoList);
+		if(adventList.size()>0){
+			Object[] obj =  (Object[])adventList.get(0);
+			if(obj[1]!=null){
+				goodsBrandVo.setAdventLogo(obj[1].toString());
+			}
+		}
+		return ObjectToResult.getResult(goodsBrandVo);
+	}
+	@Override
+	public Result getGoodsBrandByTypeId1(Parameter parameter) throws Exception {
+		String sql = "select gb.id,gb.name,gb.logo from goods gs join goods_brand gb on gs.goods_brand_id = gb.id "
+					 +"and gs.goods_type1 = '"+ parameter.getKey()+"' "
+					 +"group by gb.id ORDER BY RAND() LIMIT 8";
+		List<Object[]> goodsBrandList = hibernateUtil.sql(sql);
+		List<BrandVo> goodsBrandVoList = new ArrayList<BrandVo>();
+		for (int i = 0; i < goodsBrandList.size(); i++) {
+			BrandVo goodsBrandVo = new BrandVo();
+			Object[] obj = (Object[])goodsBrandList.get(i);
+			if(obj[0]!=null){
+				goodsBrandVo.setId(obj[0].toString());
+			}
+			if(obj[1]!=null){
+				goodsBrandVo.setName(obj[1].toString());
+			}
+			if(obj[2]!=null){
+				goodsBrandVo.setLogo(obj[2].toString());
+			}
+			goodsBrandVoList.add(goodsBrandVo);
+		}
+		return ObjectToResult.getResult(goodsBrandVoList);
+	}
+	@Override
+	public Result getGoodsBrandByTypeId2(Parameter parameter) throws Exception {
+		String sql = "select gb.id,gb.name,gb.logo from goods gs join goods_brand gb on gs.goods_brand_id = gb.id "
+					 +"and gs.goods_type2 = '"+ parameter.getKey()+"' "
+					 +"group by gb.id ORDER BY RAND() LIMIT 4";
+		List<Object[]> goodsBrandList = hibernateUtil.sql(sql);
+		List<BrandVo> goodsBrandVoList = new ArrayList<BrandVo>();
+		for (int i = 0; i < goodsBrandList.size(); i++) {
+			BrandVo goodsBrandVo = new BrandVo();
+			Object[] obj = (Object[])goodsBrandList.get(i);
+			if(obj[0]!=null){
+				goodsBrandVo.setId(obj[0].toString());
+			}
+			if(obj[1]!=null){
+				goodsBrandVo.setName(obj[1].toString());
+			}
+			if(obj[2]!=null){
+				goodsBrandVo.setLogo(obj[2].toString());
+			}
+			goodsBrandVoList.add(goodsBrandVo);
+		}
+		return ObjectToResult.getResult(goodsBrandVoList);
+	}
+	@Override
+	public Result getGoodsType2(Parameter parameter) throws Exception {
+		String sql = "select id,name,level from goods_type where state = 1 and level =2 ORDER BY RAND() LIMIT 6";
+		List<Object[]> goodsTypeList = hibernateUtil.sql(sql);
+		List<GoodsTypeVo> goodsTypeVoList = new ArrayList<GoodsTypeVo>();
+		for (int i = 0; i < goodsTypeList.size(); i++) {
+			GoodsTypeVo goodsTypeVo = new GoodsTypeVo();
+			Object[] obj = (Object[])goodsTypeList.get(i);
+			if(obj[0]!=null){
+				goodsTypeVo.setId(obj[0].toString());
+			}
+			if(obj[1]!=null){
+				goodsTypeVo.setName(obj[1].toString());
+			}
+			if(obj[2]!=null){
+				goodsTypeVo.setLevel(obj[2].toString());
+			}
+			goodsTypeVoList.add(goodsTypeVo);
+		}
+		return ObjectToResult.getResult(goodsTypeVoList);
+	}
+	
 }
