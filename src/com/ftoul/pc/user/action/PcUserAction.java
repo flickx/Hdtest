@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
@@ -151,10 +152,18 @@ public class PcUserAction {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "activeEmail")
-	public @ResponseBody Result activeEmail(String param,HttpServletRequest request)throws Exception{
+	public  ModelAndView  activeEmail(String param,HttpServletRequest request)throws Exception{
 		String userId = request.getParameter("userId");
 		String code = request.getParameter("code");
-		return pcUserServ.activeEmail(userId,code);
+		ModelAndView mav=new ModelAndView();  
+		Result result = pcUserServ.activeEmail(userId,code);
+		if(result.getResult() == 1){
+			mav.setViewName("../../success.html");  
+		}else{
+			mav.setViewName("../../failure.html");  
+		}
+		
+		return mav;
 	}
 	
 	
