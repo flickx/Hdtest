@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.pc.coupon.service.CouponService;
+import com.ftoul.pc.coupon.service.CouponServ;
 
 /**
  * PC前台优惠券
@@ -20,7 +20,7 @@ import com.ftoul.pc.coupon.service.CouponService;
 public class CouponAction {
 	
 	@Autowired
-	private CouponService couponService;
+	private CouponServ couponService;
 	
 	/**
 	 * 查询优惠券列表
