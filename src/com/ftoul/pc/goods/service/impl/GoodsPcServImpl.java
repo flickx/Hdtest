@@ -15,6 +15,7 @@ import com.ftoul.app.vo.ShopVo;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.manage.coupon.vo.GoodsTypeVo;
 import com.ftoul.manage.goods.vo.GoodsVo;
 import com.ftoul.pc.goods.service.GoodsPcServ;
 import com.ftoul.pc.goods.vo.BrandVo;
@@ -214,7 +215,7 @@ public class GoodsPcServImpl implements GoodsPcServ {
 	}
 	@Override
 	public Result getGoodsBrandByTypeId1(Parameter parameter) throws Exception {
-		String sql = "select gb.* from goods gs join goods_brand gb on gs.goods_brand_id = gb.id "
+		String sql = "select gb.id,gb.name,gb.logo from goods gs join goods_brand gb on gs.goods_brand_id = gb.id "
 					 +"and gs.goods_type1 = '"+ parameter.getKey()+"' "
 					 +"group by gb.id ORDER BY RAND() LIMIT 8";
 		List<Object[]> goodsBrandList = hibernateUtil.sql(sql);
@@ -237,7 +238,7 @@ public class GoodsPcServImpl implements GoodsPcServ {
 	}
 	@Override
 	public Result getGoodsBrandByTypeId2(Parameter parameter) throws Exception {
-		String sql = "select gb.* from goods gs join goods_brand gb on gs.goods_brand_id = gb.id "
+		String sql = "select gb.id,gb.name,gb.logo from goods gs join goods_brand gb on gs.goods_brand_id = gb.id "
 					 +"and gs.goods_type2 = '"+ parameter.getKey()+"' "
 					 +"group by gb.id ORDER BY RAND() LIMIT 4";
 		List<Object[]> goodsBrandList = hibernateUtil.sql(sql);
@@ -258,4 +259,26 @@ public class GoodsPcServImpl implements GoodsPcServ {
 		}
 		return ObjectToResult.getResult(goodsBrandVoList);
 	}
+	@Override
+	public Result getGoodsType2(Parameter parameter) throws Exception {
+		String sql = "select id,name,level from goods_type where state = 1 and level =2 ORDER BY RAND() LIMIT 6";
+		List<Object[]> goodsTypeList = hibernateUtil.sql(sql);
+		List<GoodsTypeVo> goodsTypeVoList = new ArrayList<GoodsTypeVo>();
+		for (int i = 0; i < goodsTypeList.size(); i++) {
+			GoodsTypeVo goodsTypeVo = new GoodsTypeVo();
+			Object[] obj = (Object[])goodsTypeList.get(i);
+			if(obj[0]!=null){
+				goodsTypeVo.setId(obj[0].toString());
+			}
+			if(obj[1]!=null){
+				goodsTypeVo.setName(obj[1].toString());
+			}
+			if(obj[2]!=null){
+				goodsTypeVo.setLevel(obj[2].toString());
+			}
+			goodsTypeVoList.add(goodsTypeVo);
+		}
+		return ObjectToResult.getResult(goodsTypeVoList);
+	}
+	
 }

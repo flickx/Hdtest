@@ -258,4 +258,16 @@ public class PcGoodsAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return goodsPcServ.getGoodsBrandByTypeId2(parameter);
 	}
+	
+	/**
+	 * 查询二级分类
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getGoodsType2")  
+	public @ResponseBody Result getGoodsType2(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return goodsPcServ.getGoodsType2(parameter);
+	}
 }
