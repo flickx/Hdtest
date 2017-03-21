@@ -3,3 +3,5 @@
 /target/m2e-jee
 /target/
 /doc
+/src/junit
+/.settings/.svn
