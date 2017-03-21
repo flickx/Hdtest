@@ -128,9 +128,9 @@ public class GoodsServImpl implements GoodsServ {
 			User user = param.getUserToken().getUser();
 			com.ftoul.mongo.po.User user2 = new com.ftoul.mongo.po.User(); 
 			BeanUtils.copyProperties(user, user2);
-			List userList = hibernateUtil.hql(" from User where state = '1' and id = '" + user.getId() +"'");
-			if(userList != null && userList.size() > 0)
-				userBrowse.setUser(user2);
+//			List userList = hibernateUtil.hql(" from User where state = '1' and id = '" + user.getId() +"'");
+//			if(userList != null && userList.size() > 0)
+			userBrowse.setUser(user2);
 		}
 		userBrowse.setIpAddress(getRemoteHost());
 		userBrowse.setBrowseTime(new DateStr().toString());
