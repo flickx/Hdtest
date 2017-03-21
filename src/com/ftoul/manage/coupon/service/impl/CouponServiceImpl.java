@@ -102,7 +102,7 @@ public class CouponServiceImpl implements CouponServ {
 		}
 		String hql = "from Coupon where state='1' "+whereStr+" and businessStore.id = '1' order by createTime desc";
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
-		List<Object> objList = page.getObjList();
+		List<?> objList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : objList) {
 			Coupon coupon = (Coupon) object;
@@ -326,7 +326,7 @@ public class CouponServiceImpl implements CouponServ {
 	public Result queryUserCouponPageByCouponId(Parameter param)
 			throws Exception {
 		Page page = hibernateUtil.hqlPage(null, "from UserCoupon where state='1' and couponId.id='"+param.getId().toString()+"'", param.getPageNum(), param.getPageSize());
-		List<Object> objList = page.getObjList();
+		List<?> objList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : objList) {
 			UserCoupon userCoupon = (UserCoupon) object;

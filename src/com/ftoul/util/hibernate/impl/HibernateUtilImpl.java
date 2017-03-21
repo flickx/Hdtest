@@ -1,6 +1,7 @@
 package com.ftoul.util.hibernate.impl;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -99,15 +100,15 @@ public class HibernateUtilImpl implements HibernateUtil
 	 */
 	@Override
 	public Page hqlPage(String countSql,String hql, Integer pageNum, Integer pageSize){
-		Integer count = 0;
+		Long count = 0l;
 		Page page = new Page();
 		page.setPageNum(pageNum);
 		page.setPageSize(pageSize);
 		if(countSql == null){
 			countSql = "select count(*) " + hql;
-			count = ((Number) sessionFactory.getCurrentSession().createQuery(countSql).uniqueResult()).intValue();
+			count = ((Long) sessionFactory.getCurrentSession().createQuery(countSql).uniqueResult());
 		}else{
-			count = ((Number) sessionFactory.getCurrentSession().createSQLQuery(countSql).uniqueResult()).intValue();
+			count = ((Long) sessionFactory.getCurrentSession().createSQLQuery(countSql).uniqueResult());
 		}
 		
 		page.setCount(count);
@@ -145,14 +146,21 @@ public class HibernateUtilImpl implements HibernateUtil
 	@Override
     public Page sqlPage(String countSql,String sql, Integer pageNum, Integer pageSize){
 		Page page = new Page();
-		Integer count = ((Number) sessionFactory.getCurrentSession().createSQLQuery(countSql).uniqueResult()).intValue();
+		Long count = 0l;
+		if(countSql == null){
+			countSql = "select count(*) " + sql.substring(sql.indexOf("from"));
+			count = ((BigInteger)sessionFactory.getCurrentSession().createSQLQuery(countSql).uniqueResult()).longValue();
+		}else{
+			count = ((BigInteger)sessionFactory.getCurrentSession().createSQLQuery(countSql).uniqueResult()).longValue();
+		}
+//		Integer count = ((Number) sessionFactory.getCurrentSession().createSQLQuery(countSql).uniqueResult()).intValue();
 		page.setCount(count);
 		page.setPageNum(pageNum);
 		page.setPageSize(pageSize);
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
 //		Integer count = 0;
-		if(query.list()!=null)
-			count = query.list().size();
+//		if(query.list()!=null)
+//			count = query.list().size();
 		page.setCount(count);
 		page.setMaxPage((int)(Math.ceil(((double)count)/pageSize)));
 		//设置每页显示多少个，设置多大结果。  

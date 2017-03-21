@@ -58,7 +58,7 @@ public class CommentServiceImpl implements CommentService {
 			hql = "from GoodsComment where state = '2' and isShow='1' and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
-		List<Object> objList = page.getObjList();
+		List<?> objList = page.getObjList();
 		List<Object> voList = new ArrayList<>();
 		for (Object object : objList) {
 			GoodsComment comment = (GoodsComment) object;
@@ -94,7 +94,7 @@ public class CommentServiceImpl implements CommentService {
 		}
 		PcOrderVo vo = new PcOrderVo();
 		List<Object> list = new ArrayList<Object>();
-		List<Object> ordersList = page.getObjList();
+		List<?> ordersList = page.getObjList();
 		for (int i = 0; i < ordersList.size(); i++) {
 			Orders order = (Orders) ordersList.get(i);
 			List<Object> ordersDetailList = new ArrayList<Object>();

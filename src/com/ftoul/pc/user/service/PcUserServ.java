@@ -91,4 +91,12 @@ public interface PcUserServ {
 	 */
 	Result validteSmsCode(Parameter param)throws Exception;
 	
+	
+	/**
+	 * 查询用户头像 ，优惠券，蜂币
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result getUser(Parameter param)throws Exception;
 }

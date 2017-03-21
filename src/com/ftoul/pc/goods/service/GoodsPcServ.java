@@ -40,4 +40,12 @@ public interface GoodsPcServ{
 	 * @throws Exception
 	 */
 	Result getGoodsBrandByTypeId2(Parameter parameter) throws Exception;
+	
+	/**
+	 * 查询二级分类
+	 * @param parameter
+	 * @return
+	 * @throws Exception
+	 */
+	Result getGoodsType2(Parameter parameter) throws Exception;
 }
