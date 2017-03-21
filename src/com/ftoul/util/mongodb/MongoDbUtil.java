@@ -3,16 +3,18 @@ package com.ftoul.util.mongodb;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.hssf.record.formula.functions.T;
+import com.ftoul.common.Filters;
+import com.ftoul.common.Page;
 
-@SuppressWarnings("hiding")
-public interface MongoDbUtil<T> {
+public interface MongoDbUtil{
 	//添加  
     public void insert(Object object);    
     //根据条件查找  
-    public Object find(Object id,Class<?> c);    
+    public Object find(Object id,Class<?> c);   
+    //查找所有
+    public List<?> getList(Map<String, Object> params,Class<?> c);
     //查找所有  
-    public List<?> getList(Map<String, Object> params,Class<?> c);    
+    public Page getListPage(Class<?> c,Integer pageNum, Integer pageSize,String sidx,String sord,Filters... filters);  
     //修改  
     public void update(Map<String,Object> params);   
     //创建集合  

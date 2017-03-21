@@ -13,7 +13,7 @@ import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.coupon.vo.CouponCount;
-import com.ftoul.pc.coupon.service.CouponService;
+import com.ftoul.pc.coupon.service.CouponServ;
 import com.ftoul.pc.coupon.vo.CouponVo;
 import com.ftoul.po.BusinessStore;
 import com.ftoul.po.Coupon;
@@ -22,7 +22,7 @@ import com.ftoul.util.coupon.CouponUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 
 @Service("PcCouponServiceImpl")
-public class CouponServiceImpl implements CouponService {
+public class CouponServiceImpl implements CouponServ {
 	
 	@Autowired
 	private HibernateUtil hibernateUtil;
@@ -40,7 +40,7 @@ public class CouponServiceImpl implements CouponService {
 		}
 		String hql = "from Coupon where state='1' "+whereStr+" order by createTime desc";
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
-		List<Object> objList = page.getObjList();
+		List<?> objList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : objList) {
 			Coupon coupon = (Coupon) object;

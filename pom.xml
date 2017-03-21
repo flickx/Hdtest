@@ -108,7 +108,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>4.2.0.Final</version>
+      <version>5.1.0.Final</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-c3p0 -->
 	<dependency>
@@ -443,7 +443,11 @@
 	    <artifactId>spring-websocket</artifactId>
 	    <version>4.2.0.RELEASE</version>
 	</dependency>
-
+	<dependency>  
+	    <groupId>org.springframework</groupId>  
+	    <artifactId>spring-test</artifactId>  
+	    <version>4.2.0.RELEASE</version>  
+	</dependency>  
 	
   </dependencies>
   <build>

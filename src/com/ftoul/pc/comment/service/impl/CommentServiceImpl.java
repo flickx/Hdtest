@@ -1,10 +1,21 @@
 package com.ftoul.pc.comment.service.impl;
 
+import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.Map.Entry;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
@@ -14,16 +25,18 @@ import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.pc.comment.service.CommentService;
-import com.ftoul.pc.orders.vo.PcOrderVo;
 import com.ftoul.pc.comment.vo.GoodsCommentDetailVo;
+import com.ftoul.pc.comment.vo.GoodsCommentScoreVo;
 import com.ftoul.pc.comment.vo.GoodsCommentVo;
 import com.ftoul.pc.comment.vo.GoodsVo;
-import com.ftoul.web.vo.OrderStaticCountVo;
+import com.ftoul.pc.orders.vo.PcOrderVo;
+import com.ftoul.po.AfterSchedule;
 import com.ftoul.po.GoodsComment;
 import com.ftoul.po.Orders;
 import com.ftoul.po.OrdersDetail;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.orders.OrdersUtil;
+import com.ftoul.web.vo.OrderStaticCountVo;
 
 @Service("PcCommentServiceImpl")
 public class CommentServiceImpl implements CommentService {
@@ -45,7 +58,7 @@ public class CommentServiceImpl implements CommentService {
 			hql = "from GoodsComment where state = '2' and isShow='1' and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
-		List<Object> objList = page.getObjList();
+		List<?> objList = page.getObjList();
 		List<Object> voList = new ArrayList<>();
 		for (Object object : objList) {
 			GoodsComment comment = (GoodsComment) object;
@@ -81,7 +94,7 @@ public class CommentServiceImpl implements CommentService {
 		}
 		PcOrderVo vo = new PcOrderVo();
 		List<Object> list = new ArrayList<Object>();
-		List<Object> ordersList = page.getObjList();
+		List<?> ordersList = page.getObjList();
 		for (int i = 0; i < ordersList.size(); i++) {
 			Orders order = (Orders) ordersList.get(i);
 			List<Object> ordersDetailList = new ArrayList<Object>();
@@ -176,6 +189,87 @@ public class CommentServiceImpl implements CommentService {
 		vo.setPrice(ordersDetail.getPrice());
 		vo.setDetailId(ordersDetail.getId());
 		return ObjectToResult.getResult(vo);
+	}
+
+	/**
+	 * 查询商品的好评率
+	 */
+	@Override
+	public Result getCommentScore(Parameter param) throws Exception {
+		String hql = "from GoodsComment where state = '1' and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
+		List<Object> objList = hibernateUtil.hql(hql);
+		GoodsCommentScoreVo vo = new GoodsCommentScoreVo();
+		vo.setGoodsId(param.getId().toString());
+		vo.setCount(objList.size());
+		double totalStar = 0.00;
+		for (Object object : objList) {
+			GoodsComment comment = (GoodsComment) object;
+			totalStar += Double.valueOf(comment.getStar());
+		}
+		String averageScore = new BigDecimal(totalStar).divide(new BigDecimal(objList.size())).toString();
+		vo.setScore(averageScore);
+		int score = Integer.parseInt(averageScore);
+		if(score<=20){
+			vo.setScore("20");
+			vo.setMsg("差评");
+		}else if(score>20&&score<=40){
+			vo.setScore("40");
+			vo.setMsg("差评");
+		}else if(score>40&&score<=60){
+			vo.setScore("60");
+			vo.setMsg("差评");
+		}else if(score>60&&score<=80){
+			vo.setScore("80");
+			vo.setMsg("一般");
+		}else if(score>80){
+			vo.setScore("100");
+			vo.setMsg("好评");
+		}
+		return ObjectToResult.getResult(vo);
+	}
+
+	/**
+	 * 商品评论图片上传
+	 */
+	@Override
+	public Result goodsCommentPicUpload(Parameter param,HttpServletRequest request) throws Exception {
+		List<MultipartFile> fileList = new ArrayList<MultipartFile>();
+		System.out.println("contenxtType类型："+request.getContentType());
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		Map<String, MultipartFile> multiValuemap = multipartRequest.getFileMap();
+		Set set = multiValuemap.entrySet();
+		Iterator it = set.iterator();
+		while(it.hasNext()){
+			Entry entry = (Entry) it.next();
+			entry.getValue();
+			fileList.add((MultipartFile) entry.getValue());
+		}
+		String goodsCommentId = request.getParameter("goodsCommentId");
+		GoodsComment goodsComment = (GoodsComment) hibernateUtil.find(GoodsComment.class, goodsCommentId);
+		StringBuffer srcs = new StringBuffer();
+		System.out.println(goodsCommentId);
+		String path = request.getSession().getServletContext().getRealPath("/upload/img/goodsComment/");
+		String picPath = "/upload/img/goodsComment/";
+		int count = 0;
+		if (fileList.size()>0) {
+			for (MultipartFile multipartFile : fileList) {
+				count++;
+				String picName = UUID.randomUUID()+"."+multipartFile.getOriginalFilename().split("\\.")[1];
+			    String picAddress = picPath+ picName;
+			    srcs.append(picAddress);
+			    if(count!=fileList.size()){
+			    	srcs.append(";");
+			    }
+				File targetFile = new File(path, picName);  
+		        if(!targetFile.exists()){  
+		            targetFile.mkdirs();  
+		        } 
+		        multipartFile.transferTo(targetFile);
+			}
+		}
+		goodsComment.setPicSrc(srcs.toString());
+		hibernateUtil.update(goodsComment);
+		return ObjectToResult.getResult(goodsComment);
 	}
 
 	

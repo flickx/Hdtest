@@ -40,7 +40,7 @@ public class ListPage {
 		Page page = new Page();
 		page.setPageNum(pageNum);
 		page.setPageSize(pagesize);
-		page.setCount(totalcount);
+		page.setCount((long)totalcount);
 		page.setMaxPage(pagecount);
 		page.setObjList(list);
 		return page;

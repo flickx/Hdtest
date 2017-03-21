@@ -560,6 +560,20 @@ public class OrdersUtil {
 			GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, goods[0]+"");
 			if(goodsP!=null){
 				Goods good = goodsP.getGoods();
+				if(Integer.parseInt(goods[1])<Integer.parseInt(goodsP.getStock())){
+					vo.setMsg("你购买的【"+good.getTitle()+"】商品库存不足了");
+					return vo;
+				}
+				//检查此商品是否有参加活动并且购买数量是否大于活动库存
+				List<Object> goodsEventJoinList = hibernateUtil.hql("from GoodsEventJoin where goodsEvent.state='1' and goods.id='"+good.getId()+"' and state='1' and goodsEvent.eventBegen<='"+current+"' and goodsEvent.eventEnd>='"+current+"'");
+				for (int j = 0; j < goodsEventJoinList.size(); j++) {
+					GoodsEventJoin eventJoin = (GoodsEventJoin) goodsEventJoinList.get(j);
+					int quantity = eventJoin.getQuantity();
+					if(quantity<Integer.parseInt(goods[1])){
+						vo.setMsg("你挑选的活动商品["+good.getTitle()+"]库存不足，请重新挑选");
+						return vo;
+					}
+				}
 				//查询此商品参加的有效活动
 				List<Object> goodsEventList = hibernateUtil.hql("from GoodsEvent where id in (select goodsEvent.id from GoodsEventJoin where goods.id='"+good.getId()+"' and state='1') and state='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
 				for (int j = 0; j < goodsEventList.size(); j++) {

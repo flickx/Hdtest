@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
@@ -151,9 +152,41 @@ public class PcUserAction {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "activeEmail")
-	public @ResponseBody Result activeEmail(String param,HttpServletRequest request)throws Exception{
+	public  ModelAndView  activeEmail(String param,HttpServletRequest request)throws Exception{
 		String userId = request.getParameter("userId");
 		String code = request.getParameter("code");
-		return pcUserServ.activeEmail(userId,code);
+		ModelAndView mav=new ModelAndView();  
+		Result result = pcUserServ.activeEmail(userId,code);
+		if(result.getResult() == 1){
+			mav.setViewName("../../success.html");  
+		}else{
+			mav.setViewName("../../fail.html");  
+		}
+		
+		return mav;
+	}
+	
+	
+	/**
+	 * 验证手机验证码是否正确
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "validteSmsCode")
+	public @ResponseBody Result validteSmsCode(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return pcUserServ.validteSmsCode(parameter);
+	}
+	/**
+	 * 查询用户优惠券 蜂币数量等
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getUser")
+	public @ResponseBody Result getUser(String param)throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return pcUserServ.getUser(parameter);
 	}
 }

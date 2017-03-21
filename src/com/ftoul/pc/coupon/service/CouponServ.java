@@ -3,7 +3,7 @@ package com.ftoul.pc.coupon.service;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 
-public interface CouponService {
+public interface CouponServ {
 
 
 	Result queryCouponPage(Parameter parameter) throws Exception;

@@ -43,5 +43,11 @@ public interface AdminServ {
 	 * @return返回结果（前台用Result对象）
 	 */
 	Result getLogList(Parameter parameter) throws Exception;
+	/**
+	 * 操作日志(MONGODB)
+	 * @param param Parameter对象
+	 * @return返回结果（前台用Result对象）
+	 */
+	Result getLogByMongoList(Parameter parameter) throws Exception;
 	
 }

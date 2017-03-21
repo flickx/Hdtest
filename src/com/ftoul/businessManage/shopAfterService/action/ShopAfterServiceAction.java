@@ -9,7 +9,6 @@ import com.ftoul.businessManage.shopAfterService.service.ShopAfterServiceServ;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.manage.afterService.service.AfterServiceServ;
 
 /**
  * 售后申请单管理

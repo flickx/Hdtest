@@ -98,7 +98,7 @@ public class OrdersServImpl implements OrdersServ {
 	public Result getOrdersListByUserId(Parameter param) throws Exception {
 		ordersUtil.autoCancelOrders(param);
 		String key = param.getKey();
-		List<Object> ordersList = new ArrayList<Object>();
+		List<?> ordersList = new ArrayList<Object>();
 		Page page = new Page();
 		if(OrdersConstant.NOT_PAY.equals(key)){
 			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '1' and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());

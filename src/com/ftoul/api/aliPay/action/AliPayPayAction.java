@@ -13,6 +13,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ftoul.api.aliPay.service.AliPayServ;
+import com.ftoul.api.aliPay.util.AlipayConfig;
 import com.ftoul.api.chinaPay.vo.PayResult;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
@@ -53,9 +54,11 @@ public class AliPayPayAction {
 		mmap.addAttribute("orderNum", payResult.getOrdersNum());
 		mmap.addAttribute("result", payResult.getResult());
 		if(payResult.getResult()){
-			return new ModelAndView("redirect:" + MOBILURL + "payResult.html?orderNum="+payResult.getOrdersNum(), mmap);
+			//return new ModelAndView("redirect:" + MOBILURL + "payResult.html?orderNum="+payResult.getOrdersNum(), mmap);
+			return new ModelAndView("redirect:" + AlipayConfig.show_url, mmap);
 		}else{
-			return new ModelAndView("redirect:" + MOBILURL + "payFail.html?orderNum="+payResult.getOrdersNum(), mmap); 
+			return new ModelAndView("redirect:" + AlipayConfig.show_url, mmap);
+			//return new ModelAndView("redirect:" + MOBILURL + "payFail.html?orderNum="+payResult.getOrdersNum(), mmap); 
 		}
 	}
 	/**

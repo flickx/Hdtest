@@ -77,7 +77,8 @@ public class AdminAction {
 	@RequestMapping(value = "getLogList")  
 	public @ResponseBody Result getLogList(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return adminServ.getLogList(parameter);
+//		return adminServ.getLogList(parameter);
+		return adminServ.getLogByMongoList(parameter);
 	}
 	
 }

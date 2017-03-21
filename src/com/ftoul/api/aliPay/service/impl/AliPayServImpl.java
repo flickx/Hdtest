@@ -25,6 +25,7 @@ import com.ftoul.common.Result;
 import com.ftoul.po.Orders;
 import com.ftoul.po.OrdersPay;
 import com.ftoul.util.hibernate.HibernateUtil;
+import com.ftoul.web.websocket.WxWebSocketHandler;
 
 @Service("AliPayServImpl")
 public class AliPayServImpl implements AliPayServ{
@@ -33,7 +34,8 @@ public class AliPayServImpl implements AliPayServ{
 	AliPayUtil aliPayUtil;
 	@Autowired
 	HibernateUtil hibernateUtil;
-	
+	@Autowired
+	WxWebSocketHandler wxWebSocketHandler;
 	/**
 	 * 支付订单
 	 */
@@ -126,17 +128,23 @@ public class AliPayServImpl implements AliPayServ{
 		String merOrderNo = resultMap.get("out_trade_no");
 		String orderStatus = resultMap.get("trade_status");
 		payResult.setOrdersNum(merOrderNo);
-		//验证签名
-		if(AlipayNotify.verify(resultMap)){
-			if("TRADE_SUCCESS".equals(orderStatus)){
-				payResult.setResult(true);
-			}else{
-				payResult.setResult(false);
-			}
+		Orders orders = (Orders) hibernateUtil.hqlFirst("from Orders where state = '1' and orderNumber = '" + merOrderNo + "'");
+		if("2".equals(orders.getOrderStatic())){
+			payResult.setResult(true);
 		}else{
 			payResult.setResult(false);
 		}
-		
+		//验证签名
+//		if(AlipayNotify.verify(resultMap)){
+//			if("TRADE_SUCCESS".equals(orderStatus)){
+//				payResult.setResult(true);
+//			}else{
+//				payResult.setResult(false);
+//			}
+//		}else{
+//			payResult.setResult(false);
+//		}
+//		wxWebSocketHandler.sendMessageToPage(orders.getUser().getId(), orders.getOrderNumber(), hibernateUtil);
 		return payResult;
 	}
 	/**
@@ -207,14 +215,71 @@ public class AliPayServImpl implements AliPayServ{
 ////			out.print("fail");
 //			System.out.println("后台支付失败");
 //		}
-		
-		System.out.println("进入alipay网页版了");
+//		
+//		System.out.println("进入alipay网页版了");
+//		Enumeration<String> requestNames = request.getParameterNames();
+//		Map<String, String> resultMap = new HashMap<String, String>();
+//		while(requestNames.hasMoreElements()){
+//			String name = requestNames.nextElement();
+//			String value = request.getParameter(name);
+//			value = URLDecoder.decode(value, "UTF-8");
+//			resultMap.put(name, value);
+//			System.out.println("alipay后台验证："+ name + ":" + value);
+//		}
+//		String resObj = "";
+//		//验证签名
+//		String merOrderNo = resultMap.get("out_trade_no");
+//		
+//		String hql = "from Orders where state = '1' and orderNumber = '" + merOrderNo + "'";
+//		Orders orders = (Orders) hibernateUtil.hqlFirst(hql);
+//		
+//		String payHql = "from OrdersPay where state = '1' and orders.id = '"+orders.getId()+"'";
+//		OrdersPay ordersPay = (OrdersPay) hibernateUtil.hqlFirst(payHql);
+//		if(ordersPay == null){
+//			ordersPay = new OrdersPay();
+//		}
+//		
+//		if(AlipayNotify.verify(resultMap)){
+//			orders.setModifyTime(new DateStr().toString());
+//			orders.setOrderStatic("2");
+//			orders.setPayStatic("1");
+//			orders.setPayType("2");
+//			orders.setPayTime(new DateStr().toString());
+//			
+//			ordersPay.setOrders(orders);
+//			ordersPay.setCreateTime(new DateStr().toString());
+//			ordersPay.setPayPrice(orders.getOrderPrice());
+//			ordersPay.setPayStatic("1");
+//			ordersPay.setPayType("2");
+//			ordersPay.setState("1");
+//			ordersPay.setSerialNumber(resultMap.get("trade_no"));
+//			ordersPay.setPayCard(resultMap.get("buyer_logon_id"));//买家支付宝账号
+//			resObj = "success";
+//		}else{
+//			orders.setPayTime(new DateStr().toString());
+//			ordersPay.setOrders(orders);
+//			ordersPay.setCreateTime(new DateStr().toString());
+//			ordersPay.setPayPrice(orders.getOrderPrice());
+//			ordersPay.setPayStatic("0");
+//			ordersPay.setPayType("2");
+//			ordersPay.setState("1");
+//			ordersPay.setSerialNumber(resultMap.get("trade_no"));
+//			ordersPay.setPayCard(resultMap.get("buyer_logon_id"));
+//			
+//			resObj = "success";
+//		}
+//		hibernateUtil.update(orders);
+//		hibernateUtil.update(ordersPay);
+//		response.getWriter().write(resObj);
+		System.out.println("进入alipay pc了");
 		Enumeration<String> requestNames = request.getParameterNames();
 		Map<String, String> resultMap = new HashMap<String, String>();
+		System.out.println("request"+request);
 		while(requestNames.hasMoreElements()){
 			String name = requestNames.nextElement();
 			String value = request.getParameter(name);
-			value = URLDecoder.decode(value, "UTF-8");
+			System.out.println("alipay验证前："+ name + ":" + value);
+			//value = URLDecoder.decode(value, "UTF-8");
 			resultMap.put(name, value);
 			System.out.println("alipay后台验证："+ name + ":" + value);
 		}
@@ -222,34 +287,52 @@ public class AliPayServImpl implements AliPayServ{
 		//验证签名
 		String merOrderNo = resultMap.get("out_trade_no");
 		
-		String hql = "from Orders where state = '1' and orderNumber = '" + merOrderNo + "'";
-		Orders orders = (Orders) hibernateUtil.hqlFirst(hql);
-		
-		String payHql = "from OrdersPay where state = '1' and orders.id = '"+orders.getId()+"'";
-		OrdersPay ordersPay = (OrdersPay) hibernateUtil.hqlFirst(payHql);
+		Orders orders = (Orders) hibernateUtil.hqlFirst("from Orders where state = '1' and orderNumber = '" + merOrderNo + "'");
+		orders.setPayType("2");
+		OrdersPay ordersPay = (OrdersPay) hibernateUtil.hqlFirst("from OrdersPay where state = '1' and orders.id = '"+orders.getId()+"'");
 		if(ordersPay == null){
 			ordersPay = new OrdersPay();
 		}
-		
-		if(AlipayNotify.verify(resultMap)){
-			orders.setModifyTime(new DateStr().toString());
-			orders.setOrderStatic("2");
-			orders.setPayStatic("1");
-			orders.setPayType("2");
-			orders.setPayTime(new DateStr().toString());
-			
-			ordersPay.setOrders(orders);
-			ordersPay.setCreateTime(new DateStr().toString());
-			ordersPay.setPayPrice(orders.getOrderPrice());
-			ordersPay.setPayStatic("1");
-			ordersPay.setPayType("2");
-			ordersPay.setState("1");
-			ordersPay.setSerialNumber(resultMap.get("trade_no"));
-			ordersPay.setPayCard(resultMap.get("buyer_logon_id"));//买家支付宝账号
+		System.out.println("订单号："+ orders.getOrderNumber() + "；订单原始状态：" + orders.getOrderStatic());
+		if(AlipayNotifyRSA.verify(resultMap)){
+			System.out.println("订单号："+ orders.getOrderNumber() + "；订单支付校验成功；订单原始状态：" + orders.getOrderStatic());
+			if("1".equals(orders.getOrderStatic())){
+				System.out.println("订单号："+ orders.getOrderNumber() + "；订单开始更改状态");
+				orders.setModifyPerson("Alipay");
+				orders.setModifyTime(new DateStr().toString());
+				orders.setOrderStatic("2");
+				orders.setPayStatic("1");
+				orders.setPayTime(new DateStr().toString());
+				if("1".equals(orders.getIsHasChild())){//如果有子订单，将子订单的付款信息也填充满
+					List<Object> childList = hibernateUtil.hql("from Orders where state='1' and parentOrdersId='"+orders.getId()+"'");
+					for (Object object : childList) {
+						Orders child = (Orders) object;
+						child.setModifyPerson("Alipay");
+						child.setModifyTime(new DateStr().toString());
+						child.setOrderStatic("2");
+						child.setPayStatic("1");
+						child.setPayType("2");
+						child.setPayTime(new DateStr().toString());
+						hibernateUtil.update(child);
+					}
+				}
+				System.out.println("订单号："+ orders.getOrderNumber() + "；订单更改后的状态：" + orders.getOrderStatic());
+				ordersPay.setOrders(orders);
+				ordersPay.setCreatePerson("Alipay");
+				ordersPay.setCreateTime(new DateStr().toString());
+				ordersPay.setPayPrice(orders.getOrderPrice());
+				ordersPay.setPayStatic("1");
+				ordersPay.setPayType("2");
+				ordersPay.setState("1");
+				ordersPay.setSerialNumber(resultMap.get("trade_no"));
+				ordersPay.setPayCard(resultMap.get("buyer_logon_id"));//买家支付宝账号
+			}
 			resObj = "success";
 		}else{
+			System.out.println("订单号："+ orders.getOrderNumber() + "；订单支付校验失败；订单原始状态：" + orders.getOrderStatic());
 			orders.setPayTime(new DateStr().toString());
 			ordersPay.setOrders(orders);
+			ordersPay.setCreatePerson("Alipay");
 			ordersPay.setCreateTime(new DateStr().toString());
 			ordersPay.setPayPrice(orders.getOrderPrice());
 			ordersPay.setPayStatic("0");
@@ -263,6 +346,7 @@ public class AliPayServImpl implements AliPayServ{
 		hibernateUtil.update(orders);
 		hibernateUtil.update(ordersPay);
 		response.getWriter().write(resObj);
+		wxWebSocketHandler.sendMessageToPage(orders.getUser().getId(), orders.getOrderNumber(), hibernateUtil);
 	}
 
 	/**

@@ -1,5 +1,8 @@
 package com.ftoul.manage.user.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,16 +10,19 @@ import org.springframework.stereotype.Service;
 
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
+import com.ftoul.common.Filters;
 import com.ftoul.common.ObjectToResult;
 import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
+import com.ftoul.common.Rule;
 import com.ftoul.common.StrUtil;
 import com.ftoul.manage.user.service.UserServ;
 import com.ftoul.po.OrdersDetail;
 import com.ftoul.po.User;
 import com.ftoul.po.UserBrowse;
 import com.ftoul.util.hibernate.HibernateUtil;
+import com.ftoul.util.mongodb.MongoDbUtil;
 import com.ftoul.util.token.TokenUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.vo.UsersVO;
@@ -29,6 +35,8 @@ public class UserServImpl implements UserServ {
 	private HibernateUtil hibernateUtil;
 	@Autowired
 	private TokenUtil tokenUtil;
+	@Autowired
+	MongoDbUtil mongoDbUtil;
 	/**
 	 * 获取用户列表（带分页）
 	 * @param param Parameter对象
@@ -138,6 +146,29 @@ public class UserServImpl implements UserServ {
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		return ObjectToResult.getResult(page);
 	}
+	/**
+	 * 获取用户浏览记录（带分页mongodb）
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@Override
+	public Result getUserBrowseMongoList(Parameter param) throws Exception {
+		Filters filters = null;
+		if(param!=null && param.getFilters()!=null)
+			filters = param.getFilters();
+		Filters filters2 = new Filters();
+		filters2.setGroupOp("and");
+		Rule rule = new Rule();
+		rule.setField("user._id");
+		rule.setOp("eq");
+		rule.setData(param.getId()+"");
+		List<Rule> ruleList = new ArrayList<Rule>();
+		ruleList.add(rule);
+		filters2.setRules(ruleList);
+		Page page = mongoDbUtil.getListPage(com.ftoul.mongo.po.UserBrowse.class, param.getPageNum(), param.getPageSize(),param.getSidx(),param.getSord(),filters,filters2);
+		return ObjectToResult.getResult(page);
+	}
+	
 	/**
 	 * 保存/更新用户浏览记录
 	 * @param param Parameter对象

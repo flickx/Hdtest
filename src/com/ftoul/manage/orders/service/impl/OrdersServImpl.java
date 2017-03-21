@@ -135,7 +135,7 @@ public class OrdersServImpl implements OrdersServ {
 			hql = "from OrdersPay where state = '1' order by createTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
-		List<Object> list = page.getObjList();
+		List<?> list = page.getObjList();
 		List<Object> ordersPayList = new ArrayList<Object>();
 		for (int i = 0; i < list.size(); i++) {
 			OrdersPay pay = (OrdersPay) list.get(i);
@@ -182,7 +182,7 @@ public class OrdersServImpl implements OrdersServ {
 		}
 		
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
-		List<Object> ordersList = page.getObjList();
+		List<?> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : ordersList) {
 			Orders orders = (Orders) object;
@@ -487,7 +487,7 @@ public class OrdersServImpl implements OrdersServ {
 		String whereStr = parameter.getWhereStr();
 		String hql = "from Orders where deliverStatic='0' "+whereStr;
 		Page page = hibernateUtil.hqlPage(null, hql, parameter.getPageNum(), parameter.getPageSize());
-		List<Object> ordersList = page.getObjList();
+		List<?> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : ordersList) {
 			Orders orders = (Orders) object;
@@ -661,7 +661,7 @@ public class OrdersServImpl implements OrdersServ {
 		String hql = " from Orders where state = '1' and orderStatic = '2'";
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		
-		List<Object> ordersList = page.getObjList();
+		List<?> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : ordersList) {
 			Orders orders = (Orders) object;
@@ -761,7 +761,7 @@ public class OrdersServImpl implements OrdersServ {
 		ordersUtil.autoCancelOrders(param);
 		String hql = " from Orders where orderStatic!='0' and user.id='"+param.getId() +"' order by orderTime desc";
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
-		List<Object> ordersList = page.getObjList();
+		List<?> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : ordersList) {
 			Orders orders = (Orders) object;

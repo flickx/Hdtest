@@ -229,6 +229,7 @@ public class PcUserServImpl implements PcUserServ {
 		pcUserVo.setEmail(user.getEmail());
 		pcUserVo.setName(user.getName());
 		pcUserVo.setActiveState(user.getActiveState());
+		pcUserVo.setPic(user.getPic());
 		return ObjectToResult.getResult(pcUserVo);
 	}
 	@Override
@@ -258,6 +259,9 @@ public class PcUserServImpl implements PcUserServ {
 		}
 		if(null!=pcUserVo.getCardBack()){
 			user.setCardBack(pcUserVo.getCardBack());
+		}
+		if(null!=pcUserVo.getPic()){
+			user.setPic(pcUserVo.getPic());
 		}
 		Object res;
 		res = hibernateUtil.update(user);
@@ -386,6 +390,54 @@ public class PcUserServImpl implements PcUserServ {
 			ret.setResult(0);
 			return ret;
 		}
+	}
+	@Override
+	public Result validteSmsCode(Parameter param) throws Exception {
+		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),
+				UsersVO.class);
+		int maxSort = smsCodeUtil.getMaxSmsSort(user.getUsername(),
+				user.getSmscodeType());
+		MessageVerification m = smsCodeUtil.getMaxSmsCode(user.getUsername(),
+				user.getSmscodeType(), maxSort);
+		String smsCode = user.getSmsCode();
+		Result result = new Result();
+		String hql = "from User where username = '"+user.getUsername()+"'";
+		List<Object> list = hibernateUtil.hql(hql);
+		if (m == null || !smsCode.equals(m.getVerificationCode())) {
+			result.setResult(0);
+			result.setMessage("短信验证码错误");
+		}else{
+			User u = (User) list.get(0);
+			result.setResult(1);
+			result.setObj(u.getEmail());
+		}
+		return result;
+	}
+	@Override
+	public Result getUser(Parameter param) throws Exception {
+		User user = (User) this.hibernateUtil.find(User.class, param.getKey());
+		PcUserVo pcUserVo = new PcUserVo();
+		pcUserVo.setId(user.getId());
+		pcUserVo.setUsername(user.getUsername());
+		pcUserVo.setNickname(user.getNickname());
+		pcUserVo.setPic(user.getPic());
+		UserService userService = WebserviceUtil.getService();
+		Integer coinAmount = userService.getIntegral(user.getUsername());
+		pcUserVo.setCoinAmount(coinAmount);
+		
+		String sql = "select cp.* from user_coupon ucp join coupon cp on ucp.coupon_id = cp.id"
+					+" join user u on u.id= ucp.user_id where ucp.user_id = u.id and u.id = '"+param.getKey()+"'"
+					+" and ucp.state = 1 and ucp.is_used = 1";
+		List<Object[]> list = hibernateUtil.sql(sql);	
+		pcUserVo.setCouponCount(list.size());
+		
+		String totalSql = "select u.id,IFNULL(sum(cp.face_value),0) from user_coupon ucp join coupon cp on ucp.coupon_id = cp.id"
+				+" join user u on u.id= ucp.user_id where ucp.user_id = u.id and u.id = '"+param.getKey()+"'"
+				+" and ucp.state = 1 and ucp.is_used = 1 group by u.id";
+		List<Object[]> totalList = hibernateUtil.sql(totalSql);	
+		Double couponTotal = Double.parseDouble(totalList.get(0)[1].toString()); 
+		pcUserVo.setCouponTotal(couponTotal);
+		return ObjectToResult.getResult(pcUserVo);
 	}
 	
 }

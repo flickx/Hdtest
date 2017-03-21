@@ -18,7 +18,7 @@ public class ObjectToResult {
 		Result result  = new Result();
 		result.setResult(1);
 		result.setMessage("success");
-		result.setTotalNum(1);
+		result.setTotalNum(1l);
 		result.setIsPage(false);
 		result.setObj(object);
 		return result;
@@ -33,7 +33,7 @@ public class ObjectToResult {
 		Result result  = new Result();
 		result.setResult(0);
 		result.setMessage(msg);
-		result.setTotalNum(1);
+		result.setTotalNum(1l);
 		result.setIsPage(false);
 		return result;
 	}
@@ -47,7 +47,7 @@ public class ObjectToResult {
 		Result result  = new Result();
 		result.setResult(1);
 		result.setMessage("success");
-		result.setTotalNum(list.size());
+		result.setTotalNum(Long.valueOf(list.size()));
 		result.setIsPage(false);
 		result.setObj(list);
 		return result;
