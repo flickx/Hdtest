@@ -145,5 +145,6 @@
 		<mapping class="com.ftoul.po.GoodsTypeEventJoin"/>
 		<mapping class="com.ftoul.po.Article"/>
 		<mapping class="com.ftoul.po.CrossBorderMuseum"/>
+		<mapping class="com.ftoul.po.SiteInfo"/>
 	</session-factory>
 </hibernate-configuration>
