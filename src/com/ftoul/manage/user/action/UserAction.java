@@ -147,4 +147,49 @@ public class UserAction {
 		return userServ.doResetPassword(parameter);
 	}
 	
+	/**
+	 * 获取待办事项
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getDeals")  
+	public @ResponseBody Result getDeals(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return userServ.getDeals(parameter);
+	}
+	/**
+	 * 获取商品销售情况
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getGoodsSales")  
+	public @ResponseBody Result getGoodsSales(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return userServ.getGoodsSales(parameter);
+	}
+	/**
+	 * 获取本月注册用户
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getRegisterUser")  
+	public @ResponseBody Result getRegisterUser(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return userServ.getRegisterUser(parameter);
+	}
+	
+	/**
+	 * 获取畅销前20名商品
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getPopularGoods")  
+	public @ResponseBody Result s(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return userServ.getPopularGoods(parameter);
+	}
 }

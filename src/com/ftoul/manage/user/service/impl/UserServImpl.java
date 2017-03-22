@@ -1,5 +1,9 @@
 package com.ftoul.manage.user.service.impl;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,10 @@ import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.common.StrUtil;
 import com.ftoul.manage.user.service.UserServ;
+import com.ftoul.manage.user.vo.CommonVo;
+import com.ftoul.manage.user.vo.GoodsSalesVo;
+import com.ftoul.manage.user.vo.UserManageVo;
+import com.ftoul.po.LoginUser;
 import com.ftoul.po.OrdersDetail;
 import com.ftoul.po.User;
 import com.ftoul.po.UserBrowse;
@@ -204,6 +212,137 @@ public class UserServImpl implements UserServ {
 		tokenUtil.uploadSecretKey(userDb);
 		hibernateUtil.update(userDb);
 		return ObjectToResult.getResult(res);
+	}
+
+	@Override
+	public Result getDeals(Parameter parameter) throws Exception {
+		UserManageVo userManageVo =  new UserManageVo();
+		String userId = parameter.getManageToken().getLoginUser().getId();
+		LoginUser loginUser = (LoginUser)hibernateUtil.find(LoginUser.class, userId);
+		userManageVo.setUsername(loginUser.getLoginName());
+		String userSql = "SELECT operation_time,ip_address FROM login_user_log"
+					+" WHERE login_user_id = '"+loginUser.getId()+"'"
+					+" AND operation = 'login' and res_text = 'success'"
+					+" order by operation_time desc limit 1";
+		List<Object[]> userList = hibernateUtil.sql(userSql);
+		for (int i = 0; i < userList.size(); i++) {
+			Object[] obj = userList.get(i);
+			userManageVo.setLastLoginTime(obj[0].toString());
+			userManageVo.setLastLoginIp(obj[1].toString());
+		}
+		String countUserSql = "select count(id) from user where state  = 1";
+		List<Object[]> userCount = hibernateUtil.sql(countUserSql);
+		Object userAmount = (Object)userCount.get(0);
+		userManageVo.setUserAmount(userAmount.toString());
+		
+		String goodsSql = "select count(id) from goods where state  = 1 and grounding = 1";
+		List<Object[]> goodsCount = hibernateUtil.sql(goodsSql);
+		Object goodsAmount = (Object)goodsCount.get(0);
+		userManageVo.setGoodsAmount(goodsAmount.toString());
+		
+		String shopSql = "select count(id) from business_store where state  = 1";
+		List<Object[]> shopCount = hibernateUtil.sql(shopSql);
+		Object shopAmount = (Object)shopCount.get(0);
+		userManageVo.setShopAmount(shopAmount.toString());
+		
+		String orderSql = "select sum(order_price) from orders where order_static = 6";
+		List<Object[]> orderCount = hibernateUtil.sql(orderSql);
+		Object orderAmount = (Object)orderCount.get(0);
+		DecimalFormat df = new DecimalFormat("#.00"); 
+		String order =  df.format(Double.parseDouble(orderAmount.toString()));
+		userManageVo.setOrderAmount(order);
+		
+		
+		String deliveryOrderSql = "select count(id) from orders where order_static = '3' and state = 1";
+		List<Object[]> deliveryOrderCount = hibernateUtil.sql(deliveryOrderSql);
+		Object deliveryOrder = (Object)deliveryOrderCount.get(0);
+		userManageVo.setDeliveryOrder(deliveryOrder.toString());
+		
+		String payOrderSql = "select count(id) from orders where order_static = '1' and state = 1";
+		List<Object[]> payOrderCount = hibernateUtil.sql(payOrderSql);
+		Object payOrder = (Object)payOrderCount.get(0);
+		userManageVo.setPayOrder(payOrder.toString());
+		
+		String confirmOrderSql = "select count(id) from orders where order_static = '4' and state = 1";
+		List<Object[]> confirmOrderCount = hibernateUtil.sql(confirmOrderSql);
+		Object confirmOrder = (Object)confirmOrderCount.get(0);
+		userManageVo.setConfirmOrder(confirmOrder.toString());
+		
+		
+		String refundOrderSql = "select count(id) from after_schedule where type = 1";
+		List<Object[]> refundOrderCount = hibernateUtil.sql(refundOrderSql);
+		Object refundOrder = (Object)refundOrderCount.get(0);
+		userManageVo.setRefundOrder(refundOrder.toString());
+		
+		String rexchangeOrderSql = "select count(id) from after_schedule where type = 2";
+		List<Object[]> exchangeOrderCount = hibernateUtil.sql(rexchangeOrderSql);
+		Object exchangeOrder = (Object)exchangeOrderCount.get(0);
+		userManageVo.setExchangeOrder(exchangeOrder.toString());
+				
+		return ObjectToResult.getResult(userManageVo);
+	}
+
+	@Override
+	public Result getGoodsSales(Parameter parameter) throws Exception {
+		String sql = " select DATE_FORMAT(create_time,'%Y%m')weeks,sum(order_price),count(id) from orders where order_static = 6"
+				+" and create_time > DATE_SUB(CURDATE(),INTERVAL dayofyear(now())-1 DAY)"
+				+" group by weeks order by weeks";
+		List<Object[]> list = hibernateUtil.sql(sql);
+		List<GoodsSalesVo> goodsSalesList = new ArrayList<GoodsSalesVo>();
+		for (int i = 0; i < list.size(); i++) {
+			GoodsSalesVo goodsSalesVo = new GoodsSalesVo();
+			Object[] obj = list.get(i);
+			if(obj[0]!=null){
+				goodsSalesVo.setMonth(obj[0].toString());
+			}
+			if(obj[1]!=null){
+				goodsSalesVo.setPrice(Double.parseDouble(obj[1].toString()));
+			}
+			if(obj[2]!=null){
+				goodsSalesVo.setAmount(Integer.parseInt(obj[2].toString()));
+			}
+			goodsSalesList.add(goodsSalesVo);
+		}
+		return ObjectToResult.getResult(goodsSalesList);
+	}
+
+	@Override
+	public Result getRegisterUser(Parameter parameter) throws Exception {
+		String sql = "select DATE_FORMAT(create_time,'%Y%m%d')weeks,count(*) from `user`  where state = 1" 
+					+" and create_time > DATE_ADD(curdate(),interval -day(curdate())+1 day) group by weeks order by weeks";
+		List<Object[]> list = hibernateUtil.sql(sql);
+		List<CommonVo> registerUserList = new ArrayList<CommonVo>();
+		for (int i = 0; i < list.size(); i++){
+			CommonVo commonVo = new CommonVo();
+			Object[] obj = list.get(i);
+			if(obj[0]!=null){
+				commonVo.setName(obj[0].toString());
+			}
+			if(obj[1]!=null){
+				commonVo.setAmount(Integer.parseInt(obj[1].toString()));
+			}
+			registerUserList.add(commonVo);
+		}
+		return ObjectToResult.getResult(registerUserList);
+	}
+
+	@Override
+	public Result getPopularGoods(Parameter parameter) throws Exception {
+		String sql = "select title,sale_sum from goods  where state = 1 order by sale_sum desc limit 20";
+		List<Object[]> list = hibernateUtil.sql(sql);
+		List<CommonVo> popularGoodsList = new ArrayList<CommonVo>();
+		for (int i = 0; i < list.size(); i++){
+			CommonVo commonVo = new CommonVo();
+			Object[] obj = list.get(i);
+			if(obj[0]!=null){
+				commonVo.setName(obj[0].toString());
+			}
+			if(obj[1]!=null){
+				commonVo.setAmount(Integer.parseInt(obj[1].toString()));
+			}
+			popularGoodsList.add(commonVo);
+		}
+		return ObjectToResult.getResult(popularGoodsList);
 	}
 	
 }
