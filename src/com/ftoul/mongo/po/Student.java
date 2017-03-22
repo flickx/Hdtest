@@ -2,8 +2,12 @@ package com.ftoul.mongo.po;
 
 import java.io.Serializable;
 
+import com.ftoul.util.redis.RedisId;
+
 @SuppressWarnings("serial")
 public class Student implements Serializable{
+	
+	@RedisId
 	private String id;
 	private String name;
 	private Integer age;
