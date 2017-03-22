@@ -53,9 +53,9 @@ public class CommentServiceImpl implements CommentService {
 	public Result getCommentPage(Parameter param) throws Exception {
 		String hql;
 		if("1".equals(param.getKey())){//只查询带图评论的
-			hql = "from GoodsComment where state = '2' and isShow='1' and picSrc is not null and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
+			hql = "from GoodsComment where state = '1' and isShow='1' and picSrc is not null and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
 		}else{
-			hql = "from GoodsComment where state = '2' and isShow='1' and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
+			hql = "from GoodsComment where state = '1' and isShow='1' and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<?> objList = page.getObjList();
