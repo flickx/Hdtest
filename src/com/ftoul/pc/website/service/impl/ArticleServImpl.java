@@ -73,14 +73,14 @@ public class ArticleServImpl implements ArticleServ {
 	
 	@Override
 	public Result getClassifyList(Parameter parameter) throws Exception {
-		String hql = "from ArticleClassify where pname is null or pname = '' and state = 1 order by sort asc";
+		String hql = "from ArticleClassify where classify.id is null or  classify.id = '' and state = 1 order by sort asc";
 		List<Object> list = hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
 	}
 	
 	@Override
 	public Result getNextClassifyList(Parameter parameter) throws Exception {
-		String hql = "from ArticleClassify where pname = '"+parameter.getId() +"' and state = 1 order by sort asc";
+		String hql = "from ArticleClassify where classify.id = '"+parameter.getId() +"' and state = 1 order by sort asc";
 		List<Object> list = hibernateUtil.hql(hql);
 		return ObjectToResult.getResult(list);
 	}
