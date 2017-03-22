@@ -24,4 +24,16 @@ public interface SiteInfoServ {
 	 * @throws Exception
 	 */
 	Result saveSiteInfo(Parameter parameter) throws Exception;
+	/**
+	 * 删除logo图片
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result deleteLogoPic(Parameter parameter) throws Exception;
+	/**
+	 * 删除头部背景图片
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result deleteTopBgPic(Parameter parameter) throws Exception;
 }
