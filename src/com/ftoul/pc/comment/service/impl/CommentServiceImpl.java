@@ -210,19 +210,19 @@ public class CommentServiceImpl implements CommentService {
 		vo.setScore(averageScore);
 		double score = Double.parseDouble(averageScore);
 		if(score<=20){
-			vo.setScore("20");
+			vo.setStar("20");
 			vo.setMsg("差评");
 		}else if(score>20&&score<=40){
-			vo.setScore("40");
+			vo.setStar("40");
 			vo.setMsg("差评");
 		}else if(score>40&&score<=60){
-			vo.setScore("60");
+			vo.setStar("60");
 			vo.setMsg("差评");
 		}else if(score>60&&score<=80){
-			vo.setScore("80");
+			vo.setStar("80");
 			vo.setMsg("一般");
 		}else if(score>80){
-			vo.setScore("100");
+			vo.setStar("100");
 			vo.setMsg("好评");
 		}
 		return ObjectToResult.getResult(vo);
