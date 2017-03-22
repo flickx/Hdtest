@@ -138,7 +138,7 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 			hql = "from OrdersPay where state = '1' and orders.shopId.id='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by createTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
-		List<Object> list = page.getObjList();
+		List<?> list = page.getObjList();
 		List<Object> ordersPayList = new ArrayList<Object>();
 		for (int i = 0; i < list.size(); i++) {
 			OrdersPay pay = (OrdersPay) list.get(i);
@@ -184,7 +184,7 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 			hql = " from Orders where orderStatic!='0' and shopId.id='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by orderTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
-		List<Object> ordersList = page.getObjList();
+		List<?> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : ordersList) {
 			Orders orders = (Orders) object;
@@ -458,7 +458,7 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 		String whereStr = parameter.getWhereStr();
 		String hql = "from Orders where deliverStatic='0' "+whereStr;
 		Page page = hibernateUtil.hqlPage(null, hql, parameter.getPageNum(), parameter.getPageSize());
-		List<Object> ordersList = page.getObjList();
+		List<?> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : ordersList) {
 			Orders orders = (Orders) object;
@@ -645,7 +645,7 @@ public class ShopOrdersServImpl implements ShopOrdersServ {
 		String hql = " from Orders where state = '1' and orderStatic = '2'";
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		
-		List<Object> ordersList = page.getObjList();
+		List<?> ordersList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : ordersList) {
 			Orders orders = (Orders) object;

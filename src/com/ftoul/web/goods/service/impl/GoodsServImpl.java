@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 import com.ftoul.manage.goods.vo.GoodsVo;
+import com.ftoul.mongo.po.UserBrowse;
 import com.ftoul.pc.interfaces.vo.PcNewGoods;
 import com.ftoul.pc.interfaces.vo.PcNewGoodsVo;
 import com.ftoul.po.Goods;
@@ -27,9 +29,9 @@ import com.ftoul.po.GoodsType;
 import com.ftoul.po.GoodsUploadpic;
 import com.ftoul.po.PcTypeGoods;
 import com.ftoul.po.User;
-import com.ftoul.po.UserBrowse;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.logistics.LogisticsUtil;
+import com.ftoul.util.mongodb.MongoDbUtil;
 import com.ftoul.util.price.PriceUtil;
 import com.ftoul.web.goods.service.GoodsBrandServ;
 import com.ftoul.web.goods.service.GoodsPropTypeServ;
@@ -61,6 +63,8 @@ public class GoodsServImpl implements GoodsServ {
 	private PriceUtil priceUtil;
 	@Autowired
 	private HttpServletRequest req;
+	@Autowired
+	MongoDbUtil mongoDbUtil;
 	
 	@Autowired
 	private LogisticsUtil logisticsUtil;
@@ -117,18 +121,23 @@ public class GoodsServImpl implements GoodsServ {
 	@Override
 	public Result getGoodsDetail(Parameter param) throws Exception {
 		Goods goods =(Goods) hibernateUtil.find(Goods.class, param.getId()+"");
+		com.ftoul.mongo.po.Goods goods2 = new com.ftoul.mongo.po.Goods();
+		BeanUtils.copyProperties(goods, goods2);
 		UserBrowse userBrowse = new UserBrowse();
 		if(param.getUserToken()!=null){
 			User user = param.getUserToken().getUser();
-			List userList = hibernateUtil.hql(" from User where state = '1' and id = '" + user.getId() +"'");
-			if(userList != null && userList.size() > 0)
-				userBrowse.setUser(user);
+			com.ftoul.mongo.po.User user2 = new com.ftoul.mongo.po.User(); 
+			BeanUtils.copyProperties(user, user2);
+//			List userList = hibernateUtil.hql(" from User where state = '1' and id = '" + user.getId() +"'");
+//			if(userList != null && userList.size() > 0)
+			userBrowse.setUser(user2);
 		}
 		userBrowse.setIpAddress(getRemoteHost());
 		userBrowse.setBrowseTime(new DateStr().toString());
-		userBrowse.setGoods(goods);
+		userBrowse.setGoods(goods2);
 		userBrowse.setState("1");
-		hibernateUtil.save(userBrowse);
+//		hibernateUtil.save(userBrowse);
+		mongoDbUtil.insert(userBrowse);
 		
 		GoodsVo goodsVo = new GoodsVo();
 		
@@ -158,10 +167,15 @@ public class GoodsServImpl implements GoodsServ {
 		}
 		String sql = "select sum(stock) from goods_param where goods_id='"+param.getId()+"'"+" and state = 1";
 		List<Object[]> stockTotal = this.hibernateUtil.sql(sql);
+//		Object[] s = stockTotal.get(0);
 		for (int i = 0; i < stockTotal.size(); i++){
-			Double d = Double.parseDouble(String.valueOf(stockTotal.get(0)));
-			String sumStock = new Double(d).intValue()+"";
-			goodsVo.setSumStock(sumStock);
+			if(stockTotal.get(0)!=null){
+				Double d = Double.parseDouble(String.valueOf(stockTotal.get(0)));
+				String sumStock = new Double(d).intValue()+"";
+				goodsVo.setSumStock(sumStock);
+			}else{
+				goodsVo.setSumStock("0");
+			}
 		}
 		//获取商品价格 1.优先取商品活动价格2.取活动促销价格.3 折扣价
 		String hql2 = "select ge.eventName,gej.eventPrice,ge.eventPrice,ge.discount,gej.quantity,ge.eventBegen,ge.eventEnd,gs.picSrc,ge.state,gej.state,ge.typeName,ge.homeChannel,gs.subtitle from Goods gs,"

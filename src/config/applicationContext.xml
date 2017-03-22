@@ -86,5 +86,6 @@
 	<mvc:annotation-driven />
 	<beans>
          <import resource="applicationContext-mongodb.xml"/>
+         <import resource="applicationContext-redis.xml"/>
     </beans>
 </beans>

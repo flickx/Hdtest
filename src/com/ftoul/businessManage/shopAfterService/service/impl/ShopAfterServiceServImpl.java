@@ -39,13 +39,13 @@ public class ShopAfterServiceServImpl implements ShopAfterServiceServ {
 	public Result getAfterListPage(Parameter param) throws Exception {
 		String queryStr = param.getWhereStr();
 		String hql = "";
-		if(queryStr!=null){
+		if(Common.notNull(queryStr)){
 			hql = " from AfterSchedule where state='1' and ordersDetail.shopId='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"'"+queryStr+" order by createTime desc";
 		}else{
 			hql = " from AfterSchedule where state='1' and ordersDetail.shopId='"+param.getManageToken().getBusinessStoreLogin().getBusinessStore().getId()+"' order by createTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
-		List<Object> afterList = page.getObjList();
+		List<?> afterList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
 		for (Object object : afterList) {
 			AfterSchedule after = (AfterSchedule) object;

@@ -7,11 +7,11 @@ import com.ftoul.po.Goods;
 public class StoreVo {
 	private String id;
 	private String name;
-	private List<Object> objList;
+	private List<?> objList;
 	/**
 	 * 记录总数
 	 */
-	private Integer count;
+	private Long count;
 	/**
 	 * 每页记录数
 	 */
@@ -36,16 +36,16 @@ public class StoreVo {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public List<Object> getObjList() {
+	public List<?> getObjList() {
 		return objList;
 	}
-	public void setObjList(List<Object> objList) {
+	public void setObjList(List<?> objList) {
 		this.objList = objList;
 	}
-	public Integer getCount() {
+	public Long getCount() {
 		return count;
 	}
-	public void setCount(Integer count) {
+	public void setCount(Long count) {
 		this.count = count;
 	}
 	public Integer getPageSize() {

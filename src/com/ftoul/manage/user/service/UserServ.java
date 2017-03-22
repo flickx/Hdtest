@@ -56,11 +56,18 @@ public interface UserServ {
 	 */
 	Result getUserBrowseList(Parameter parameter) throws Exception ;
 	/**
+	 * 获取用户浏览记录(mongo)
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result getUserBrowseMongoList(Parameter param) throws Exception;
+	/**
 	 * 保存/修改用户浏览记录
 	 * @param param Parameter对象
 	 * @return 返回结果（前台用Result对象）
 	 */
 	Result saveUserBrowse(Parameter parameter) throws Exception ;
+	
 	/**
 	 * 删除用户浏览记录
 	 * @param param Parameter对象

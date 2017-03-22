@@ -57,7 +57,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	@Override
 	public Result getAfterListByUserId(Parameter param) throws Exception {
 		ordersUtil.autoCancelOrders(param);
-		List<Object> ordersList = new ArrayList<Object>();
+		List<?> ordersList = new ArrayList<Object>();
 		Page page = new Page();
 		page =  hibernateUtil.hqlPage(null,"from Orders where isHasChild='0' and orderStatic not in ('0','1','7','8') and user.id='"+param.getUserToken().getUser().getId()+"' order by orderTime desc",param.getPageNum(),param.getPageSize());
 		ordersList = page.getObjList();
@@ -81,7 +81,7 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	@Override
 	public Result getAfterSchedulePage(Parameter param) throws Exception {
 		Page page = hibernateUtil.hqlPage(null,"from AfterSchedule where state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by createTime desc",param.getPageNum(),param.getPageSize());
-		List list = page.getObjList();
+		List<?> list = page.getObjList();
 		List<AfterScheduleVo> voList = new ArrayList<AfterScheduleVo>();
 		for (int i = 0; i < list.size(); i++) {
 			AfterScheduleVo vo = new AfterScheduleVo();
@@ -106,8 +106,9 @@ public class AfterServiceServImpl implements AfterServiceServ {
 			vo.setCreateTime(schedule.getCreateTime());
 			voList.add(vo);
 		}
-		page.getObjList().clear();
-		page.getObjList().addAll(voList);
+//		page.getObjList().clear();
+//		page.getObjList().addAll(voList);
+		page.setObjList(voList);
 		return ObjectToResult.getResult(page);
 	}
 

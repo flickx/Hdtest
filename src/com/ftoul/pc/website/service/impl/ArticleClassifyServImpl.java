@@ -107,8 +107,6 @@ public class ArticleClassifyServImpl implements ArticleClassifyServ {
 			}
 		}
 		return ObjectToResult.getResult(typeLevel1VoList) ;
-		
-	
 	}
 	
 }

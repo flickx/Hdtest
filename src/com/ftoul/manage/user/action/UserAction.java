@@ -99,7 +99,8 @@ public class UserAction {
 	@RequestMapping(value = "getUserBrowseList")  
 	public @ResponseBody Result getUserBrowseList(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return userServ.getUserBrowseList(parameter);
+//		return userServ.getUserBrowseList(parameter);
+		return userServ.getUserBrowseMongoList(parameter);
 	}
 	/**
 	 * 保存/修改用户浏览记录
