@@ -53,9 +53,9 @@ public class CommentServiceImpl implements CommentService {
 	public Result getCommentPage(Parameter param) throws Exception {
 		String hql;
 		if("1".equals(param.getKey())){//只查询带图评论的
-			hql = "from GoodsComment where state = '2' and isShow='1' and picSrc is not null and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
+			hql = "from GoodsComment where state = '1' and isShow='1' and picSrc is not null and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
 		}else{
-			hql = "from GoodsComment where state = '2' and isShow='1' and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
+			hql = "from GoodsComment where state = '1' and isShow='1' and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<?> objList = page.getObjList();
@@ -208,21 +208,21 @@ public class CommentServiceImpl implements CommentService {
 		}
 		String averageScore = new BigDecimal(totalStar).divide(new BigDecimal(objList.size())).toString();
 		vo.setScore(averageScore);
-		int score = Integer.parseInt(averageScore);
+		double score = Double.parseDouble(averageScore);
 		if(score<=20){
-			vo.setScore("20");
+			vo.setStar("20");
 			vo.setMsg("差评");
 		}else if(score>20&&score<=40){
-			vo.setScore("40");
+			vo.setStar("40");
 			vo.setMsg("差评");
 		}else if(score>40&&score<=60){
-			vo.setScore("60");
+			vo.setStar("60");
 			vo.setMsg("差评");
 		}else if(score>60&&score<=80){
-			vo.setScore("80");
+			vo.setStar("80");
 			vo.setMsg("一般");
 		}else if(score>80){
-			vo.setScore("100");
+			vo.setStar("100");
 			vo.setMsg("好评");
 		}
 		return ObjectToResult.getResult(vo);

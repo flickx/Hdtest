@@ -560,8 +560,8 @@ public class OrdersUtil {
 			GoodsParam goodsP = (GoodsParam) hibernateUtil.find(GoodsParam.class, goods[0]+"");
 			if(goodsP!=null){
 				Goods good = goodsP.getGoods();
-				if(Integer.parseInt(goods[1])<Integer.parseInt(goodsP.getStock())){
-					vo.setMsg("你购买的【"+good.getTitle()+"】商品库存不足了");
+				if(Integer.parseInt(goods[1])>Integer.parseInt(goodsP.getStock())){
+					vo.setMsg("你购买的【"+good.getTitle()+"】商品数量大于库存了");
 					return vo;
 				}
 				//检查此商品是否有参加活动并且购买数量是否大于活动库存
@@ -570,7 +570,7 @@ public class OrdersUtil {
 					GoodsEventJoin eventJoin = (GoodsEventJoin) goodsEventJoinList.get(j);
 					int quantity = eventJoin.getQuantity();
 					if(quantity<Integer.parseInt(goods[1])){
-						vo.setMsg("你挑选的活动商品["+good.getTitle()+"]库存不足，请重新挑选");
+						vo.setMsg("你挑选的活动商品["+good.getTitle()+"]数量大于库存了，请重新挑选");
 						return vo;
 					}
 				}
