@@ -1241,7 +1241,7 @@ public class OrdersServImpl implements OrdersServ {
 			
 			return ObjectToResult.getResult(vo);
 		}else{
-			return ObjectToResult.getResult(vo.getMsg());
+			return ObjectToResult.getResult(msgVo.getMsg());
 		}
 		
 	}

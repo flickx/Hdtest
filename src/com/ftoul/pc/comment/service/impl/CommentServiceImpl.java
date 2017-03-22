@@ -208,7 +208,7 @@ public class CommentServiceImpl implements CommentService {
 		}
 		String averageScore = new BigDecimal(totalStar).divide(new BigDecimal(objList.size())).toString();
 		vo.setScore(averageScore);
-		int score = Integer.parseInt(averageScore);
+		double score = Double.parseDouble(averageScore);
 		if(score<=20){
 			vo.setScore("20");
 			vo.setMsg("差评");
