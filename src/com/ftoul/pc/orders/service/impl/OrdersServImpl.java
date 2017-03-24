@@ -426,9 +426,10 @@ public class OrdersServImpl implements OrdersServ {
 		BigDecimal goodsTotalPriceDec = orders.getGoodsTotalPrice();
 		BigDecimal totalFreightDec = new BigDecimal(totalFreight);
 		BigDecimal totalFaceValueDec = new BigDecimal(totalFaceValue);
-		orders.setGoodsTotalPrice(goodsTotalPriceDec.subtract(totalFaceValueDec));
+		orders.setCouponPrice(String.valueOf(totalFaceValue));
+		//orders.setGoodsTotalPrice(goodsTotalPriceDec.subtract(totalFaceValueDec));
 		//orders.setOrderPrice(formate.format(goodsTotalPriceDec.add(totalFreightDec).subtract(totalFaceValueDec)));
-		orders.setOrderPrice(formate.format(goodsTotalPriceDec.add(totalFreightDec)));
+		orders.setOrderPrice(formate.format(goodsTotalPriceDec.subtract(totalFaceValueDec)));
 		BigDecimal coinNumberB;
 		int coinNumber = 0;
 		if(vo.getCoinFlag()){
