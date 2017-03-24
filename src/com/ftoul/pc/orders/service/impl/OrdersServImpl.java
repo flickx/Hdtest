@@ -356,22 +356,38 @@ public class OrdersServImpl implements OrdersServ {
 		for (Object object : objList) {
 			Map orderPriceVo = (Map) object;
 			Orders child = (Orders) hibernateUtil.hqlFirst("from Orders where orderNumber='"+orderPriceVo.get("orderNumber")+"'");
-			freight = logisticsUtil.getFreight(province.getProviceName(), child.getShopId().getId(), Integer.parseInt(child.getGoodsTotal()));
+			if(child.getShopId()!=null){//指定的订单
+				freight = logisticsUtil.getFreight(province.getProviceName(), child.getShopId().getId(), Integer.parseInt(child.getGoodsTotal()));
+				saveChildOrders(child,userAddress,province.getProviceName(),freight,vo.getFeedBack());
+			}else{//是用的他她乐平台的父订单，所以要查询出平台的子订单
+				List<Object> childList = hibernateUtil.hql("from Orders where shopId.id='1' and parentOrdersId='"+child.getId()+"'");
+				int childGoodsTotal = 0;
+				for (Object object2 : childList) {
+					Orders child2 = (Orders) object2;
+					childGoodsTotal += Integer.parseInt(child2.getGoodsTotal());
+				}
+				freight = logisticsUtil.getFreight(province.getProviceName(), "1", childGoodsTotal);
+				for (Object object2 : childList) {
+					Orders child2 = (Orders) object2;
+					saveChildOrders(child2,userAddress,province.getProviceName(),freight,vo.getFeedBack());
+				}
+			}
 			totalFreight += freight;
-			child.setConsignee(userAddress.getConsignee());
-			child.setProvince(province.getProviceName());
-			child.setConsigneeTel(userAddress.getTel());
-			child.setAddress(userAddress.getName()+userAddress.getAddress());
-			child.setOrderTime(new DateStr().toString());
-			child.setInvoiceType(vo.getInvoiceType());
-			child.setInvoiceHead(vo.getInvoiceHead());
-			child.setInvoiceContent(vo.getInvoiceContent());
-			child.setFeedback(vo.getFeedBack());
-			child.setIsHasChild("0");
-			child.setState("1");
-			child.setOrderStatic("1");
-			child.setFreight(new BigDecimal(freight));
-			hibernateUtil.save(child);
+			
+//			child.setConsignee(userAddress.getConsignee());
+//			child.setProvince(province.getProviceName());
+//			child.setConsigneeTel(userAddress.getTel());
+//			child.setAddress(userAddress.getName()+userAddress.getAddress());
+//			child.setOrderTime(new DateStr().toString());
+//			child.setInvoiceType(vo.getInvoiceType());
+//			child.setInvoiceHead(vo.getInvoiceHead());
+//			child.setInvoiceContent(vo.getInvoiceContent());
+//			child.setFeedback(vo.getFeedBack());
+//			child.setIsHasChild("0");
+//			child.setState("1");
+//			child.setOrderStatic("1");
+//			child.setFreight(new BigDecimal(freight));
+//			hibernateUtil.save(child);
 			//处理优惠券
 			List<Map> couponList = (List<Map>) orderPriceVo.get("couponList");
 			if(couponList!=null&&couponList.size()>0){
@@ -381,7 +397,16 @@ public class OrdersServImpl implements OrdersServ {
 				BigDecimal faceValue = new BigDecimal(coupon.getFaceValue());
 				BigDecimal orderPrice = new BigDecimal(child.getOrderPrice());
 				child.setOrderPrice(formate.format(orderPrice.subtract(faceValue)));
-				child.setCouponId(couponId);
+				List<Object> childList = hibernateUtil.hql("from Orders where shopId.id='1' and parentOrdersId='"+child.getId()+"'");
+				if(childList!=null&&childList.size()>0){//标记平台子订单用到的优惠券
+					for (Object childObj : childList) {
+						Orders childOrder = (Orders) childObj;
+						childOrder.setCouponId(couponId);
+						hibernateUtil.update(childOrder);
+					}
+				}else{
+					child.setCouponId(couponId);
+				}
 				UserCoupon userCoupon = (UserCoupon) hibernateUtil.hqlFirst("from UserCoupon where state='1' and couponId.id='"+couponId+"' and userId='"+orders.getUser().getId()+"'");
 				userCoupon.setIsUsed("2");//已使用
 				userCoupon.setModifyPerson(orders.getUser().getName());
@@ -402,8 +427,8 @@ public class OrdersServImpl implements OrdersServ {
 		BigDecimal totalFreightDec = new BigDecimal(totalFreight);
 		BigDecimal totalFaceValueDec = new BigDecimal(totalFaceValue);
 		orders.setGoodsTotalPrice(goodsTotalPriceDec.subtract(totalFaceValueDec));
-		orders.setOrderPrice(formate.format(goodsTotalPriceDec.add(totalFreightDec).subtract(totalFaceValueDec)));
-		
+		//orders.setOrderPrice(formate.format(goodsTotalPriceDec.add(totalFreightDec).subtract(totalFaceValueDec)));
+		orders.setOrderPrice(formate.format(goodsTotalPriceDec.add(totalFreightDec)));
 		BigDecimal coinNumberB;
 		int coinNumber = 0;
 		if(vo.getCoinFlag()){
@@ -483,6 +508,20 @@ public class OrdersServImpl implements OrdersServ {
 		pcOrderVo.setOrderPrice(orders.getOrderPrice());
 		pcOrderVo.setDetailVoList(titleList);
 		return ObjectToResult.getResult(pcOrderVo);
+	}
+	
+	public void saveChildOrders(Orders child,UserAddress userAddress,String proviceName,Double freight,String feedBack){
+		child.setConsignee(userAddress.getConsignee());
+		child.setProvince(proviceName);
+		child.setConsigneeTel(userAddress.getTel());
+		child.setAddress(userAddress.getName()+userAddress.getAddress());
+		child.setOrderTime(new DateStr().toString());
+		child.setFeedback(feedBack);
+		child.setIsHasChild("0");
+		child.setState("1");
+		child.setOrderStatic("1");
+		child.setFreight(new BigDecimal(freight));
+		hibernateUtil.save(child);
 	}
 	
 	/**
@@ -1055,10 +1094,8 @@ public class OrdersServImpl implements OrdersServ {
 		double payable = 0.00;
 		double orderPrice = 0.00;
 		double benPrice = 0.00;
-		double coinPrice = 0.00;
 		double freight = 0.00;
 		double goodsTotalPrice = 0.00;
-		int totalCoinNumber = 0;
 		int goodsTotalNum = 0;
 		
 		OrderPriceVo msgVo = ordersUtil.checkGoodsEvent(param);//检查所购买的商品的数量是否满足参加活动规则、及库存

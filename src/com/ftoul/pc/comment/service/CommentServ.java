@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
 
-public interface CommentService {
+public interface CommentServ {
 	
 	Result getCommentPage(Parameter param) throws Exception;
 	
