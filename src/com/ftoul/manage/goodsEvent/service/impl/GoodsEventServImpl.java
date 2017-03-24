@@ -176,7 +176,6 @@ public class GoodsEventServImpl implements GoodsEventServ {
 				long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
 				long endTime = DateUtil.stringFormatToDate(goodsEvent.getEventEnd().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
 				long nowTime = new Date().getTime();
-				long distance = endTime - nowTime;
 				if (nowTime > beginTime) {
 					i.setEndTime((endTime - nowTime)/1000);
 					i.setHasBegin("1");
@@ -185,7 +184,6 @@ public class GoodsEventServImpl implements GoodsEventServ {
 					i.setHasBegin("0");
 				}
 				i.setStartTime(goodsEvent.getEventBegen().toString().substring(11,16));
-				i.setEndTime(distance/1000);
 				i.setPcLimitGoodsList(goodsList);
 				goodsPcVoList.add(i);
 			}
