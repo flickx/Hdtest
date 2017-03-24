@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ftoul.common.Common;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.pc.comment.service.CommentService;
+import com.ftoul.pc.comment.service.CommentServ;
 
 /**
  * 评论
@@ -22,7 +22,7 @@ import com.ftoul.pc.comment.service.CommentService;
 public class CommentAction {
 	
 	@Autowired
-	CommentService commentService;
+	CommentServ commentService;
 
 	/**
 	 * 分页查询评论pc前端

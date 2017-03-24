@@ -1,8 +1,11 @@
 package com.ftoul.pc.comment.service.impl;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +13,15 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.Map.Entry;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import sun.misc.BASE64Decoder;
 
 import com.ftoul.common.Common;
 import com.ftoul.common.DateStr;
@@ -24,7 +30,7 @@ import com.ftoul.common.OrdersConstant;
 import com.ftoul.common.Page;
 import com.ftoul.common.Parameter;
 import com.ftoul.common.Result;
-import com.ftoul.pc.comment.service.CommentService;
+import com.ftoul.pc.comment.service.CommentServ;
 import com.ftoul.pc.comment.vo.GoodsCommentDetailVo;
 import com.ftoul.pc.comment.vo.GoodsCommentScoreVo;
 import com.ftoul.pc.comment.vo.GoodsCommentVo;
@@ -39,7 +45,7 @@ import com.ftoul.util.orders.OrdersUtil;
 import com.ftoul.web.vo.OrderStaticCountVo;
 
 @Service("PcCommentServiceImpl")
-public class CommentServiceImpl implements CommentService {
+public class CommentServiceImpl implements CommentServ {
 
 	@Autowired
 	private HibernateUtil hibernateUtil;
@@ -235,41 +241,79 @@ public class CommentServiceImpl implements CommentService {
 	public Result goodsCommentPicUpload(Parameter param,HttpServletRequest request) throws Exception {
 		List<MultipartFile> fileList = new ArrayList<MultipartFile>();
 		System.out.println("contenxtType类型："+request.getContentType());
-		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-		Map<String, MultipartFile> multiValuemap = multipartRequest.getFileMap();
-		Set set = multiValuemap.entrySet();
-		Iterator it = set.iterator();
-		while(it.hasNext()){
-			Entry entry = (Entry) it.next();
-			entry.getValue();
-			fileList.add((MultipartFile) entry.getValue());
-		}
-		String goodsCommentId = request.getParameter("goodsCommentId");
-		GoodsComment goodsComment = (GoodsComment) hibernateUtil.find(GoodsComment.class, goodsCommentId);
-		StringBuffer srcs = new StringBuffer();
-		System.out.println(goodsCommentId);
-		String path = request.getSession().getServletContext().getRealPath("/upload/img/goodsComment/");
-		String picPath = "/upload/img/goodsComment/";
-		int count = 0;
-		if (fileList.size()>0) {
-			for (MultipartFile multipartFile : fileList) {
-				count++;
-				String picName = UUID.randomUUID()+"."+multipartFile.getOriginalFilename().split("\\.")[1];
-			    String picAddress = picPath+ picName;
-			    srcs.append(picAddress);
-			    if(count!=fileList.size()){
-			    	srcs.append(";");
-			    }
-				File targetFile = new File(path, picName);  
-		        if(!targetFile.exists()){  
-		            targetFile.mkdirs();  
-		        } 
-		        multipartFile.transferTo(targetFile);
-			}
-		}
-		goodsComment.setPicSrc(srcs.toString());
-		hibernateUtil.update(goodsComment);
-		return ObjectToResult.getResult(goodsComment);
+		BufferedImage image = null;  
+        byte[] imageByte = null;
+        List<Object> objList = param.getObjList();
+        StringBuffer srcs = new StringBuffer();
+//        for (Object object : objList) {
+        	String strFileName=param.getObj().toString().split(",")[0].split(";")[0].split("/")[1];
+        	BASE64Decoder decoder = new sun.misc.BASE64Decoder();
+        	imageByte=decoder.decodeBuffer(param.getObj().toString().split(",")[1]);
+        	// 处理数据
+            for(int i=0;i<imageByte.length;i++){
+            	if(imageByte[i]<0){
+            		imageByte[i]+=256;
+            	}
+            }
+            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);  
+            image = ImageIO.read(new ByteArrayInputStream(imageByte));  
+            bis.close();  
+            String picPath = "/upload/img/goodsComment/";
+            String path = request.getSession().getServletContext().getRealPath("upload/img/goodsComment/");
+            String picName = UUID.randomUUID()+"."+strFileName;
+            String picAddress = picPath+ picName;
+            srcs.append(picAddress);
+            srcs.append(";");
+            File outputfile = new File(path+picName);
+            if(!outputfile.exists()){
+            	outputfile.mkdirs();
+            }
+            ImageIO.write(image,strFileName, outputfile);  
+            System.out.println(image);
+            Map<String ,Object> map = new HashMap<String ,Object>();
+            map.put("picAddress", picAddress);
+    		map.put("picName", picName );
+    		map.put("hasUpload", true );
+            ImageIO.write(image,strFileName, outputfile);  
+//		}
+        
+		
+//        GoodsComment goodsComment = (GoodsComment) hibernateUtil.find(GoodsComment.class, param.getId()+"");
+//		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+//		Map<String, MultipartFile> multiValuemap = multipartRequest.getFileMap();
+//		Set set = multiValuemap.entrySet();
+//		Iterator it = set.iterator();
+//		while(it.hasNext()){
+//			Entry entry = (Entry) it.next();
+//			entry.getValue();
+//			fileList.add((MultipartFile) entry.getValue());
+//		}
+//		String goodsCommentId = request.getParameter("goodsCommentId");
+//		GoodsComment goodsComment = (GoodsComment) hibernateUtil.find(GoodsComment.class, goodsCommentId);
+//		StringBuffer srcs = new StringBuffer();
+//		System.out.println(goodsCommentId);
+//		String path = request.getSession().getServletContext().getRealPath("/upload/img/goodsComment/");
+//		String picPath = "/upload/img/goodsComment/";
+//		int count = 0;
+//		if (fileList.size()>0) {
+//			for (MultipartFile multipartFile : fileList) {
+//				count++;
+//				String picName = UUID.randomUUID()+"."+multipartFile.getOriginalFilename().split("\\.")[1];
+//			    String picAddress = picPath+ picName;
+//			    srcs.append(picAddress);
+//			    if(count!=fileList.size()){
+//			    	srcs.append(";");
+//			    }
+//				File targetFile = new File(path, picName);  
+//		        if(!targetFile.exists()){  
+//		            targetFile.mkdirs();  
+//		        } 
+//		        multipartFile.transferTo(targetFile);
+//			}
+//		}
+//		goodsComment.setPicSrc(srcs.toString());
+//		hibernateUtil.update(goodsComment);
+		return ObjectToResult.getResult(map);
 	}
 
 	

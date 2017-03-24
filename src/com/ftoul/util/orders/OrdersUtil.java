@@ -568,11 +568,14 @@ public class OrdersUtil {
 				List<Object> goodsEventJoinList = hibernateUtil.hql("from GoodsEventJoin where goodsEvent.state='1' and goods.id='"+good.getId()+"' and state='1' and goodsEvent.eventBegen<='"+current+"' and goodsEvent.eventEnd>='"+current+"'");
 				for (int j = 0; j < goodsEventJoinList.size(); j++) {
 					GoodsEventJoin eventJoin = (GoodsEventJoin) goodsEventJoinList.get(j);
-					int quantity = eventJoin.getQuantity();
-					if(quantity<Integer.parseInt(goods[1])){
-						vo.setMsg("你挑选的活动商品["+good.getTitle()+"]数量大于库存了，请重新挑选");
-						return vo;
+					if(eventJoin.getQuantity()!=null){
+						int quantity = eventJoin.getQuantity();
+						if(quantity<Integer.parseInt(goods[1])){
+							vo.setMsg("你挑选的活动商品["+good.getTitle()+"]数量大于库存了，请重新挑选");
+							return vo;
+						}
 					}
+					
 				}
 				//查询此商品参加的有效活动
 				List<Object> goodsEventList = hibernateUtil.hql("from GoodsEvent where id in (select goodsEvent.id from GoodsEventJoin where goods.id='"+good.getId()+"' and state='1') and state='1' and eventBegen<='"+current+"' and eventEnd>='"+current+"'");
