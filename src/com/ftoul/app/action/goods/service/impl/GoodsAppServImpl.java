@@ -188,6 +188,7 @@ public class GoodsAppServImpl implements GoodsAppServ {
 			collectionAppVo.setGoodsPic(userCollection.getGoods().getPicSrc());
 			collectionAppVo.setTitle(userCollection.getGoods().getTitle());
 			collectionAppVo.setPrice(userCollection.getGoods().getPrice());
+			collectionAppVo.setCreateTime(userCollection.getCreateTime());
 			goodsVoList.add(collectionAppVo);
 		}
 		return ObjectToResult.getResult(goodsVoList);
