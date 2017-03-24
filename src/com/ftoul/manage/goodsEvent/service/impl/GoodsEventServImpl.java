@@ -98,8 +98,8 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		List<PcLimitGoodsVo> goodsPcVoList = new ArrayList<PcLimitGoodsVo>();
 		if(goodsEvent!=null){
 		String eventId = goodsEvent.getId();
-		String hql2 = "from GoodsEventJoin where state='1' and goodsEvent.state = '1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1' ";	
-		List<Object> list = (List<Object>)hibernateUtil.hql(hql2);
+		String hql2 = "from GoodsEventJoin where state='1' and goodsEvent.state = '1' and goodsEvent.id= '"+eventId+"' and goods.state='1' and goods.grounding = '1'";	
+		List<Object> list = (List<Object>)hibernateUtil.hqlLimit(hql2,0,4);
 		List<PcLimitGoods> goodsList = new ArrayList<PcLimitGoods>();
 		for (Object goodsEventJoin : list) {
 			GoodsEventJoin g = (GoodsEventJoin)goodsEventJoin;
@@ -120,7 +120,6 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		long beginTime = DateUtil.stringFormatToDate(goodsEvent.getEventBegen().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
 		long endTime = DateUtil.stringFormatToDate(goodsEvent.getEventEnd().toString(), "yyyy/MM/dd HH:mm:ss").getTime();
 		long nowTime = new Date().getTime();
-		long distance = endTime - nowTime;
 		if (nowTime > beginTime) {
 			i.setEndTime((endTime - nowTime)/1000);
 			i.setHasBegin("1");
@@ -129,7 +128,6 @@ public class GoodsEventServImpl implements GoodsEventServ {
 			i.setHasBegin("0");
 		}
 		i.setStartTime(goodsEvent.getEventBegen().toString().substring(11,16));
-		i.setEndTime(distance/1000);
 		i.setPcLimitGoodsList(goodsList);
 		goodsPcVoList.add(i);
 		}

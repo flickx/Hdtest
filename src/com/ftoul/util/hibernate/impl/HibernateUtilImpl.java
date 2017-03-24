@@ -59,7 +59,21 @@ public class HibernateUtilImpl implements HibernateUtil
     public List<Object> hql(String hql){
 		return sessionFactory.getCurrentSession().createQuery(hql).setCacheable(true).list();
     }
-	
+	/**
+	 * 通过HQL执行查询指定记录条数
+	 * @param hql HQL语句
+	 * @return 查出的结果集
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+    public List<Object> hqlLimit(String hql,int begin,int limit){
+		Query query = sessionFactory.getCurrentSession().createQuery(hql).setCacheable(true);
+		//设置每页显示多少个，设置多大结果。  
+        query.setMaxResults(limit);  
+        //设置起点  
+        query.setFirstResult(begin); 
+		return query.list();
+    }
 	/**
 	 * 通过HQL执行查询第一条对象
 	 * @param hql HQL语句

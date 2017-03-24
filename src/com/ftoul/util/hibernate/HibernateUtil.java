@@ -36,7 +36,14 @@ public interface HibernateUtil
 	 * @return 查出的结果集
 	 */
     public List<Object> hql(String hql);
-    
+    /**
+	 * 通过HQL执行查询指定记录条数
+	 * @param hql HQL语句
+	 * @param begin 起点
+	 * @param limit 最大记录数	
+	 * @return 查出的结果集
+	 */
+    public List<Object> hqlLimit(String hql,int begin,int limit);
     /**
 	 * 通过HQL执行查询第一条对象
 	 * @param hql HQL语句
