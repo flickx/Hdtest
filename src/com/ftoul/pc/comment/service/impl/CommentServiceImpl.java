@@ -59,9 +59,9 @@ public class CommentServiceImpl implements CommentServ {
 	public Result getCommentPage(Parameter param) throws Exception {
 		String hql;
 		if("1".equals(param.getKey())){//只查询带图评论的
-			hql = "from GoodsComment where state = '1' and isShow='1' and picSrc is not null and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
+			hql = "from GoodsComment where state = '1' and isShow='1' and auditState='1' and picSrc is not null and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
 		}else{
-			hql = "from GoodsComment where state = '1' and isShow='1' and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
+			hql = "from GoodsComment where state = '1' and isShow='1' and auditState='1' and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<?> objList = page.getObjList();
@@ -135,10 +135,13 @@ public class CommentServiceImpl implements CommentServ {
 	@Override
 	public Result saveComment(Parameter param) throws Exception {
 		GoodsComment comment = (GoodsComment) Common.jsonToBean(param.getObj().toString(), GoodsComment.class);
+		int star = Integer.parseInt(comment.getStar());
+		comment.setStar(String.valueOf(star*20));
 		OrdersDetail ordersDetail = (OrdersDetail) hibernateUtil.find(OrdersDetail.class, param.getId().toString());
 		ordersDetail.setIsComment("1");
 		hibernateUtil.update(ordersDetail);
 		comment.setOrdersDetail(ordersDetail);
+		comment.setAuditState("0");
 		comment.setIsShow("0");
 		comment.setState("1");
 		comment.setUserName(param.getUserToken().getUser().getUsername());
@@ -212,7 +215,11 @@ public class CommentServiceImpl implements CommentServ {
 			GoodsComment comment = (GoodsComment) object;
 			totalStar += Double.valueOf(comment.getStar());
 		}
-		String averageScore = new BigDecimal(totalStar).divide(new BigDecimal(objList.size())).toString();
+		String averageScore = "0";
+		if(objList.size()!=0){
+			BigDecimal score = new BigDecimal(String.valueOf(totalStar)).divide(new BigDecimal(String.valueOf(objList.size())),2,BigDecimal.ROUND_HALF_DOWN);
+			averageScore = score.toString();
+		}
 		vo.setScore(averageScore);
 		double score = Double.parseDouble(averageScore);
 		if(score<=20){
@@ -239,80 +246,39 @@ public class CommentServiceImpl implements CommentServ {
 	 */
 	@Override
 	public Result goodsCommentPicUpload(Parameter param,HttpServletRequest request) throws Exception {
-		List<MultipartFile> fileList = new ArrayList<MultipartFile>();
-		System.out.println("contenxtType类型："+request.getContentType());
 		BufferedImage image = null;  
         byte[] imageByte = null;
-        List<Object> objList = param.getObjList();
         StringBuffer srcs = new StringBuffer();
-//        for (Object object : objList) {
-        	String strFileName=param.getObj().toString().split(",")[0].split(";")[0].split("/")[1];
-        	BASE64Decoder decoder = new sun.misc.BASE64Decoder();
-        	imageByte=decoder.decodeBuffer(param.getObj().toString().split(",")[1]);
-        	// 处理数据
-            for(int i=0;i<imageByte.length;i++){
-            	if(imageByte[i]<0){
-            		imageByte[i]+=256;
-            	}
-            }
-            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);  
-            image = ImageIO.read(new ByteArrayInputStream(imageByte));  
-            bis.close();  
-            String picPath = "/upload/img/goodsComment/";
-            String path = request.getSession().getServletContext().getRealPath("upload/img/goodsComment/");
-            String picName = UUID.randomUUID()+"."+strFileName;
-            String picAddress = picPath+ picName;
-            srcs.append(picAddress);
-            srcs.append(";");
-            File outputfile = new File(path+picName);
-            if(!outputfile.exists()){
-            	outputfile.mkdirs();
-            }
-            ImageIO.write(image,strFileName, outputfile);  
-            System.out.println(image);
-            Map<String ,Object> map = new HashMap<String ,Object>();
-            map.put("picAddress", picAddress);
-    		map.put("picName", picName );
-    		map.put("hasUpload", true );
-            ImageIO.write(image,strFileName, outputfile);  
-//		}
-        
-		
-//        GoodsComment goodsComment = (GoodsComment) hibernateUtil.find(GoodsComment.class, param.getId()+"");
-//		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-//		Map<String, MultipartFile> multiValuemap = multipartRequest.getFileMap();
-//		Set set = multiValuemap.entrySet();
-//		Iterator it = set.iterator();
-//		while(it.hasNext()){
-//			Entry entry = (Entry) it.next();
-//			entry.getValue();
-//			fileList.add((MultipartFile) entry.getValue());
-//		}
-//		String goodsCommentId = request.getParameter("goodsCommentId");
-//		GoodsComment goodsComment = (GoodsComment) hibernateUtil.find(GoodsComment.class, goodsCommentId);
-//		StringBuffer srcs = new StringBuffer();
-//		System.out.println(goodsCommentId);
-//		String path = request.getSession().getServletContext().getRealPath("/upload/img/goodsComment/");
-//		String picPath = "/upload/img/goodsComment/";
-//		int count = 0;
-//		if (fileList.size()>0) {
-//			for (MultipartFile multipartFile : fileList) {
-//				count++;
-//				String picName = UUID.randomUUID()+"."+multipartFile.getOriginalFilename().split("\\.")[1];
-//			    String picAddress = picPath+ picName;
-//			    srcs.append(picAddress);
-//			    if(count!=fileList.size()){
-//			    	srcs.append(";");
-//			    }
-//				File targetFile = new File(path, picName);  
-//		        if(!targetFile.exists()){  
-//		            targetFile.mkdirs();  
-//		        } 
-//		        multipartFile.transferTo(targetFile);
-//			}
-//		}
-//		goodsComment.setPicSrc(srcs.toString());
-//		hibernateUtil.update(goodsComment);
+    	String strFileName=param.getObj().toString().split(",")[0].split(";")[0].split("/")[1];
+    	BASE64Decoder decoder = new sun.misc.BASE64Decoder();
+    	imageByte=decoder.decodeBuffer(param.getObj().toString().split(",")[1]);
+    	// 处理数据
+        for(int i=0;i<imageByte.length;i++){
+        	if(imageByte[i]<0){
+        		imageByte[i]+=256;
+        	}
+        }
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);  
+        image = ImageIO.read(new ByteArrayInputStream(imageByte));  
+        bis.close();  
+        String picPath = "/upload/img/goodsComment/";
+        String path = request.getSession().getServletContext().getRealPath("upload/img/goodsComment/");
+        String picName = UUID.randomUUID()+"."+strFileName;
+        String picAddress = picPath+ picName;
+        srcs.append(picAddress);
+        srcs.append(";");
+        File outputfile = new File(path+picName);
+        if(!outputfile.exists()){
+        	outputfile.mkdirs();
+        }
+        ImageIO.write(image,strFileName, outputfile);  
+        System.out.println(image);
+        Map<String ,Object> map = new HashMap<String ,Object>();
+        map.put("picAddress", picAddress);
+		map.put("picName", picName );
+		map.put("hasUpload", true );
+        ImageIO.write(image,strFileName, outputfile);  
+
 		return ObjectToResult.getResult(map);
 	}
 

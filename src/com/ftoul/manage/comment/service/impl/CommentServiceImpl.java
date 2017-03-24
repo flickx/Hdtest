@@ -50,7 +50,7 @@ public class CommentServiceImpl implements CommentServ {
 			vo.setId(comment.getId());
 			vo.setIsShow("1".equals(comment.getIsShow())?"显示":"隐藏");
 			vo.setUserName(comment.getUserName());
-			vo.setAuditState("1".equals(comment.getAuditState())?"未审核":"已审核");
+			vo.setAuditState("0".equals(comment.getAuditState())?"未审核":"已审核");
 			voList.add(vo);
 		}
 		page.getObjList().retainAll(objList);
@@ -97,7 +97,7 @@ public class CommentServiceImpl implements CommentServ {
 			GoodsComment comment = (GoodsComment) object;
 			comment.setState("0");//已删除
 			comment.setIsShow("0");//不显示
-			comment.setAuditState("2");;//已审核
+			comment.setAuditState("1");;//已审核
 			comment.setModifyPerson(param.getManageToken().getLoginUser().getLoginName());
 			comment.setModifyTime(new DateStr().toString());
 			hibernateUtil.update(comment);
@@ -120,7 +120,7 @@ public class CommentServiceImpl implements CommentServ {
 		for (Object object : list) {
 			GoodsComment comment = (GoodsComment) object;
 			comment.setIsShow("0");//不显示
-			comment.setAuditState("2");;//已审核
+			comment.setAuditState("1");;//已审核
 			comment.setModifyPerson(param.getManageToken().getLoginUser().getLoginName());
 			comment.setModifyTime(new DateStr().toString());
 			hibernateUtil.update(comment);
@@ -134,7 +134,7 @@ public class CommentServiceImpl implements CommentServ {
 	@Override
 	public Result auditComment(Parameter param) throws Exception {
 		GoodsComment comment = (GoodsComment) hibernateUtil.find(GoodsComment.class, param.getId().toString());
-		comment.setAuditState("2");//已审核
+		comment.setAuditState("1");//已审核
 		comment.setIsShow("1");//1显示，0隐藏
 		comment.setModifyPerson(param.getManageToken().getLoginUser().getLoginName());
 		comment.setModifyTime(new DateStr().toString());
