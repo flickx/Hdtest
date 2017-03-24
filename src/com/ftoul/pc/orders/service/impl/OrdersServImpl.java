@@ -353,6 +353,7 @@ public class OrdersServImpl implements OrdersServ {
 		
 		List<Object> objList = vo.getVoList();
 		List<Object> titleList = new ArrayList<>();
+		StringBuffer couponSb = new StringBuffer();
 		for (Object object : objList) {
 			Map orderPriceVo = (Map) object;
 			Orders child = (Orders) hibernateUtil.hqlFirst("from Orders where orderNumber='"+orderPriceVo.get("orderNumber")+"'");
@@ -393,6 +394,8 @@ public class OrdersServImpl implements OrdersServ {
 			if(couponList!=null&&couponList.size()>0){
 				Map map = couponList.get(0);
 				String couponId = (String) map.get("id");
+				couponSb.append("couponId");
+				couponSb.append(";");
 				Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, couponId);
 				BigDecimal faceValue = new BigDecimal(coupon.getFaceValue());
 				BigDecimal orderPrice = new BigDecimal(child.getOrderPrice());
@@ -426,6 +429,7 @@ public class OrdersServImpl implements OrdersServ {
 		BigDecimal goodsTotalPriceDec = orders.getGoodsTotalPrice();
 		BigDecimal totalFreightDec = new BigDecimal(totalFreight);
 		BigDecimal totalFaceValueDec = new BigDecimal(totalFaceValue);
+		orders.setCouponId(couponSb.toString());
 		orders.setCouponPrice(String.valueOf(totalFaceValue));
 		//orders.setGoodsTotalPrice(goodsTotalPriceDec.subtract(totalFaceValueDec));
 		//orders.setOrderPrice(formate.format(goodsTotalPriceDec.add(totalFreightDec).subtract(totalFaceValueDec)));

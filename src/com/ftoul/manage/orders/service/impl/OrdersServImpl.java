@@ -22,6 +22,7 @@ import com.ftoul.manage.orders.vo.GoodsVo;
 import com.ftoul.manage.orders.vo.OrderDetailVo;
 import com.ftoul.manage.orders.vo.OrdersPayVo;
 import com.ftoul.manage.orders.vo.OrdersVo;
+import com.ftoul.po.Coupon;
 import com.ftoul.po.Goods;
 import com.ftoul.po.GoodsParam;
 import com.ftoul.po.Orders;
@@ -304,6 +305,22 @@ public class OrdersServImpl implements OrdersServ {
 			orderDetailVo.setOdd("无");
 		}
 		orderDetailVo.setFeedBack(orders.getFeedback());
+		if(orders.getCouponId()!=null&&!Common.isNull(orders.getCouponId())){
+			String[] couponArray = orders.getCouponId().split(";");
+			StringBuffer sb = new StringBuffer();
+			for (String id : couponArray) {
+				Coupon coupon = (Coupon) hibernateUtil.find(Coupon.class, id);
+				if(coupon!=null){
+					sb.append(coupon.getName());
+					sb.append(";");
+				}
+			}
+			orderDetailVo.setCoupon(sb.toString());
+		}else{
+			orderDetailVo.setCoupon("无");
+		}
+		orderDetailVo.setCouponPrice(orders.getCouponPrice());
+		orderDetailVo.setMjPrice(orders.getMjPrice());
 		List<Object> detailList = hibernateUtil.hql("from OrdersDetail where orders.id = '"+orders.getId()+"'");
 		OrdersDetail ordersDetail = new OrdersDetail();
 		List<GoodsVo> goodsVoList = new ArrayList<GoodsVo>();

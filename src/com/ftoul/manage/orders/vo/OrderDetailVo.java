@@ -30,6 +30,9 @@ public class OrderDetailVo {
 	private String serilNumber;
 	private String card;
 	private String isHasParentOrder;
+	private String coupon;
+	private String couponPrice;
+	private String mjPrice;
 	
 	private List<GoodsVo> goodsVoList;
 	
@@ -194,6 +197,24 @@ public class OrderDetailVo {
 	}
 	public void setIsHasParentOrder(String isHasParentOrder) {
 		this.isHasParentOrder = isHasParentOrder;
+	}
+	public String getCoupon() {
+		return coupon;
+	}
+	public void setCoupon(String coupon) {
+		this.coupon = coupon;
+	}
+	public String getCouponPrice() {
+		return couponPrice;
+	}
+	public void setCouponPrice(String couponPrice) {
+		this.couponPrice = couponPrice;
+	}
+	public String getMjPrice() {
+		return mjPrice;
+	}
+	public void setMjPrice(String mjPrice) {
+		this.mjPrice = mjPrice;
 	}
 
 }
