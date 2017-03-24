@@ -1116,8 +1116,8 @@ public class OrdersServImpl implements OrdersServ {
 					if(("1".equals(object.toString())&&supplierMap.size()>1)){
 						Object[] supplierKey = supplierMap.keySet().toArray();
 						List<Object> goodsVoList = new ArrayList<>();
-						Set<Object> couponList = new HashSet<>();
 						OrderPriceVo childOrderPriceVo = new OrderPriceVo();
+						List<ShopGoodsParamVo> supplierShopGoodsParamVoList = new ArrayList<>();
 						for (Object supplier : supplierKey) {
 							List<ShopGoodsParamVo> supplierList = supplierMap.get(supplier);
 							childOrderPriceVo = getOrdersPayable(param, supplierList, orders);
@@ -1139,10 +1139,9 @@ public class OrdersServImpl implements OrdersServ {
 							for (Object obj : childOrderPriceVo.getVoList()) {
 								goodsVoList.add(obj);
 							}
-							for (Object obj : childOrderPriceVo.getCouponList()) {
-								couponList.add(obj);
-							}
+							supplierShopGoodsParamVoList.addAll(supplierList);
 						}
+						List<Object> couponList = couponUtil.getCouponByParam(supplierShopGoodsParamVoList, "1", param.getUserToken().getUser().getId(), orderPrice);//获取他她乐平台的优惠券
 						orderPriceVo.setOrderNumber(orders.getOrderNumber());//只放他们的父订单号
 						orderPriceVo.setShopId(childOrderPriceVo.getShopId());
 						orderPriceVo.setShopName(childOrderPriceVo.getShopName());
@@ -1152,7 +1151,7 @@ public class OrdersServImpl implements OrdersServ {
 						orderPriceVo.setBenPrice(String.valueOf(benPrice));
 						orderPriceVo.setOrderPrice(String.valueOf(orderPrice));
 						orderPriceVo.setFreight(String.valueOf(freight));
-						orderPriceVo.setCouponList(new ArrayList<>(couponList));
+						orderPriceVo.setCouponList(couponList);
 						orderPriceVo.setVoList(goodsVoList);
 						voList.add(orderPriceVo);
 					}else{

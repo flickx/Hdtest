@@ -59,9 +59,9 @@ public class CommentServiceImpl implements CommentServ {
 	public Result getCommentPage(Parameter param) throws Exception {
 		String hql;
 		if("1".equals(param.getKey())){//只查询带图评论的
-			hql = "from GoodsComment where state = '1' and isShow='1' and picSrc is not null and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
+			hql = "from GoodsComment where state = '1' and isShow='1' and auditState='1' and picSrc is not null and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
 		}else{
-			hql = "from GoodsComment where state = '1' and isShow='1' and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
+			hql = "from GoodsComment where state = '1' and isShow='1' and auditState='1' and ordersDetail.goodsParam.goods.id='"+param.getId().toString()+"' order by commentTime desc";
 		}
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<?> objList = page.getObjList();
@@ -135,10 +135,13 @@ public class CommentServiceImpl implements CommentServ {
 	@Override
 	public Result saveComment(Parameter param) throws Exception {
 		GoodsComment comment = (GoodsComment) Common.jsonToBean(param.getObj().toString(), GoodsComment.class);
+		int star = Integer.parseInt(comment.getStar());
+		comment.setStar(String.valueOf(star*20));
 		OrdersDetail ordersDetail = (OrdersDetail) hibernateUtil.find(OrdersDetail.class, param.getId().toString());
 		ordersDetail.setIsComment("1");
 		hibernateUtil.update(ordersDetail);
 		comment.setOrdersDetail(ordersDetail);
+		comment.setAuditState("0");
 		comment.setIsShow("0");
 		comment.setState("1");
 		comment.setUserName(param.getUserToken().getUser().getUsername());
@@ -212,7 +215,10 @@ public class CommentServiceImpl implements CommentServ {
 			GoodsComment comment = (GoodsComment) object;
 			totalStar += Double.valueOf(comment.getStar());
 		}
-		String averageScore = new BigDecimal(totalStar).divide(new BigDecimal(objList.size())).toString();
+		String averageScore = "0";
+		if(objList.size()!=0){
+			averageScore = new BigDecimal(totalStar).divide(new BigDecimal(objList.size())).toString();
+		}
 		vo.setScore(averageScore);
 		double score = Double.parseDouble(averageScore);
 		if(score<=20){
