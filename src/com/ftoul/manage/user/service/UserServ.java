@@ -92,4 +92,36 @@ public interface UserServ {
 	 */
 	Result doResetPassword(Parameter parameter) throws Exception ;
 	
+	/**
+	 * 获取待办事项
+	 * @param parameter
+	 * @return
+	 * @throws Exception
+	 */
+	Result getDeals(Parameter parameter) throws Exception;
+	
+	
+	/**
+	 * 获取商品销量情况
+	 * @param parameter
+	 * @return
+	 * @throws Exception
+	 */
+	Result getGoodsSales(Parameter parameter) throws Exception;
+	
+	/**
+	 * 获取本月注册用户数
+	 * @param parameter
+	 * @return
+	 * @throws Exception
+	 */
+	Result getRegisterUser(Parameter parameter) throws Exception;
+	
+	/**
+	 * 获取畅销商品前20名
+	 * @param parameter
+	 * @return
+	 * @throws Exception
+	 */
+	Result getPopularGoods(Parameter parameter) throws Exception;
 }

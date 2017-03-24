@@ -435,8 +435,13 @@ public class PcUserServImpl implements PcUserServ {
 				+" join user u on u.id= ucp.user_id where ucp.user_id = u.id and u.id = '"+param.getKey()+"'"
 				+" and ucp.state = 1 and ucp.is_used = 1 group by u.id";
 		List<Object[]> totalList = hibernateUtil.sql(totalSql);	
-		Double couponTotal = Double.parseDouble(totalList.get(0)[1].toString()); 
-		pcUserVo.setCouponTotal(couponTotal);
+		if(totalList.size()>0){
+			Double couponTotal = Double.parseDouble(totalList.get(0)[1].toString()); 
+			pcUserVo.setCouponTotal(couponTotal);
+		}else{
+			pcUserVo.setCouponTotal(new Double(0.00));
+		}
+		
 		return ObjectToResult.getResult(pcUserVo);
 	}
 	
