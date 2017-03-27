@@ -548,7 +548,7 @@ public class Goods implements java.io.Serializable {
 	public void setHasstock(String hasstock) {
 		this.hasstock = hasstock;
 	}
-	@Column(name = "packing_list", length = 1000)
+	@Column(name = "packing_list", length = 65535)
 	public String getPackingList() {
 		return packingList;
 	}
@@ -556,7 +556,7 @@ public class Goods implements java.io.Serializable {
 	public void setPackingList(String packingList) {
 		this.packingList = packingList;
 	}
-	@Column(name = "after_service", length = 1000)
+	@Column(name = "after_service", length = 65535)
 	public String getAfterService() {
 		return afterService;
 	}
