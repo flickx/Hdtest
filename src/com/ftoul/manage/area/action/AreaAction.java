@@ -20,6 +20,27 @@ import com.ftoul.manage.area.service.AreaServ;
 public class AreaAction {
 	@Autowired
 	private AreaServ areaServ;
+	/**
+	 * 获取省份列表
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value="getProvices")
+	public @ResponseBody Result getProvices(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return areaServ.getProvices(parameter);
+	}
+
+	/**
+	 * 获取省份下级城市列表
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value="getCitys")
+	public @ResponseBody Result getCitys(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return areaServ.getCitys(parameter);
+	}
 	
 	/**
 	 * 获取区县列表
@@ -31,15 +52,28 @@ public class AreaAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return areaServ.getCountys(parameter);
 	}
+
+
 	/**
-	 * 获取省份列表
+	 * 获取乡镇列表
 	 * @param param Parameter对象
 	 * @return 返回结果（前台用Result对象）
 	 */
-	@RequestMapping(value="getProvices")
-	public @ResponseBody Result getProvices(String param) throws Exception{
+	@RequestMapping(value="getTowns")
+	public @ResponseBody Result getTowns(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return areaServ.getProvices(parameter);
+		return areaServ.getTowns(parameter);
+	}
+
+	/**
+	 * 获取街道列表
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value="getVillages")
+	public @ResponseBody Result getVillages(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return areaServ.getVillages(parameter);
 	}
 	/**
 	 * 保存省份
@@ -51,6 +85,7 @@ public class AreaAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return areaServ.saveProvince(parameter);
 	}
+
 	/**
 	 * 保存城市
 	 * @param param Parameter对象
@@ -61,7 +96,7 @@ public class AreaAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return areaServ.saveCity(parameter);
 	}
-	
+
 	/**
 	 * 保存区县
 	 * @param param Parameter对象
@@ -82,36 +117,54 @@ public class AreaAction {
 		Parameter parameter = Common.jsonToParam(param);
 		return areaServ.saveTown(parameter);
 	}
-	
 	/**
-	 * 获取省份下级城市列表
+	 * 删除省份
 	 * @param param Parameter对象
 	 * @return 返回结果（前台用Result对象）
 	 */
-	@RequestMapping(value="getCitys")
-	public @ResponseBody Result getCitys(String param) throws Exception{
+	@RequestMapping(value="delProvince")
+	public @ResponseBody Result delProvince(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return areaServ.getCitys(parameter);
-	}
-
-	/**
-	 * 获取街道列表
-	 * @param param Parameter对象
-	 * @return 返回结果（前台用Result对象）
-	 */
-	@RequestMapping(value="getTowns")
-	public @ResponseBody Result getTowns(String param) throws Exception{
-		Parameter parameter = Common.jsonToParam(param);
-		return areaServ.getTowns(parameter);
+		return areaServ.delProvince(parameter);
 	}
 	/**
-	 * 获取村庄列表
+	 * 删除城市
 	 * @param param Parameter对象
 	 * @return 返回结果（前台用Result对象）
 	 */
-	@RequestMapping(value="getVillages")
-	public @ResponseBody Result getVillages(String param) throws Exception{
+	@RequestMapping(value="delCity")
+	public @ResponseBody Result delCity(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
-		return areaServ.getVillages(parameter);
+		return areaServ.delCity(parameter);
+	}
+	/**
+	 * 删除区县
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value="delCounty")
+	public @ResponseBody Result delCounty(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return areaServ.delCounty(parameter);
+	}
+	/**
+	 * 删除乡镇
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value="delTown")
+	public @ResponseBody Result delTown(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return areaServ.delTown(parameter);
+	}
+	/**
+	 * 删除街道
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	@RequestMapping(value="delVillage")
+	public @ResponseBody Result delVillage(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return areaServ.delVillage(parameter);
 	}
 }

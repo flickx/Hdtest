@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.ftoul.common.DateUtil;
 import com.ftoul.po.MessageSend;
 import com.ftoul.po.MessageVerification;
+import com.ftoul.po.User;
 import com.ftoul.util.hibernate.HibernateUtil;
 
 /**
@@ -66,12 +67,12 @@ public class SmsCodeUtil {
 		messageVerification.setSort(sort);
 		String content=""; 
 		if (messageType.equals("1")) {
-			content = "【他她乐】亲爱的"+mobile+"手机用户：您的注册验证码为"+code+"，如非本人操作，请致电客服0731-82208568";
+			content = "【他她乐】亲爱的"+mobile+"手机用户：您的注册验证码为"+code;
 		}if (messageType.equals("2")) {
-			content = "【他她乐】亲爱的"+mobile+"手机用户：您的找回密码验证码为"+code+"，如非本人操作，请致电客服0731-82208568";
+			content = "【他她乐】亲爱的"+mobile+"手机用户：您的找回密码验证码为"+code;
 		}
 		if (messageType.equals("3")) {
-			content = "【他她乐】亲爱的"+mobile+"手机用户：您的验证邮件验证码为"+code+"，如非本人操作，请致电客服0731-82208568";
+			content = "【他她乐】亲爱的"+mobile+"手机用户：您的验证邮件验证码为"+code;
 		}
 		messageVerification.setIp(SmsCodeUtil.getLocalIp(req));
 		messageVerification.setMobile(mobile);
@@ -81,7 +82,11 @@ public class SmsCodeUtil {
 		messageVerification.setCreatePerson(mobile);
 		messageVerification.setCreateTime(createTime);
 		Object o=hibernateUtil.save(messageVerification);
-		
+		String hql = "from User where username = '"+mobile+"'";
+		User user = (User)hibernateUtil.hqlFirst(hql);
+		if (user!=null) {
+			messageSend.setUser(user);
+		}
 		messageSend.setMsg(content);
 		messageSend.setSendTime(createTime);
 		hibernateUtil.save(messageSend);
