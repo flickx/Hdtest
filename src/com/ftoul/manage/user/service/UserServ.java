@@ -110,6 +110,14 @@ public interface UserServ {
 	Result getGoodsSales(Parameter parameter) throws Exception;
 	
 	/**
+	 * 获取本周商品销量情况
+	 * @param parameter
+	 * @return
+	 * @throws Exception
+	 */
+	Result getGoodsSalesByWeeks(Parameter parameter) throws Exception;
+	
+	/**
 	 * 获取本月注册用户数
 	 * @param parameter
 	 * @return

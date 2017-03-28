@@ -236,7 +236,7 @@ public class GoodsParamServImpl implements GoodsParamServ {
 	public Result saveGoodsParamByGoods(Parameter param) throws Exception {
 		GoodsParam goodsParam = (GoodsParam) JSONObject.toBean((JSONObject) param.getObj(),GoodsParam.class);
 		Goods goods = (Goods) this.hibernateUtil.find(Goods.class, param.getParentId()+"");
-		String hql ="from GoodsParam where state=1 and goods.id = '"+ goods.getId()+"'";
+		String hql ="from GoodsParam where state=1 and defalut = 1 and goods.id = '"+ goods.getId()+"'";
 		List<Object> list=  this.hibernateUtil.hql(hql);
 		if(Common.isNull(goodsParam.getId())){
 			//添加
@@ -283,12 +283,14 @@ public class GoodsParamServImpl implements GoodsParamServ {
 			goodsParam.setModifyPerson(param.getUserId());
 			goodsParam.setGoods(goods);
 			goodsParam.setStock(gparam.getStock());
-			goodsParam.setDefalut(gparam.getDefalut());
 			goodsParam.setSaleNumber(gparam.getSaleNumber());
 			//如果是第一个则修改goods中的price
-			if(gparam.getDefalut().equals("1")){
+			if(gparam.getDefalut().equals("1")||list.size()<=0){
+				goodsParam.setDefalut("1");
 				goods.setPrice(Double.valueOf(goodsParam.getPrice()));
 				this.hibernateUtil.update(goods);
+			}else{
+				goodsParam.setDefalut(gparam.getDefalut());
 			}
 			this.hibernateUtil.update(goodsParam);
 		}
