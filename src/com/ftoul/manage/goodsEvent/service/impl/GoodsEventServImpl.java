@@ -298,7 +298,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 					"AND gpt.state = '1'  " +
 					"AND gs.state = '1'  " +
 					"AND gs.grounding = '1'  " +
-					"GROUP BY gs.id order by rand() limit 0,200 ";
+					"GROUP BY gs.id order by rand() limit 0,100 ";
 			Page page = hibernateUtil.sqlPage(countSql ,sql,parameter.getPageNum(),parameter.getPageSize());
 			List<GoodsListVo> list = new ArrayList<GoodsListVo>();
 			for (int i = 0; i < page.getObjList().size(); i++) {

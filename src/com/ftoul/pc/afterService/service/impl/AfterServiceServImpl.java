@@ -1,20 +1,21 @@
 package com.ftoul.pc.afterService.service.impl;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import sun.misc.BASE64Decoder;
 
 import com.ftoul.api.KdniaoTrackQueryAPI;
 import com.ftoul.common.Common;
@@ -80,32 +81,6 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	@Override
 	public Result getAfterSchedulePage(Parameter param) throws Exception {
 		Page page = hibernateUtil.hqlPage(null,"from AfterSchedule where state='1' and user.id='"+param.getUserToken().getUser().getId()+"' order by createTime desc",param.getPageNum(),param.getPageSize());
-//		List list = page.getObjList();
-//		List<AfterScheduleVo> voList = new ArrayList<AfterScheduleVo>();
-//		for (int i = 0; i < list.size(); i++) {
-//			AfterScheduleVo vo = new AfterScheduleVo();
-//			AfterSchedule schedule = (AfterSchedule) list.get(i);
-//			vo.setId(schedule.getId());
-//			vo.setGoodsTitle(schedule.getOrdersDetail().getGoodsParam().getGoods().getTitle());
-//			if(schedule.getSellerLogCompany()!=null){
-//				vo.setLogCompany(schedule.getSellerLogCompany().getName());
-//			}
-//			vo.setLogOdd(schedule.getSellerLogOdd());
-//			vo.setOrderId(schedule.getOrdersDetail().getOrders().getId());
-//			vo.setOrderStatic(schedule.getOrdersDetail().getOrders().getOrderStatic());
-//			vo.setOrderTime(schedule.getOrdersDetail().getOrders().getOrderTime());
-//			vo.setPic(schedule.getOrdersDetail().getPicSrc());
-//			vo.setBackPrice(schedule.getBackPrice());
-//			vo.setNum(schedule.getNum());
-//			vo.setScheduleStatic(schedule.getScheduleStatic());
-//			vo.setServiceCode(schedule.getServiceCode());
-//			vo.setTel(schedule.getSellerTel());
-//			vo.setUserId(schedule.getUser().getId());
-//			vo.setSalePrice(schedule.getOrdersDetail().getPrice());
-//			voList.add(vo);
-//		}
-//		page.getObjList().clear();
-//		page.getObjList().addAll(voList);
 		return ObjectToResult.getResult(page);
 	}
 
@@ -182,46 +157,42 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	}
 
 	@Override
-	public Result afterServicePicUpload(Parameter parameter,
+	public Result afterServicePicUpload(Parameter param,
 			HttpServletRequest request) throws Exception {
-		List<MultipartFile> fileList = new ArrayList<MultipartFile>();
-		System.out.println("contenxtType类型："+request.getContentType());
-		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-		
-		Map<String, MultipartFile> multiValuemap = multipartRequest.getFileMap();
-		Set set = multiValuemap.entrySet();
-		Iterator it = set.iterator();
-		while(it.hasNext()){
-			Entry entry = (Entry) it.next();
-			entry.getValue();
-			fileList.add((MultipartFile) entry.getValue());
-		}
-		String scheduleId = request.getParameter("scheduleId");
-		AfterSchedule afterSchedule = (AfterSchedule) hibernateUtil.find(AfterSchedule.class, scheduleId+"");
-		StringBuffer srcs = new StringBuffer();
-		System.out.println(scheduleId);
-		String path = request.getSession().getServletContext().getRealPath("/upload/img/after/");
-		String picPath = "/upload/img/after/";
-		int count = 0;
-		if (fileList.size()>0) {
-			for (MultipartFile multipartFile : fileList) {
-				count++;
-				String picName = UUID.randomUUID()+"."+multipartFile.getOriginalFilename().split("\\.")[1];
-			    String picAddress = picPath+ picName;
-			    srcs.append(picAddress);
-			    if(count!=fileList.size()){
-			    	srcs.append(";");
-			    }
-				File targetFile = new File(path, picName);  
-		        if(!targetFile.exists()){  
-		            targetFile.mkdirs();  
-		        } 
-		        multipartFile.transferTo(targetFile);
-			}
-		}
-		afterSchedule.setPicSrcs(srcs.toString());
-		hibernateUtil.update(afterSchedule);
-		return ObjectToResult.getResult(afterSchedule);
+		BufferedImage image = null;  
+        byte[] imageByte = null;
+        StringBuffer srcs = new StringBuffer();
+    	String strFileName=param.getObj().toString().split(",")[0].split(";")[0].split("/")[1];
+    	BASE64Decoder decoder = new sun.misc.BASE64Decoder();
+    	imageByte=decoder.decodeBuffer(param.getObj().toString().split(",")[1]);
+    	// 处理数据
+        for(int i=0;i<imageByte.length;i++){
+        	if(imageByte[i]<0){
+        		imageByte[i]+=256;
+        	}
+        }
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);  
+        image = ImageIO.read(new ByteArrayInputStream(imageByte));  
+        bis.close();  
+        String picPath = "/upload/img/afterService/";
+        String path = request.getSession().getServletContext().getRealPath("upload/img/afterService/");
+        String picName = UUID.randomUUID()+"."+strFileName;
+        String picAddress = picPath+ picName;
+        srcs.append(picAddress);
+        srcs.append(";");
+        File outputfile = new File(path+picName);
+        if(!outputfile.exists()){
+        	outputfile.mkdirs();
+        }
+        ImageIO.write(image,strFileName, outputfile);  
+        System.out.println(image);
+        Map<String ,Object> map = new HashMap<String ,Object>();
+        map.put("picAddress", picAddress);
+		map.put("picName", picName );
+		map.put("hasUpload", true );
+        ImageIO.write(image,strFileName, outputfile);  
+
+		return ObjectToResult.getResult(map);
 	}
 	
 	/**

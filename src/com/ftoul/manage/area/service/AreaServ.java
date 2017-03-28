@@ -51,8 +51,47 @@ public interface AreaServ {
 	 * @return 返回结果（前台用Result对象）
 	 */
 	Result getVillages(Parameter param) throws Exception;
-	
+	/**
+	 * 保存区县
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
 	Result saveCounty(Parameter param) throws Exception;
-	
+	/**
+	 * 保存乡镇
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
 	Result saveTown(Parameter param) throws Exception;
+	/**
+	 * 删除省份
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result delProvince(Parameter param) throws Exception;
+	/**
+	 * 删除城市
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result delCity(Parameter param) throws Exception;
+	/**
+	 * 删除区县
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result delCounty(Parameter param) throws Exception;
+	/**
+	 * 删除乡镇
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result delTown(Parameter param) throws Exception;
+	/**
+	 * 删除街道
+	 * @param param Parameter对象
+	 * @return 返回结果（前台用Result对象）
+	 */
+	Result delVillage(Parameter param) throws Exception;
+	
 }

@@ -62,6 +62,8 @@ public class HibernateUtilImpl implements HibernateUtil
 	/**
 	 * 通过HQL执行查询指定记录条数
 	 * @param hql HQL语句
+	 * @param begin 起点
+	 * @param limit 最大记录数	
 	 * @return 查出的结果集
 	 */
 	@SuppressWarnings("unchecked")

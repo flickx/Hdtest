@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -24,7 +25,7 @@ public class JPositionVillage implements java.io.Serializable {
 	private Long townId;
 	private Long villageId;
 	private String villageName;
-
+	private String state;
 	// Constructors
 
 	/** default constructor */
@@ -77,5 +78,15 @@ public class JPositionVillage implements java.io.Serializable {
 	public void setVillageName(String villageName) {
 		this.villageName = villageName;
 	}
+	@Column(name = "state", length = 1)
+	public String getState() {
+		return state;
+	}
 
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(String state) {
+		this.state = state;
+	}
 }

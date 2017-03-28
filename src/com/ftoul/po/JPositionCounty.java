@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
 
 
@@ -22,12 +23,12 @@ public class JPositionCounty  implements java.io.Serializable {
      /**
 	 * 
 	 */
-	private static final long serialVersionUID = -57333607749067953L;
-	private Integer id;
+	 private static final long serialVersionUID = -57333607749067953L;
+	 private Integer id;
      private Long cityId;
      private Long countyId;
      private String countyName;
-
+     private String state;
 
     // Constructors
 
@@ -86,5 +87,15 @@ public class JPositionCounty  implements java.io.Serializable {
     public void setCountyName(String countyName) {
         this.countyName = countyName;
     }
-   
+	@Column(name = "state", length = 1)
+	public String getState() {
+		return state;
+	}
+
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(String state) {
+		this.state = state;
+	}
 }

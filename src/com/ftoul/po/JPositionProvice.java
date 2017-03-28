@@ -23,7 +23,7 @@ public class JPositionProvice implements java.io.Serializable {
 	private Integer id;
 	private Long proviceId;
 	private String proviceName;
-
+	private String state;
 	// Constructors
 
 	/** default constructor */
@@ -67,4 +67,15 @@ public class JPositionProvice implements java.io.Serializable {
 		this.proviceName = proviceName;
 	}
 
+	@Column(name = "state", length = 1)
+	public String getState() {
+		return state;
+	}
+
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(String state) {
+		this.state = state;
+	}
 }
