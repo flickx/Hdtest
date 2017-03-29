@@ -30,4 +30,13 @@ public interface SearchKeyNameServ {
 	 * @throws Exception
 	 */
 	Result getSaleNumGoodsList(Parameter param)throws Exception;
+	
+	
+	/**
+	 * 添加搜索关键字
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	Result saveSearchKeyName(Parameter param)throws Exception;
 }

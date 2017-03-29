@@ -14,6 +14,7 @@ import com.ftoul.pc.goods.vo.GoodsSearchMainVo;
 import com.ftoul.pc.goods.vo.GoodsSearchVo;
 import com.ftoul.pc.goods.vo.SearchVo;
 import com.ftoul.pc.search.service.SearchKeyNameServ;
+import com.ftoul.po.SearchKeyName;
 import com.ftoul.util.hibernate.HibernateUtil;
 @Service("SearchKeyNameServImpl")
 public class SearchKeyNameServImpl implements SearchKeyNameServ {
@@ -205,5 +206,19 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 		Page page = hibernateUtil.hqlPage(null,hql, param.getPageNum(), 5);
 		return ObjectToResult.getResult(page);
 	}
-	
+	@Override
+	public Result saveSearchKeyName(Parameter param) throws Exception {
+		String sql = "delete from search_key_name where state = "+param.getAction();
+		hibernateUtil.execSql(sql);
+		String[] key = param.getKey().split(":");
+		Object res = null;
+		for (int i = 0; i < key.length; i++) {
+			SearchKeyName keyName = new SearchKeyName();
+			keyName.setKeyName(key[i].split(",")[0]);
+			keyName.setFontColor(key[i].split(",")[1]);
+			keyName.setState(param.getAction());
+			res = hibernateUtil.save(keyName);
+		}
+		return ObjectToResult.getResult(res);
+	}
 }
