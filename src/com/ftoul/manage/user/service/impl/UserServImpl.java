@@ -1,7 +1,6 @@
 package com.ftoul.manage.user.service.impl;
 
 import java.text.DecimalFormat;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -372,6 +371,27 @@ public class UserServImpl implements UserServ {
 			popularGoodsList.add(commonVo);
 		}
 		return ObjectToResult.getResult(popularGoodsList);
+	}
+
+	@Override
+	public Result getGoodsSalesByWeeks(Parameter parameter) throws Exception {
+		String sql = "SELECT date_format(create_time,'%Y-%m-%d'),count(id) FROM orders"
+					+" WHERE order_static = 6 and YEARWEEK(date_format(create_time,'%Y-%m-%d')) = YEARWEEK(now())-1"
+					+" group by date_format(create_time,'%Y-%m-%d')";
+		List<Object[]> list = hibernateUtil.sql(sql);
+		List<CommonVo> goodsSalesList = new ArrayList<CommonVo>();
+		for (int i = 0; i < list.size(); i++){
+			CommonVo commonVo = new CommonVo();
+			Object[] obj = list.get(i);
+			if(obj[0]!=null){
+				commonVo.setName(obj[0].toString());
+			}
+			if(obj[1]!=null){
+				commonVo.setAmount(Integer.parseInt(obj[1].toString()));
+			}
+			goodsSalesList.add(commonVo);
+		}
+		return ObjectToResult.getResult(goodsSalesList);
 	}
 	
 }

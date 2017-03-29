@@ -448,7 +448,7 @@ public class OrdersServImpl implements OrdersServ {
 				double base = priceVo.getCoinPrice()/priceVo.getCoinNumber();
 				double newCoinPrice = base*inputCoinNumber;
 				double newOrderPrice = orderPrice - newCoinPrice;
-				if(newOrderPrice<0){
+				if(newOrderPrice<=0){
 					BigDecimal orderPriceDec = new BigDecimal(String.valueOf(orderPrice));
 					BigDecimal baseDec = new BigDecimal(String.valueOf(base));
 					double value = orderPriceDec.divide(baseDec,2,BigDecimal.ROUND_UP).doubleValue();

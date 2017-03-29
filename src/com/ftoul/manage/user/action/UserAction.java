@@ -189,8 +189,20 @@ public class UserAction {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "getPopularGoods")  
-	public @ResponseBody Result s(String param) throws Exception{
+	public @ResponseBody Result getPopularGoods(String param) throws Exception{
 		Parameter parameter = Common.jsonToParam(param);
 		return userServ.getPopularGoods(parameter);
+	}
+
+	/**
+	 * 本周商品交易量
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "getGoodsSalesByWeeks")  
+	public @ResponseBody Result getGoodsSalesByWeeks(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return userServ.getGoodsSalesByWeeks(parameter);
 	}
 }
