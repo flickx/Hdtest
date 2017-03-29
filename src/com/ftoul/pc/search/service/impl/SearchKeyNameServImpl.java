@@ -127,7 +127,7 @@ public class SearchKeyNameServImpl implements SearchKeyNameServ {
 					if(null!=object[1]){
 						goodsSearchMainVo.setPrice(object[1]+"");
 					}else{
-						if(null!=obj[2]){
+						if(null!=object[2]){
 							goodsSearchMainVo.setPrice(object[2]+"");
 						}else{
 							if(null!=object[3]&&!"".equals(object[3]+"")){
