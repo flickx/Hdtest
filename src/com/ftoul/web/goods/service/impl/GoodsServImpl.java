@@ -450,7 +450,7 @@ public class GoodsServImpl implements GoodsServ {
 		startTime = startTime.replace("/","-");
 		String endTime = new DateStr().getEndTime();
 		endTime = endTime.replace("/","-");
-		String sql = "select g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and '"+startTime+"' <= g.create_time and g.create_time <= '"+endTime+"' and g.shop_id = '1' order by rand() asc limit 0,4";
+		String sql = "select distinic g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and '"+startTime+"' <= g.create_time and g.create_time <= '"+endTime+"' and g.shop_id = '1' group by g.id order by rand() asc limit 0,4";
 		List<Object[]> list =	hibernateUtil.sql(sql);
 		List<PcNewGoods> newGoodsList = new ArrayList<PcNewGoods>();
 		for (Object[] goods : list) {
