@@ -148,43 +148,28 @@ public class OrdersServImpl implements OrdersServ {
 		}else if(OrdersConstant.NOT_COMMENT.equals(key)){//查询待评价的数据
 			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '7' and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else{
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic!='0' and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic!='0' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}
 		ordersList = page.getObjList();
 		
 		List<Object> childOrdersDetailList = new ArrayList<Object>();
 		PcOrderVo vo = new PcOrderVo();
 		List<Object> list = new ArrayList<Object>();
-		if(OrdersConstant.NOT_PAY.equals(key)){
-			for (int i = 0; i < ordersList.size(); i++) {
-				Orders order = (Orders) ordersList.get(i);
-				List<Object> ordersDetailList = new ArrayList<Object>();
-				if("1".equals(order.getIsHasChild())){
-					List<Object> childList = hibernateUtil.hql("from Orders where state='1' and parentOrdersId = '"+order.getId()+"'");
-					for (Object object : childList) {
-						Orders childOrders = (Orders) object;
-						childOrdersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+childOrders.getId()+"'");
-						ordersDetailList.addAll(childOrdersDetailList);
-					}
-					vo = ordersUtil.transformOrder(order,ordersDetailList);
-					list.add(vo);
-				}else{
-					if(order.getParentOrdersId()==null){
-						List<Object> detailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
-						vo = ordersUtil.transformOrder(order,detailList);
-						list.add(vo);
-					}
+		for (int i = 0; i < ordersList.size(); i++) {
+			Orders order = (Orders) ordersList.get(i);
+			List<Object> ordersDetailList = new ArrayList<Object>();
+			if("1".equals(order.getIsHasChild())&&"1".equals(order.getOrderStatic())){
+				List<Object> childList = hibernateUtil.hql("from Orders where state='1' and parentOrdersId = '"+order.getId()+"'");
+				for (Object object : childList) {
+					Orders childOrders = (Orders) object;
+					childOrdersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+childOrders.getId()+"'");
+					ordersDetailList.addAll(childOrdersDetailList);
 				}
-				
-			}
-		}else{
-			for (int i = 0; i < ordersList.size(); i++) {
-				Orders order = (Orders) ordersList.get(i);
-				List<Object> ordersDetailList = new ArrayList<Object>();
+			}else if(order.getParentOrdersId()==null){
 				ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
-				vo = ordersUtil.transformOrder(order,ordersDetailList);
-				list.add(vo);
 			}
+			vo = ordersUtil.transformOrder(order,ordersDetailList);
+			list.add(vo);
 		}
 		
 		page.setObjList(null);
