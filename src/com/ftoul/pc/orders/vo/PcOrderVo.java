@@ -20,6 +20,8 @@ public class PcOrderVo {
 	private String consigeeName;//收货人
 	private String tel;//联系电话
 	private String address;//地址
+	private String couponPrice;//优惠券优惠金额
+	private String mjPrice;//满减活动优惠金额
 	
 	
 	private List<Object> detailVoList;
@@ -131,6 +133,18 @@ public class PcOrderVo {
 	}
 	public void setLogistInfo(String logistInfo) {
 		this.logistInfo = logistInfo;
+	}
+	public String getCouponPrice() {
+		return couponPrice;
+	}
+	public void setCouponPrice(String couponPrice) {
+		this.couponPrice = couponPrice;
+	}
+	public String getMjPrice() {
+		return mjPrice;
+	}
+	public void setMjPrice(String mjPrice) {
+		this.mjPrice = mjPrice;
 	}
 
 }

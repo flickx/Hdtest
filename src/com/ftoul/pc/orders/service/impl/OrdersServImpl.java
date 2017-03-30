@@ -153,7 +153,6 @@ public class OrdersServImpl implements OrdersServ {
 		ordersList = page.getObjList();
 		
 		List<Object> childOrdersDetailList = new ArrayList<Object>();
-		//ManyVsOneVo vo = new ManyVsOneVo();
 		PcOrderVo vo = new PcOrderVo();
 		List<Object> list = new ArrayList<Object>();
 		if(OrdersConstant.NOT_PAY.equals(key)){
@@ -167,14 +166,12 @@ public class OrdersServImpl implements OrdersServ {
 						childOrdersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+childOrders.getId()+"'");
 						ordersDetailList.addAll(childOrdersDetailList);
 					}
-					//vo = ordersUtil.transformObject(order,ordersDetailList);
 					vo = ordersUtil.transformOrder(order,ordersDetailList);
 					list.add(vo);
 				}else{
 					if(order.getParentOrdersId()==null){
 						List<Object> detailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
-						//vo = ordersUtil.transformObject(order,detailList);
-						vo = ordersUtil.transformOrder(order,ordersDetailList);
+						vo = ordersUtil.transformOrder(order,detailList);
 						list.add(vo);
 					}
 				}
@@ -184,12 +181,9 @@ public class OrdersServImpl implements OrdersServ {
 			for (int i = 0; i < ordersList.size(); i++) {
 				Orders order = (Orders) ordersList.get(i);
 				List<Object> ordersDetailList = new ArrayList<Object>();
-				//if(!"1".equals(order.getIsHasChild())){
-					ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
-					//vo = ordersUtil.transformObject(order,ordersDetailList);
-					vo = ordersUtil.transformOrder(order,ordersDetailList);
-					list.add(vo);
-				//}
+				ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
+				vo = ordersUtil.transformOrder(order,ordersDetailList);
+				list.add(vo);
 			}
 		}
 		
@@ -499,6 +493,9 @@ public class OrdersServImpl implements OrdersServ {
 				ordersUtil.updateCoinInfo(param.getUserToken().getUser().getUsername(),inputCoinNumber);
 			}
 			
+		}else{//没有使用蜂币的情况订单支付金额要加上运费
+			BigDecimal orderPrice = new BigDecimal(orders.getOrderPrice());
+			orders.setOrderPrice(formate.format(orderPrice.add(new BigDecimal(totalFreight))));
 		}
 		orders.setFreight(new BigDecimal(totalFreight));
 		hibernateUtil.save(orders);
@@ -973,6 +970,7 @@ public class OrdersServImpl implements OrdersServ {
 	 * 确认收货
 	 */
 	@Override
+	
 	public Result confirmTakeGoods(Parameter param) throws Exception {
 		Integer num = hibernateUtil.execHql("update Orders set confirmStatic = '1',orderStatic = '6' where id = '"+param.getId()+"'");
 		return ObjectToResult.getResult(num);

@@ -246,6 +246,8 @@ public class OrdersUtil {
 		vo.setPayType(getPayType(order.getPayType()));
 		vo.setPayTime(order.getPayTime());
 		vo.setOdd(order.getOdd());
+		vo.setCouponPrice(order.getCouponPrice());
+		vo.setFreight(order.getFreight().toString());
 		if(order.getLogisticsCompany()!=null){
 			vo.setLogCompany(order.getLogisticsCompany().getName());
 		}
