@@ -762,7 +762,7 @@ public class OrdersServImpl implements OrdersServ {
 		
 		String province = logisticsUtil.getDefaultUserAddressProvince(param.getUserToken().getUser().getId());
 		double freight = 0.00;
-		if(!"1".equals(vo.getShopId())){
+		if("0".equals(orders.getIsHasChild())){
 			freight = logisticsUtil.getFreight(province, vo.getShopId(), goodsNum);
 		}
 		orders.setFreight(new BigDecimal(freight));//运费
@@ -1121,7 +1121,7 @@ public class OrdersServImpl implements OrdersServ {
 							payable += Double.parseDouble(childOrderPriceVo.getPayable());
 							orderPrice += Double.parseDouble(childOrderPriceVo.getOrderPrice());
 							benPrice += Double.parseDouble(childOrderPriceVo.getBenPrice());
-							freight += Double.parseDouble(childOrderPriceVo.getFreight());
+							//freight += Double.parseDouble(childOrderPriceVo.getFreight());
 							goodsTotalNum += childOrderPriceVo.getGoodsNum();
 							goodsTotalPrice += childOrderPriceVo.getGoodsTotalPrice();
 							if("1".equals(childOrderPriceVo.getIsCard())){
@@ -1135,6 +1135,8 @@ public class OrdersServImpl implements OrdersServ {
 							}
 							supplierShopGoodsParamVoList.addAll(supplierList);
 						}
+						String province = logisticsUtil.getDefaultUserAddressProvince(param.getUserToken().getUser().getId());
+						freight = logisticsUtil.getFreight(province, "1", goodsTotalNum);
 						List<Object> couponList = couponUtil.getCouponByParam(supplierShopGoodsParamVoList, "1", param.getUserToken().getUser().getId(), orderPrice);//获取他她乐平台的优惠券
 						orderPriceVo.setOrderNumber(orders.getOrderNumber());//只放他们的父订单号
 						orderPriceVo.setShopId(childOrderPriceVo.getShopId());
@@ -1143,7 +1145,8 @@ public class OrdersServImpl implements OrdersServ {
 						orderPriceVo.setGoodsTotalPrice(goodsTotalPrice);
 						orderPriceVo.setPayable(String.valueOf(payable));
 						orderPriceVo.setBenPrice(String.valueOf(benPrice));
-						orderPriceVo.setOrderPrice(String.valueOf(orderPrice));
+						orderPrice += freight;
+						orderPriceVo.setOrderPrice(formate.format(orderPrice));
 						orderPriceVo.setFreight(String.valueOf(freight));
 						orderPriceVo.setCouponList(couponList);
 						orderPriceVo.setVoList(goodsVoList);
@@ -1203,7 +1206,7 @@ public class OrdersServImpl implements OrdersServ {
 						payable += Double.parseDouble(childOrderPriceVo.getPayable());
 						orderPrice += Double.parseDouble(childOrderPriceVo.getOrderPrice());
 						benPrice += Double.parseDouble(childOrderPriceVo.getBenPrice());
-						freight += Double.parseDouble(childOrderPriceVo.getFreight());
+						//freight += Double.parseDouble(childOrderPriceVo.getFreight());
 						goodsTotalNum += childOrderPriceVo.getGoodsNum();
 						goodsTotalPrice += childOrderPriceVo.getGoodsTotalPrice();
 						if("1".equals(childOrderPriceVo.getIsCard())){
@@ -1219,6 +1222,8 @@ public class OrdersServImpl implements OrdersServ {
 							couponList.add(obj);
 						}
 					}
+					String province = logisticsUtil.getDefaultUserAddressProvince(param.getUserToken().getUser().getId());
+					freight = logisticsUtil.getFreight(province, "1", goodsTotalNum);
 					orderPriceVo.setOrderNumber(orders.getOrderNumber());//为了结构一致，只做展示，只放他们的父订单号
 					orderPriceVo.setShopId(childOrderPriceVo.getShopId());
 					orderPriceVo.setShopName(childOrderPriceVo.getShopName());
@@ -1226,7 +1231,8 @@ public class OrdersServImpl implements OrdersServ {
 					orderPriceVo.setGoodsTotalPrice(goodsTotalPrice);
 					orderPriceVo.setPayable(String.valueOf(payable));
 					orderPriceVo.setBenPrice(String.valueOf(benPrice));
-					orderPriceVo.setOrderPrice(String.valueOf(orderPrice));
+					orderPrice += freight;
+					orderPriceVo.setOrderPrice(formate.format(orderPrice));
 					orderPriceVo.setFreight(String.valueOf(freight));
 					orderPriceVo.setCouponList(new ArrayList<>(couponList));
 					orderPriceVo.setVoList(goodsVoList);
