@@ -177,9 +177,9 @@ public class OrdersServImpl implements OrdersServ {
 		String queryStr = param.getWhereStr();
 		String hql;
 		if(queryStr!=null){
-			hql = " from Orders where orderStatic!='0' "+queryStr+" order by orderTime desc";
+			hql = " from Orders where orderStatic!='0' and state='1' "+queryStr+" order by orderTime desc";
 		}else{
-			hql = " from Orders where orderStatic!='0' order by orderTime desc";
+			hql = " from Orders where orderStatic!='0' and state='1' order by orderTime desc";
 		}
 		
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
