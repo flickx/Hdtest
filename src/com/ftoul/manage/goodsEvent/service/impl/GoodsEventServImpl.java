@@ -398,7 +398,7 @@ public class GoodsEventServImpl implements GoodsEventServ {
 		if ("sqp".equals(typeName)) {
 			typeName = "省钱趴";
 		}
-		String sql = "select DISTINCT truncate(gej.event_price,1) from goods_event_join gej,goods_event ge where gej.event_id = ge.id and gej.state='1' and gej.event_price is not null and ge.type_name= '" + typeName+ "' order by gej.event_price asc";
+		String sql = "select DISTINCT truncate(gej.event_price,1) from goods_event_join gej,goods_event ge where gej.event_id = ge.id and gej.state='1' and ge.state='1' and ge.event_end > now() and  gej.event_price is not null and ge.type_name= '" + typeName+ "' order by gej.event_price asc";
 		List<Object[]> priceList = hibernateUtil.sql(sql);
 		return ObjectToResult.getResult(priceList);
 	}

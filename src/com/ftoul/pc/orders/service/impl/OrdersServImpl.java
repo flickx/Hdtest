@@ -148,49 +148,31 @@ public class OrdersServImpl implements OrdersServ {
 		}else if(OrdersConstant.NOT_COMMENT.equals(key)){//查询待评价的数据
 			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic = '7' and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}else{
-			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic!='0' and isHasChild!='1' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
+			page =  hibernateUtil.hqlPage(null,"from Orders where orderStatic!='0' and state='1' and user.id='"+param.getUserToken().getUser().getId()+"'"+whereStr+" order by orderTime desc",param.getPageNum(),param.getPageSize());
 		}
 		ordersList = page.getObjList();
 		
 		List<Object> childOrdersDetailList = new ArrayList<Object>();
-		//ManyVsOneVo vo = new ManyVsOneVo();
 		PcOrderVo vo = new PcOrderVo();
 		List<Object> list = new ArrayList<Object>();
-		if(OrdersConstant.NOT_PAY.equals(key)){
-			for (int i = 0; i < ordersList.size(); i++) {
-				Orders order = (Orders) ordersList.get(i);
-				List<Object> ordersDetailList = new ArrayList<Object>();
-				if("1".equals(order.getIsHasChild())){
-					List<Object> childList = hibernateUtil.hql("from Orders where state='1' and parentOrdersId = '"+order.getId()+"'");
-					for (Object object : childList) {
-						Orders childOrders = (Orders) object;
-						childOrdersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+childOrders.getId()+"'");
-						ordersDetailList.addAll(childOrdersDetailList);
-					}
-					//vo = ordersUtil.transformObject(order,ordersDetailList);
-					vo = ordersUtil.transformOrder(order,ordersDetailList);
-					list.add(vo);
-				}else{
-					if(order.getParentOrdersId()==null){
-						List<Object> detailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
-						//vo = ordersUtil.transformObject(order,detailList);
-						vo = ordersUtil.transformOrder(order,ordersDetailList);
-						list.add(vo);
-					}
+		for (int i = 0; i < ordersList.size(); i++) {
+			Orders order = (Orders) ordersList.get(i);
+			List<Object> ordersDetailList = new ArrayList<Object>();
+			if("1".equals(order.getIsHasChild())&&"1".equals(order.getOrderStatic())){
+				List<Object> childList = hibernateUtil.hql("from Orders where state='1' and parentOrdersId = '"+order.getId()+"'");
+				for (Object object : childList) {
+					Orders childOrders = (Orders) object;
+					childOrdersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+childOrders.getId()+"'");
+					ordersDetailList.addAll(childOrdersDetailList);
 				}
-				
+				vo = ordersUtil.transformOrder(order,ordersDetailList);
+				list.add(vo);
+			}else if(order.getParentOrdersId()==null){
+				ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
+				vo = ordersUtil.transformOrder(order,ordersDetailList);
+				list.add(vo);
 			}
-		}else{
-			for (int i = 0; i < ordersList.size(); i++) {
-				Orders order = (Orders) ordersList.get(i);
-				List<Object> ordersDetailList = new ArrayList<Object>();
-				//if(!"1".equals(order.getIsHasChild())){
-					ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
-					//vo = ordersUtil.transformObject(order,ordersDetailList);
-					vo = ordersUtil.transformOrder(order,ordersDetailList);
-					list.add(vo);
-				//}
-			}
+			
 		}
 		
 		page.setObjList(null);
@@ -499,6 +481,9 @@ public class OrdersServImpl implements OrdersServ {
 				ordersUtil.updateCoinInfo(param.getUserToken().getUser().getUsername(),inputCoinNumber);
 			}
 			
+		}else{//没有使用蜂币的情况订单支付金额要加上运费
+			BigDecimal orderPrice = new BigDecimal(orders.getOrderPrice());
+			orders.setOrderPrice(formate.format(orderPrice.add(new BigDecimal(totalFreight))));
 		}
 		orders.setFreight(new BigDecimal(totalFreight));
 		hibernateUtil.save(orders);
@@ -776,7 +761,10 @@ public class OrdersServImpl implements OrdersServ {
 		}
 		
 		String province = logisticsUtil.getDefaultUserAddressProvince(param.getUserToken().getUser().getId());
-		double freight = logisticsUtil.getFreight(province, vo.getShopId(), goodsNum);
+		double freight = 0.00;
+		if(!"1".equals(vo.getShopId())){
+			freight = logisticsUtil.getFreight(province, vo.getShopId(), goodsNum);
+		}
 		orders.setFreight(new BigDecimal(freight));//运费
 		orders.setGoodsTotal(String.valueOf(goodsNum));
 		orders.setOrderTime(new DateStr().toString());
@@ -973,6 +961,7 @@ public class OrdersServImpl implements OrdersServ {
 	 * 确认收货
 	 */
 	@Override
+	
 	public Result confirmTakeGoods(Parameter param) throws Exception {
 		Integer num = hibernateUtil.execHql("update Orders set confirmStatic = '1',orderStatic = '6' where id = '"+param.getId()+"'");
 		return ObjectToResult.getResult(num);
