@@ -444,7 +444,7 @@ public class GoodsServImpl implements GoodsServ {
 
 	@Override
 	public Result getGoodsListByEarlyWarning(Parameter param)throws Exception {
-		String countSql = "SELECT\n" +
+		/*String countSql = "SELECT\n" +
 				"	count(*)\n" +
 				"FROM\n" +
 				"	(\n" +
@@ -460,13 +460,16 @@ public class GoodsServImpl implements GoodsServ {
 				"		AND goodsparam0_.stock <= 10\n" +
 				"		GROUP BY\n" +
 				"			goodsparam0_.goods_id\n" +
-				"	) t";
+				"	) t";*/
 //		String select = "select count(*) from (" +
 //				" select from Goods gs join GoodsParam gp with gs.id = gp.goods.id  and gs.state=1"
 //				+ " join GoodsType gt with gs.goodsType3.id = gt.id  left GoodsBrand gb with s.goodsBrand.id = gb.id and gp.stock<="
 //				+param.getId()+  " group by gs.id";
-		String hql = "select  gs.id,gs.title,gt.name,gb.name,gs.grounding,gp.price,gp.stock,gp.saleNumber from Goods gs,GoodsParam gp,GoodsType gt,GoodsBrand gb "
-				+ "where gs.id = gp.goods.id  and gs.state='1' and gp.state = '1' and gs.goodsType3.id = gt.id and gs.goodsBrand.id = gb.id and gp.stock<="+param.getId()+  " group by gs.id";
+//		String hql1 = "select  gs.id,gs.title,gt.name,gb.name,gs.grounding,gp.price,gp.stock,gp.saleNumber from Goods gs,GoodsParam gp,GoodsType gt,GoodsBrand gb "
+//				+ "where gs.id = gp.goods.id  and gs.state='1' and gp.state = '1' and gs.goodsType3.id = gt.id and gs.goodsBrand.id = gb.id and gp.stock<="+param.getId()+  " group by gs.id";
+		String hql = "select  gs.id,gs.title,gt.name as gtName,gb.name as gbName,gs.grounding,gp.price,gp.stock,gp.sale_Number from Goods gs,Goods_Param gp,Goods_Type gt,Goods_Brand gb "
+				+ "where gs.id = gp.goods_id  and gs.state='1' and gp.state = '1' and gs.goods_type3 = gt.id and gs.goods_brand_id = gb.id and gp.stock<="+param.getId()+  " group by gs.id";
+		String countSql = "select count(*) from ("+hql+") counts";
 		//判断表格每列，并按列进行排序
 		if(param.getSidx().equals("title")){
 			hql+=" order by gs.title "+param.getSord();
@@ -487,14 +490,14 @@ public class GoodsServImpl implements GoodsServ {
 			hql+=" order by gp.stock "+param.getSord();
 		}
 		if(param.getSidx().equals("saleNumber")){
-			hql+=" order by gp.saleNumber "+param.getSord();
+			hql+=" order by gp.sale_Number "+param.getSord();
 		}
-		Page page = hibernateUtil.hqlPage(countSql,hql,param.getPageNum(),param.getPageSize());
-		List<Object> goodsList =hibernateUtil.hql(hql);
+		Page page = hibernateUtil.sqlPage(countSql,hql,param.getPageNum(),param.getPageSize());
+		//List<Object> goodsList =hibernateUtil.hql(hql1);
 		List<GoodsListVo> list = new ArrayList<GoodsListVo>();
 		for (int i = 0; i < page.getObjList().size(); i++) {
 			GoodsListVo goodsListVo = new GoodsListVo();
-			Object[] obj = (Object[])goodsList.get(i);
+			Object[] obj = (Object[])page.getObjList().get(i);
 			goodsListVo.setId(obj[0].toString());
 			goodsListVo.setTitle(obj[1].toString());
 			goodsListVo.setTypeName(obj[2].toString());

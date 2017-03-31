@@ -34,6 +34,7 @@ import com.ftoul.po.UserToken;
 import com.ftoul.util.email.MD5Util;
 import com.ftoul.util.email.SendEmail;
 import com.ftoul.util.hibernate.HibernateUtil;
+import com.ftoul.util.score.ScoreUtil;
 import com.ftoul.util.token.TokenUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.manage.user.vo.ResetPasswordVo;
@@ -49,6 +50,9 @@ public class PcUserServImpl implements PcUserServ {
 	private TokenUtil tokenUtil;
 	@Autowired
 	private HttpServletRequest req;
+	
+	@Autowired
+	private ScoreUtil scortUtil;
 	@Override
 	public Result login(Parameter param) throws Exception {
 		UsersVO user = (UsersVO) JSONObject.toBean((JSONObject) param.getObj(),
@@ -104,8 +108,11 @@ public class PcUserServImpl implements PcUserServ {
 					res = "用户已被禁用";
 					throw new Exception("用户已被禁用");
 				}
+				res = hibernateUtil.update(u);
 			}
 			UserToken userToken = tokenUtil.toPcToken(u);
+			//登陆后赠送成长值
+			scortUtil.giveScore(u.getUsername());
 			return ObjectToResult.getResult(userToken);
 		}
 

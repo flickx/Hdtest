@@ -48,6 +48,7 @@ import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.logistics.LogisticsUtil;
 import com.ftoul.util.orders.OrdersUtil;
 import com.ftoul.util.price.PriceUtil;
+import com.ftoul.util.score.ScoreUtil;
 import com.ftoul.util.webservice.WebserviceUtil;
 import com.ftoul.web.goods.service.GoodsParamServ;
 import com.ftoul.web.orders.service.OrdersServ;
@@ -89,6 +90,8 @@ public class OrdersServImpl implements OrdersServ {
 	CoinUtil coinUtil;
 	@Autowired  
 	LogisticsUtil logisticsUtil;
+	@Autowired
+	ScoreUtil scoreUtil;
 	/**
 	 * 根据用户ID获取订单列表
 	 * @param param Parameter对象
@@ -910,6 +913,9 @@ public class OrdersServImpl implements OrdersServ {
 	@Override
 	public Result confirmTakeGoods(Parameter param) throws Exception {
 		Integer num = hibernateUtil.execHql("update Orders set confirmStatic = '1',orderStatic = '6' where id = '"+param.getId()+"'");
+		Orders orders = (Orders) hibernateUtil.find(Orders.class, param.getId()+"");
+		//确认收货后赠送成长值
+		scoreUtil.giveScoreByOrders(orders.getUser().getId(),orders.getOrderPrice());
 		return ObjectToResult.getResult(num);
 	}
 	

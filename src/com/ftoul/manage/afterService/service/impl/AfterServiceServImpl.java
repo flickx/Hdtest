@@ -22,6 +22,7 @@ import com.ftoul.po.OrdersDetail;
 import com.ftoul.util.afterService.AfterServiceUtil;
 import com.ftoul.util.hibernate.HibernateUtil;
 import com.ftoul.util.orders.OrdersUtil;
+import com.ftoul.util.score.ScoreUtil;
 
 @Service("AfterServiceServImpl")
 public class AfterServiceServImpl implements AfterServiceServ {
@@ -32,7 +33,8 @@ public class AfterServiceServImpl implements AfterServiceServ {
 	OrdersUtil ordersUtil;
 	@Autowired
 	AfterServiceUtil afterServiceUtil;
-
+	@Autowired
+	private ScoreUtil scoreUtil;
 	/**
 	 * 获取售后申请列表
 	 */
@@ -148,6 +150,8 @@ public class AfterServiceServImpl implements AfterServiceServ {
 		after.setModifyPerson(param.getManageToken().getLoginUser().getId());
 		Object o = hibernateUtil.update(after);
 		afterServiceUtil.saveAfterOpLog(param,"【卖家】"+afterServiceUtil.getAfterState(schedule.getScheduleStatic()));
+		//退货减去相应的成长值
+		scoreUtil.giveScore(after.getUser().getId());
 		return ObjectToResult.getResult(o);
 	}
 	
