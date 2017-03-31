@@ -231,12 +231,20 @@ public class GoodsServImpl implements GoodsServ {
 		}
 		
 		//是否参加满减活动
-		String hql3 = "select ge.eventName,ge.typeName from Goods gs,"
-				+ "GoodsEventJoin gej,GoodsEvent ge where gs.id = gej.goods.id and ge.id = gej.goodsEvent.id and gej.state = '1' and ge.state = '1' and ge.typeName='满减' and gs.id ='"+param.getId()+"'";
+		String hql3 = "select ge.eventName,ge.typeName,ge.eventBegen,ge.eventEnd from Goods gs,"
+				+ "GoodsEventJoin gej,GoodsEvent ge where gs.id = gej.goods.id and ge.id = gej.goodsEvent.id "
+				+ "and gej.state = '1' and ge.state = '1' and ge.typeName='满减' "
+				+ "and gs.id ='"+param.getId()+"'";
 		List<Object> fullCutList = this.hibernateUtil.hql(hql3);
 		if(fullCutList.size()>0){
 			Object[] obj = (Object[])fullCutList.get(0);
-			goodsVo.setFullCutName(obj[0].toString());
+			Date begin = DateUtil.stringFormatToDate(obj[2]+"",
+					"yyyy/MM/dd HH:mm:ss");
+			Date end = DateUtil.stringFormatToDate(obj[3]+"",
+					"yyyy/MM/dd HH:mm:ss");
+			if (currentTime.after(begin) && currentTime.before(end)){
+				goodsVo.setFullCutName(obj[0].toString());
+			}
 		}
 		goodsVo.setPicSrc(goods.getPicSrc());
 		DecimalFormat df = new DecimalFormat("0.00");
@@ -450,7 +458,7 @@ public class GoodsServImpl implements GoodsServ {
 		startTime = startTime.replace("/","-");
 		String endTime = new DateStr().getEndTime();
 		endTime = endTime.replace("/","-");
-		String sql = "select distinic g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and '"+startTime+"' <= g.create_time and g.create_time <= '"+endTime+"' and g.shop_id = '1' group by g.id order by rand() asc limit 0,4";
+		String sql = "select g.id,g.title,g.subtitle,gp.param_name,g.price,gp.market_price,g.pic_src from Goods g,Goods_param gp where g.id = gp.goods_id and  g.state = '1' and '"+startTime+"' <= g.create_time and g.create_time <= '"+endTime+"' and g.shop_id = '1' order by rand() asc limit 0,4";
 		List<Object[]> list =	hibernateUtil.sql(sql);
 		List<PcNewGoods> newGoodsList = new ArrayList<PcNewGoods>();
 		for (Object[] goods : list) {

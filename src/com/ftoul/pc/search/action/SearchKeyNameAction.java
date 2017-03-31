@@ -61,4 +61,15 @@ public class SearchKeyNameAction {
 		return searchKeyNameServ.getSaleNumGoodsList(parameter);
 	}
 	
+	/**
+	 * 添加搜索关键字
+	 * @param param
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "saveSearchKeyName")  
+	public @ResponseBody Result saveSearchKeyName(String param) throws Exception{
+		Parameter parameter = Common.jsonToParam(param);
+		return searchKeyNameServ.saveSearchKeyName(parameter);
+	}
 }
