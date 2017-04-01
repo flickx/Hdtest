@@ -112,7 +112,7 @@ public class PcUserServImpl implements PcUserServ {
 			}
 			UserToken userToken = tokenUtil.toPcToken(u);
 			//登陆后赠送成长值
-			//scortUtil.giveScore(u.getUsername());
+			scortUtil.giveScore(u.getUsername());
 			return ObjectToResult.getResult(userToken);
 		}
 
