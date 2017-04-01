@@ -221,6 +221,7 @@ public class OrdersServImpl implements OrdersServ {
 	 */
 	@Override
 	public Result cancelOrders(Parameter param) throws Exception {
+		System.out.println("11111111111111111111111");
 		Integer num = hibernateUtil.execHql("update Orders set orderStatic = '8' where id in ('"+param.getId()+"')");
 		Orders order = (Orders) hibernateUtil.find(Orders.class, param.getId()+"");
 		if("1".equals(order.getIsHasChild())){
