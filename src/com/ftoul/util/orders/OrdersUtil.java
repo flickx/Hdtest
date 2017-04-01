@@ -1,6 +1,7 @@
 package com.ftoul.util.orders;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -50,7 +51,7 @@ public class OrdersUtil {
 	CoinSetServ coinSetServ;
 	@Autowired
 	private HibernateUtil hibernateUtil;
-	
+	DecimalFormat formate = new DecimalFormat("0.00");
 	/**
 	 * 自动取消订单
 	 */
@@ -473,8 +474,9 @@ public class OrdersUtil {
 	 * @param vo
 	 * @throws Exception
 	 */
-	public void updateCoinInfo(String param,int num) throws Exception{
+	public synchronized void updateCoinInfo(String param,int num) throws Exception{
 		UserService userService = WebserviceUtil.getService();
+		System.out.println("num:"+num);
 		userService.modifyIntegral(param, num);
 	}
 	
@@ -502,7 +504,7 @@ public class OrdersUtil {
 			coinPrice = newCoinNumber*base;
 			newOrderPrice = orderPrice - coinPrice;
 			vo.setCoinNumber((int)newCoinNumber);
-			vo.setCoinPrice(coinPrice);
+			vo.setCoinPrice(Double.parseDouble(formate.format(coinPrice)));
 		}
 	}
 	
