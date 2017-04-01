@@ -165,11 +165,14 @@ public class OrdersServImpl implements OrdersServ {
 					childOrdersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+childOrders.getId()+"'");
 					ordersDetailList.addAll(childOrdersDetailList);
 				}
+				vo = ordersUtil.transformOrder(order,ordersDetailList);
+				list.add(vo);
 			}else if(order.getParentOrdersId()==null){
 				ordersDetailList = hibernateUtil.hql("from OrdersDetail where orders.id='"+order.getId()+"'");
+				vo = ordersUtil.transformOrder(order,ordersDetailList);
+				list.add(vo);
 			}
-			vo = ordersUtil.transformOrder(order,ordersDetailList);
-			list.add(vo);
+			
 		}
 		
 		page.setObjList(null);
@@ -218,6 +221,7 @@ public class OrdersServImpl implements OrdersServ {
 	 */
 	@Override
 	public Result cancelOrders(Parameter param) throws Exception {
+		System.out.println("11111111111111111111111");
 		Integer num = hibernateUtil.execHql("update Orders set orderStatic = '8' where id in ('"+param.getId()+"')");
 		Orders order = (Orders) hibernateUtil.find(Orders.class, param.getId()+"");
 		if("1".equals(order.getIsHasChild())){
@@ -758,7 +762,10 @@ public class OrdersServImpl implements OrdersServ {
 		}
 		
 		String province = logisticsUtil.getDefaultUserAddressProvince(param.getUserToken().getUser().getId());
-		double freight = logisticsUtil.getFreight(province, vo.getShopId(), goodsNum);
+		double freight = 0.00;
+		if("0".equals(orders.getIsHasChild())){
+			freight = logisticsUtil.getFreight(province, vo.getShopId(), goodsNum);
+		}
 		orders.setFreight(new BigDecimal(freight));//运费
 		orders.setGoodsTotal(String.valueOf(goodsNum));
 		orders.setOrderTime(new DateStr().toString());
@@ -1115,7 +1122,7 @@ public class OrdersServImpl implements OrdersServ {
 							payable += Double.parseDouble(childOrderPriceVo.getPayable());
 							orderPrice += Double.parseDouble(childOrderPriceVo.getOrderPrice());
 							benPrice += Double.parseDouble(childOrderPriceVo.getBenPrice());
-							freight += Double.parseDouble(childOrderPriceVo.getFreight());
+							//freight += Double.parseDouble(childOrderPriceVo.getFreight());
 							goodsTotalNum += childOrderPriceVo.getGoodsNum();
 							goodsTotalPrice += childOrderPriceVo.getGoodsTotalPrice();
 							if("1".equals(childOrderPriceVo.getIsCard())){
@@ -1129,6 +1136,8 @@ public class OrdersServImpl implements OrdersServ {
 							}
 							supplierShopGoodsParamVoList.addAll(supplierList);
 						}
+						String province = logisticsUtil.getDefaultUserAddressProvince(param.getUserToken().getUser().getId());
+						freight = logisticsUtil.getFreight(province, "1", goodsTotalNum);
 						List<Object> couponList = couponUtil.getCouponByParam(supplierShopGoodsParamVoList, "1", param.getUserToken().getUser().getId(), orderPrice);//获取他她乐平台的优惠券
 						orderPriceVo.setOrderNumber(orders.getOrderNumber());//只放他们的父订单号
 						orderPriceVo.setShopId(childOrderPriceVo.getShopId());
@@ -1137,7 +1146,8 @@ public class OrdersServImpl implements OrdersServ {
 						orderPriceVo.setGoodsTotalPrice(goodsTotalPrice);
 						orderPriceVo.setPayable(String.valueOf(payable));
 						orderPriceVo.setBenPrice(String.valueOf(benPrice));
-						orderPriceVo.setOrderPrice(String.valueOf(orderPrice));
+						orderPrice += freight;
+						orderPriceVo.setOrderPrice(formate.format(orderPrice));
 						orderPriceVo.setFreight(String.valueOf(freight));
 						orderPriceVo.setCouponList(couponList);
 						orderPriceVo.setVoList(goodsVoList);
@@ -1197,7 +1207,7 @@ public class OrdersServImpl implements OrdersServ {
 						payable += Double.parseDouble(childOrderPriceVo.getPayable());
 						orderPrice += Double.parseDouble(childOrderPriceVo.getOrderPrice());
 						benPrice += Double.parseDouble(childOrderPriceVo.getBenPrice());
-						freight += Double.parseDouble(childOrderPriceVo.getFreight());
+						//freight += Double.parseDouble(childOrderPriceVo.getFreight());
 						goodsTotalNum += childOrderPriceVo.getGoodsNum();
 						goodsTotalPrice += childOrderPriceVo.getGoodsTotalPrice();
 						if("1".equals(childOrderPriceVo.getIsCard())){
@@ -1213,6 +1223,8 @@ public class OrdersServImpl implements OrdersServ {
 							couponList.add(obj);
 						}
 					}
+					String province = logisticsUtil.getDefaultUserAddressProvince(param.getUserToken().getUser().getId());
+					freight = logisticsUtil.getFreight(province, "1", goodsTotalNum);
 					orderPriceVo.setOrderNumber(orders.getOrderNumber());//为了结构一致，只做展示，只放他们的父订单号
 					orderPriceVo.setShopId(childOrderPriceVo.getShopId());
 					orderPriceVo.setShopName(childOrderPriceVo.getShopName());
@@ -1220,7 +1232,8 @@ public class OrdersServImpl implements OrdersServ {
 					orderPriceVo.setGoodsTotalPrice(goodsTotalPrice);
 					orderPriceVo.setPayable(String.valueOf(payable));
 					orderPriceVo.setBenPrice(String.valueOf(benPrice));
-					orderPriceVo.setOrderPrice(String.valueOf(orderPrice));
+					orderPrice += freight;
+					orderPriceVo.setOrderPrice(formate.format(orderPrice));
 					orderPriceVo.setFreight(String.valueOf(freight));
 					orderPriceVo.setCouponList(new ArrayList<>(couponList));
 					orderPriceVo.setVoList(goodsVoList);

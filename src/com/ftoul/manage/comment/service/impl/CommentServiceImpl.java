@@ -16,6 +16,7 @@ import com.ftoul.manage.comment.service.CommentServ;
 import com.ftoul.manage.comment.vo.GoodsCommentVo;
 import com.ftoul.po.GoodsComment;
 import com.ftoul.util.hibernate.HibernateUtil;
+import com.ftoul.util.score.ScoreUtil;
 
 @Service("CommentServiceImpl")
 public class CommentServiceImpl implements CommentServ {
@@ -24,6 +25,8 @@ public class CommentServiceImpl implements CommentServ {
 	private HibernateUtil hibernateUtil;
 	@Autowired
 	private StrUtil strUtil;
+	@Autowired
+	private ScoreUtil ScoreUtil;
 	/**
 	 * 分页查询商品评论
 	 */
@@ -139,6 +142,8 @@ public class CommentServiceImpl implements CommentServ {
 		comment.setModifyPerson(param.getManageToken().getLoginUser().getLoginName());
 		comment.setModifyTime(new DateStr().toString());
 		hibernateUtil.update(comment);
+		//评论审核后赠送成长值
+		ScoreUtil.giveScoreByComment(comment.getId());
 		return ObjectToResult.getResult(comment);
 	}
 

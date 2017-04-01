@@ -28,12 +28,15 @@ public class CouponServiceImpl implements CouponServ {
 	private HibernateUtil hibernateUtil;
 	@Autowired
 	private CouponUtil couponUtil;
+	@Autowired
+	private DateStr dateStr;
 
 	/**
 	 * 查询所有的优惠券列表
 	 */
 	@Override
 	public Result queryCouponPage(Parameter param) throws Exception {
+		String currentTime = new DateStr().toString();
 		String whereStr = param.getWhereStr();
 		if(whereStr==null){
 			whereStr = "";
@@ -42,6 +45,7 @@ public class CouponServiceImpl implements CouponServ {
 		Page page = hibernateUtil.hqlPage(null, hql, param.getPageNum(), param.getPageSize());
 		List<?> objList = page.getObjList();
 		List<Object> voList = new ArrayList<Object>();
+		boolean flag = false;
 		for (Object object : objList) {
 			Coupon coupon = (Coupon) object;
 			CouponVo vo = new CouponVo();
@@ -50,6 +54,9 @@ public class CouponServiceImpl implements CouponServ {
 			vo.setName(coupon.getName());
 			vo.setType(couponUtil.getCouponType(coupon.getCouponType()));
 			vo.setValidEndTime(coupon.getValidEndTime());
+			if(dateStr.compareDate(currentTime, coupon.getValidEndTime())>0){
+				flag = true;
+			}
 			BusinessStore store = coupon.getBusinessStore();
 			if(store!=null){
 				vo.setShopName(store.getStoreName());
@@ -58,10 +65,15 @@ public class CouponServiceImpl implements CouponServ {
 				vo.setTargetValue(coupon.getTargetValue().toString());
 			}
 			UserCoupon obj = (UserCoupon) hibernateUtil.hqlFirst("from UserCoupon where couponId='"+coupon.getId()+"' and userId='"+param.getUserToken().getUser().getId()+"' and state='1'");
-			if(obj!=null){
-				vo.setIsUsed("1");//已领取
+			if(flag){
+				vo.setIsUsed("1");//已失效
+				flag = false;
 			}else{
-				vo.setIsUsed("0");//未领取
+				if(obj!=null){
+					vo.setIsUsed("1");//已领取
+				}else{
+					vo.setIsUsed("0");//未领取
+				}
 			}
 			voList.add(vo);
 		}

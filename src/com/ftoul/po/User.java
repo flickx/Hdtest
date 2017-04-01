@@ -50,6 +50,9 @@ public class User implements java.io.Serializable {
 	private String cardBack; 
 	private String validateCode;
 	private String activeState;
+	private String firstLogin;
+	private String lastLoginTime;
+	private String birthState;
 	// Constructors
 
 	/** default constructor */
@@ -345,6 +348,30 @@ public class User implements java.io.Serializable {
 
 	public void setActiveState(String activeState) {
 		this.activeState = activeState;
+	}
+	@Column(name = "first_login", length = 1)
+	public String getFirstLogin() {
+		return firstLogin;
+	}
+
+	public void setFirstLogin(String firstLogin) {
+		this.firstLogin = firstLogin;
+	}
+	@Column(name = "last_login_time", length = 32)
+	public String getLastLoginTime() {
+		return lastLoginTime;
+	}
+
+	public void setLastLoginTime(String lastLoginTime) {
+		this.lastLoginTime = lastLoginTime;
+	}
+	@Column(name = "birth_state", length = 1)
+	public String getBirthState() {
+		return birthState;
+	}
+
+	public void setBirthState(String birthState) {
+		this.birthState = birthState;
 	}
 	
 }

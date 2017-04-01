@@ -28,15 +28,14 @@ public class UserSroce  implements java.io.Serializable {
 	private static final long serialVersionUID = 3593158423170122443L;
 	private String id;
      private User user;
-     private Goods goods;
-     private String goodId;
      private String score;
      private String createTime;
      private String createPerson;
      private String modifyTime;
      private String modifyPerson;
      private String state;
-
+     private String totalScore;
+     private String description;
 
     // Constructors
 
@@ -46,10 +45,8 @@ public class UserSroce  implements java.io.Serializable {
 
     
     /** full constructor */
-    public UserSroce(User user, Goods goods, String goodId, String score, String createTime, String createPerson, String modifyTime, String modifyPerson, String state) {
+    public UserSroce(User user, String score, String createTime, String createPerson, String modifyTime, String modifyPerson, String state) {
         this.user = user;
-        this.goods = goods;
-        this.goodId = goodId;
         this.score = score;
         this.createTime = createTime;
         this.createPerson = createPerson;
@@ -81,27 +78,6 @@ public class UserSroce  implements java.io.Serializable {
     public void setUser(User user) {
         this.user = user;
     }
-	@ManyToOne(fetch=FetchType.EAGER)
-        @JoinColumn(name="user_id", insertable=false, updatable=false)
-
-    public Goods getGoods() {
-        return this.goods;
-    }
-    
-    public void setGoods(Goods goods) {
-        this.goods = goods;
-    }
-    
-    @Column(name="good_id", length=32)
-
-    public String getGoodId() {
-        return this.goodId;
-    }
-    
-    public void setGoodId(String goodId) {
-        this.goodId = goodId;
-    }
-    
     @Column(name="score", length=32)
 
     public String getScore() {
@@ -161,13 +137,24 @@ public class UserSroce  implements java.io.Serializable {
     public void setState(String state) {
         this.state = state;
     }
-   
+
+    @Column(name="total_score", length=32)
+	public String getTotalScore() {
+		return totalScore;
+	}
 
 
+	public void setTotalScore(String totalScore) {
+		this.totalScore = totalScore;
+	}
+
+	@Column(name="description", length=100)
+	public String getDescription() {
+		return description;
+	}
 
 
-
-
-
-
+	public void setDescription(String description) {
+		this.description = description;
+	}
 }
