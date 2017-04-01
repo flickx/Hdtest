@@ -63,11 +63,13 @@ public class SqpAction {
 			}
 			if (null != goodsAppVo.getQuantity()) {
 				i.setQunatity(goodsAppVo.getQuantity().toString());
+				NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
+			    format.setMinimumFractionDigits(0);// 设置小数位
+			    if (null != goodsAppVo.getDefaultQuantity()) {
+				    i.setNum(format.format(1-goodsAppVo.getQuantity()*1.0/goodsAppVo.getDefaultQuantity()));
+				}
 			}
 			i.setSaleSum(Integer.toString(goodsParam.getSaleNumber()));
-			NumberFormat format = NumberFormat.getPercentInstance();// 获取格式化类实例
-		    format.setMinimumFractionDigits(0);// 设置小数位
-		    i.setNum(format.format(1-goodsAppVo.getQuantity()*1.0/goodsAppVo.getDefaultQuantity()));
 			sqpList.add(i);
 		}  
 		re.setObj(sqpList);
