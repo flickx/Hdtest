@@ -1,6 +1,7 @@
 package com.ftoul.web.goods.service.impl;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -472,7 +473,8 @@ public class GoodsServImpl implements GoodsServ {
 			newGoods.setPrice((double)goods[4]);
 			newGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
 			newGoods.setPicSrc(goods[6].toString());
-			newGoods.setNum(Double.toString(Math.round((double)goods[4]*1.0/Double.parseDouble(goods[5].toString())*10)));
+			NumberFormat nf=new  DecimalFormat( "0.0 "); 
+			newGoods.setNum(nf.format((double)goods[4]*1.0/Double.parseDouble(goods[5].toString())*10));
 			newGoodsList.add(newGoods);
 		}
 		return ObjectToResult.getResult(newGoodsList);
@@ -507,7 +509,8 @@ public class GoodsServImpl implements GoodsServ {
 				newGoods.setPrice((double)goods[4]);
 				newGoods.setMarketPrice(Double.parseDouble(goods[5].toString()));
 				newGoods.setPicSrc(goods[6].toString());
-				newGoods.setNum(Double.toString(Math.round((double)goods[4]*1.0/Double.parseDouble(goods[5].toString())*10)));
+				NumberFormat nf=new  DecimalFormat( "0.0 "); 
+				newGoods.setNum(nf.format((double)goods[4]*1.0/Double.parseDouble(goods[5].toString())*10));
 				newGoodsList.add(newGoods);  
 			}
 			vo.setTotal(goodsList.size());
